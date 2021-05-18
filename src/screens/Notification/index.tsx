@@ -2,15 +2,15 @@ import React from "react";
 import { Text } from "react-native";
 import styled from "styled-components/native";
 import { useAppSelector } from "~/store";
-import { LocationScreenNavigationProp } from "~/types/navigator";
+import { NotificationScreenNavigationProp } from "~/types/navigator";
 import AuthSelector from "../Shared/AuthSelector";
 
 const Container = styled.View``;
 
-const Location = ({
+const Notification = ({
   navigation,
 }: {
-  navigation: LocationScreenNavigationProp;
+  navigation: NotificationScreenNavigationProp;
 }) => {
   const { isLoggedIn } = useAppSelector(state => state.user);
 
@@ -18,9 +18,9 @@ const Location = ({
 
   return (
     <Container>
-      <Text>Location</Text>
+      <Text>Notification</Text>
     </Container>
   );
 };
 
-export default Location;
+export default Notification;

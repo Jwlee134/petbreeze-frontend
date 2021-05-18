@@ -1,14 +1,27 @@
 import React from "react";
-import { Text } from "react-native";
 import styled from "styled-components/native";
+import HomePlusButton from "~/components/HomePlusButton";
+import HomeTopTapNavigator from "~/navigator/HomeTopTabNav";
+import { HomeScreenNavigationProp } from "~/types/navigator";
 
-const Container = styled.View``;
+const TitleContainer = styled.View`
+  margin: 40px 0px 10px 0px;
+`;
 
-const Home = () => {
+const Title = styled.Text`
+  font-size: 36px;
+  text-align: center;
+`;
+
+const Home = ({ navigation }: { navigation: HomeScreenNavigationProp }) => {
   return (
-    <Container>
-      <Text>Home</Text>
-    </Container>
+    <>
+      <TitleContainer>
+        <Title>어디개</Title>
+      </TitleContainer>
+      <HomeTopTapNavigator />
+      <HomePlusButton onPress={() => navigation.navigate("PostAnimalInfo")} />
+    </>
   );
 };
 

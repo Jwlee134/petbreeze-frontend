@@ -4,12 +4,12 @@ import styled from "styled-components/native";
 
 const Container = styled.View``;
 
-const Profile = () => {
+const PetProfile = () => {
   return (
     <Container>
-      <Text>Profile</Text>
+      <Text>PetProfile</Text>
     </Container>
   );
 };
 
-export default Profile;
+export default PetProfile;
