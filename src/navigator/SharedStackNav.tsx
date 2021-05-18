@@ -4,7 +4,7 @@ import Home from "~/screens/Home";
 import Lost from "~/screens/Shared/Lost";
 import Witnessed from "~/screens/Shared/Witnessed";
 import Notification from "~/screens/Notification";
-import AuthSelector from "~/screens/Auth/AuthSelector";
+import AuthSelector from "~/screens/Shared/AuthSelector";
 import Location from "~/screens/Location";
 import { useAppSelector } from "~/store";
 import PostAnimalInfo from "~/screens/Home/PostAnimalInfo";

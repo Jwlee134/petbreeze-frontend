@@ -3,7 +3,7 @@ import { Text } from "react-native";
 import styled from "styled-components/native";
 import { useAppSelector } from "~/store";
 import { LocationScreenNavigationProp } from "~/types/navigator";
-import AuthSelector from "../Auth/AuthSelector";
+import AuthSelector from "../Shared/AuthSelector";
 
 const Container = styled.View``;
 

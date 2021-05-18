@@ -4,7 +4,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import styled from "styled-components/native";
 import { useAppSelector } from "~/store";
 import { MyMenuScreenNavigationProp } from "~/types/navigator";
-import AuthSelector from "../Auth/AuthSelector";
+import AuthSelector from "../Shared/AuthSelector";
 
 const Container = styled.View``;
 
