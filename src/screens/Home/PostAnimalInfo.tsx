@@ -16,14 +16,14 @@ const PostAnimalInfo = () => {
   if (currentHomeTab === "Lost") {
     return (
       <Container>
-        <Text>실종 동물 정보</Text>
+        <Text>실종 게시물 등록</Text>
       </Container>
     );
   }
   if (currentHomeTab === "Witnessed") {
     return (
       <Container>
-        <Text>목격 동물 정보</Text>
+        <Text>목격 게시물 등록</Text>
       </Container>
     );
   }

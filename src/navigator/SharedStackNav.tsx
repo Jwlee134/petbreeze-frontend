@@ -1,7 +1,6 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import Home from "~/screens/Home";
-import Lost from "~/screens/Shared/Lost";
 import Witnessed from "~/screens/Shared/Witnessed";
 import Notification from "~/screens/Notification";
 import AuthSelector from "~/screens/Shared/AuthSelector";
@@ -9,11 +8,13 @@ import Location from "~/screens/Location";
 import { useAppSelector } from "~/store";
 import PostAnimalInfo from "~/screens/Home/PostAnimalInfo";
 import MyMenuStackNav from "./MyMenuStackNav";
+import Lost from "~/screens/Shared/Lost";
 
 const Stack = createStackNavigator();
 
 const SharedStack = ({ screenName }: { screenName: string }) => {
   const { isLoggedIn } = useAppSelector(state => state.user);
+  const { currentHomeTab } = useAppSelector(state => state.common);
   return (
     <Stack.Navigator>
       {screenName === "Home" && (
@@ -59,8 +60,9 @@ const SharedStack = ({ screenName }: { screenName: string }) => {
         name="PostAnimalInfo"
         component={PostAnimalInfo}
         options={{
-          headerShown: !isLoggedIn && false,
-          headerTitle: "My Menu",
+          headerShown: !isLoggedIn ? false : true,
+          headerTitle:
+            currentHomeTab === "Lost" ? "실종 게시물 등록" : "목격 게시물 등록",
         }}
       />
     </Stack.Navigator>
