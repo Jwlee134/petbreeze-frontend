@@ -6,7 +6,7 @@ import TabIcon from "~/components/TabIcon";
 
 const Tab = createBottomTabNavigator();
 
-const HomeBottomTabNav = () => (
+const BottomTabNav = () => (
   <Tab.Navigator
     tabBarOptions={{
       showLabel: false,
@@ -76,4 +76,4 @@ const HomeBottomTabNav = () => (
   </Tab.Navigator>
 );
 
-export default HomeBottomTabNav;
+export default BottomTabNav;
