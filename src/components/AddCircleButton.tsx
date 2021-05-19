@@ -11,10 +11,10 @@ const Button = styled.TouchableOpacity`
   border-radius: 100px;
 `;
 
-const HomePlusButton = ({ onPress }: { onPress: () => void }) => (
-  <Button activeOpacity={0.8} onPress={onPress}>
+const AddCircleButton = ({ onPress }: { onPress: () => void }) => (
+  <Button activeOpacity={0.9} onPress={onPress}>
     <AntDesign name="pluscircle" size={50} color={palette.blue} />
   </Button>
 );
 
-export default HomePlusButton;
+export default AddCircleButton;

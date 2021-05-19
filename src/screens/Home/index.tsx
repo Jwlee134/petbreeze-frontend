@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components/native";
-import HomePlusButton from "~/components/HomePlusButton";
+import AddCircleButton from "~/components/AddCircleButton";
+import useFocusEvent from "~/hooks/useFocusEvent";
 import HomeTopTapNavigator from "~/navigator/HomeTopTabNav";
 import { HomeScreenNavigationProp } from "~/types/navigator";
 
@@ -14,13 +15,14 @@ const Title = styled.Text`
 `;
 
 const Home = ({ navigation }: { navigation: HomeScreenNavigationProp }) => {
+  useFocusEvent();
   return (
     <>
       <TitleContainer>
         <Title>어디개</Title>
       </TitleContainer>
       <HomeTopTapNavigator />
-      <HomePlusButton onPress={() => navigation.navigate("PostAnimalInfo")} />
+      <AddCircleButton onPress={() => navigation.navigate("PostAnimalInfo")} />
     </>
   );
 };
