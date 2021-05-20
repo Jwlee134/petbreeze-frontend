@@ -16,7 +16,8 @@ const MyMenu = ({ navigation }: { navigation: MyMenuScreenNavigationProp }) => {
   return (
     <Container>
       <Text>MyMenu</Text>
-      <TouchableOpacity onPress={() => navigation.navigate("DeviceSetting")}>
+      <TouchableOpacity
+        onPress={() => navigation.navigate("DeviceSettingStackNav")}>
         <Text>기기 환경설정</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.navigate("PetProfile")}>

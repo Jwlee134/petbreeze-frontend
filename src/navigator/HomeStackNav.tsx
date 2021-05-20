@@ -22,8 +22,7 @@ const HomeStackNav = () => {
         component={PostAnimalInfo}
         options={{
           headerShown: !isLoggedIn ? false : true,
-          headerTitle:
-            currentHomeTab === "Lost" ? "실종 게시물 등록" : "목격 게시물 등록",
+          headerTitle: "",
         }}
       />
     </Stack.Navigator>

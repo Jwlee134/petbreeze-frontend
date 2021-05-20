@@ -63,7 +63,7 @@ export type WitnessedTapRouteProp = RouteProp<HomeTopTabParamList, "Witnessed">;
 
 type MyMenuStackParamList = {
   MyMenu: undefined;
-  DeviceSetting: undefined;
+  DeviceSettingStackNav: undefined;
   PetProfile: undefined;
   PassManagement: undefined;
   ServiceCenter: undefined;
