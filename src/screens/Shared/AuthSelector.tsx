@@ -1,7 +1,7 @@
 import { useNavigation } from "@react-navigation/core";
 import React from "react";
 import styled from "styled-components/native";
-import AuthButton from "~/components/AuthButton";
+import AuthButton from "~/components/common/AuthButton";
 import useFocusEvent from "~/hooks/useFocusEvent";
 
 const Container = styled.View`

@@ -2,7 +2,7 @@ import { useNavigation } from "@react-navigation/core";
 import React from "react";
 import { useDispatch } from "react-redux";
 import styled from "styled-components/native";
-import AuthButton from "~/components/AuthButton";
+import AuthButton from "~/components/common/AuthButton";
 import { useAppSelector } from "~/store";
 import { userActions } from "~/store/user";
 

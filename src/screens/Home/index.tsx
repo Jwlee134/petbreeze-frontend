@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components/native";
-import AddCircleButton from "~/components/AddCircleButton";
+import AddCircleButton from "~/components/common/AddCircleButton";
 import useFocusEvent from "~/hooks/useFocusEvent";
 import HomeTopTapNavigator from "~/navigator/HomeTopTabNav";
 import { HomeScreenNavigationProp } from "~/types/navigator";
@@ -22,7 +22,11 @@ const Home = ({ navigation }: { navigation: HomeScreenNavigationProp }) => {
         <Title>어디개</Title>
       </TitleContainer>
       <HomeTopTapNavigator />
-      <AddCircleButton onPress={() => navigation.navigate("PostAnimalInfo")} />
+      <AddCircleButton
+        isFloating={true}
+        size={50}
+        onPress={() => navigation.navigate("PostAnimalInfo")}
+      />
     </>
   );
 };

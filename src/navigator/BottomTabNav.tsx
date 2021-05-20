@@ -2,7 +2,7 @@ import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import palette from "~/styles/palette";
 import SharedStackNav from "./SharedStackNav";
-import TabIcon from "~/components/TabIcon";
+import TabIcon from "~/components/common/TabIcon";
 
 const Tab = createBottomTabNavigator();
 
@@ -12,6 +12,7 @@ const BottomTabNav = () => (
       showLabel: false,
       activeTintColor: palette.navy,
       inactiveTintColor: palette.navy,
+      keyboardHidesTabBar: true,
     }}>
     <Tab.Screen
       name="Home"
