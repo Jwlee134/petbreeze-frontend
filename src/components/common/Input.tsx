@@ -1,10 +1,10 @@
-import React from "react";
-import { StyleProp, TextInputProps, ViewStyle } from "react-native";
+import React, { ForwardedRef, forwardRef } from "react";
+import { StyleProp, TextInput, TextInputProps, ViewStyle } from "react-native";
 import styled, { css } from "styled-components/native";
 import palette from "~/styles/palette";
 import ShadowContainer from "./ShadowContainer";
 
-interface IInput extends TextInputProps {
+interface IProps extends TextInputProps {
   shadowContainerStyle?: StyleProp<ViewStyle>;
   disabled?: boolean;
 }
@@ -23,21 +23,22 @@ const Container = styled.View<{ disabled: boolean }>`
     `}
 `;
 
-const TextInput = styled.TextInput`
+const InputComponent = styled.TextInput`
   font-size: 16px;
   color: black;
 `;
 
-const Input = ({
-  shadowContainerStyle,
-  disabled = false,
-  ...props
-}: IInput) => (
-  <ShadowContainer shadowContainerStyle={shadowContainerStyle}>
-    <Container disabled={disabled}>
-      <TextInput {...props} />
-    </Container>
-  </ShadowContainer>
+const Input = forwardRef(
+  (
+    { shadowContainerStyle, disabled = false, ...props }: IProps,
+    ref: ForwardedRef<TextInput>,
+  ) => (
+    <ShadowContainer shadowContainerStyle={shadowContainerStyle}>
+      <Container disabled={disabled}>
+        <InputComponent ref={ref} {...props} />
+      </Container>
+    </ShadowContainer>
+  ),
 );
 
 export default Input;

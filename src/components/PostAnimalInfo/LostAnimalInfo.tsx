@@ -1,6 +1,7 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import {
   ScrollView,
+  TextInput,
   TouchableOpacity,
   useWindowDimensions,
   View,
@@ -63,6 +64,9 @@ const LostAnimalInfo = () => {
   const [isSpeciesEditable, setIsSpeciesEditable] = useState(false);
   const [isBreedEditable, setIsBreedEditable] = useState(false);
 
+  const SpeciesRef = useRef<TextInput>(null);
+  const BreedsRef = useRef<TextInput>(null);
+
   const { open, bottomModalProps, BottomModalComponent } = useBottomModal();
 
   const handlePress = (field: ClickedField) => {
@@ -77,6 +81,9 @@ const LostAnimalInfo = () => {
           dispatch(animalInfoActions.setSpecies(""));
           setIsSpeciesEditable(true);
           setIsBreedEditable(true);
+          setTimeout(() => {
+            SpeciesRef.current?.focus();
+          }, 600);
           return;
         }
         if (selectedIndex === species.length - 2) {
@@ -94,6 +101,9 @@ const LostAnimalInfo = () => {
           selectedIndex === catBreeds.length - 1
         ) {
           setIsBreedEditable(true);
+          setTimeout(() => {
+            BreedsRef.current?.focus();
+          }, 600);
           return;
         }
         if (animalInfo.species === "개") {
@@ -187,6 +197,7 @@ const LostAnimalInfo = () => {
                 }}
                 activeOpacity={0.8}>
                 <Input
+                  ref={SpeciesRef}
                   placeholder="동물 종류*"
                   value={animalInfo.species}
                   editable={isSpeciesEditable}
@@ -205,12 +216,13 @@ const LostAnimalInfo = () => {
                   }
                 }}
                 activeOpacity={0.8}
-                disabled={!animalInfo.species}>
+                disabled={!animalInfo.species && !isSpeciesEditable}>
                 <Input
+                  ref={BreedsRef}
                   placeholder="품종 선택*"
                   value={animalInfo.breed}
                   editable={isBreedEditable}
-                  disabled={!animalInfo.species}
+                  disabled={!animalInfo.species && !isSpeciesEditable}
                   onChangeText={text => {
                     dispatch(animalInfoActions.setBreed(text));
                   }}
