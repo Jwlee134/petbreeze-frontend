@@ -18,8 +18,9 @@ import {
 
 import user from "./user";
 import common from "./common";
+import animalInfo from "./animalInfo";
 
-const rootReducer = combineReducers({ user, common });
+const rootReducer = combineReducers({ user, common, animalInfo });
 
 const persistConfig = {
   key: "root",

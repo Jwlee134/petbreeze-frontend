@@ -5,13 +5,12 @@ import palette from "~/styles/palette";
 import { TouchableOpacityProps } from "react-native";
 
 interface IProps extends TouchableOpacityProps {
-  onPress: () => void;
+  onPress?: () => void;
   size: number;
   isFloating?: boolean;
 }
 
 const Button = styled.TouchableOpacity<{ isFloating: boolean }>`
-  background-color: white;
   border-radius: 100px;
   ${({ isFloating }) =>
     isFloating &&
