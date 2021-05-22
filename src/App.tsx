@@ -11,9 +11,7 @@ import { darkTheme, lightTheme } from "./styles/theme";
 import { PersistGate } from "redux-persist/integration/react";
 import { persister, store } from "./store";
 import { Provider } from "react-redux";
-
-import { Constants } from "react-native-unimodules";
-console.log(Constants.systemFonts);
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -26,9 +24,11 @@ const App = () => {
     <Provider store={store}>
       <PersistGate persistor={persister}>
         <NavigationContainer theme={lightTheme}>
-          <Container>
-            <Main />
-          </Container>
+          <SafeAreaProvider>
+            <Container>
+              <Main />
+            </Container>
+          </SafeAreaProvider>
         </NavigationContainer>
       </PersistGate>
     </Provider>
