@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { Fragment, useCallback, useRef, useState } from "react";
 import {
   ScrollView,
   TextInput,
@@ -297,15 +297,35 @@ const LostAnimalInfo = () => {
           </CategoryContainer>
           <CategoryTitle>목격 내역</CategoryTitle>
           <CategoryContainer>
-            <TouchableOpacity onPress={() => {}} activeOpacity={0.8}>
-              <Input placeholder="날짜 선택" editable={false} />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => {}} activeOpacity={0.8}>
-              <Input placeholder="목격장소 선택" editable={false} />
-            </TouchableOpacity>
-            <Input placeholder="목격장소 설명" />
+            {animalInfo.witnessedLog.map(item => (
+              <Fragment key={item.id}>
+                <TouchableOpacity onPress={() => {}} activeOpacity={0.8}>
+                  <Input placeholder="날짜 선택" editable={false} />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => {}} activeOpacity={0.8}>
+                  <Input placeholder="목격장소 선택" editable={false} />
+                </TouchableOpacity>
+                <Input
+                  placeholder="목격장소 설명"
+                  value={item.description}
+                  onChangeText={text =>
+                    dispatch(
+                      animalInfoActions.setWitNessedLogDescription({
+                        id: item.id,
+                        text,
+                      }),
+                    )
+                  }
+                />
+              </Fragment>
+            ))}
             <ButtonContainer>
-              <AddCircleButton size={26} onPress={() => {}} />
+              <AddCircleButton
+                size={26}
+                onPress={() =>
+                  dispatch(animalInfoActions.addWitnessedLogField())
+                }
+              />
             </ButtonContainer>
           </CategoryContainer>
           <SubmitContainer>

@@ -6,10 +6,17 @@ interface IState {
   breed: string;
   gender: string;
   birthYear: number;
+  lostTime: string;
+  lostPlace: string;
   characteristic: string;
   hasTag: boolean | null;
   phoneNumber: { id: number; value: string }[];
-  lostTime: string;
+  witnessedLog: {
+    id: number;
+    date: string;
+    place: string;
+    description: string;
+  }[];
   [key: string]: any;
 }
 
@@ -19,10 +26,12 @@ const initialState: IState = {
   breed: "",
   gender: "",
   birthYear: 0,
+  lostTime: "",
+  lostPlace: "",
   characteristic: "",
   hasTag: null,
   phoneNumber: [{ id: 0, value: "" }],
-  lostTime: "",
+  witnessedLog: [{ id: 0, date: "", place: "", description: "" }],
 };
 
 const animalInfo = createSlice({
@@ -44,6 +53,12 @@ const animalInfo = createSlice({
     setBirthYear: (state, action: PayloadAction<number>) => {
       state.birthYear = action.payload;
     },
+    setLostTime: (state, action: PayloadAction<string>) => {
+      state.lostTime = action.payload;
+    },
+    setLostPlace: (state, action: PayloadAction<string>) => {
+      state.lostPlace = action.payload;
+    },
     setCharacteristic: (state, action: PayloadAction<string>) => {
       state.characteristic = action.payload;
     },
@@ -61,8 +76,21 @@ const animalInfo = createSlice({
       const index = state.phoneNumber.findIndex(field => field.id === id);
       state.phoneNumber[index].value = text;
     },
-    setLostTime: (state, action: PayloadAction<string>) => {
-      state.lostTime = action.payload;
+    addWitnessedLogField: state => {
+      state.witnessedLog.push({
+        id: state.witnessedLog.length,
+        date: "",
+        place: "",
+        description: "",
+      });
+    },
+    setWitNessedLogDescription: (
+      state,
+      action: PayloadAction<{ id: number; text: string }>,
+    ) => {
+      const { id, text } = action.payload;
+      const index = state.witnessedLog.findIndex(item => item.id === id);
+      state.witnessedLog[index].description = text;
     },
   },
 });
