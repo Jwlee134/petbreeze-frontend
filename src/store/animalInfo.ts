@@ -92,6 +92,10 @@ const animalInfo = createSlice({
       const index = state.witnessedLog.findIndex(item => item.id === id);
       state.witnessedLog[index].description = text;
     },
+    initState: state => {
+      state = initialState;
+      return state;
+    },
   },
 });
 

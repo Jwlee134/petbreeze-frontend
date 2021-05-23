@@ -1,15 +1,23 @@
 import React from "react";
 import styled from "styled-components/native";
 
-import Modal from "react-native-modal";
+import UploadPhoto from "./UploadPhoto";
+import CategoryTitle from "../common/CategoryTitle";
+import Input from "../common/Input";
+import SidePaddingContainer from "../common/SidePaddingContainer";
 
 const Container = styled.ScrollView``;
 
-const WitnessedAnimalInfo = () => (
-  <>
-    <Container></Container>
-    <Modal></Modal>
-  </>
-);
+const WitnessedAnimalInfo = () => {
+  return (
+    <Container>
+      <CategoryTitle>목격 동물 정보</CategoryTitle>
+      <UploadPhoto />
+      <SidePaddingContainer>
+        <Input placeholder="이름" />
+      </SidePaddingContainer>
+    </Container>
+  );
+};
 
 export default WitnessedAnimalInfo;

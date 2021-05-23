@@ -14,10 +14,10 @@ const ShadowContainer = ({
       shadowColor: "black",
       shadowOffset: {
         width: 0,
-        height: 5,
+        height: 3,
       },
       shadowOpacity: 0.1,
-      shadowRadius: 3,
+      shadowRadius: 5,
       ...(shadowContainerStyle as object),
     }}>
     {children}
