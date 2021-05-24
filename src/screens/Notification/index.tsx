@@ -1,11 +1,14 @@
 import React from "react";
-import { Text } from "react-native";
-import styled from "styled-components/native";
 import { useAppSelector } from "~/store";
 import { NotificationScreenNavigationProp } from "~/types/navigator";
 import AuthSelector from "../Shared/AuthSelector";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import SafeAreaContainer from "~/components/common/SafeAreaContainer";
+import ScreenHeader from "~/components/common/ScreenHeader";
+import useModal from "~/hooks/useModal";
 
-const Container = styled.View``;
+import Modal from "react-native-modal";
+import NotificationModal from "~/components/modal/NotificationModal";
 
 const Notification = ({
   navigation,
@@ -14,12 +17,33 @@ const Notification = ({
 }) => {
   const { isLoggedIn } = useAppSelector(state => state.user);
 
+  const { open, modalProps, CenterModalComponent } = useModal({
+    type: "center",
+  });
+
   if (!isLoggedIn) return <AuthSelector />;
 
   return (
-    <Container>
-      <Text>Notification</Text>
-    </Container>
+    <>
+      <SafeAreaContainer>
+        <ScreenHeader
+          RightIcon={() => (
+            <Ionicons
+              name="information-circle-outline"
+              size={26}
+              onPress={open}
+            />
+          )}
+          size="small">
+          알림
+        </ScreenHeader>
+      </SafeAreaContainer>
+      <Modal {...modalProps}>
+        <CenterModalComponent headerTitle="알림">
+          <NotificationModal />
+        </CenterModalComponent>
+      </Modal>
+    </>
   );
 };
 
