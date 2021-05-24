@@ -71,6 +71,7 @@ type MyMenuStackParamList = {
   DeleteAccount: undefined;
   MyPost: undefined;
   SavedPost: undefined;
+  Home: undefined;
 };
 
 export type MyMenuScreenNavigationProp = StackNavigationProp<
