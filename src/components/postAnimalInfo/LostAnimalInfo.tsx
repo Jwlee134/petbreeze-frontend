@@ -80,7 +80,7 @@ const LostAnimalInfo = ({
                 ref={SpeciesRef}
                 placeholder="동물 종류*"
                 value={animalInfo.species}
-                editable={isSpeciesEditable}
+                isInputEditable={isSpeciesEditable}
                 onChangeText={text => {
                   dispatch(animalInfoActions.setSpecies(text));
                 }}
@@ -101,7 +101,7 @@ const LostAnimalInfo = ({
                 ref={BreedsRef}
                 placeholder="품종 선택*"
                 value={animalInfo.breed}
-                editable={isBreedEditable}
+                isInputEditable={isBreedEditable}
                 disabled={!animalInfo.species && !isSpeciesEditable}
                 onChangeText={text => {
                   dispatch(animalInfoActions.setBreed(text));
@@ -117,8 +117,8 @@ const LostAnimalInfo = ({
             activeOpacity={0.8}>
             <Input
               placeholder="성별*"
+              isInputEditable={false}
               value={animalInfo.gender}
-              editable={false}
             />
           </TouchableOpacity>
           <TouchableOpacity
@@ -129,8 +129,8 @@ const LostAnimalInfo = ({
             activeOpacity={0.8}>
             <Input
               placeholder="출생 연도"
+              isInputEditable={false}
               value={animalInfo.birthYear ? String(animalInfo.birthYear) : ""}
-              editable={false}
             />
           </TouchableOpacity>
           <TouchableOpacity
@@ -140,13 +140,13 @@ const LostAnimalInfo = ({
             activeOpacity={0.8}>
             <Input
               placeholder="잃어버린 시간*"
+              isInputEditable={false}
               value={
                 animalInfo.lostTime ? ISOStringToLocal(animalInfo.lostTime) : ""
               }
-              editable={false}
             />
           </TouchableOpacity>
-          <Input placeholder="잃어버린 장소*" editable={false} />
+          <Input placeholder="잃어버린 장소*" isInputEditable={false} />
           <Input placeholder="특징" maxLength={100} />
           <Input
             placeholder="인식표 유무"
@@ -179,10 +179,10 @@ const LostAnimalInfo = ({
           {animalInfo.witnessedLog.map(item => (
             <Fragment key={item.id}>
               <TouchableOpacity onPress={() => {}} activeOpacity={0.8}>
-                <Input placeholder="날짜 선택" editable={false} />
+                <Input placeholder="날짜 선택" isInputEditable={false} />
               </TouchableOpacity>
               <TouchableOpacity onPress={() => {}} activeOpacity={0.8}>
-                <Input placeholder="목격장소 선택" editable={false} />
+                <Input placeholder="목격장소 선택" isInputEditable={false} />
               </TouchableOpacity>
               <Input
                 placeholder="목격장소 설명"

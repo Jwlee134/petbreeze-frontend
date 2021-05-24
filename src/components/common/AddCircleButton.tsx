@@ -21,8 +21,17 @@ const Button = styled.TouchableOpacity<{ isFloating: boolean }>`
     `}
 `;
 
-const AddCircleButton = ({ onPress, size, isFloating = false }: IProps) => (
-  <Button isFloating={isFloating} activeOpacity={0.9} onPress={onPress}>
+const AddCircleButton = ({
+  onPress,
+  size,
+  isFloating = false,
+  ...props
+}: IProps) => (
+  <Button
+    isFloating={isFloating}
+    activeOpacity={0.9}
+    onPress={onPress}
+    {...props}>
     <AntDesign name="pluscircle" size={size} color={palette.blue} />
   </Button>
 );

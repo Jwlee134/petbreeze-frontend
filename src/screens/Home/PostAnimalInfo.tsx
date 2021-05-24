@@ -8,7 +8,7 @@ import WitnessedAnimalInfo from "~/components/postAnimalInfo/WitnessedAnimalInfo
 import WheelDatePicker from "~/components/common/WheelDatePicker";
 import WheelPicker from "~/components/common/WheelPicker";
 
-import useBottomModal from "~/hooks/useBottomModal";
+import useModal from "~/hooks/useModal";
 
 import { useAppSelector } from "~/store";
 import { useDispatch } from "react-redux";
@@ -25,7 +25,9 @@ const PostAnimalInfo = () => {
   const { currentHomeTab } = useAppSelector(state => state.common);
   const animalInfo = useAppSelector(state => state.animalInfo);
 
-  const { open, bottomModalProps, BottomModalComponent } = useBottomModal();
+  const { open, modalProps, BottomModalComponent } = useModal({
+    type: "bottom",
+  });
 
   const dispatch = useDispatch();
 
@@ -168,7 +170,7 @@ const PostAnimalInfo = () => {
       ) : (
         <WitnessedAnimalInfo />
       )}
-      <Modal {...bottomModalProps}>
+      <Modal {...modalProps}>
         <BottomModalComponent
           headerTitle={clickedField}
           handleDone={handleDone}>
@@ -183,6 +185,7 @@ const PostAnimalInfo = () => {
               style={{
                 width,
                 height: "100%",
+                justifyContent: "center",
               }}
               data={handleStaticData()}
               selectedIndex={selectedIndex}

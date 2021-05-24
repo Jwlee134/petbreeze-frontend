@@ -35,7 +35,7 @@ const UploadPhoto = () => {
     <Container horizontal={true} showsHorizontalScrollIndicator={false}>
       <TouchableWithoutFeedback onPress={handleSelectPhoto}>
         <AddPhotoBox style={{ marginLeft: 25, marginRight: 8 }}>
-          <AddCircleButton size={26} />
+          <AddCircleButton disabled size={26} />
         </AddPhotoBox>
       </TouchableWithoutFeedback>
     </Container>
