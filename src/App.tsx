@@ -2,8 +2,7 @@ import "react-native-gesture-handler";
 
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
-import { useColorScheme } from "react-native";
-import styled from "styled-components/native";
+import { StatusBar, useColorScheme } from "react-native";
 
 import Main from "./navigator/Main";
 
@@ -13,10 +12,6 @@ import { persister, store } from "./store";
 import { Provider } from "react-redux";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
-const Container = styled.SafeAreaView`
-  flex: 1;
-`;
-
 const App = () => {
   const isDarkMode = useColorScheme() === "dark";
 
@@ -25,9 +20,12 @@ const App = () => {
       <PersistGate persistor={persister}>
         <NavigationContainer theme={lightTheme}>
           <SafeAreaProvider>
-            <Container>
-              <Main />
-            </Container>
+            <StatusBar
+              barStyle="dark-content"
+              backgroundColor="transparent"
+              translucent={true}
+            />
+            <Main />
           </SafeAreaProvider>
         </NavigationContainer>
       </PersistGate>
