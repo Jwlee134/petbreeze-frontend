@@ -10,18 +10,24 @@ import MyPost from "~/screens/MyMenu/MyPost";
 import SavedPost from "~/screens/MyMenu/SavedPost";
 import DeviceSettingStackNav from "./DeviceSettingStackNav";
 import { useAppSelector } from "~/store";
+import HeaderBackButton from "~/components/common/HeaderBackButton";
 
 const Stack = createStackNavigator();
 
 const MyMenuStackNav = () => {
   const { isLoggedIn } = useAppSelector(state => state.user);
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      screenOptions={{
+        headerBackTitleVisible: false,
+        headerBackImage: () => <HeaderBackButton />,
+        headerPressColorAndroid: "transparent",
+      }}>
       <Stack.Screen
         name="MyMenu"
         component={MyMenu}
         options={{
-          headerShown: !isLoggedIn ? false : true,
+          headerShown: false,
         }}
       />
       <Stack.Screen

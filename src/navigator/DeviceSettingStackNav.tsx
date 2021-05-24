@@ -5,11 +5,17 @@ import LocationCollectInterval from "~/screens/MyMenu/DeviceSetting/LocationColl
 import SafetyZoneSetting from "~/screens/MyMenu/DeviceSetting/SafetyZoneSetting";
 import WifiSSID from "~/screens/MyMenu/DeviceSetting/WifiSSID";
 import DeviceList from "~/screens/MyMenu/DeviceSetting/DeviceList";
+import HeaderBackButton from "~/components/common/HeaderBackButton";
 
 const Stack = createStackNavigator();
 
 const DeviceSettingStackNav = () => (
-  <Stack.Navigator>
+  <Stack.Navigator
+    screenOptions={{
+      headerBackTitleVisible: false,
+      headerBackImage: () => <HeaderBackButton />,
+      headerPressColorAndroid: "transparent",
+    }}>
     <Stack.Screen
       name="DeviceSetting"
       component={DeviceSetting}
