@@ -13,6 +13,7 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		28C4D62AC4D8DF4D0489AA9F /* libPods-Petbreeze.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B96460A70BB2334C18EB805D /* libPods-Petbreeze.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		84D994BB265F760200C812B0 /* SwiftBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84D994BA265F760200C812B0 /* SwiftBridge.swift */; };
 		BF74086ECB18632E6305D1C0 /* libPods-Petbreeze-PetbreezeTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0DEB9219C13E468C81312504 /* libPods-Petbreeze-PetbreezeTests.a */; };
 /* End PBXBuildFile section */
 
@@ -55,6 +56,8 @@
 		84CAECEB265A935200ED7643 /* EvilIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = EvilIcons.ttf; path = "../../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
 		84CAECEC265A935200ED7643 /* Ionicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Ionicons.ttf; path = "../../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
 		84CAECED265A935200ED7643 /* MaterialIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = MaterialIcons.ttf; path = "../../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
+		84D994B9265F760200C812B0 /* Petbreeze-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Petbreeze-Bridging-Header.h"; sourceTree = "<group>"; };
+		84D994BA265F760200C812B0 /* SwiftBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftBridge.swift; sourceTree = "<group>"; };
 		92E6C0FF31C18368F83FCF8E /* Pods-Petbreeze.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Petbreeze.debug.xcconfig"; path = "Target Support Files/Pods-Petbreeze/Pods-Petbreeze.debug.xcconfig"; sourceTree = "<group>"; };
 		AA47C4579677023B768B59A2 /* Pods-Petbreeze-PetbreezeTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Petbreeze-PetbreezeTests.release.xcconfig"; path = "Target Support Files/Pods-Petbreeze-PetbreezeTests/Pods-Petbreeze-PetbreezeTests.release.xcconfig"; sourceTree = "<group>"; };
 		B96460A70BB2334C18EB805D /* libPods-Petbreeze.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Petbreeze.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -108,6 +111,8 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				84D994BA265F760200C812B0 /* SwiftBridge.swift */,
+				84D994B9265F760200C812B0 /* Petbreeze-Bridging-Header.h */,
 			);
 			name = Petbreeze;
 			sourceTree = "<group>";
@@ -247,7 +252,7 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						LastSwiftMigration = 1120;
+						LastSwiftMigration = 1240;
 					};
 				};
 			};
@@ -452,6 +457,7 @@
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				84D994BB265F760200C812B0 /* SwiftBridge.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -470,6 +476,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = BB861D7E84E60D52F3A1B584 /* Pods-Petbreeze-PetbreezeTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -497,6 +504,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = AA47C4579677023B768B59A2 /* Pods-Petbreeze-PetbreezeTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				INFOPLIST_FILE = PetbreezeTests/Info.plist;
@@ -535,8 +543,9 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.petbreeze;
 				PRODUCT_NAME = Petbreeze;
+				SWIFT_OBJC_BRIDGING_HEADER = "Petbreeze-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -560,8 +569,9 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.petbreeze;
 				PRODUCT_NAME = Petbreeze;
+				SWIFT_OBJC_BRIDGING_HEADER = "Petbreeze-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
