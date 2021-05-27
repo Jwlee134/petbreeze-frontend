@@ -1,4 +1,5 @@
 import React, { ReactNode } from "react";
+import { TouchableOpacity } from "react-native";
 import styled, { css } from "styled-components/native";
 import ShadowContainer from "./ShadowContainer";
 
@@ -6,21 +7,15 @@ interface IProps {
   children: ReactNode;
   RightIcon?: () => JSX.Element;
   LeftIcon?: () => JSX.Element;
-  onPress: () => void;
+  onPress?: () => void;
   isLastItem?: boolean;
 }
-
-interface ILeftContainerProps {
-  noLeftIcon: boolean;
-  noRightIcon: boolean;
-}
-
-const Button = styled.TouchableOpacity``;
 
 const Container = styled.View<{ isLastItem: boolean }>`
   width: 100%;
   height: 46px;
   margin-top: 13px;
+  padding: 0px 11px;
   border-radius: 4px;
   background-color: white;
   align-items: center;
@@ -33,20 +28,10 @@ const Container = styled.View<{ isLastItem: boolean }>`
     `}
 `;
 
-const LeftContainer = styled.View<ILeftContainerProps>`
+const LeftContainer = styled.View`
   flex-direction: row;
   align-items: center;
   flex: 1;
-  ${({ noRightIcon }) =>
-    noRightIcon &&
-    css`
-      margin-right: 11px;
-    `}
-  ${({ noLeftIcon }) =>
-    noLeftIcon &&
-    css`
-      margin-left: 11px;
-    `}
 `;
 
 const Label = styled.Text`
@@ -55,11 +40,10 @@ const Label = styled.Text`
 `;
 
 const LeftIconContainer = styled.View`
-  margin: 0px 10px;
+  margin-right: 11px;
 `;
 
 const RightIconContainer = styled.View`
-  width: 42px;
   justify-content: center;
   align-items: center;
 `;
@@ -71,10 +55,10 @@ const ListItem = ({
   onPress,
   isLastItem = false,
 }: IProps) => (
-  <Button onPress={onPress} activeOpacity={0.8}>
+  <TouchableOpacity onPress={onPress} activeOpacity={0.8}>
     <ShadowContainer>
       <Container isLastItem={isLastItem}>
-        <LeftContainer noLeftIcon={!LeftIcon} noRightIcon={!RightIcon}>
+        <LeftContainer>
           {LeftIcon && (
             <LeftIconContainer>
               <LeftIcon />
@@ -89,7 +73,7 @@ const ListItem = ({
         )}
       </Container>
     </ShadowContainer>
-  </Button>
+  </TouchableOpacity>
 );
 
 export default ListItem;

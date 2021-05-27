@@ -7,11 +7,16 @@ import Location from "~/screens/Location";
 import MyMenuStackNav from "./MyMenuStackNav";
 import Lost from "~/screens/Shared/Lost";
 import HomeStackNav from "./HomeStackNav";
+import AddDevice from "~/screens/Shared/AddDevice";
+import { headerTitleStyle } from "~/styles/navigator";
 
 const Stack = createStackNavigator();
 
 const SharedStack = ({ screenName }: { screenName: string }) => (
-  <Stack.Navigator>
+  <Stack.Navigator
+    screenOptions={{
+      headerBackTitleVisible: false,
+    }}>
     {screenName === "Home" && (
       <Stack.Screen
         name="HomeStackNav"
@@ -47,6 +52,14 @@ const SharedStack = ({ screenName }: { screenName: string }) => (
     <Stack.Screen name="AuthSelector" component={AuthSelector} />
     <Stack.Screen name="Lost" component={Lost} />
     <Stack.Screen name="Witnessed" component={Witnessed} />
+    <Stack.Screen
+      name="AddDevice"
+      component={AddDevice}
+      options={{
+        headerTitle: "기기 등록",
+        headerTitleStyle,
+      }}
+    />
   </Stack.Navigator>
 );
 

@@ -10,15 +10,16 @@ interface IProps extends TouchableOpacityProps {
   isFloating?: boolean;
 }
 
-const Button = styled.TouchableOpacity<{ isFloating: boolean }>`
+const Button = styled.TouchableOpacity<{ isFloating: boolean; size: number }>`
   border-radius: 100px;
+  width: ${({ size }) => `${size}px`};
   ${({ isFloating }) =>
     isFloating &&
     css`
       position: absolute;
       bottom: 20px;
       right: 20px;
-    `}
+    `};
 `;
 
 const AddCircleButton = ({
@@ -31,6 +32,7 @@ const AddCircleButton = ({
     isFloating={isFloating}
     activeOpacity={0.9}
     onPress={onPress}
+    size={size}
     {...props}>
     <AntDesign name="pluscircle" size={size} color={palette.blue} />
   </Button>

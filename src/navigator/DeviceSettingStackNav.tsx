@@ -6,6 +6,7 @@ import SafetyZoneSetting from "~/screens/MyMenu/DeviceSetting/SafetyZoneSetting"
 import WifiSSID from "~/screens/MyMenu/DeviceSetting/WifiSSID";
 import DeviceList from "~/screens/MyMenu/DeviceSetting/DeviceList";
 import HeaderBackButton from "~/components/common/HeaderBackButton";
+import { headerTitleStyle } from "~/styles/navigator";
 
 const Stack = createStackNavigator();
 
@@ -20,10 +21,8 @@ const DeviceSettingStackNav = () => (
       name="DeviceSetting"
       component={DeviceSetting}
       options={{
-        headerTitle: "기기 환경설정",
-        headerTitleStyle: {
-          fontWeight: "bold",
-        },
+        headerTitle: "환경설정",
+        headerTitleStyle,
       }}
     />
     <Stack.Screen
@@ -31,9 +30,7 @@ const DeviceSettingStackNav = () => (
       component={DeviceList}
       options={{
         headerTitle: "기기 목록",
-        headerTitleStyle: {
-          fontWeight: "bold",
-        },
+        headerTitleStyle,
       }}
     />
     <Stack.Screen
@@ -41,9 +38,7 @@ const DeviceSettingStackNav = () => (
       component={LocationCollectInterval}
       options={{
         headerTitle: "위치정보 수집주기",
-        headerTitleStyle: {
-          fontWeight: "bold",
-        },
+        headerTitleStyle,
       }}
     />
     <Stack.Screen
@@ -51,9 +46,7 @@ const DeviceSettingStackNav = () => (
       component={SafetyZoneSetting}
       options={{
         headerTitle: "안심존 설정",
-        headerTitleStyle: {
-          fontWeight: "bold",
-        },
+        headerTitleStyle,
       }}
     />
     <Stack.Screen
@@ -61,9 +54,7 @@ const DeviceSettingStackNav = () => (
       component={WifiSSID}
       options={{
         headerTitle: "와이파이 등록",
-        headerTitleStyle: {
-          fontWeight: "bold",
-        },
+        headerTitleStyle,
       }}
     />
   </Stack.Navigator>

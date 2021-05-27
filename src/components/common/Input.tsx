@@ -14,7 +14,7 @@ const Container = styled.View<{ disabled: boolean }>`
   width: 100%;
   height: 46px;
   padding: 0px 11px;
-  margin-top: 11px;
+  margin-top: 13px;
   background-color: white;
   border-radius: 4px;
   justify-content: center;

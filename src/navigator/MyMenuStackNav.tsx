@@ -11,6 +11,7 @@ import SavedPost from "~/screens/MyMenu/SavedPost";
 import DeviceSettingStackNav from "./DeviceSettingStackNav";
 import { useAppSelector } from "~/store";
 import HeaderBackButton from "~/components/common/HeaderBackButton";
+import { headerTitleStyle } from "~/styles/navigator";
 
 const Stack = createStackNavigator();
 
@@ -42,9 +43,7 @@ const MyMenuStackNav = () => {
         component={PetProfile}
         options={{
           headerTitle: "반려동물 프로필",
-          headerTitleStyle: {
-            fontWeight: "bold",
-          },
+          headerTitleStyle,
         }}
       />
       <Stack.Screen
@@ -52,9 +51,7 @@ const MyMenuStackNav = () => {
         component={PassManagement}
         options={{
           headerTitle: "이용권 관리",
-          headerTitleStyle: {
-            fontWeight: "bold",
-          },
+          headerTitleStyle,
         }}
       />
       <Stack.Screen
@@ -69,9 +66,7 @@ const MyMenuStackNav = () => {
         component={NotificationSetting}
         options={{
           headerTitle: "알림 설정",
-          headerTitleStyle: {
-            fontWeight: "bold",
-          },
+          headerTitleStyle,
         }}
       />
       <Stack.Screen
@@ -79,9 +74,7 @@ const MyMenuStackNav = () => {
         component={DeleteAccount}
         options={{
           headerTitle: "탈퇴하기",
-          headerTitleStyle: {
-            fontWeight: "bold",
-          },
+          headerTitleStyle,
         }}
       />
       <Stack.Screen
@@ -89,9 +82,7 @@ const MyMenuStackNav = () => {
         component={MyPost}
         options={{
           headerTitle: "내가 쓴 게시물",
-          headerTitleStyle: {
-            fontWeight: "bold",
-          },
+          headerTitleStyle,
         }}
       />
       <Stack.Screen
@@ -99,9 +90,7 @@ const MyMenuStackNav = () => {
         component={SavedPost}
         options={{
           headerTitle: "저장한 게시물",
-          headerTitleStyle: {
-            fontWeight: "bold",
-          },
+          headerTitleStyle,
         }}
       />
     </Stack.Navigator>
