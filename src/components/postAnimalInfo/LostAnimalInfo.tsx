@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { ScrollView, TextInput, TouchableOpacity } from "react-native";
 import styled from "styled-components/native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -172,37 +172,6 @@ const LostAnimalInfo = ({
           <AddCircleButton
             size={26}
             onPress={() => dispatch(animalInfoActions.addPhoneNumberField())}
-          />
-        </ButtonContainer>
-        <CategoryTitle>목격 내역</CategoryTitle>
-        <SidePaddingContainer>
-          {animalInfo.witnessedLog.map(item => (
-            <Fragment key={item.id}>
-              <TouchableOpacity onPress={() => {}} activeOpacity={0.8}>
-                <Input placeholder="날짜 선택" isInputEditable={false} />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => {}} activeOpacity={0.8}>
-                <Input placeholder="목격장소 선택" isInputEditable={false} />
-              </TouchableOpacity>
-              <Input
-                placeholder="목격장소 설명"
-                value={item.description}
-                onChangeText={text =>
-                  dispatch(
-                    animalInfoActions.setWitNessedLogDescription({
-                      id: item.id,
-                      text,
-                    }),
-                  )
-                }
-              />
-            </Fragment>
-          ))}
-        </SidePaddingContainer>
-        <ButtonContainer>
-          <AddCircleButton
-            size={26}
-            onPress={() => dispatch(animalInfoActions.addWitnessedLogField())}
           />
         </ButtonContainer>
         <SubmitContainer>
