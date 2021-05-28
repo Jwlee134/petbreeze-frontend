@@ -37,7 +37,7 @@ const MyMenu = ({ navigation }: { navigation: MyMenuScreenNavigationProp }) => {
   return (
     <>
       <SafeAreaContainer>
-        <ScrollView style={{ height: "100%" }}>
+        <ScrollView>
           <CustomHeader size="small">My Menu</CustomHeader>
           <CategoryTitle>디바이스 관리</CategoryTitle>
           <SidePaddingContainer>

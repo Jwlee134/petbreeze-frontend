@@ -12,7 +12,6 @@ const BottomTabNav = () => (
       showLabel: false,
       activeTintColor: palette.navy,
       inactiveTintColor: palette.navy,
-      keyboardHidesTabBar: true,
     }}>
     <Tab.Screen
       name="Home"

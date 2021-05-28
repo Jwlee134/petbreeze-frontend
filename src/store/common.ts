@@ -9,12 +9,12 @@ type LoginRequiredRouteName =
 
 interface IState {
   currentRouteName: LoginRequiredRouteName;
-  currentHomeTab: "Lost" | "Witnessed";
+  currentHomeTab: "LostList" | "WitnessedList";
 }
 
 const initialState: IState = {
   currentRouteName: "Home",
-  currentHomeTab: "Lost",
+  currentHomeTab: "LostList",
 };
 
 const common = createSlice({
@@ -27,7 +27,10 @@ const common = createSlice({
     ) => {
       state.currentRouteName = action.payload;
     },
-    setCurrentHomeTab: (state, action: PayloadAction<"Lost" | "Witnessed">) => {
+    setCurrentHomeTab: (
+      state,
+      action: PayloadAction<"LostList" | "WitnessedList">,
+    ) => {
       state.currentHomeTab = action.payload;
     },
   },

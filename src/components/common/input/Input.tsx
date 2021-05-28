@@ -24,7 +24,7 @@ const Container = styled.View<IContainerProps>`
   ${({ isHomeInput }) =>
     isHomeInput &&
     css`
-      height: 30px;
+      height: 35px;
       border-radius: 0;
     `}
 `;

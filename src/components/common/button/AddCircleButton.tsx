@@ -13,12 +13,13 @@ interface IProps extends TouchableOpacityProps {
 const Button = styled.TouchableOpacity<{ isFloating: boolean; size: number }>`
   border-radius: 100px;
   width: ${({ size }) => `${size}px`};
+  background-color: white;
   ${({ isFloating }) =>
     isFloating &&
     css`
       position: absolute;
-      bottom: 20px;
-      right: 20px;
+      bottom: 25px;
+      right: 25px;
     `};
 `;
 

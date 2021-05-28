@@ -1,8 +1,7 @@
 import React from "react";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import palette from "~/styles/palette";
-import Lost from "~/screens/Shared/Lost";
-import Witnessed from "~/screens/Shared/Witnessed";
+import PostList from "~/screens/Home/PostList";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -12,8 +11,7 @@ const HomeTopTapNavigator = () => (
       activeTintColor: palette.blue,
       inactiveTintColor: "black",
       labelStyle: {
-        fontSize: 14,
-        fontWeight: "bold",
+        fontSize: 16,
         justifyContent: "center",
       },
       style: {
@@ -22,20 +20,19 @@ const HomeTopTapNavigator = () => (
           width: 0,
           height: 0,
         },
+        marginHorizontal: 25,
       },
-      pressColor: "transparent",
-    }}
-    sceneContainerStyle={{
-      paddingHorizontal: 24,
+      pressColor: "white",
+      pressOpacity: 0.8,
     }}>
     <Tab.Screen
-      name="Lost"
-      component={Lost}
+      name="LostList"
+      component={PostList}
       options={{ tabBarLabel: "잃어버렸어요" }}
     />
     <Tab.Screen
-      name="Witnessed"
-      component={Witnessed}
+      name="WitnessedList"
+      component={PostList}
       options={{ tabBarLabel: "목격했어요" }}
     />
   </Tab.Navigator>

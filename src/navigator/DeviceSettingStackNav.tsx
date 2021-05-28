@@ -6,16 +6,15 @@ import SafetyZoneSetting from "~/screens/MyMenu/DeviceSetting/SafetyZoneSetting"
 import WifiSSID from "~/screens/MyMenu/DeviceSetting/WifiSSID";
 import DeviceList from "~/screens/MyMenu/DeviceSetting/DeviceList";
 import HeaderBackButton from "~/components/common/button/HeaderBackButton";
-import { headerTitleStyle } from "~/styles/navigator";
+import { headerTitleStyle, stackNavScreenOptions } from "~/styles/navigator";
 
 const Stack = createStackNavigator();
 
 const DeviceSettingStackNav = () => (
   <Stack.Navigator
     screenOptions={{
-      headerBackTitleVisible: false,
       headerBackImage: () => <HeaderBackButton />,
-      headerPressColorAndroid: "transparent",
+      ...stackNavScreenOptions,
     }}>
     <Stack.Screen
       name="DeviceSetting"

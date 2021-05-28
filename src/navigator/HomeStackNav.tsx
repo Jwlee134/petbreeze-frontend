@@ -4,6 +4,7 @@ import PostAnimalInfo from "~/screens/Home/PostAnimalInfo";
 import Home from "~/screens/Home";
 import { useAppSelector } from "~/store";
 import HeaderBackButton from "~/components/common/button/HeaderBackButton";
+import { stackNavScreenOptions } from "~/styles/navigator";
 
 const Stack = createStackNavigator();
 
@@ -13,9 +14,8 @@ const HomeStackNav = () => {
   return (
     <Stack.Navigator
       screenOptions={{
-        headerBackTitleVisible: false,
         headerBackImage: () => <HeaderBackButton />,
-        headerPressColorAndroid: "transparent",
+        ...stackNavScreenOptions,
       }}>
       <Stack.Screen
         name="Home"
@@ -27,7 +27,7 @@ const HomeStackNav = () => {
         component={PostAnimalInfo}
         options={{
           headerShown: !isLoggedIn ? false : true,
-          headerTitle: "",
+          title: "",
         }}
       />
     </Stack.Navigator>

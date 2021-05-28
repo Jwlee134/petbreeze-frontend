@@ -10,7 +10,7 @@ const WheelDatePicker = ({ ...props }: IProps) => (
     mode="datetime"
     locale="ko"
     maximumDate={new Date()}
-    fadeToColor={palette.light_grey}
+    fadeToColor={palette.gray_f3}
     is24hourSource="locale"
     {...props}
   />
