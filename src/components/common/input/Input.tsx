@@ -31,6 +31,7 @@ const Container = styled.View<IContainerProps>`
 
 const TextInput = styled.TextInput`
   color: black;
+  font-size: 16px;
 `;
 
 const IconContainer = styled.View`

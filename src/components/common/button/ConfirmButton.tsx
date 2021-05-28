@@ -1,10 +1,12 @@
 import React, { ReactNode } from "react";
+import { StyleProp, ViewStyle } from "react-native";
 import styled from "styled-components/native";
 import palette from "~/styles/palette";
 
 interface IProps {
   children: ReactNode;
   onPress: () => void;
+  style?: StyleProp<ViewStyle>;
 }
 
 const Container = styled.TouchableOpacity``;
@@ -23,8 +25,8 @@ const Label = styled.Text`
   color: white;
 `;
 
-const ConfirmButton = ({ children, onPress }: IProps) => (
-  <Container activeOpacity={0.8} onPress={onPress}>
+const ConfirmButton = ({ children, onPress, style }: IProps) => (
+  <Container style={style} activeOpacity={0.8} onPress={onPress}>
     <Button>
       <Label>{children}</Label>
     </Button>
