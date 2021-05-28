@@ -3,8 +3,8 @@ import styled from "styled-components/native";
 
 import UploadPhoto from "./UploadPhoto";
 import CategoryTitle from "../common/CategoryTitle";
-import Input from "../common/Input";
-import SidePaddingContainer from "../common/SidePaddingContainer";
+import ShadowInput from "../common/input/ShadowInput";
+import SidePaddingContainer from "../common/container/SidePaddingContainer";
 
 const Container = styled.ScrollView``;
 
@@ -14,7 +14,7 @@ const WitnessedAnimalInfo = () => {
       <CategoryTitle>목격 동물 정보</CategoryTitle>
       <UploadPhoto />
       <SidePaddingContainer>
-        <Input placeholder="이름" />
+        <ShadowInput placeholder="이름" />
       </SidePaddingContainer>
     </Container>
   );

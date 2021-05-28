@@ -3,7 +3,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import PostAnimalInfo from "~/screens/Home/PostAnimalInfo";
 import Home from "~/screens/Home";
 import { useAppSelector } from "~/store";
-import HeaderBackButton from "~/components/common/HeaderBackButton";
+import HeaderBackButton from "~/components/common/button/HeaderBackButton";
 
 const Stack = createStackNavigator();
 

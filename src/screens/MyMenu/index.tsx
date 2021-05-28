@@ -2,9 +2,9 @@ import React from "react";
 import { ScrollView } from "react-native";
 import CategoryTitle from "~/components/common/CategoryTitle";
 import ListItem from "~/components/common/ListItem";
-import SafeAreaContainer from "~/components/common/SafeAreaContainer";
-import ScreenHeader from "~/components/common/ScreenHeader";
-import SidePaddingContainer from "~/components/common/SidePaddingContainer";
+import SafeAreaContainer from "~/components/common/container/SafeAreaContainer";
+import CustomHeader from "~/components/common/CustomHeader";
+import SidePaddingContainer from "~/components/common/container/SidePaddingContainer";
 import { useAppSelector } from "~/store";
 import { MyMenuScreenNavigationProp } from "~/types/navigator";
 import AuthSelector from "../Shared/AuthSelector";
@@ -38,7 +38,7 @@ const MyMenu = ({ navigation }: { navigation: MyMenuScreenNavigationProp }) => {
     <>
       <SafeAreaContainer>
         <ScrollView style={{ height: "100%" }}>
-          <ScreenHeader size="small">My Menu</ScreenHeader>
+          <CustomHeader size="small">My Menu</CustomHeader>
           <CategoryTitle>디바이스 관리</CategoryTitle>
           <SidePaddingContainer>
             <ListItem

@@ -30,7 +30,7 @@ const RightIconContainer = styled.View`
   right: 25px;
 `;
 
-const ScreenHeader = ({ children, size, RightIcon }: IProps) => (
+const CustomHeader = ({ children, size, RightIcon }: IProps) => (
   <Container size={size}>
     <HeaderText size={size}>{children}</HeaderText>
     {RightIcon && (
@@ -41,4 +41,4 @@ const ScreenHeader = ({ children, size, RightIcon }: IProps) => (
   </Container>
 );
 
-export default ScreenHeader;
+export default CustomHeader;

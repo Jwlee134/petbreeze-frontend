@@ -10,7 +10,7 @@ import MyPost from "~/screens/MyMenu/MyPost";
 import SavedPost from "~/screens/MyMenu/SavedPost";
 import DeviceSettingStackNav from "./DeviceSettingStackNav";
 import { useAppSelector } from "~/store";
-import HeaderBackButton from "~/components/common/HeaderBackButton";
+import HeaderBackButton from "~/components/common/button/HeaderBackButton";
 import { headerTitleStyle } from "~/styles/navigator";
 
 const Stack = createStackNavigator();

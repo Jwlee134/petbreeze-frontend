@@ -5,7 +5,7 @@ import LocationCollectInterval from "~/screens/MyMenu/DeviceSetting/LocationColl
 import SafetyZoneSetting from "~/screens/MyMenu/DeviceSetting/SafetyZoneSetting";
 import WifiSSID from "~/screens/MyMenu/DeviceSetting/WifiSSID";
 import DeviceList from "~/screens/MyMenu/DeviceSetting/DeviceList";
-import HeaderBackButton from "~/components/common/HeaderBackButton";
+import HeaderBackButton from "~/components/common/button/HeaderBackButton";
 import { headerTitleStyle } from "~/styles/navigator";
 
 const Stack = createStackNavigator();

@@ -1,7 +1,7 @@
 import React from "react";
 import { View } from "react-native";
 import palette from "~/styles/palette";
-import ModalButton from "../common/ModalButton";
+import ModalButton from "../common/button/ModalButton";
 import ModalButtonContainer from "./ModalButtonContainer";
 import ModalText from "./ModalText";
 

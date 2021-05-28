@@ -2,7 +2,7 @@ import React, { ForwardedRef, forwardRef } from "react";
 import { StyleProp, TextInput, TextInputProps, ViewStyle } from "react-native";
 import styled, { css } from "styled-components/native";
 import palette from "~/styles/palette";
-import ShadowContainer from "./ShadowContainer";
+import ShadowContainer from "../container/ShadowContainer";
 
 interface IProps extends TextInputProps {
   shadowContainerStyle?: StyleProp<ViewStyle>;
@@ -21,7 +21,7 @@ const Container = styled.View<{ disabled: boolean }>`
   ${({ disabled }) =>
     disabled &&
     css`
-      background-color: ${palette.light_grey};
+      background-color: ${palette.gray_f3};
     `}
 `;
 
@@ -30,7 +30,7 @@ const InputComponent = styled.TextInput`
   color: black;
 `;
 
-const Input = forwardRef(
+const ShadowInput = forwardRef(
   (
     {
       shadowContainerStyle,
@@ -44,10 +44,10 @@ const Input = forwardRef(
       <Container
         pointerEvents={isInputEditable ? "auto" : "none"}
         disabled={disabled}>
-        <InputComponent ref={ref} {...props} />
+        <InputComponent ref={ref} placeholderTextColor="gray" {...props} />
       </Container>
     </ShadowContainer>
   ),
 );
 
-export default Input;
+export default ShadowInput;

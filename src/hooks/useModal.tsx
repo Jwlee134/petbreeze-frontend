@@ -17,7 +17,7 @@ interface ICenterProps {
 
 const BottomContainer = styled.View`
   height: 230px;
-  background-color: ${palette.light_grey};
+  background-color: ${palette.gray_f3};
   border-top-left-radius: 14px;
   border-top-right-radius: 14px;
 `;
@@ -25,7 +25,7 @@ const BottomContainer = styled.View`
 const CenterContainer = styled.View`
   width: 300px;
   border-width: 1px;
-  border-color: ${palette.grey};
+  border-color: ${palette.gray};
   border-radius: 8px;
   overflow: hidden;
 `;

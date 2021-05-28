@@ -3,7 +3,7 @@ import styled from "styled-components/native";
 
 import ImagePicker from "react-native-image-crop-picker";
 import palette from "~/styles/palette";
-import AddCircleButton from "../common/AddCircleButton";
+import AddCircleButton from "../common/button/AddCircleButton";
 import { TouchableWithoutFeedback } from "react-native";
 
 const Container = styled.ScrollView`
@@ -14,7 +14,7 @@ const AddPhotoBox = styled.View`
   width: 83px;
   height: 83px;
   border-radius: 10px;
-  background-color: ${palette.grey};
+  background-color: ${palette.gray};
   justify-content: center;
   align-items: center;
   margin-left: 25px;

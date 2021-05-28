@@ -23,7 +23,7 @@ const Label = styled.Text`
   color: white;
 `;
 
-const NormalButton = ({ children, onPress }: IProps) => (
+const ConfirmButton = ({ children, onPress }: IProps) => (
   <Container activeOpacity={0.8} onPress={onPress}>
     <Button>
       <Label>{children}</Label>
@@ -31,4 +31,4 @@ const NormalButton = ({ children, onPress }: IProps) => (
   </Container>
 );
 
-export default NormalButton;
+export default ConfirmButton;

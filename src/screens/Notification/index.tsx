@@ -3,8 +3,8 @@ import { useAppSelector } from "~/store";
 import { NotificationScreenNavigationProp } from "~/types/navigator";
 import AuthSelector from "../Shared/AuthSelector";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import SafeAreaContainer from "~/components/common/SafeAreaContainer";
-import ScreenHeader from "~/components/common/ScreenHeader";
+import SafeAreaContainer from "~/components/common/container/SafeAreaContainer";
+import CustomHeader from "~/components/common/CustomHeader";
 import useModal from "~/hooks/useModal";
 
 import Modal from "react-native-modal";
@@ -26,7 +26,7 @@ const Notification = ({
   return (
     <>
       <SafeAreaContainer>
-        <ScreenHeader
+        <CustomHeader
           RightIcon={() => (
             <Ionicons
               name="information-circle-outline"
@@ -36,7 +36,7 @@ const Notification = ({
           )}
           size="small">
           알림
-        </ScreenHeader>
+        </CustomHeader>
       </SafeAreaContainer>
       <Modal {...modalProps}>
         <CenterModalComponent headerTitle="알림">
