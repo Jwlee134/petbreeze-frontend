@@ -1,18 +1,17 @@
 import { RouteProp } from "@react-navigation/core";
-import { MaterialTopTabNavigationProp } from "@react-navigation/material-top-tabs";
 import { StackNavigationProp } from "@react-navigation/stack";
 
 type SharedStackParamList = {
   Home: undefined;
   Location: undefined;
   Notification: undefined;
-  MyMenu: undefined;
-  AuthSelector: undefined;
-  Lost: undefined;
-  Witnessed: undefined;
-  KakaoAuth: undefined;
-  LocalAuth: undefined;
   PostAnimalInfo: undefined;
+  LostDetail: {
+    id: number;
+  };
+  WitnessedDetail: {
+    id: number;
+  };
 };
 
 export type HomeScreenNavigationProp = StackNavigationProp<
@@ -27,39 +26,35 @@ export type NotificationScreenNavigationProp = StackNavigationProp<
   SharedStackParamList,
   "Notification"
 >;
-export type AuthSelectorScreenNavigationProp = StackNavigationProp<
-  SharedStackParamList,
-  "AuthSelector"
->;
-export type LostScreenNavigationProp = StackNavigationProp<
-  SharedStackParamList,
-  "Lost"
->;
-export type WitnessedScreenNavigationProp = StackNavigationProp<
-  SharedStackParamList,
-  "Witnessed"
->;
 export type PostAnimalInfoScreenNavigationProp = StackNavigationProp<
   SharedStackParamList,
   "PostAnimalInfo"
 >;
 
-/* type HomeTopTabParamList = {
-  Lost: undefined;
-  Witnessed: undefined;
+type PostListTabParamList = {
+  PostList: undefined;
+  LostDetail: {
+    id: number;
+  };
+  WitnessedDetail: {
+    id: number;
+  };
 };
 
-export type LostTapScreenNavigationProp = MaterialTopTabNavigationProp<
-  HomeTopTabParamList,
-  "Lost"
+export type PostScreenNavigationProp = StackNavigationProp<
+  PostListTabParamList,
+  "PostList"
 >;
-export type LostTapRouteProp = RouteProp<HomeTopTabParamList, "Lost">;
-export type WitnessedTapScreenNavigationProp = MaterialTopTabNavigationProp<
-  HomeTopTabParamList,
-  "Witnessed"
+
+export type LostDetailScreenRouteProp = RouteProp<
+  PostListTabParamList,
+  "LostDetail"
 >;
-export type WitnessedTapRouteProp = RouteProp<HomeTopTabParamList, "Witnessed">;
- */
+
+export type WitnessedDetailScreenRouteProp = RouteProp<
+  PostListTabParamList,
+  "WitnessedDetail"
+>;
 
 type MyMenuStackParamList = {
   MyMenu: undefined;

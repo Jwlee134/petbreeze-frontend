@@ -158,7 +158,7 @@ const PostAnimalInfo = () => {
 
   return (
     <>
-      {currentHomeTab === "Lost" ? (
+      {currentHomeTab === "LostList" ? (
         <LostAnimalInfo
           handlePress={handlePress}
           handleRememberIndex={handleRememberIndex}
