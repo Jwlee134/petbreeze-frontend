@@ -1,6 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { Image } from "react-native-image-crop-picker";
 
 interface IState {
+  photos: Image[];
   name: string;
   species: string;
   breed: string;
@@ -15,6 +17,7 @@ interface IState {
 }
 
 const initialState: IState = {
+  photos: [],
   name: "",
   species: "",
   breed: "",
@@ -31,6 +34,9 @@ const animalInfo = createSlice({
   name: "animalInfo",
   initialState,
   reducers: {
+    setPhotos: (state, action: PayloadAction<Image[]>) => {
+      state.photos.push(...action.payload);
+    },
     setName: (state, action: PayloadAction<string>) => {
       state.name = action.payload;
     },
