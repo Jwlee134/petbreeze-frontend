@@ -10,6 +10,9 @@ interface IBottomProps {
   handleDone: () => void;
 }
 
+const centerModalWidth = Dimensions.get("screen").width - 76;
+const height = Dimensions.get("screen").height;
+
 interface ICenterProps {
   children: ReactNode;
   headerTitle?: string;
@@ -23,7 +26,7 @@ const BottomContainer = styled.View`
 `;
 
 const CenterContainer = styled.View`
-  width: 300px;
+  width: ${centerModalWidth};
   border-width: 1px;
   border-color: ${palette.gray};
   border-radius: 8px;
@@ -78,8 +81,6 @@ const CenterContent = styled.View`
   background-color: white;
   padding: 22px;
 `;
-
-const height = Dimensions.get("screen").height;
 
 const useModal = ({ type }: { type: "bottom" | "center" }) => {
   const [isModalVisible, setModalVisible] = useState(false);
