@@ -1,6 +1,6 @@
-import React, { ReactNode } from "react";
-import { TouchableOpacity } from "react-native";
+import React, { Fragment, ReactNode } from "react";
 import styled, { css } from "styled-components/native";
+import palette from "~/styles/palette";
 import ShadowContainer from "./container/ShadowContainer";
 
 interface IProps {
@@ -11,7 +11,7 @@ interface IProps {
   isLastItem?: boolean;
 }
 
-const Container = styled.View<{ isLastItem: boolean }>`
+const Container = styled.TouchableHighlight<{ isLastItem: boolean }>`
   width: 100%;
   height: 46px;
   margin-top: 13px;
@@ -55,9 +55,12 @@ const ListItem = ({
   onPress,
   isLastItem = false,
 }: IProps) => (
-  <TouchableOpacity onPress={onPress} activeOpacity={0.8}>
-    <ShadowContainer>
-      <Container isLastItem={isLastItem}>
+  <ShadowContainer>
+    <Container
+      onPress={onPress}
+      underlayColor={palette.gray_f3}
+      isLastItem={isLastItem}>
+      <Fragment>
         <LeftContainer>
           {LeftIcon && (
             <LeftIconContainer>
@@ -71,9 +74,9 @@ const ListItem = ({
             <RightIcon />
           </RightIconContainer>
         )}
-      </Container>
-    </ShadowContainer>
-  </TouchableOpacity>
+      </Fragment>
+    </Container>
+  </ShadowContainer>
 );
 
 export default ListItem;

@@ -5,7 +5,7 @@ import { useAppSelector } from "~/store";
 import palette from "~/styles/palette";
 
 import data from "~/assets/data.json";
-import Post from "~/components/home/Post";
+import Post from "~/components/Post";
 import useFocusEvent from "~/hooks/useFocusEvent";
 
 const Container = styled.View`

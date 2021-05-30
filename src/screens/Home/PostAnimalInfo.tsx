@@ -3,8 +3,8 @@ import { TextInput, useWindowDimensions } from "react-native";
 import Modal from "react-native-modal";
 
 import AuthSelector from "../Shared/AuthSelector";
-import LostAnimalInfo from "~/components/postAnimalInfo/LostAnimalInfo";
-import WitnessedAnimalInfo from "~/components/postAnimalInfo/WitnessedAnimalInfo";
+import LostAnimalInfo from "~/screens/Home/LostAnimalInfo";
+import WitnessedAnimalInfo from "~/screens/Home/WitnessedAnimalInfo";
 import WheelDatePicker from "~/components/common/WheelDatePicker";
 import WheelPicker from "~/components/common/WheelPicker";
 

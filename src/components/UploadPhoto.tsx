@@ -3,7 +3,7 @@ import styled, { css } from "styled-components/native";
 
 import ImagePicker from "react-native-image-crop-picker";
 import palette from "~/styles/palette";
-import AddCircleButton from "../common/button/AddCircleButton";
+import AddCircleButton from "./common/button/AddCircleButton";
 import { ScrollView, TouchableWithoutFeedback } from "react-native";
 import { useAppSelector } from "~/store";
 import { useDispatch } from "react-redux";

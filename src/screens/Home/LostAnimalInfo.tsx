@@ -8,17 +8,17 @@ import { animalInfoActions } from "~/store/animalInfo";
 
 import { ISOStringToLocal } from "~/utils";
 
-import UploadPhoto from "./UploadPhoto";
-import CategoryTitle from "../common/CategoryTitle";
-import ShadowInput from "../common/input/ShadowInput";
-import AddCircleButton from "../common/button/AddCircleButton";
-import ConfirmButton from "../common/button/ConfirmButton";
-import SidePaddingContainer from "../common/container/SidePaddingContainer";
+import UploadPhoto from "~/components/UploadPhoto";
+import CategoryTitle from "~/components/common/CategoryTitle";
+import ShadowInput from "~/components/common/input/ShadowInput";
+import AddCircleButton from "~/components/common/button/AddCircleButton";
+import ConfirmButton from "~/components/common/button/ConfirmButton";
+import SidePaddingContainer from "~/components/common/container/SidePaddingContainer";
 
 import { AnimalInfoClickedField } from "~/types";
 import { useNavigation } from "@react-navigation/core";
 import { PostAnimalInfoScreenNavigationProp } from "~/types/navigator";
-import KeyboardAwareScrollContainer from "../common/container/KeyboardAwareScrollContainer";
+import KeyboardAwareScrollContainer from "~/components/common/container/KeyboardAwareScrollContainer";
 
 interface IProps {
   handlePress: (field: AnimalInfoClickedField) => void;
