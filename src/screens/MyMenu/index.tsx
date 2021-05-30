@@ -1,5 +1,5 @@
 import React from "react";
-import { ScrollView } from "react-native";
+import { Linking, ScrollView } from "react-native";
 import CategoryTitle from "~/components/common/CategoryTitle";
 import ListItem from "~/components/common/ListItem";
 import SafeAreaContainer from "~/components/common/container/SafeAreaContainer";
@@ -60,7 +60,9 @@ const MyMenu = ({ navigation }: { navigation: MyMenuScreenNavigationProp }) => {
               이용권 관리
             </ListItem>
             <ListItem
-              onPress={() => navigation.navigate("ServiceCenter")}
+              onPress={() => {
+                Linking.openURL("http://pf.kakao.com/_xbxlxkFK");
+              }}
               LeftIcon={() => (
                 <Ionicons name="chatbox-ellipses-outline" size={size} />
               )}
