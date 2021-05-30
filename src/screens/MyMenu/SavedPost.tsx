@@ -1,14 +1,15 @@
 import React from "react";
-import { Text } from "react-native";
+import { ScrollView, Text } from "react-native";
 import styled from "styled-components/native";
-
-const Container = styled.View``;
+import SidePaddingContainer from "~/components/common/container/SidePaddingContainer";
 
 const SavedPost = () => {
   return (
-    <Container>
-      <Text>SavedPost</Text>
-    </Container>
+    <ScrollView>
+      <SidePaddingContainer>
+        <Text>SavedPost</Text>
+      </SidePaddingContainer>
+    </ScrollView>
   );
 };
 

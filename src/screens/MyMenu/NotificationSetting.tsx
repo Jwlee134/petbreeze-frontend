@@ -9,6 +9,7 @@ import Alert from "~/assets/svg/alert.svg";
 import { useAppSelector } from "~/store";
 import { useDispatch } from "react-redux";
 import { settingsActions } from "~/store/settings";
+import { ScrollView } from "react-native";
 
 const Container = styled.View`
   flex-direction: row;
@@ -38,46 +39,48 @@ const NotificationSetting = () => {
   const dispatch = useDispatch();
 
   return (
-    <SidePaddingContainer>
-      <Container style={{ marginTop: 16 }}>
-        <LeftContainer>
-          <IconContainer>
-            <Heart />
-          </IconContainer>
-          <Text>저장한 게시물 업데이트</Text>
-        </LeftContainer>
-        <Switch
-          isOn={savedPost}
-          onToggle={() => dispatch(settingsActions.setSavedPost(!savedPost))}
-        />
-      </Container>
-      <Container>
-        <LeftContainer>
-          <IconContainer>
-            <My />
-          </IconContainer>
-          <Text>작성한 게시물 업데이트</Text>
-        </LeftContainer>
-        <Switch
-          isOn={myPost}
-          onToggle={() => dispatch(settingsActions.setMyPost(!myPost))}
-        />
-      </Container>
-      <Container>
-        <LeftContainer>
-          <IconContainer>
-            <Alert />
-          </IconContainer>
-          <Text>내 주위의 실종신고 업데이트</Text>
-        </LeftContainer>
-        <Switch
-          isOn={mySurrounding}
-          onToggle={() =>
-            dispatch(settingsActions.setMySurrounding(!mySurrounding))
-          }
-        />
-      </Container>
-    </SidePaddingContainer>
+    <ScrollView>
+      <SidePaddingContainer>
+        <Container style={{ marginTop: 16 }}>
+          <LeftContainer>
+            <IconContainer>
+              <Heart />
+            </IconContainer>
+            <Text>저장한 게시물 업데이트</Text>
+          </LeftContainer>
+          <Switch
+            isOn={savedPost}
+            onToggle={() => dispatch(settingsActions.setSavedPost(!savedPost))}
+          />
+        </Container>
+        <Container>
+          <LeftContainer>
+            <IconContainer>
+              <My />
+            </IconContainer>
+            <Text>작성한 게시물 업데이트</Text>
+          </LeftContainer>
+          <Switch
+            isOn={myPost}
+            onToggle={() => dispatch(settingsActions.setMyPost(!myPost))}
+          />
+        </Container>
+        <Container>
+          <LeftContainer>
+            <IconContainer>
+              <Alert />
+            </IconContainer>
+            <Text>내 주위의 실종신고 업데이트</Text>
+          </LeftContainer>
+          <Switch
+            isOn={mySurrounding}
+            onToggle={() =>
+              dispatch(settingsActions.setMySurrounding(!mySurrounding))
+            }
+          />
+        </Container>
+      </SidePaddingContainer>
+    </ScrollView>
   );
 };
 

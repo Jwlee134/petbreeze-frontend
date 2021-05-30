@@ -1,9 +1,13 @@
 import React from "react";
-import { Text, TouchableOpacity } from "react-native";
 import styled from "styled-components/native";
+import ListItem from "~/components/common/ListItem";
+import SidePaddingContainer from "~/components/common/container/SidePaddingContainer";
 import { DeviceSettingScreenNavigationProp } from "~/types/navigator";
+import { ScrollView } from "react-native";
 
-const Container = styled.View``;
+const Text = styled.Text`
+  font-size: 18px;
+`;
 
 const DeviceSetting = ({
   navigation,
@@ -11,23 +15,41 @@ const DeviceSetting = ({
   navigation: DeviceSettingScreenNavigationProp;
 }) => {
   return (
-    <Container>
-      <Text>DeviceSetting</Text>
-      <TouchableOpacity onPress={() => navigation.navigate("DeviceList")}>
-        <Text>기기 목록</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={() => navigation.navigate("LocationCollectInterval")}>
-        <Text>위치정보 수집주기</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={() => navigation.navigate("SafetyZoneSetting")}>
-        <Text>안심존 설정</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate("WifiSSID")}>
-        <Text>WIFI SSID</Text>
-      </TouchableOpacity>
-    </Container>
+    <ScrollView>
+      <SidePaddingContainer>
+        <ListItem
+          onPress={() => navigation.navigate("DeviceList")}
+          RightIcon={() => (
+            <Text style={{ textDecorationLine: "underline" }}>관리</Text>
+          )}>
+          기기 목록
+        </ListItem>
+        <ListItem
+          onPress={() => navigation.navigate("LocationCollectInterval")}
+          RightIcon={() => (
+            <Text style={{ textDecorationLine: "underline" }}>설정</Text>
+          )}>
+          위치정보 수집주기
+        </ListItem>
+        <ListItem
+          onPress={() => navigation.navigate("SafetyZoneSetting")}
+          RightIcon={() => (
+            <Text style={{ textDecorationLine: "underline" }}>등록</Text>
+          )}>
+          안심존 설정
+        </ListItem>
+        <ListItem RightIcon={() => <Text>1.0.0</Text>}>앱 버전</ListItem>
+        <ListItem>펌웨어 버전</ListItem>
+        <ListItem>배터리 잔량</ListItem>
+        <ListItem
+          onPress={() => navigation.navigate("WifiSSID")}
+          RightIcon={() => (
+            <Text style={{ textDecorationLine: "underline" }}>등록</Text>
+          )}>
+          WIFI SSID
+        </ListItem>
+      </SidePaddingContainer>
+    </ScrollView>
   );
 };
 
