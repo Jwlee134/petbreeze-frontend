@@ -10,8 +10,8 @@ const BottomTabNav = () => (
   <Tab.Navigator
     tabBarOptions={{
       showLabel: false,
-      activeTintColor: palette.navy,
-      inactiveTintColor: palette.navy,
+      activeTintColor: palette.blue_2e,
+      inactiveTintColor: palette.blue_2e,
     }}>
     <Tab.Screen
       name="Home"

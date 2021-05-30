@@ -5,7 +5,7 @@ import palette from "~/styles/palette";
 const Container = styled.View`
   width: 100%;
   height: 36px;
-  background-color: ${palette.blue};
+  background-color: ${palette.blue_6e};
   justify-content: center;
   align-items: center;
 `;

@@ -18,7 +18,7 @@ const AddPhotoBox = styled.View`
   width: 83px;
   height: 83px;
   border-radius: 10px;
-  background-color: ${palette.gray};
+  background-color: ${palette.gray_e5};
   justify-content: center;
   align-items: center;
   margin-left: 25px;

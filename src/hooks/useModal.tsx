@@ -28,7 +28,7 @@ const BottomContainer = styled.View`
 const CenterContainer = styled.View`
   width: ${centerModalWidth};
   border-width: 1px;
-  border-color: ${palette.gray};
+  border-color: ${palette.gray_e5};
   border-radius: 8px;
   overflow: hidden;
 `;
@@ -67,7 +67,7 @@ const Button = styled.TouchableOpacity`
 
 const ToggleText = styled.Text`
   font-size: 17px;
-  color: ${palette.light_blue};
+  color: ${palette.blue_00};
   text-align: center;
 `;
 

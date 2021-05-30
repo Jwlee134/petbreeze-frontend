@@ -11,7 +11,7 @@ interface IProps extends TouchableOpacityProps {
 const Container = styled.TouchableOpacity`
   width: 80px;
   border-width: 2px;
-  border-color: ${palette.blue};
+  border-color: ${palette.blue_6e};
   border-radius: 4px;
   justify-content: center;
   align-items: center;

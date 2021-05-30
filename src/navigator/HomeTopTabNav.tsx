@@ -8,7 +8,7 @@ const Tab = createMaterialTopTabNavigator();
 const HomeTopTapNavigator = () => (
   <Tab.Navigator
     tabBarOptions={{
-      activeTintColor: palette.blue,
+      activeTintColor: palette.blue_6e,
       inactiveTintColor: "black",
       labelStyle: {
         fontSize: 16,

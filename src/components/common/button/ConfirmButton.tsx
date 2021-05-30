@@ -16,7 +16,7 @@ const Button = styled.View<{ disabled: boolean }>`
   width: 180px;
   height: 36px;
   background-color: ${({ disabled }) =>
-    !disabled ? palette.blue : palette.gray};
+    !disabled ? palette.blue_6e : palette.gray_e5};
   border-radius: 4px;
   justify-content: center;
   align-items: center;

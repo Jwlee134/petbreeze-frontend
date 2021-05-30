@@ -27,7 +27,7 @@ const PostList = () => {
   if (loading)
     return (
       <Container style={{ justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" color={palette.blue} />
+        <ActivityIndicator size="large" color={palette.blue_6e} />
       </Container>
     );
 

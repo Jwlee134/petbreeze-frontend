@@ -10,7 +10,7 @@ const Container = styled.View`
 
 const HeaderBackButton = () => (
   <Container>
-    <Feather name="chevron-left" size={32} style={{ color: palette.blue }} />
+    <Feather name="chevron-left" size={32} style={{ color: palette.blue_6e }} />
   </Container>
 );
 

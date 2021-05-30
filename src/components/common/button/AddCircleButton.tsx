@@ -35,7 +35,7 @@ const AddCircleButton = ({
     onPress={onPress}
     size={size}
     {...props}>
-    <AntDesign name="pluscircle" size={size} color={palette.blue} />
+    <AntDesign name="pluscircle" size={size} color={palette.blue_6e} />
   </Button>
 );
 
