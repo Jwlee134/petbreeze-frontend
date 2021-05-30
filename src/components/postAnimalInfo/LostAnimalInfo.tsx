@@ -1,7 +1,6 @@
 import React from "react";
 import { TextInput, TouchableOpacity } from "react-native";
 import styled from "styled-components/native";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 import { useAppSelector } from "~/store";
 import { useDispatch } from "react-redux";
@@ -17,6 +16,9 @@ import ConfirmButton from "../common/button/ConfirmButton";
 import SidePaddingContainer from "../common/container/SidePaddingContainer";
 
 import { AnimalInfoClickedField } from "~/types";
+import { useNavigation } from "@react-navigation/core";
+import { PostAnimalInfoScreenNavigationProp } from "~/types/navigator";
+import KeyboardAwareScrollContainer from "../common/container/KeyboardAwareScrollContainer";
 
 interface IProps {
   handlePress: (field: AnimalInfoClickedField) => void;
@@ -51,11 +53,12 @@ const LostAnimalInfo = ({
   BreedsRef,
 }: IProps) => {
   const animalInfo = useAppSelector(state => state.animalInfo);
+  const navigation = useNavigation<PostAnimalInfoScreenNavigationProp>();
 
   const dispatch = useDispatch();
 
   return (
-    <KeyboardAwareScrollView keyboardShouldPersistTaps="handled">
+    <KeyboardAwareScrollContainer>
       <CategoryTitle>실종 동물 정보</CategoryTitle>
       <UploadPhoto />
       <SidePaddingContainer>
@@ -174,7 +177,7 @@ const LostAnimalInfo = ({
       <SubmitContainer>
         <ConfirmButton onPress={() => {}}>등록</ConfirmButton>
       </SubmitContainer>
-    </KeyboardAwareScrollView>
+    </KeyboardAwareScrollContainer>
   );
 };
 
