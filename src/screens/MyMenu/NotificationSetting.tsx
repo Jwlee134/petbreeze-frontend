@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components/native";
 import Switch from "~/components/common/Switch";
 import SidePaddingContainer from "~/components/common/container/SidePaddingContainer";
@@ -8,7 +8,7 @@ import My from "~/assets/svg/my.svg";
 import Alert from "~/assets/svg/alert.svg";
 import { useAppSelector } from "~/store";
 import { useDispatch } from "react-redux";
-import { notificationActions } from "~/store/notification";
+import { settingsActions } from "~/store/settings";
 
 const Container = styled.View`
   flex-direction: row;
@@ -32,7 +32,7 @@ const Text = styled.Text`
 
 const NotificationSetting = () => {
   const { savedPost, myPost, mySurrounding } = useAppSelector(
-    state => state.notification,
+    state => state.settings.notifications,
   );
 
   const dispatch = useDispatch();
@@ -48,9 +48,7 @@ const NotificationSetting = () => {
         </LeftContainer>
         <Switch
           isOn={savedPost}
-          onToggle={() =>
-            dispatch(notificationActions.setSavedPost(!savedPost))
-          }
+          onToggle={() => dispatch(settingsActions.setSavedPost(!savedPost))}
         />
       </Container>
       <Container>
@@ -62,7 +60,7 @@ const NotificationSetting = () => {
         </LeftContainer>
         <Switch
           isOn={myPost}
-          onToggle={() => dispatch(notificationActions.setMyPost(!myPost))}
+          onToggle={() => dispatch(settingsActions.setMyPost(!myPost))}
         />
       </Container>
       <Container>
@@ -75,7 +73,7 @@ const NotificationSetting = () => {
         <Switch
           isOn={mySurrounding}
           onToggle={() =>
-            dispatch(notificationActions.setMySurrounding(!mySurrounding))
+            dispatch(settingsActions.setMySurrounding(!mySurrounding))
           }
         />
       </Container>

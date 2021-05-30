@@ -7,14 +7,16 @@ interface IProps {
   children: ReactNode;
   onPress: () => void;
   style?: StyleProp<ViewStyle>;
+  disabled?: boolean;
 }
 
 const Container = styled.TouchableOpacity``;
 
-const Button = styled.View`
+const Button = styled.View<{ disabled: boolean }>`
   width: 180px;
   height: 36px;
-  background-color: ${palette.blue};
+  background-color: ${({ disabled }) =>
+    !disabled ? palette.blue : palette.gray};
   border-radius: 4px;
   justify-content: center;
   align-items: center;
@@ -25,9 +27,18 @@ const Label = styled.Text`
   color: white;
 `;
 
-const ConfirmButton = ({ children, onPress, style }: IProps) => (
-  <Container style={style} activeOpacity={0.8} onPress={onPress}>
-    <Button>
+const ConfirmButton = ({
+  children,
+  onPress,
+  style,
+  disabled = false,
+}: IProps) => (
+  <Container
+    style={style}
+    activeOpacity={0.8}
+    disabled={disabled}
+    onPress={onPress}>
+    <Button disabled={disabled}>
       <Label>{children}</Label>
     </Button>
   </Container>

@@ -52,7 +52,7 @@ const DeviceSettingStackNav = () => (
       name="WifiSSID"
       component={WifiSSID}
       options={{
-        headerTitle: "와이파이 등록",
+        headerTitle: "WIFI SSID",
         headerTitleStyle,
       }}
     />

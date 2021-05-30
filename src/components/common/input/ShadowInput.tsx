@@ -6,6 +6,7 @@ import ShadowContainer from "../container/ShadowContainer";
 
 interface IProps extends TextInputProps {
   shadowContainerStyle?: StyleProp<ViewStyle>;
+  style?: StyleProp<ViewStyle>;
   disabled?: boolean;
   isInputEditable?: boolean;
 }
@@ -36,6 +37,7 @@ const ShadowInput = forwardRef(
       shadowContainerStyle,
       disabled = false,
       isInputEditable = true,
+      style,
       ...props
     }: IProps,
     ref: ForwardedRef<TextInput>,
@@ -43,7 +45,8 @@ const ShadowInput = forwardRef(
     <ShadowContainer shadowContainerStyle={shadowContainerStyle}>
       <Container
         pointerEvents={isInputEditable ? "auto" : "none"}
-        disabled={disabled}>
+        disabled={disabled}
+        style={style}>
         <InputComponent ref={ref} placeholderTextColor="gray" {...props} />
       </Container>
     </ShadowContainer>

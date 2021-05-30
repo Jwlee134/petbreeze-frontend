@@ -19,14 +19,14 @@ import {
 import user from "./user";
 import common from "./common";
 import animalInfo from "./animalInfo";
-import notification from "./notification";
+import settings from "./settings";
 
-const rootReducer = combineReducers({ user, common, animalInfo, notification });
+const rootReducer = combineReducers({ user, common, animalInfo, settings });
 
 const persistConfig = {
   key: "root",
   storage: AsyncStorage,
-  whitelist: ["user", "notification"],
+  whitelist: ["user", "settings"],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
