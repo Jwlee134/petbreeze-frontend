@@ -1,5 +1,5 @@
 import React from "react";
-import { TextInput, TouchableOpacity } from "react-native";
+import { TextInput } from "react-native";
 import styled from "styled-components/native";
 
 import { useAppSelector } from "~/store";
@@ -15,14 +15,14 @@ import AddCircleButton from "~/components/common/button/AddCircleButton";
 import ConfirmButton from "~/components/common/button/ConfirmButton";
 import SidePaddingContainer from "~/components/common/container/SidePaddingContainer";
 
-import { AnimalInfoClickedField } from "~/types";
+import { AnimalInfoClickedField, HandleRememberIndexArg } from "~/types";
 import { useNavigation } from "@react-navigation/core";
 import { PostAnimalInfoScreenNavigationProp } from "~/types/navigator";
 import KeyboardAwareScrollContainer from "~/components/common/container/KeyboardAwareScrollContainer";
 
 interface IProps {
   handlePress: (field: AnimalInfoClickedField) => void;
-  handleRememberIndex: (field: string) => void;
+  handleRememberIndex: (field: HandleRememberIndexArg) => void;
   isSpeciesEditable: boolean;
   isBreedEditable: boolean;
   SpeciesRef: React.RefObject<TextInput>;
@@ -68,28 +68,28 @@ const LostAnimalInfo = ({
           onChangeText={text => dispatch(animalInfoActions.setName(text))}
         />
         <RowContainer>
-          <TouchableOpacity
-            style={{
-              flexGrow: 1,
-              marginRight: 13,
-            }}
+          <ShadowInput
+            ref={SpeciesRef}
+            placeholder="동물 종류*"
+            value={animalInfo.species}
+            isInputEditable={isSpeciesEditable}
+            isRow
             onPress={() => {
               handlePress("동물 선택");
               handleRememberIndex("species");
             }}
-            activeOpacity={0.8}>
-            <ShadowInput
-              ref={SpeciesRef}
-              placeholder="동물 종류*"
-              value={animalInfo.species}
-              isInputEditable={isSpeciesEditable}
-              onChangeText={text => {
-                dispatch(animalInfoActions.setSpecies(text));
-              }}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{ flexGrow: 1 }}
+            onChangeText={text => {
+              dispatch(animalInfoActions.setSpecies(text));
+            }}
+            shadowContainerStyle={{ marginRight: 13 }}
+          />
+          <ShadowInput
+            ref={BreedsRef}
+            placeholder="품종 선택*"
+            value={animalInfo.breed}
+            isInputEditable={isBreedEditable}
+            isRow
+            disabled={!animalInfo.species && !isSpeciesEditable}
             onPress={() => {
               if (isSpeciesEditable) return;
               handlePress("품종 선택");
@@ -97,57 +97,39 @@ const LostAnimalInfo = ({
                 handleRememberIndex("breed");
               }
             }}
-            activeOpacity={0.8}
-            disabled={!animalInfo.species && !isSpeciesEditable}>
-            <ShadowInput
-              ref={BreedsRef}
-              placeholder="품종 선택*"
-              value={animalInfo.breed}
-              isInputEditable={isBreedEditable}
-              disabled={!animalInfo.species && !isSpeciesEditable}
-              onChangeText={text => {
-                dispatch(animalInfoActions.setBreed(text));
-              }}
-            />
-          </TouchableOpacity>
+            onChangeText={text => {
+              dispatch(animalInfoActions.setBreed(text));
+            }}
+          />
         </RowContainer>
-        <TouchableOpacity
+        <ShadowInput
+          placeholder="성별*"
+          isInputEditable={false}
+          value={animalInfo.gender}
           onPress={() => {
             handlePress("성별");
             handleRememberIndex("gender");
           }}
-          activeOpacity={0.8}>
-          <ShadowInput
-            placeholder="성별*"
-            isInputEditable={false}
-            value={animalInfo.gender}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
+        />
+        <ShadowInput
+          placeholder="출생 연도"
+          isInputEditable={false}
+          value={animalInfo.birthYear ? `${animalInfo.birthYear}년` : ""}
           onPress={() => {
             handlePress("출생 연도");
             handleRememberIndex("birthYear");
           }}
-          activeOpacity={0.8}>
-          <ShadowInput
-            placeholder="출생 연도"
-            isInputEditable={false}
-            value={animalInfo.birthYear ? String(animalInfo.birthYear) : ""}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
+        />
+        <ShadowInput
+          placeholder="잃어버린 시간*"
+          isInputEditable={false}
+          value={
+            animalInfo.lostTime ? ISOStringToLocal(animalInfo.lostTime) : ""
+          }
           onPress={() => {
             handlePress("잃어버린 시간");
           }}
-          activeOpacity={0.8}>
-          <ShadowInput
-            placeholder="잃어버린 시간*"
-            isInputEditable={false}
-            value={
-              animalInfo.lostTime ? ISOStringToLocal(animalInfo.lostTime) : ""
-            }
-          />
-        </TouchableOpacity>
+        />
         <ShadowInput placeholder="잃어버린 장소*" isInputEditable={false} />
         <ShadowInput placeholder="특징" maxLength={100} />
         <ShadowInput

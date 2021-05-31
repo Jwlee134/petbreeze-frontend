@@ -14,7 +14,7 @@ const Container = styled.TouchableOpacity``;
 
 const Button = styled.View<{ disabled: boolean }>`
   width: 180px;
-  height: 36px;
+  height: 44px;
   background-color: ${({ disabled }) =>
     !disabled ? palette.blue_6e : palette.gray_e5};
   border-radius: 4px;
@@ -33,12 +33,8 @@ const ConfirmButton = ({
   style,
   disabled = false,
 }: IProps) => (
-  <Container
-    style={style}
-    activeOpacity={0.8}
-    disabled={disabled}
-    onPress={onPress}>
-    <Button disabled={disabled}>
+  <Container activeOpacity={0.8} disabled={disabled} onPress={onPress}>
+    <Button style={style} disabled={disabled}>
       <Label>{children}</Label>
     </Button>
   </Container>

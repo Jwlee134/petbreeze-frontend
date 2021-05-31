@@ -3,6 +3,7 @@ import { Image } from "react-native-image-crop-picker";
 
 interface IState {
   photos: Image[];
+  avatar: Image | any;
   name: string;
   species: string;
   breed: string;
@@ -13,11 +14,14 @@ interface IState {
   characteristic: string;
   hasTag: boolean | null;
   phoneNumber: { id: number; value: string }[];
+  caution: string;
+  weight: number;
   [key: string]: any;
 }
 
 const initialState: IState = {
   photos: [],
+  avatar: require("~/assets/image/default-avatar.jpg"),
   name: "",
   species: "",
   breed: "",
@@ -28,6 +32,8 @@ const initialState: IState = {
   characteristic: "",
   hasTag: null,
   phoneNumber: [{ id: 0, value: "" }],
+  caution: "",
+  weight: 0,
 };
 
 const animalInfo = createSlice({
@@ -36,6 +42,9 @@ const animalInfo = createSlice({
   reducers: {
     setPhotos: (state, action: PayloadAction<Image[]>) => {
       state.photos.push(...action.payload);
+    },
+    setAvatar: (state, action: PayloadAction<Image>) => {
+      state.avatar = action.payload;
     },
     setName: (state, action: PayloadAction<string>) => {
       state.name = action.payload;
@@ -74,6 +83,12 @@ const animalInfo = createSlice({
       const { id, text } = action.payload;
       const index = state.phoneNumber.findIndex(field => field.id === id);
       state.phoneNumber[index].value = text;
+    },
+    setWeight: (state, action: PayloadAction<number>) => {
+      state.weight = action.payload;
+    },
+    setCaution: (state, action: PayloadAction<string>) => {
+      state.caution = action.payload;
     },
     initState: state => {
       state = initialState;

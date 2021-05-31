@@ -5,3 +5,9 @@ export type AnimalInfoClickedField =
   | "성별"
   | "잃어버린 시간"
   | "";
+
+export type HandleRememberIndexArg =
+  | "species"
+  | "breed"
+  | "gender"
+  | "birthYear";

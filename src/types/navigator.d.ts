@@ -77,6 +77,7 @@ export type MyMenuScreenNavigationProp = StackNavigationProp<
 type DeviceSettingStackParamList = {
   DeviceSetting: undefined;
   DeviceList: undefined;
+  AddDevice: undefined;
   LocationCollectInterval: undefined;
   SafetyZoneSetting: undefined;
   WifiSSID: undefined;
@@ -85,4 +86,9 @@ type DeviceSettingStackParamList = {
 export type DeviceSettingScreenNavigationProp = StackNavigationProp<
   DeviceSettingStackParamList,
   "DeviceSetting"
+>;
+
+export type DeviceListScreenNavigationProp = StackNavigationProp<
+  DeviceSettingStackParamList,
+  "DeviceList"
 >;
