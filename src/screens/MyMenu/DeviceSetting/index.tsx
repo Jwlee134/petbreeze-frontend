@@ -42,6 +42,7 @@ const DeviceSetting = ({
         <ListItem>펌웨어 버전</ListItem>
         <ListItem>배터리 잔량</ListItem>
         <ListItem
+          isLastItem
           onPress={() => navigation.navigate("WifiSSID")}
           RightIcon={() => (
             <Text style={{ textDecorationLine: "underline" }}>등록</Text>
