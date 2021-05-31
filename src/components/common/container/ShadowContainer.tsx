@@ -11,7 +11,6 @@ const ShadowContainer = ({
 }) => (
   <DropShadow
     style={{
-      flexGrow: 1,
       shadowColor: "black",
       shadowOffset: {
         width: 0,
