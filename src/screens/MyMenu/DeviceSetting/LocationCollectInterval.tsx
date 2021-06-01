@@ -1,5 +1,11 @@
 import React, { Fragment, useRef, useState } from "react";
-import { Animated, Easing, ScrollView } from "react-native";
+import {
+  Animated,
+  Easing,
+  ScrollView,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+} from "react-native";
 import styled from "styled-components/native";
 import SidePaddingContainer from "~/components/common/container/SidePaddingContainer";
 
@@ -96,52 +102,57 @@ const LocationCollectInterval = () => {
 
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-      <TopContainer>
-        <InfoText>
-          위치정보 수집주기는{"\n"} 짧을수록 배터리가 더 빨리 방전되니
-          참고해주세요.
-        </InfoText>
-        <ShadowContainer shadowContainerStyle={{ zIndex: 1 }}>
-          <Button onPress={handlePress} underlayColor={palette.gray_f3}>
-            <Fragment>
-              <LeftContainer>
-                <Title>위치정보 수집주기</Title>
-                <Value>{data[selectedIndex]}</Value>
-              </LeftContainer>
-              <RightContainer
-                style={{ transform: [{ rotate: rotateInterpolate }] }}>
-                <Ionicons name="chevron-down" size={24} />
-              </RightContainer>
-            </Fragment>
-          </Button>
-        </ShadowContainer>
-      </TopContainer>
-      <SidePaddingContainer>
-        <ShadowContainer>
-          <Content
-            style={{
-              opacity: opacityInterpolate,
-              transform: [{ translateY: translateInterpolate }],
-            }}>
-            {data.map((item, index) => (
-              <List
-                key={index}
-                onPress={() => {
-                  setSelectedIndex(index);
-                  setIsOpened(false);
-                }}
-                underlayColor={palette.gray_f3}>
-                <Fragment>
-                  <Value>{item}</Value>
-                  {selectedIndex === index && (
-                    <Ionicons name="checkmark" size={24} />
-                  )}
-                </Fragment>
-              </List>
-            ))}
-          </Content>
-        </ShadowContainer>
-      </SidePaddingContainer>
+      <TouchableOpacity
+        activeOpacity={1}
+        style={{ flexGrow: 1 }}
+        onPress={() => setIsOpened(false)}>
+        <TopContainer>
+          <InfoText>
+            위치정보 수집주기는{"\n"} 짧을수록 배터리가 더 빨리 방전되니
+            참고해주세요.
+          </InfoText>
+          <ShadowContainer shadowContainerStyle={{ zIndex: 1 }}>
+            <Button onPress={handlePress} underlayColor={palette.gray_f3}>
+              <Fragment>
+                <LeftContainer>
+                  <Title>위치정보 수집주기</Title>
+                  <Value>{data[selectedIndex]}</Value>
+                </LeftContainer>
+                <RightContainer
+                  style={{ transform: [{ rotate: rotateInterpolate }] }}>
+                  <Ionicons name="chevron-down" size={24} />
+                </RightContainer>
+              </Fragment>
+            </Button>
+          </ShadowContainer>
+        </TopContainer>
+        <SidePaddingContainer>
+          <ShadowContainer>
+            <Content
+              style={{
+                opacity: opacityInterpolate,
+                transform: [{ translateY: translateInterpolate }],
+              }}>
+              {data.map((item, index) => (
+                <List
+                  key={index}
+                  onPress={() => {
+                    setSelectedIndex(index);
+                    setIsOpened(false);
+                  }}
+                  underlayColor={palette.gray_f3}>
+                  <Fragment>
+                    <Value>{item}</Value>
+                    {selectedIndex === index && (
+                      <Ionicons name="checkmark" size={24} />
+                    )}
+                  </Fragment>
+                </List>
+              ))}
+            </Content>
+          </ShadowContainer>
+        </SidePaddingContainer>
+      </TouchableOpacity>
     </ScrollView>
   );
 };
