@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import styled from "styled-components/native";
 import ConfirmButton from "~/components/common/button/ConfirmButton";
@@ -18,7 +18,12 @@ const Text = styled.Text`
   text-align: center;
 `;
 
+const ButtonContainer = styled.View`
+  align-items: center;
+`;
+
 const DeleteAccount = () => {
+  const [value, setValue] = useState("");
   const handlePress = () => {};
 
   return (
@@ -30,16 +35,16 @@ const DeleteAccount = () => {
             반영하여 향후 서비스 품질 {"\n"}개선을 위해 노력하겠습니다.
           </Text>
           <InputContainer>
-            <Input />
+            <Input value={value} onChangeText={text => setValue(text)} />
           </InputContainer>
           <Text>
             회원 탈퇴 시 2개월간 동일한 휴대폰 번호나 {"\n"}이메일 주소로
             재가입이 불가능합니다.
           </Text>
         </TextContainer>
-        <ConfirmButton style={{ alignItems: "center" }} onPress={handlePress}>
-          동의 및 탈퇴
-        </ConfirmButton>
+        <ButtonContainer>
+          <ConfirmButton onPress={handlePress}>동의 및 탈퇴</ConfirmButton>
+        </ButtonContainer>
       </SidePaddingContainer>
     </KeyboardAwareScrollView>
   );
