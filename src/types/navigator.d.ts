@@ -92,3 +92,8 @@ export type DeviceListScreenNavigationProp = StackNavigationProp<
   DeviceSettingStackParamList,
   "DeviceList"
 >;
+
+export type SafetyZoneScreenNavigationProp = StackNavigationProp<
+  DeviceSettingStackParamList,
+  "SafetyZoneSetting"
+>;
