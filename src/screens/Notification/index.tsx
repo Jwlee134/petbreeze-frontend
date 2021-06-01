@@ -28,12 +28,9 @@ const Notification = ({
       <SafeAreaContainer>
         <CustomHeader
           RightIcon={() => (
-            <Ionicons
-              name="information-circle-outline"
-              size={26}
-              onPress={open}
-            />
+            <Ionicons name="information-circle-outline" size={26} />
           )}
+          RightIconOnPress={open}
           size="small">
           알림
         </CustomHeader>

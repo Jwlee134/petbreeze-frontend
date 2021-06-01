@@ -5,9 +5,12 @@ interface IProps {
   children: ReactNode;
   size: "big" | "small";
   RightIcon?: () => JSX.Element;
+  RightIconOnPress?: () => void;
 }
 
 const Container = styled.View<{ size: "big" | "small" }>`
+  flex-direction: row;
+  justify-content: space-between;
   ${({ size }) =>
     size === "big"
       ? css`
@@ -15,9 +18,17 @@ const Container = styled.View<{ size: "big" | "small" }>`
         `
       : css`
           width: 100%;
-          justify-content: center;
           margin: 28px 0px;
         `}
+`;
+
+const Block = styled.View`
+  width: 33.33%;
+  justify-content: center;
+`;
+
+const TextContainer = styled(Block)`
+  align-items: center; the 
 `;
 
 const HeaderText = styled.Text<{ size: "big" | "small" }>`
@@ -26,18 +37,33 @@ const HeaderText = styled.Text<{ size: "big" | "small" }>`
 `;
 
 const RightIconContainer = styled.View`
-  position: absolute;
-  right: 25px;
+  align-items: flex-end;
+  margin-right: 25px;
+  justify-content: center;
 `;
 
-const CustomHeader = ({ children, size, RightIcon }: IProps) => (
+const Button = styled.TouchableOpacity``;
+
+const CustomHeader = ({
+  children,
+  size,
+  RightIcon,
+  RightIconOnPress,
+}: IProps) => (
   <Container size={size}>
-    <HeaderText size={size}>{children}</HeaderText>
-    {RightIcon && (
-      <RightIconContainer>
-        <RightIcon />
-      </RightIconContainer>
-    )}
+    <Block />
+    <TextContainer>
+      <HeaderText size={size}>{children}</HeaderText>
+    </TextContainer>
+    <Block>
+      {RightIcon && (
+        <RightIconContainer>
+          <Button onPress={RightIconOnPress} activeOpacity={0.5}>
+            <RightIcon />
+          </Button>
+        </RightIconContainer>
+      )}
+    </Block>
   </Container>
 );
 
