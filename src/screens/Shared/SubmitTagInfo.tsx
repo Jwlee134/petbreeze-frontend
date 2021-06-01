@@ -12,7 +12,7 @@ import useModal from "~/hooks/useModal";
 import useBottomModalSelector from "~/hooks/useBottomModalSelector";
 import { useAppSelector } from "~/store";
 import { useDispatch } from "react-redux";
-import { Platform, Text, useWindowDimensions } from "react-native";
+import { Platform, Text } from "react-native";
 import WheelPicker from "~/components/common/WheelPicker";
 import { animalInfoActions } from "~/store/animalInfo";
 import { useNavigation } from "@react-navigation/core";
@@ -63,7 +63,6 @@ const Underline = styled.View`
 
 const SubmitTagInfo = () => {
   const navigation = useNavigation<DeviceListScreenNavigationProp>();
-  const { width } = useWindowDimensions();
 
   const animalInfo = useAppSelector(state => state.animalInfo);
   const dispatch = useDispatch();
@@ -226,11 +225,6 @@ const SubmitTagInfo = () => {
           headerTitle={clickedField}
           handleDone={handleDone}>
           <WheelPicker
-            style={{
-              width,
-              height: "100%",
-              justifyContent: "center",
-            }}
             data={handleOptionList()}
             selectedIndex={selectedIndex}
             onValueChange={index => setSelectedIndex(index)}

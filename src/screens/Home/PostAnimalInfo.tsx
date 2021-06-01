@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { useWindowDimensions } from "react-native";
 import Modal from "react-native-modal";
 
 import AuthSelector from "../Shared/AuthSelector";
@@ -16,8 +15,6 @@ import { animalInfoActions } from "~/store/animalInfo";
 import useBottomModalSelector from "~/hooks/useBottomModalSelector";
 
 const PostAnimalInfo = () => {
-  const { width } = useWindowDimensions();
-
   const { isLoggedIn } = useAppSelector(state => state.user);
   const { currentHomeTab } = useAppSelector(state => state.common);
 
@@ -70,18 +67,9 @@ const PostAnimalInfo = () => {
           headerTitle={clickedField}
           handleDone={handleDone}>
           {clickedField === "잃어버린 시간" ? (
-            <WheelDatePicker
-              style={{ width }}
-              date={date}
-              onDateChange={setDate}
-            />
+            <WheelDatePicker date={date} onDateChange={setDate} />
           ) : (
             <WheelPicker
-              style={{
-                width,
-                height: "100%",
-                justifyContent: "center",
-              }}
               data={handleOptionList()}
               selectedIndex={selectedIndex}
               onValueChange={index => setSelectedIndex(index)}
