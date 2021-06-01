@@ -4,10 +4,16 @@ import { ModalProps } from "react-native-modal";
 import styled from "styled-components/native";
 import palette from "~/styles/palette";
 
+interface IModalProps {
+  type: "bottom" | "center";
+  handleCancel?: () => void;
+}
+
 interface IBottomProps {
   headerTitle: string;
   children: ReactNode;
   handleDone: () => void;
+  isOneStep?: boolean;
 }
 
 const centerModalWidth = Dimensions.get("screen").width - 76;
@@ -82,7 +88,7 @@ const CenterContent = styled.View`
   padding: 22px;
 `;
 
-const useModal = ({ type }: { type: "bottom" | "center" }) => {
+const useModal = ({ type, handleCancel }: IModalProps) => {
   const [isModalVisible, setModalVisible] = useState(false);
 
   const open = () => setModalVisible(true);
@@ -92,7 +98,10 @@ const useModal = ({ type }: { type: "bottom" | "center" }) => {
   const modalProps: Partial<ModalProps> = {
     isVisible: isModalVisible,
     backdropTransitionOutTiming: 0,
-    onBackdropPress: close,
+    onBackdropPress: () => {
+      if (handleCancel) handleCancel();
+      close();
+    },
     backdropOpacity: 0.3,
     style: {
       ...(type === "bottom"
@@ -112,17 +121,23 @@ const useModal = ({ type }: { type: "bottom" | "center" }) => {
     headerTitle,
     children,
     handleDone,
+    isOneStep = true,
   }: IBottomProps) => (
     <BottomContainer>
       <BottomHeader>
-        <Button activeOpacity={0.8} onPress={close}>
+        <Button
+          activeOpacity={0.8}
+          onPress={() => {
+            if (handleCancel) handleCancel();
+            close();
+          }}>
           <ToggleText>Cancel</ToggleText>
         </Button>
         <Title>{headerTitle}</Title>
         <Button
           activeOpacity={0.8}
           onPress={() => {
-            close();
+            if (isOneStep) close();
             handleDone();
           }}>
           <ToggleText>Done</ToggleText>
