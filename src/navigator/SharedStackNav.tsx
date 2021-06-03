@@ -6,71 +6,97 @@ import AuthSelector from "~/screens/Shared/AuthSelector";
 import Location from "~/screens/Location";
 import MyMenuStackNav from "./MyMenuStackNav";
 import LostDetail from "~/screens/Shared/LostDetail";
-import HomeStackNav from "./HomeStackNav";
 import AddDevice from "~/screens/Shared/AddDevice";
 import { headerTitleStyle, stackNavScreenOptions } from "~/styles/navigator";
 import HeaderBackButton from "~/components/common/button/HeaderBackButton";
+import UpdateWitnessedList from "~/screens/Shared/UpdateWitnessedList";
+import Comment from "~/screens/Shared/Comment";
+import Home from "~/screens/Home";
+import PostAnimalInfo from "~/screens/Home/PostAnimalInfo";
+import { useAppSelector } from "~/store";
 
 const Stack = createStackNavigator();
 
-const SharedStack = ({ screenName }: { screenName: string }) => (
-  <Stack.Navigator
-    screenOptions={{
-      headerBackImage: () => <HeaderBackButton />,
-      ...stackNavScreenOptions,
-    }}>
-    {screenName === "Home" && (
+const SharedStack = ({ screenName }: { screenName: string }) => {
+  const { isLoggedIn } = useAppSelector(state => state.user);
+
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerBackImage: () => <HeaderBackButton />,
+        ...stackNavScreenOptions,
+      }}>
+      {screenName === "Home" && (
+        <Stack.Screen
+          name="Home"
+          component={Home}
+          options={{ headerShown: false }}
+        />
+      )}
+      {screenName === "Location" && (
+        <Stack.Screen
+          name="Location"
+          component={Location}
+          options={{ headerShown: false }}
+        />
+      )}
+      {screenName === "Notification" && (
+        <Stack.Screen
+          name="Notification"
+          component={Notification}
+          options={{
+            headerShown: false,
+          }}
+        />
+      )}
+      {screenName === "MyMenu" && (
+        <Stack.Screen
+          name="MyMenuStackNav"
+          component={MyMenuStackNav}
+          options={{
+            headerShown: false,
+          }}
+        />
+      )}
+      <Stack.Screen name="AuthSelector" component={AuthSelector} />
       <Stack.Screen
-        name="HomeStackNav"
-        component={HomeStackNav}
-        options={{ headerShown: false }}
-      />
-    )}
-    {screenName === "Location" && (
-      <Stack.Screen
-        name="Location"
-        component={Location}
-        options={{ headerShown: false }}
-      />
-    )}
-    {screenName === "Notification" && (
-      <Stack.Screen
-        name="Notification"
-        component={Notification}
+        name="PostAnimalInfo"
+        component={PostAnimalInfo}
         options={{
-          headerShown: false,
+          headerShown: !isLoggedIn ? false : true,
+          title: "",
         }}
       />
-    )}
-    {screenName === "MyMenu" && (
       <Stack.Screen
-        name="MyMenuStackNav"
-        component={MyMenuStackNav}
+        name="LostDetail"
+        component={LostDetail}
+        options={{ title: "" }}
+      />
+      <Stack.Screen
+        name="WitnessedDetail"
+        component={WitnessedDetail}
+        options={{ title: "" }}
+      />
+      <Stack.Screen
+        name="UpdateWitnessedList"
+        component={UpdateWitnessedList}
+        options={{ title: "" }}
+      />
+      <Stack.Screen
+        name="Comment"
+        component={Comment}
+        options={{ title: "" }}
+      />
+      <Stack.Screen
+        name="AddDevice"
+        component={AddDevice}
         options={{
-          headerShown: false,
+          title: "기기 등록",
+          headerTitleStyle,
         }}
       />
-    )}
-    <Stack.Screen name="AuthSelector" component={AuthSelector} />
-    <Stack.Screen
-      name="LostDetail"
-      component={LostDetail}
-      options={{ title: "" }}
-    />
-    <Stack.Screen
-      name="WitnessedDetail"
-      component={WitnessedDetail}
-      options={{ title: "" }}
-    />
-    <Stack.Screen
-      name="AddDevice"
-      component={AddDevice}
-      options={{
-        headerTitle: "기기 등록",
-        headerTitleStyle,
-      }}
-    />
-  </Stack.Navigator>
-);
+    </Stack.Navigator>
+  );
+};
 
 export default SharedStack;

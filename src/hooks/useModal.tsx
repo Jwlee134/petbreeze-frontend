@@ -22,6 +22,7 @@ const height = Dimensions.get("screen").height;
 interface ICenterProps {
   children: ReactNode;
   headerTitle?: string;
+  useContentPadding?: boolean;
 }
 
 const BottomContainer = styled.View`
@@ -43,14 +44,14 @@ const BottomHeader = styled.View`
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  margin: 12px 0px;
+  height: 44px;
 `;
 
 const CenterHeader = styled.View`
   width: 100%;
   height: 46px;
   background-color: white;
-  border-bottom-width: 2px;
+  border-bottom-width: 1px;
   border-bottom-color: rgba(0, 0, 0, 0.3);
   justify-content: center;
   align-items: center;
@@ -58,17 +59,19 @@ const CenterHeader = styled.View`
 
 const Title = styled.Text`
   font-size: 17px;
-  flex-grow: 1.2;
   text-align: center;
+  width: 33.3%;
 `;
 
 const CenterHeaderTitle = styled.Text`
   font-size: 18px;
+  color: ${palette.blue_6e};
 `;
 
 const Button = styled.TouchableOpacity`
-  flex-grow: 1;
-  width: 80px;
+  height: 100%;
+  width: 33.3%;
+  justify-content: center;
 `;
 
 const ToggleText = styled.Text`
@@ -83,9 +86,9 @@ const BottomContent = styled.View`
   align-items: center;
 `;
 
-const CenterContent = styled.View`
+const CenterContent = styled.View<{ useContentPadding: boolean }>`
   background-color: white;
-  padding: 22px;
+  padding: ${({ useContentPadding }) => (useContentPadding ? "22px" : "0px")};
 `;
 
 const useModal = ({ type, handleCancel }: IModalProps) => {
@@ -110,8 +113,8 @@ const useModal = ({ type, handleCancel }: IModalProps) => {
       margin: 0,
     },
     ...(type === "center" && {
-      animationIn: "zoomIn",
-      animationOut: "zoomOut",
+      animationIn: "fadeInUp",
+      animationOut: "fadeOutDown",
     }),
     deviceHeight: height,
     statusBarTranslucent: true,
@@ -147,14 +150,20 @@ const useModal = ({ type, handleCancel }: IModalProps) => {
     </BottomContainer>
   );
 
-  const CenterModalComponent = ({ headerTitle, children }: ICenterProps) => (
+  const CenterModalComponent = ({
+    headerTitle,
+    children,
+    useContentPadding = true,
+  }: ICenterProps) => (
     <CenterContainer>
       {headerTitle && (
         <CenterHeader>
           <CenterHeaderTitle>{headerTitle}</CenterHeaderTitle>
         </CenterHeader>
       )}
-      <CenterContent>{children}</CenterContent>
+      <CenterContent useContentPadding={useContentPadding}>
+        {children}
+      </CenterContent>
     </CenterContainer>
   );
 

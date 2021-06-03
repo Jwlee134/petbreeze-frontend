@@ -1,0 +1,19 @@
+{
+  "photos": [
+    "https://next-bnb-jw.s3.ap-northeast-2.amazonaws.com/room/01a9c9f8-1586-44ee-bff3-ac24e84d2f50-20190516203841_IMG_0192-01.jpeg",
+    "https://next-bnb-jw.s3.ap-northeast-2.amazonaws.com/room/01a9c9f8-1586-44ee-bff3-ac24e84d2f50-20190516203841_IMG_0192-01.jpeg",
+    "https://next-bnb-jw.s3.ap-northeast-2.amazonaws.com/room/01a9c9f8-1586-44ee-bff3-ac24e84d2f50-20190516203841_IMG_0192-01.jpeg",
+    "https://next-bnb-jw.s3.ap-northeast-2.amazonaws.com/room/01a9c9f8-1586-44ee-bff3-ac24e84d2f50-20190516203841_IMG_0192-01.jpeg",
+    "https://next-bnb-jw.s3.ap-northeast-2.amazonaws.com/room/01a9c9f8-1586-44ee-bff3-ac24e84d2f50-20190516203841_IMG_0192-01.jpeg"
+  ],
+  "name": "막둥이",
+  "species": "진도믹스",
+  "gender": "여",
+  "age": 3,
+  "lostDate": "20210427",
+  "lostPlace": "서울특별시 관악구 낙성대 행운동 성당",
+  "characteristic": "동그란 펜던트 달린 빨간 목줄",
+  "phoneNumber": "01027275365",
+  "any": "사람을 좋아하고 따름",
+  "liked": false
+}

@@ -12,6 +12,9 @@ type SharedStackParamList = {
   WitnessedDetail: {
     id: number;
   };
+  UpdateWitnessedList: undefined;
+  Comment: undefined;
+  AuthSelector: undefined;
 };
 
 export type HomeScreenNavigationProp = StackNavigationProp<
@@ -29,6 +32,14 @@ export type NotificationScreenNavigationProp = StackNavigationProp<
 export type PostAnimalInfoScreenNavigationProp = StackNavigationProp<
   SharedStackParamList,
   "PostAnimalInfo"
+>;
+export type LostDetailScreenNavigationProp = StackNavigationProp<
+  SharedStackParamList,
+  "LostDetail"
+>;
+export type CommentScreenNavigationProp = StackNavigationProp<
+  SharedStackParamList,
+  "Comment"
 >;
 
 type PostListTabParamList = {

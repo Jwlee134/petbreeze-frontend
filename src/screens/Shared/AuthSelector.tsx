@@ -2,7 +2,7 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { userActions } from "~/store/user";
 import styled from "styled-components/native";
-import AuthButton from "~/components/common/AuthButton";
+import AuthButton from "~/components/common/button/AuthButton";
 import useFocusEvent from "~/hooks/useFocusEvent";
 import { kakaoLoginAPI } from "~/api/oauth";
 
@@ -26,9 +26,9 @@ const AuthSelector = () => {
 
   const handleKakaoLogin = async () => {
     let token: KakaoOAuthToken | null = await login();
-    const { data } = await kakaoLoginAPI(token.accessToken);
-    dispatch(userActions.login(data.key));
-    token = null;
+    /* const { data } = await kakaoLoginAPI(token.accessToken); */
+    dispatch(userActions.login("asdf"));
+    /* token = null; */
   };
 
   return (

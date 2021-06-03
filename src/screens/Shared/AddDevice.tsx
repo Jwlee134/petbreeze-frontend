@@ -5,7 +5,6 @@ import SidePaddingContainer from "~/components/common/container/SidePaddingConta
 import Fail from "~/components/lottie/Fail";
 import Loading from "~/components/lottie/Loading";
 import Success from "~/components/lottie/Success";
-import palette from "~/styles/palette";
 import SubmitTagInfo from "./SubmitTagInfo";
 
 const Text = styled.Text`
