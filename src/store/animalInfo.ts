@@ -9,8 +9,9 @@ interface IState {
   breed: string;
   gender: string;
   birthYear: number;
-  lostTime: string;
-  lostPlace: string;
+  eventTime: string;
+  eventPlace: string;
+  eventPlaceInfo: string;
   characteristic: string;
   hasTag: boolean | null;
   phoneNumber: { id: number; value: string }[];
@@ -27,8 +28,9 @@ const initialState: IState = {
   breed: "",
   gender: "",
   birthYear: 0,
-  lostTime: "",
-  lostPlace: "",
+  eventTime: "",
+  eventPlace: "",
+  eventPlaceInfo: "",
   characteristic: "",
   hasTag: null,
   phoneNumber: [{ id: 0, value: "" }],
@@ -61,11 +63,14 @@ const animalInfo = createSlice({
     setBirthYear: (state, action: PayloadAction<number>) => {
       state.birthYear = action.payload;
     },
-    setLostTime: (state, action: PayloadAction<string>) => {
-      state.lostTime = action.payload;
+    setEventTime: (state, action: PayloadAction<string>) => {
+      state.eventTime = action.payload;
     },
-    setLostPlace: (state, action: PayloadAction<string>) => {
-      state.lostPlace = action.payload;
+    setEventPlace: (state, action: PayloadAction<string>) => {
+      state.eventPlace = action.payload;
+    },
+    setEventPlaceInfo: (state, action: PayloadAction<string>) => {
+      state.eventPlaceInfo = action.payload;
     },
     setCharacteristic: (state, action: PayloadAction<string>) => {
       state.characteristic = action.payload;

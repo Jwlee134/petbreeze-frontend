@@ -34,13 +34,15 @@ const PostList = () => {
   return (
     <List
       data={data}
-      keyExtractor={(item, index) => `list-${index}`}
+      keyExtractor={(_, index) => `list-${index}`}
       renderItem={({ item, index }) => (
         <Post data={item} style={{ marginRight: index % 2 === 0 ? 10 : 0 }} />
       )}
       numColumns={2}
       key={2}
-      contentContainerStyle={{ alignItems: "center" }}
+      contentContainerStyle={{
+        alignItems: "center",
+      }}
     />
   );
 };

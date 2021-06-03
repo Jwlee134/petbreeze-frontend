@@ -124,7 +124,7 @@ const LostAnimalInfo = ({
           placeholder="잃어버린 시간*"
           isInputEditable={false}
           value={
-            animalInfo.lostTime ? ISOStringToLocal(animalInfo.lostTime) : ""
+            animalInfo.eventTime ? ISOStringToLocal(animalInfo.eventTime) : ""
           }
           onPress={() => {
             handlePress("잃어버린 시간");

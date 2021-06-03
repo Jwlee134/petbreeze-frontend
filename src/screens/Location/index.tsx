@@ -1,11 +1,13 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
+  FlatList,
   Linking,
   NativeEventEmitter,
   NativeModules,
   Platform,
   Text,
   TouchableOpacity,
+  View,
 } from "react-native";
 import styled from "styled-components/native";
 import { useAppSelector } from "~/store";
@@ -14,7 +16,7 @@ import { LocationScreenNavigationProp } from "~/types/navigator";
 import AuthSelector from "../Shared/AuthSelector";
 import Modal from "react-native-modal";
 
-import BleManager from "react-native-ble-manager";
+import BleManager, { start } from "react-native-ble-manager";
 import AndroidOpenSettings from "react-native-android-open-settings";
 import CustomHeader from "~/components/common/CustomHeader";
 import useModal from "~/hooks/useModal";
@@ -37,31 +39,71 @@ const Location = ({
     type: "center",
   });
 
+  const [isScanning, setIsScanning] = useState(false);
+  const peripherals = new Map();
+  const [list, setList] = useState<any[]>([]);
+
+  const startScan = () => {
+    if (!isScanning) {
+      BleManager.scan([], 3, true)
+        .then(results => {
+          console.log("Scanning...");
+          setIsScanning(true);
+        })
+        .catch(err => {
+          console.error(err);
+        });
+    }
+  };
+
+  const handleStopScan = () => {
+    console.log("Scan is stopped");
+    setIsScanning(false);
+  };
+
+  const handleDiscoverPeripheral = (peripheral: any) => {
+    console.log("Got ble peripheral", peripheral);
+    if (!peripheral.name) {
+      peripheral.name = "NO NAME";
+    }
+    peripherals.set(peripheral.id, peripheral);
+    setList(Array.from(peripherals.values()));
+  };
+
   const handleOpenSetting = () => {
     Platform.OS === "ios"
       ? Linking.openURL("App-Prefs:Bluetooth")
       : AndroidOpenSettings.bluetoothSettings();
   };
 
-  const getPeripheral = (peripheral: any) => {
+  /* const getPeripheral = (peripheral: any) => {
     console.log(peripheral);
-  };
+  }; */
 
   useEffect(() => {
     BleManager.start({ showAlert: false }).then(() => {
       console.log("Initialized");
       // 최초 페어링을 할 시 기기의 시리얼 넘버를 받아오기 위함
-      bleManagerEmitter.addListener(
-        "BleManagerConnectPeripheral",
-        getPeripheral,
-      );
     });
 
-    return () =>
-      bleManagerEmitter.removeListener(
+    /* bleManagerEmitter.addListener("BleManagerConnectPeripheral", getPeripheral); */
+    bleManagerEmitter.addListener(
+      "BleManagerDiscoverPeripheral",
+      handleDiscoverPeripheral,
+    );
+    bleManagerEmitter.addListener("BleManagerStopScan", handleStopScan);
+
+    return () => {
+      /* bleManagerEmitter.removeListener(
         "BleManagerConnectPeripheral",
         getPeripheral,
+      ); */
+      bleManagerEmitter.removeListener(
+        "BlemanagerDiscoverPeripheral",
+        handleDiscoverPeripheral,
       );
+      bleManagerEmitter.removeListener("BleManagerStopScan", handleStopScan);
+    };
   }, []);
 
   if (!isLoggedIn) return <AuthSelector />;
@@ -72,17 +114,28 @@ const Location = ({
         <CustomHeader
           size="small"
           RightIcon={() => (
-            <Ionicons
-              name="information-circle-outline"
-              size={26}
-              onPress={open}
-            />
-          )}>
+            <Ionicons name="information-circle-outline" size={26} />
+          )}
+          RightIconOnPress={open}>
           어디개
         </CustomHeader>
         <TouchableOpacity onPress={handleOpenSetting}>
           <Text style={{ fontSize: 40 }}>Open bluetooth setting</Text>
         </TouchableOpacity>
+        <TouchableOpacity onPress={startScan}>
+          <Text>Start Scanning</Text>
+        </TouchableOpacity>
+        <FlatList
+          data={list}
+          renderItem={({ item }) => (
+            <View style={{ marginBottom: 10 }}>
+              <Text>{item.name}</Text>
+              <Text>RSSI: {item.rssi}</Text>
+              <Text>{item.id}</Text>
+            </View>
+          )}
+          keyExtractor={item => item.id}
+        />
       </SafeAreaContainer>
       <Modal {...modalProps}>
         <CenterModalComponent headerTitle="주의사항">

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Dimensions } from "react-native";
 import styled from "styled-components/native";
 
@@ -45,6 +45,10 @@ const Home = ({ navigation }: { navigation: HomeScreenNavigationProp }) => {
     modalProps,
     BottomModalComponent,
   } = useDistrictSelector();
+
+  useEffect(() => {
+    console.log(value);
+  }, [value]);
 
   return (
     <>

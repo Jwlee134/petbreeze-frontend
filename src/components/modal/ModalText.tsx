@@ -1,4 +1,5 @@
 import React, { ReactNode } from "react";
+import { StyleProp, TextStyle } from "react-native";
 import styled from "styled-components/native";
 
 const Container = styled.Text`
@@ -6,8 +7,12 @@ const Container = styled.Text`
   text-align: center;
 `;
 
-const ModalText = ({ children }: { children: ReactNode }) => (
-  <Container>{children}</Container>
-);
+const ModalText = ({
+  children,
+  style,
+}: {
+  children: ReactNode;
+  style?: StyleProp<TextStyle>;
+}) => <Container style={style}>{children}</Container>;
 
 export default ModalText;

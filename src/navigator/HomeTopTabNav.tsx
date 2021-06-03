@@ -23,7 +23,7 @@ const HomeTopTapNavigator = () => (
         marginHorizontal: 25,
       },
       pressColor: "white",
-      pressOpacity: 0.8,
+      pressOpacity: 0.5,
     }}>
     <Tab.Screen
       name="LostList"

@@ -125,7 +125,8 @@ const useBottomModalSelector = ({ open }: IProps) => {
         setSelectedIndex(0);
         break;
       case "잃어버린 시간":
-        dispatch(animalInfoActions.setLostTime(localToISOString(date)));
+      case "날짜 선택":
+        dispatch(animalInfoActions.setEventTime(localToISOString(date)));
         break;
       default:
         break;

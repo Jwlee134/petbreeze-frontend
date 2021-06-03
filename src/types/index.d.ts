@@ -4,6 +4,7 @@ export type AnimalInfoClickedField =
   | "출생 연도"
   | "성별"
   | "잃어버린 시간"
+  | "날짜 선택"
   | "";
 
 export type HandleRememberIndexArg =
