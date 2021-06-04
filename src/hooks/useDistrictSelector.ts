@@ -32,16 +32,18 @@ const useDistrictSelector = () => {
     [],
   );
 
-  const subCategoryList = useMemo(
-    () =>
-      (data[bigCategoryIndex][bigCategory] as SubCategoryList).map(item => {
+  const subCategoryList = useMemo(() => {
+    const list = (data[bigCategoryIndex][bigCategory] as SubCategoryList).map(
+      item => {
         if (typeof item !== "string") {
           return Object.keys(item)[0];
         }
         return item;
-      }),
-    [bigCategory],
-  );
+      },
+    );
+    if (list.length === 0) return [""];
+    return list;
+  }, [bigCategory]);
 
   const detailCategoryList = useMemo<string[]>(() => {
     if (!subCategory) return;
@@ -51,53 +53,37 @@ const useDistrictSelector = () => {
         return Object.keys(item)[0] === subCategory;
       },
     );
-    if (arr.length === 0) return [];
+    if (arr.length === 0) return [""];
     return Object.values(arr[0])[0];
   }, [subCategory]);
 
   const handleList = () => {
-    if (step === 1) {
-      return bigCategoryList;
-    } else if (step === 2) {
-      return subCategoryList;
-    } else {
-      return detailCategoryList;
+    switch (step) {
+      case 1:
+        return bigCategoryList;
+      case 2:
+        return subCategoryList;
+      default:
+        return detailCategoryList;
     }
   };
 
   const handleDone = () => {
-    if (step === 1) {
-      setBigCategory(bigCategoryList[bigCategoryIndex]);
-      setStep(prev => prev + 1);
-    } else if (step === 2) {
-      setSubCategory(subCategoryList[subCategoryIndex]);
-      setStep(prev => prev + 1);
-    } else {
-      setDetailCategory(detailCategoryList[detailCategoryIndex]);
+    switch (step) {
+      case 1:
+        setBigCategory(bigCategoryList[bigCategoryIndex]);
+        setStep(prev => prev + 1);
+        break;
+      case 2:
+        setSubCategory(subCategoryList[subCategoryIndex]);
+        setStep(prev => prev + 1);
+        break;
+      default:
+        setDetailCategory(detailCategoryList[detailCategoryIndex]);
+        setStep(prev => prev + 1);
+        break;
     }
   };
-
-  useEffect(() => {
-    if (step === 2 && subCategoryList.length === 0) {
-      setValue(bigCategory);
-      reset();
-      close();
-      return;
-    } else if (step === 3 && detailCategoryList.length === 0) {
-      setValue(`${bigCategory} ${subCategory}`);
-      reset();
-      close();
-      return;
-    }
-  }, [step]);
-
-  useEffect(() => {
-    if (detailCategory) {
-      setValue(`${bigCategory} ${subCategory} ${detailCategory}`);
-      reset();
-      close();
-    }
-  }, [detailCategory]);
 
   const selectedIndex =
     step === 1
@@ -107,14 +93,40 @@ const useDistrictSelector = () => {
       : detailCategoryIndex;
 
   const setSelectedIndex = (index: number) => {
-    if (step === 1) {
-      setBigCategryIndex(index);
-    } else if (step === 2) {
-      setSubCategoryIndex(index);
-    } else {
-      setDetailCategoryIndex(index);
+    switch (step) {
+      case 1:
+        setBigCategryIndex(index);
+        break;
+      case 2:
+        setSubCategoryIndex(index);
+        break;
+      default:
+        setDetailCategoryIndex(index);
+        break;
     }
   };
+
+  const done = () => {
+    close();
+    setTimeout(() => {
+      reset();
+    }, 300);
+  };
+
+  useEffect(() => {
+    if (step === 2 && subCategoryList.length === 1) {
+      setValue(bigCategory);
+      done();
+    }
+    if (step === 3 && detailCategoryList.length === 1) {
+      setValue(`${bigCategory} ${subCategory}`);
+      done();
+    }
+    if (step === 4 && detailCategoryList.length > 1 && detailCategory) {
+      setValue(`${bigCategory} ${subCategory} ${detailCategory}`);
+      done();
+    }
+  }, [step]);
 
   return {
     handleList,
