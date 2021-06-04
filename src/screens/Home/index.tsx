@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Dimensions } from "react-native";
 import styled from "styled-components/native";
 
@@ -27,7 +27,7 @@ const SearchButton = styled.TouchableOpacity`
   position: absolute;
   top: 65px;
   left: 25px;
-  width: ${width - 50};
+  width: ${width - 50}px;
 `;
 
 const Home = ({ navigation }: { navigation: HomeScreenNavigationProp }) => {
@@ -45,10 +45,6 @@ const Home = ({ navigation }: { navigation: HomeScreenNavigationProp }) => {
     modalProps,
     BottomModalComponent,
   } = useDistrictSelector();
-
-  useEffect(() => {
-    console.log(value);
-  }, [value]);
 
   return (
     <>
@@ -68,9 +64,9 @@ const Home = ({ navigation }: { navigation: HomeScreenNavigationProp }) => {
       </SafeAreaContainer>
       <Modal {...modalProps}>
         <BottomModalComponent
+          handleDone={handleDone}
           isOneStep={false}
-          headerTitle="지역 선택"
-          handleDone={handleDone}>
+          headerTitle="지역 선택">
           <WheelPicker
             data={handleList()}
             selectedIndex={selectedIndex}

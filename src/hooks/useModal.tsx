@@ -33,7 +33,7 @@ const BottomContainer = styled.View`
 `;
 
 const CenterContainer = styled.View`
-  width: ${centerModalWidth};
+  width: ${centerModalWidth}px;
   border-width: 1px;
   border-color: ${palette.gray_e5};
   border-radius: 8px;
