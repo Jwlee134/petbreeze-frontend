@@ -1,5 +1,5 @@
-export const years = Array.from(Array(20), (_, i) => 2021 - i).map(
-  year => year,
+export const years = Array.from(Array(20), (_, i) => 2021 - i).map(year =>
+  String(year),
 );
 
 export const species = ["개", "고양이", "기타", "직접 입력"];
