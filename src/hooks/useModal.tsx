@@ -1,5 +1,5 @@
 import React, { ReactNode, useState } from "react";
-import { Dimensions } from "react-native";
+import { Dimensions, Keyboard } from "react-native";
 import { ModalProps } from "react-native-modal";
 import styled from "styled-components/native";
 import palette from "~/styles/palette";
@@ -94,7 +94,10 @@ const CenterContent = styled.View<{ useContentPadding: boolean }>`
 const useModal = ({ type, handleCancel }: IModalProps) => {
   const [isModalVisible, setModalVisible] = useState(false);
 
-  const open = () => setModalVisible(true);
+  const open = () => {
+    setModalVisible(true);
+    Keyboard.dismiss();
+  };
 
   const close = () => setModalVisible(false);
 
