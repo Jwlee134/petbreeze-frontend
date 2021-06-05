@@ -3,7 +3,7 @@ import ConfirmButton from "~/components/common/button/ConfirmButton";
 import CategoryTitle from "~/components/common/CategoryTitle";
 import KeyboardAwareScrollContainer from "~/components/common/container/KeyboardAwareScrollContainer";
 import SidePaddingContainer from "~/components/common/container/SidePaddingContainer";
-import ShadowInput from "~/components/common/input/ShadowInput";
+import Input from "~/components/common/Input";
 import UploadPhoto from "~/components/UploadPhoto";
 import styled from "styled-components/native";
 import useBottomModalSelector from "~/hooks/useBottomModalSelector";
@@ -47,7 +47,7 @@ const UpdateWitnessedList = () => {
       <KeyboardAwareScrollContainer>
         <CategoryTitle>목격 내역 업데이트</CategoryTitle>
         <SidePaddingContainer style={{ paddingTop: 12 }}>
-          <ShadowInput
+          <Input
             onPress={() => handleOpen("날짜 선택")}
             value={
               animalInfo.eventTime ? ISOStringToLocal(animalInfo.eventTime) : ""
@@ -55,12 +55,13 @@ const UpdateWitnessedList = () => {
             placeholder="날짜 선택*"
             isInputEditable={false}
           />
-          <ShadowInput
+          <Input
             onPress={() => {}}
             placeholder="목격장소 선택*"
             isInputEditable={false}
           />
-          <ShadowInput
+          <Input
+            isMultiline
             placeholder="목격장소 설명"
             value={animalInfo.eventPlaceInfo}
             onChangeText={text =>

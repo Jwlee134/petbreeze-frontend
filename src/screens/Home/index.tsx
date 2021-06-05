@@ -5,7 +5,7 @@ import styled from "styled-components/native";
 import AddCircleButton from "~/components/common/button/AddCircleButton";
 import SafeAreaContainer from "~/components/common/container/SafeAreaContainer";
 import CustomHeader from "~/components/common/CustomHeader";
-import Input from "~/components/common/input/Input";
+import Input from "~/components/common/Input";
 import useFocusEvent from "~/hooks/useFocusEvent";
 import HomeTopTapNavigator from "~/navigator/HomeTopTabNav";
 import { HomeScreenNavigationProp } from "~/types/navigator";
@@ -21,13 +21,6 @@ const { width } = Dimensions.get("window");
 
 const Container = styled.View`
   flex: 1;
-`;
-
-const SearchButton = styled.TouchableOpacity`
-  position: absolute;
-  top: 65px;
-  left: 25px;
-  width: ${width - 50}px;
 `;
 
 const Home = ({ navigation }: { navigation: HomeScreenNavigationProp }) => {
@@ -52,9 +45,23 @@ const Home = ({ navigation }: { navigation: HomeScreenNavigationProp }) => {
         <CustomHeader size="big">어디개</CustomHeader>
         <Container>
           <HomeTopTapNavigator />
-          <SearchButton activeOpacity={0.8} onPress={open}>
-            <Input isHomeInput value={value} RightIcon={() => <Search />} />
-          </SearchButton>
+          <Input
+            onPress={open}
+            buttonStyle={{
+              position: "absolute",
+              top: 65,
+              left: 25,
+              width: width - 50,
+            }}
+            style={{
+              height: 35,
+              borderRadius: 0,
+            }}
+            hasShadow={false}
+            isInputEditable={false}
+            value={value}
+            RightIcon={() => <Search />}
+          />
         </Container>
         <AddCircleButton
           isFloating={true}

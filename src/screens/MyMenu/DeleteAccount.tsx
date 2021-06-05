@@ -3,7 +3,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import styled from "styled-components/native";
 import ConfirmButton from "~/components/common/button/ConfirmButton";
 import SidePaddingContainer from "~/components/common/container/SidePaddingContainer";
-import Input from "~/components/common/input/Input";
+import Input from "~/components/common/Input";
 
 const InputContainer = styled.View`
   margin: 26px 0px;
@@ -35,7 +35,12 @@ const DeleteAccount = () => {
             반영하여 향후 서비스 품질 {"\n"}개선을 위해 노력하겠습니다.
           </Text>
           <InputContainer>
-            <Input value={value} onChangeText={text => setValue(text)} />
+            <Input
+              hasShadow={false}
+              isMultiline
+              value={value}
+              onChangeText={text => setValue(text)}
+            />
           </InputContainer>
           <Text>
             회원 탈퇴 시 2개월간 동일한 휴대폰 번호나 {"\n"}이메일 주소로

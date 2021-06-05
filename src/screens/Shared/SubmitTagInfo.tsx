@@ -3,7 +3,7 @@ import styled from "styled-components/native";
 import ConfirmButton from "~/components/common/button/ConfirmButton";
 import KeyboardAwareScrollContainer from "~/components/common/container/KeyboardAwareScrollContainer";
 import SidePaddingContainer from "~/components/common/container/SidePaddingContainer";
-import ShadowInput from "~/components/common/input/ShadowInput";
+import Input from "~/components/common/Input";
 
 import ImagePicker from "react-native-image-crop-picker";
 
@@ -127,12 +127,12 @@ const SubmitTagInfo = () => {
             </ModifyButton>
           </ImageContainer>
           <Container>
-            <ShadowInput
+            <Input
               placeholder="이름*"
               value={animalInfo.name}
               onChangeText={text => dispatch(animalInfoActions.setName(text))}
             />
-            <ShadowInput
+            <Input
               placeholder="출생 연도*"
               isInputEditable={false}
               value={animalInfo.birthYear ? `${animalInfo.birthYear}년` : ""}
@@ -141,7 +141,7 @@ const SubmitTagInfo = () => {
                 handleRememberIndex("birthYear");
               }}
             />
-            <ShadowInput
+            <Input
               placeholder="주의사항"
               value={animalInfo.caution}
               onChangeText={text =>
@@ -149,7 +149,7 @@ const SubmitTagInfo = () => {
               }
             />
             <RowContainer>
-              <ShadowInput
+              <Input
                 ref={SpeciesRef}
                 placeholder="동물 종류*"
                 value={animalInfo.species}
@@ -164,7 +164,7 @@ const SubmitTagInfo = () => {
                 }}
                 shadowContainerStyle={{ marginRight: 13 }}
               />
-              <ShadowInput
+              <Input
                 ref={BreedsRef}
                 placeholder="품종 선택*"
                 value={animalInfo.breed}
@@ -183,7 +183,7 @@ const SubmitTagInfo = () => {
                 }}
               />
             </RowContainer>
-            <ShadowInput
+            <Input
               placeholder="몸무게"
               keyboardType="number-pad"
               value={animalInfo.weight ? String(animalInfo.weight) : ""}
@@ -192,7 +192,7 @@ const SubmitTagInfo = () => {
               }
             />
             {animalInfo.phoneNumber.map(field => (
-              <ShadowInput
+              <Input
                 key={field.id}
                 placeholder={
                   field.id === 0 ? "보호자 연락처 1*" : "보호자 연락처 2"

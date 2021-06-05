@@ -6,7 +6,7 @@ import AddCircleButton from "~/components/common/button/AddCircleButton";
 import ConfirmButton from "~/components/common/button/ConfirmButton";
 import KeyboardAwareScrollContainer from "~/components/common/container/KeyboardAwareScrollContainer";
 import SidePaddingContainer from "~/components/common/container/SidePaddingContainer";
-import ShadowInput from "~/components/common/input/ShadowInput";
+import Input from "~/components/common/Input";
 import { useAppSelector } from "~/store";
 import { settingsActions } from "~/store/settings";
 
@@ -64,7 +64,7 @@ const WifiSSID = () => {
           </Text>
           {inputArr.map((item, index) => (
             <InputContainer key={index}>
-              <ShadowInput
+              <Input
                 value={item.id}
                 placeholder="ID"
                 style={{ marginTop: 0 }}
@@ -75,7 +75,7 @@ const WifiSSID = () => {
                   setInputArr(items);
                 }}
               />
-              <ShadowInput
+              <Input
                 value={item.password}
                 placeholder="PW"
                 autoCapitalize="none"
