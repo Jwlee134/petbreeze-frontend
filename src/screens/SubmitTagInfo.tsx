@@ -1,7 +1,6 @@
 import React, { useLayoutEffect } from "react";
 import styled from "styled-components/native";
 import ConfirmButton from "~/components/common/button/ConfirmButton";
-import KeyboardAwareScrollContainer from "~/components/common/container/KeyboardAwareScrollContainer";
 import SidePaddingContainer from "~/components/common/container/SidePaddingContainer";
 import Input from "~/components/common/Input";
 
@@ -17,6 +16,7 @@ import WheelPicker from "~/components/common/WheelPicker";
 import { animalInfoActions } from "~/store/animalInfo";
 import { useNavigation } from "@react-navigation/core";
 import { DeviceListScreenNavigationProp } from "~/types/navigator";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 const Container = styled.View`
   width: 100%;
@@ -107,7 +107,7 @@ const SubmitTagInfo = () => {
 
   return (
     <>
-      <KeyboardAwareScrollContainer>
+      <KeyboardAwareScrollView keyboardShouldPersistTaps="handled">
         <SidePaddingContainer style={{ alignItems: "center" }}>
           <Title>인식표 정보를 채워주세요.</Title>
           <SmallText>
@@ -219,7 +219,7 @@ const SubmitTagInfo = () => {
             저장
           </ConfirmButton>
         </SidePaddingContainer>
-      </KeyboardAwareScrollContainer>
+      </KeyboardAwareScrollView>
       <Modal {...modalProps}>
         <BottomModalComponent
           headerTitle={clickedField}
