@@ -13,7 +13,7 @@ type SharedStackParamList = {
     id: number;
   };
   UpdateWitnessedList: undefined;
-  Comment: undefined;
+  CommentList: undefined;
   AuthSelector: undefined;
 };
 
@@ -39,7 +39,7 @@ export type LostDetailScreenNavigationProp = StackNavigationProp<
 >;
 export type CommentScreenNavigationProp = StackNavigationProp<
   SharedStackParamList,
-  "Comment"
+  "CommentList"
 >;
 
 type PostListTabParamList = {

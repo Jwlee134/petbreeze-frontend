@@ -207,7 +207,7 @@ const LostDetail = () => {
           </ConfirmButton>
           <ConfirmButton
             style={{ width: width / 2 - 10 }}
-            onPress={() => navigation.navigate("Comment")}>
+            onPress={() => navigation.navigate("CommentList")}>
             댓글
           </ConfirmButton>
         </ButtonContainer>
