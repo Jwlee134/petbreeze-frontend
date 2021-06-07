@@ -33,3 +33,11 @@ export type BigCategory =
   | "제주특별자치도";
 
 export type SubCategoryList = ({ [key: string]: string[] } | string)[];
+
+export type ModalType = "share" | "manage" | "saved";
+export type ModalHeader =
+  | "공유하기"
+  | "게시물 저장"
+  | "게시물 관리"
+  | "전단지 이미지로 저장"
+  | "";

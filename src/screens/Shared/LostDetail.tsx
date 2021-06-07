@@ -1,5 +1,5 @@
 import { useNavigation, useRoute } from "@react-navigation/core";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FlatList, Image, ScrollView, useWindowDimensions } from "react-native";
 import styled from "styled-components/native";
 import CategoryTitle from "~/components/common/CategoryTitle";
@@ -24,6 +24,8 @@ import ShareModal from "~/components/modal/PostDetailModal/ShareModal";
 import SavedModal from "~/components/modal/PostDetailModal/SavedModal";
 import ManageModal from "~/components/modal/PostDetailModal/ManageModal";
 import ConfirmButton from "~/components/common/button/ConfirmButton";
+
+import { ModalType, ModalHeader } from "~/types";
 
 const TitleContainer = styled.View`
   margin: 17px 0px;
@@ -86,34 +88,39 @@ const ButtonContainer = styled.View`
   width: 100%;
 `;
 
-type ModalType = "share" | "manage" | "saved" | "";
-
 const LostDetail = () => {
   const navigation = useNavigation<LostDetailScreenNavigationProp>();
   const route = useRoute<LostDetailScreenRouteProp>();
   const { width, height } = useWindowDimensions();
   console.log(route.params.id);
 
-  const [modalType, setModalType] = useState<ModalType>("");
+  const [modalType, setModalType] = useState<ModalType>("share");
+  const [modalHeader, setModalHeader] = useState<ModalHeader>("공유하기");
 
-  const { open, modalProps, CenterModalComponent } = useModal({
+  const { open, close, modalProps, CenterModalComponent } = useModal({
     type: "center",
+    handleCancel: () =>
+      setTimeout(() => {
+        setModalHeader("공유하기");
+      }, 300),
   });
 
-  const handleShare = () => {
-    setModalType("share");
+  const handleOpenModal = (type: ModalType) => {
+    setModalType(type);
     open();
   };
 
-  const handleLike = () => {
-    setModalType("saved");
-    open();
-  };
-
-  const handleManage = () => {
-    setModalType("manage");
-    open();
-  };
+  useEffect(() => {
+    setModalHeader(
+      modalType === "share"
+        ? "공유하기"
+        : modalType === "saved"
+        ? "게시물 저장"
+        : modalType === "manage"
+        ? "게시물 관리"
+        : "",
+    );
+  }, [modalType]);
 
   return (
     <>
@@ -141,17 +148,23 @@ const LostDetail = () => {
                 <Title>{data.name}</Title>
               </Block>
               <Block style={{ justifyContent: "flex-end" }}>
-                <IconButton onPress={handleShare} activeOpacity={0.7}>
+                <IconButton
+                  onPress={() => handleOpenModal("share")}
+                  activeOpacity={0.7}>
                   <Share style={{ marginRight: 2, marginTop: 1 }} />
                 </IconButton>
-                <IconButton onPress={handleLike} activeOpacity={0.7}>
+                <IconButton
+                  onPress={() => handleOpenModal("saved")}
+                  activeOpacity={0.7}>
                   {data.liked ? (
                     <HeartRed style={{ marginTop: 2 }} />
                   ) : (
                     <HeartPink style={{ marginTop: 2 }} />
                   )}
                 </IconButton>
-                <IconButton onPress={handleManage} activeOpacity={0.7}>
+                <IconButton
+                  onPress={() => handleOpenModal("manage")}
+                  activeOpacity={0.7}>
                   <More />
                 </IconButton>
               </Block>
@@ -168,18 +181,11 @@ const LostDetail = () => {
           </DetailTextContainer>
           <DetailTextContainer>
             <DetailTitle>실종 장소</DetailTitle>
-            <DetailContent>
-              {data.lostPlace}
-              {data.lostPlace}
-            </DetailContent>
+            <DetailContent>{data.lostPlace}</DetailContent>
           </DetailTextContainer>
           <DetailTextContainer>
             <DetailTitle>특징</DetailTitle>
-            <DetailContent>
-              {data.characteristic}
-              {data.characteristic}
-              {data.characteristic}
-            </DetailContent>
+            <DetailContent>{data.characteristic}</DetailContent>
           </DetailTextContainer>
           <DetailTextContainer>
             <DetailTitle>연락처</DetailTitle>
@@ -190,12 +196,7 @@ const LostDetail = () => {
           {data.any && (
             <DetailTextContainer>
               <DetailTitle>기타</DetailTitle>
-              <DetailContent>
-                {data.any}
-                {data.any}
-                {data.any}
-                {data.any}
-              </DetailContent>
+              <DetailContent>{data.any}</DetailContent>
             </DetailTextContainer>
           )}
         </SidePaddingContainer>
@@ -214,19 +215,18 @@ const LostDetail = () => {
       </ScrollView>
       <Modal {...modalProps}>
         <CenterModalComponent
-          useContentPadding={modalType === "saved"}
-          headerTitle={
-            modalType === "share"
-              ? "공유하기"
-              : modalType === "saved"
-              ? "게시물 저장"
-              : modalType === "manage"
-              ? "게시물 관리"
-              : ""
-          }>
-          {modalType === "share" && <ShareModal />}
+          useContentPadding={
+            modalType === "saved" || modalHeader === "전단지 이미지로 저장"
+          }
+          headerTitle={modalHeader}>
+          {modalType === "share" && (
+            <ShareModal
+              modalHeader={modalHeader}
+              setModalHeader={setModalHeader}
+            />
+          )}
           {modalType === "saved" && <SavedModal />}
-          {modalType === "manage" && <ManageModal />}
+          {modalType === "manage" && <ManageModal close={close} />}
         </CenterModalComponent>
       </Modal>
     </>

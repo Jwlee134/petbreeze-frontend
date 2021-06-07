@@ -6,9 +6,10 @@ import palette from "~/styles/palette";
 interface IProps extends TouchableOpacityProps {
   children: ReactNode;
   color?: string;
+  isLeft?: boolean;
 }
 
-const Container = styled.TouchableOpacity`
+const Container = styled.TouchableHighlight<{ isLeft: boolean }>`
   width: 80px;
   border-width: 2px;
   border-color: ${palette.blue_6e};
@@ -16,6 +17,11 @@ const Container = styled.TouchableOpacity`
   justify-content: center;
   align-items: center;
   padding: 6px;
+  ${({ isLeft }) =>
+    isLeft &&
+    css`
+      margin-right: 10px;
+    `}
 `;
 
 const Label = styled.Text<{ color: string | undefined }>`
@@ -27,8 +33,13 @@ const Label = styled.Text<{ color: string | undefined }>`
     `}
 `;
 
-const ModalButton = ({ children, color, ...props }: IProps) => (
-  <Container activeOpacity={0.8} {...props}>
+const ModalButton = ({
+  children,
+  isLeft = false,
+  color = palette.blue_6e,
+  ...props
+}: IProps) => (
+  <Container underlayColor={palette.gray_f3} isLeft={isLeft} {...props}>
     <Label color={color}>{children}</Label>
   </Container>
 );
