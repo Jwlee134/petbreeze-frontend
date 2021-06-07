@@ -41,7 +41,7 @@ const PostList = () => {
       numColumns={2}
       key={2}
       contentContainerStyle={{
-        alignItems: "center",
+        paddingHorizontal: 25,
       }}
     />
   );
