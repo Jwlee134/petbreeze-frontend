@@ -1,5 +1,8 @@
 import React from "react";
-import { createStackNavigator } from "@react-navigation/stack";
+import {
+  createStackNavigator,
+  TransitionPresets,
+} from "@react-navigation/stack";
 import DeviceSetting from "~/screens/MyMenu/DeviceSetting";
 import LocationCollectInterval from "~/screens/MyMenu/DeviceSetting/LocationCollectInterval";
 import SafetyZoneSetting from "~/screens/MyMenu/DeviceSetting/SafetyZoneSetting";
@@ -15,6 +18,7 @@ const DeviceSettingStackNav = () => (
     screenOptions={{
       headerBackImage: () => <HeaderBackButton />,
       ...stackNavScreenOptions,
+      ...TransitionPresets.SlideFromRightIOS,
     }}>
     <Stack.Screen
       name="DeviceSetting"

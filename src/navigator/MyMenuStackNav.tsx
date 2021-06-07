@@ -1,5 +1,8 @@
 import React from "react";
-import { createStackNavigator } from "@react-navigation/stack";
+import {
+  createStackNavigator,
+  TransitionPresets,
+} from "@react-navigation/stack";
 import MyMenu from "~/screens/MyMenu";
 import PetProfile from "~/screens/MyMenu/PetProfile";
 import PassManagement from "~/screens/MyMenu/PassManagement";
@@ -19,6 +22,7 @@ const MyMenuStackNav = () => (
     screenOptions={{
       headerBackImage: () => <HeaderBackButton />,
       ...stackNavScreenOptions,
+      ...TransitionPresets.SlideFromRightIOS,
     }}>
     <Stack.Screen
       name="MyMenu"

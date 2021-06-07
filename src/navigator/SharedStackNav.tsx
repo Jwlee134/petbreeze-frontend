@@ -1,16 +1,17 @@
 import React from "react";
-import { createStackNavigator } from "@react-navigation/stack";
+import {
+  createStackNavigator,
+  TransitionPresets,
+} from "@react-navigation/stack";
 import WitnessedDetail from "~/screens/Shared/WitnessedDetail";
 import Notification from "~/screens/Notification";
 import AuthSelector from "~/screens/Shared/AuthSelector";
 import Location from "~/screens/Location";
 import MyMenuStackNav from "./MyMenuStackNav";
 import LostDetail from "~/screens/Shared/LostDetail";
-import AddDevice from "~/screens/Shared/AddDevice";
-import { headerTitleStyle, stackNavScreenOptions } from "~/styles/navigator";
+import { stackNavScreenOptions } from "~/styles/navigator";
 import HeaderBackButton from "~/components/common/button/HeaderBackButton";
 import UpdateWitnessedList from "~/screens/Shared/UpdateWitnessedList";
-import Comment from "~/screens/Shared/Comment";
 import Home from "~/screens/Home";
 import PostAnimalInfo from "~/screens/Home/PostAnimalInfo";
 import { useAppSelector } from "~/store";
@@ -25,6 +26,7 @@ const SharedStack = ({ screenName }: { screenName: string }) => {
       screenOptions={{
         headerBackImage: () => <HeaderBackButton />,
         ...stackNavScreenOptions,
+        ...TransitionPresets.SlideFromRightIOS,
       }}>
       {screenName === "Home" && (
         <Stack.Screen
@@ -81,19 +83,6 @@ const SharedStack = ({ screenName }: { screenName: string }) => {
         name="UpdateWitnessedList"
         component={UpdateWitnessedList}
         options={{ title: "" }}
-      />
-      <Stack.Screen
-        name="Comment"
-        component={Comment}
-        options={{ title: "" }}
-      />
-      <Stack.Screen
-        name="AddDevice"
-        component={AddDevice}
-        options={{
-          title: "기기 등록",
-          headerTitleStyle,
-        }}
       />
     </Stack.Navigator>
   );
