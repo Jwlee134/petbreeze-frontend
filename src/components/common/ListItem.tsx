@@ -1,7 +1,6 @@
-import React, { Fragment, ReactNode } from "react";
+import React, { ReactNode } from "react";
 import styled, { css } from "styled-components/native";
 import palette from "~/styles/palette";
-import ShadowContainer from "./container/ShadowContainer";
 
 interface IProps {
   children: ReactNode;
@@ -13,18 +12,17 @@ interface IProps {
 
 const Container = styled.TouchableHighlight<{ isLastItem: boolean }>`
   width: 100%;
-  height: 46px;
-  margin-top: 13px;
-  padding: 0px 11px;
   border-radius: 4px;
   background-color: white;
   align-items: center;
   flex-direction: row;
   justify-content: space-between;
+  padding: 16px 25px;
   ${({ isLastItem }) =>
-    isLastItem &&
+    !isLastItem &&
     css`
-      margin-bottom: 13px;
+      border-bottom-width: 1px;
+      border-bottom-color: ${palette.gray_e5};
     `}
 `;
 
@@ -35,12 +33,12 @@ const LeftContainer = styled.View`
 `;
 
 const Label = styled.Text`
-  font-size: 18px;
+  font-size: 16px;
   flex: 1;
 `;
 
 const LeftIconContainer = styled.View`
-  margin-right: 11px;
+  margin-right: 16px;
 `;
 
 const RightIconContainer = styled.View`
@@ -55,28 +53,26 @@ const ListItem = ({
   onPress,
   isLastItem = false,
 }: IProps) => (
-  <ShadowContainer>
-    <Container
-      onPress={onPress}
-      underlayColor={palette.gray_f3}
-      isLastItem={isLastItem}>
-      <Fragment>
-        <LeftContainer>
-          {LeftIcon && (
-            <LeftIconContainer>
-              <LeftIcon />
-            </LeftIconContainer>
-          )}
-          <Label numberOfLines={1}>{children}</Label>
-        </LeftContainer>
-        {RightIcon && (
-          <RightIconContainer>
-            <RightIcon />
-          </RightIconContainer>
+  <Container
+    onPress={onPress}
+    underlayColor={palette.gray_f3}
+    isLastItem={isLastItem}>
+    <>
+      <LeftContainer>
+        {LeftIcon && (
+          <LeftIconContainer>
+            <LeftIcon />
+          </LeftIconContainer>
         )}
-      </Fragment>
-    </Container>
-  </ShadowContainer>
+        <Label numberOfLines={1}>{children}</Label>
+      </LeftContainer>
+      {RightIcon && (
+        <RightIconContainer>
+          <RightIcon />
+        </RightIconContainer>
+      )}
+    </>
+  </Container>
 );
 
 export default ListItem;
