@@ -1,11 +1,5 @@
 import React, { Fragment, useRef, useState } from "react";
-import {
-  Animated,
-  Easing,
-  ScrollView,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-} from "react-native";
+import { Animated, Easing, ScrollView, TouchableOpacity } from "react-native";
 import styled from "styled-components/native";
 import SidePaddingContainer from "~/components/common/container/SidePaddingContainer";
 
@@ -13,17 +7,10 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import ShadowContainer from "~/components/common/container/ShadowContainer";
 import palette from "~/styles/palette";
 
-const InfoText = styled.Text`
-  font-size: 15px;
-  text-align: center;
-  margin-top: 15px;
-  margin-bottom: 48px;
-`;
-
 const TopContainer = styled.View`
   z-index: 1;
   background-color: white;
-  padding: 0px 25px;
+  padding: 25px 25px 0px 25px;
 `;
 
 const Button = styled.TouchableHighlight`
@@ -107,10 +94,6 @@ const LocationCollectInterval = () => {
         style={{ flexGrow: 1 }}
         onPress={() => setIsOpened(false)}>
         <TopContainer>
-          <InfoText>
-            위치정보 수집주기는{"\n"} 짧을수록 배터리가 더 빨리 방전되니
-            참고해주세요.
-          </InfoText>
           <ShadowContainer shadowContainerStyle={{ zIndex: 1 }}>
             <Button onPress={handlePress} underlayColor={palette.gray_f3}>
               <Fragment>
