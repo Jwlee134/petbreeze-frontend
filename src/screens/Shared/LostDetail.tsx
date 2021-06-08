@@ -1,6 +1,6 @@
 import { useNavigation, useRoute } from "@react-navigation/core";
 import React, { useEffect, useState } from "react";
-import { FlatList, Image, ScrollView, useWindowDimensions } from "react-native";
+import { ScrollView, useWindowDimensions } from "react-native";
 import styled from "styled-components/native";
 import CategoryTitle from "~/components/common/CategoryTitle";
 import {
@@ -26,6 +26,7 @@ import ManageModal from "~/components/modal/PostDetailModal/ManageModal";
 import ConfirmButton from "~/components/common/button/ConfirmButton";
 
 import { ModalType, ModalHeader } from "~/types";
+import PhotoSlider from "~/components/PhotoSlider";
 
 const TitleContainer = styled.View`
   margin: 17px 0px;
@@ -61,7 +62,10 @@ const IconButton = styled.TouchableOpacity`
   margin-left: 8px;
 `;
 
-const TitleBottomContainer = styled.View``;
+const IconContainer = styled.View`
+  flex-direction: row;
+  justify-content: center;
+`;
 
 const DetailTextContainer = styled.View`
   flex-direction: row;
@@ -126,54 +130,35 @@ const LostDetail = () => {
     <>
       <ScrollView>
         <CategoryTitle>실종 동물 정보</CategoryTitle>
-        <FlatList
-          data={data.photos}
-          horizontal
-          pagingEnabled
-          bounces={false}
-          keyExtractor={(_, index) => `${index}`}
-          showsHorizontalScrollIndicator={false}
-          renderItem={({ item, index }) => (
-            <Image
-              source={require("~/assets/image/test.jpg")}
-              style={{ width, height: width }}
-            />
-          )}
-        />
+        <PhotoSlider data={data.photos} />
         <SidePaddingContainer>
           <TitleContainer>
-            <TitleTopContainer>
-              <Block />
-              <Block style={{ justifyContent: "center" }}>
-                <Title>{data.name}</Title>
-              </Block>
-              <Block style={{ justifyContent: "flex-end" }}>
-                <IconButton
-                  onPress={() => handleOpenModal("share")}
-                  activeOpacity={0.7}>
-                  <Share style={{ marginRight: 2, marginTop: 1 }} />
-                </IconButton>
-                <IconButton
-                  onPress={() => handleOpenModal("saved")}
-                  activeOpacity={0.7}>
-                  {data.liked ? (
-                    <HeartRed style={{ marginTop: 2 }} />
-                  ) : (
-                    <HeartPink style={{ marginTop: 2 }} />
-                  )}
-                </IconButton>
-                <IconButton
-                  onPress={() => handleOpenModal("manage")}
-                  activeOpacity={0.7}>
-                  <More />
-                </IconButton>
-              </Block>
-            </TitleTopContainer>
-            <TitleBottomContainer>
-              <BigText>
-                {data.species}, {data.gender}, {data.age}세
-              </BigText>
-            </TitleBottomContainer>
+            <Title>{data.name}</Title>
+            <BigText style={{ margin: 10 }}>
+              {data.species}, {data.gender}, {data.age}세
+            </BigText>
+            <IconContainer>
+              <IconButton
+                style={{ marginLeft: 0 }}
+                onPress={() => handleOpenModal("share")}
+                activeOpacity={0.7}>
+                <Share style={{ marginRight: 2, marginTop: 1 }} />
+              </IconButton>
+              <IconButton
+                onPress={() => handleOpenModal("saved")}
+                activeOpacity={0.7}>
+                {data.liked ? (
+                  <HeartRed style={{ marginTop: 2 }} />
+                ) : (
+                  <HeartPink style={{ marginTop: 2 }} />
+                )}
+              </IconButton>
+              <IconButton
+                onPress={() => handleOpenModal("manage")}
+                activeOpacity={0.7}>
+                <More />
+              </IconButton>
+            </IconContainer>
           </TitleContainer>
           <DetailTextContainer>
             <DetailTitle>실종 일자</DetailTitle>
