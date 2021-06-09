@@ -11,3 +11,32 @@ export const insertPointToString = (text: string) =>
 
 export const insertDashToString = (text: string) =>
   text.replace(/(\d{3})(\d{4})(\d{4})/, "$1-$2-$3");
+
+export const formatUTC = (dataArray: number[]) => {
+  const date = (dataArray[0] << 12) | (dataArray[1] << 4) | (dataArray[2] >> 4);
+
+  const utc =
+    ((dataArray[2] & 0x0f) << 16) | (dataArray[3] << 8) | dataArray[4];
+
+  return { date, utc };
+};
+
+export const formatCoordinates = (dataArray: number[]) => {
+  let _lat =
+    (((dataArray[0] & 0x7f) << 20) |
+      (dataArray[1] << 12) |
+      (dataArray[2] << 4) |
+      (dataArray[3] >> 4)) /
+    1000000;
+  const lat = _lat * (dataArray[0] >> 7 ? -1 : 1);
+
+  let _lng =
+    (((dataArray[3] & 0x0f) << 24) |
+      (dataArray[4] << 16) |
+      (dataArray[5] << 8) |
+      dataArray[6]) /
+    1000000;
+  const lng = _lng * ((dataArray[3] & 0x0f) >> 3 ? -1 : 1);
+
+  return { lat, lng };
+};

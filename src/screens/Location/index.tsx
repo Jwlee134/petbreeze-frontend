@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
+  Dimensions,
   FlatList,
   Linking,
   NativeEventEmitter,
@@ -26,6 +27,9 @@ import CautionModal from "~/components/modal/locationModal/CautionModal";
 const BleManagerModule = NativeModules.BleManager;
 const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
 
+import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
+import { formatCoordinates, formatUTC } from "~/utils";
+
 const Container = styled.View``;
 
 const Location = ({
@@ -42,6 +46,19 @@ const Location = ({
   const [isScanning, setIsScanning] = useState(false);
   const peripherals = new Map();
   const [list, setList] = useState<any[]>([]);
+
+  useEffect(() => {
+    const dataArray: number[] =
+      list[0]?.advertising.manufacturerData.bytes.slice(7, 20);
+
+    if (!dataArray || dataArray.length === 0) return;
+
+    const { date, utc } = formatUTC(dataArray.slice(0, 5));
+    const { lat, lng } = formatCoordinates(dataArray.slice(5, 12));
+    const battery = dataArray[12];
+
+    console.log(date, utc, lat, lng, battery);
+  }, [list]);
 
   const startScan = () => {
     if (!isScanning) {
@@ -62,10 +79,11 @@ const Location = ({
   };
 
   const handleDiscoverPeripheral = (peripheral: any) => {
-    console.log("Got ble peripheral", peripheral);
     if (!peripheral.name) {
       peripheral.name = "NO NAME";
     }
+    if (!peripheral.name.includes("ESP")) return;
+    /* console.log("Got ble peripheral", peripheral); */
     peripherals.set(peripheral.id, peripheral);
     setList(Array.from(peripherals.values()));
   };
@@ -83,9 +101,9 @@ const Location = ({
   useEffect(() => {
     BleManager.start({ showAlert: false }).then(() => {
       console.log("Initialized");
-      // 최초 페어링을 할 시 기기의 시리얼 넘버를 받아오기 위함
     });
 
+    // 최초 페어링을 할 시 기기의 시리얼 넘버를 받아오기 위함
     /* bleManagerEmitter.addListener("BleManagerConnectPeripheral", getPeripheral); */
     bleManagerEmitter.addListener(
       "BleManagerDiscoverPeripheral",
@@ -111,6 +129,19 @@ const Location = ({
   return (
     <>
       <SafeAreaContainer>
+        {/*  <MapView
+          style={{
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height,
+          }}
+          provider={PROVIDER_GOOGLE}
+          initialRegion={{
+            latitude: 37.5642135,
+            longitude: 127.0016985,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          }}
+        /> */}
         <CustomHeader
           size="small"
           RightIcon={() => (

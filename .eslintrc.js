@@ -6,5 +6,6 @@ module.exports = {
     quotes: ["error", "double"],
     "react-native/no-inline-styles": 0,
     curly: "off",
+    "no-bitwise": "allow",
   },
 };
