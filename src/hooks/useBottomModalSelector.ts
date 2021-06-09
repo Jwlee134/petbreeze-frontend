@@ -1,5 +1,5 @@
 import { useCallback, useRef, useState } from "react";
-import { TextInput } from "react-native";
+import { Platform, TextInput } from "react-native";
 import { useDispatch } from "react-redux";
 import { catBreeds, dogBreeds, gender, species, years } from "~/staticData";
 import { useAppSelector } from "~/store";
@@ -77,7 +77,7 @@ const useBottomModalSelector = ({ open }: IProps) => {
     );
   };
 
-  const handleDone = () => {
+  const handleDone = (selectedIndex?: number) => {
     switch (clickedField) {
       case "동물 선택":
         if (selectedIndex === species.length - 1) {
@@ -96,7 +96,7 @@ const useBottomModalSelector = ({ open }: IProps) => {
         }
         dispatch(animalInfoActions.setSpecies(species[selectedIndex]));
         dispatch(animalInfoActions.setBreed(""));
-        setSelectedIndex(0);
+        if (Platform.OS === "ios") setSelectedIndex(0);
         break;
       case "품종 선택":
         if (
@@ -114,17 +114,18 @@ const useBottomModalSelector = ({ open }: IProps) => {
         } else {
           dispatch(animalInfoActions.setBreed(catBreeds[selectedIndex]));
         }
-        setSelectedIndex(0);
+        if (Platform.OS === "ios") setSelectedIndex(0);
         break;
       case "성별":
         dispatch(animalInfoActions.setGender(gender[selectedIndex]));
-        setSelectedIndex(0);
+        if (Platform.OS === "ios") setSelectedIndex(0);
         break;
       case "출생 연도":
-        dispatch(animalInfoActions.setBirthYear(years[selectedIndex]));
-        setSelectedIndex(0);
+        dispatch(animalInfoActions.setBirthYear(Number(years[selectedIndex])));
+        if (Platform.OS === "ios") setSelectedIndex(0);
         break;
       case "잃어버린 시간":
+      case "발견한 시간":
       case "날짜 선택":
         dispatch(animalInfoActions.setEventTime(localToISOString(date)));
         break;

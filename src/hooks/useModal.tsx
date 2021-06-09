@@ -14,6 +14,7 @@ interface IBottomProps {
   children: ReactNode;
   handleDone: () => void;
   isOneStep?: boolean;
+  useHeaderButton?: boolean;
 }
 
 const centerModalWidth = Dimensions.get("screen").width - 76;
@@ -108,6 +109,10 @@ const useModal = ({ type, handleCancel }: IModalProps) => {
       if (handleCancel) handleCancel();
       close();
     },
+    onBackButtonPress: () => {
+      if (handleCancel) handleCancel();
+      close();
+    },
     backdropOpacity: 0.3,
     style: {
       ...(type === "bottom"
@@ -127,27 +132,32 @@ const useModal = ({ type, handleCancel }: IModalProps) => {
     headerTitle,
     children,
     handleDone,
+    useHeaderButton = true,
     isOneStep = true,
   }: IBottomProps) => (
     <BottomContainer>
       <BottomHeader>
-        <Button
-          activeOpacity={0.8}
-          onPress={() => {
-            if (handleCancel) handleCancel();
-            close();
-          }}>
-          <ToggleText>Cancel</ToggleText>
-        </Button>
+        {useHeaderButton && (
+          <Button
+            activeOpacity={0.8}
+            onPress={() => {
+              if (handleCancel) handleCancel();
+              close();
+            }}>
+            <ToggleText>Cancel</ToggleText>
+          </Button>
+        )}
         <Title>{headerTitle}</Title>
-        <Button
-          activeOpacity={0.8}
-          onPress={() => {
-            if (isOneStep) close();
-            handleDone();
-          }}>
-          <ToggleText>Done</ToggleText>
-        </Button>
+        {useHeaderButton && (
+          <Button
+            activeOpacity={0.8}
+            onPress={() => {
+              if (isOneStep) close();
+              handleDone();
+            }}>
+            <ToggleText>Done</ToggleText>
+          </Button>
+        )}
       </BottomHeader>
       <BottomContent>{children}</BottomContent>
     </BottomContainer>

@@ -1,17 +1,7 @@
 import React, { useEffect } from "react";
+import { Platform } from "react-native";
 import Modal from "react-native-modal";
 import styled from "styled-components/native";
-
-import AuthSelector from "../Shared/AuthSelector";
-import WheelDatePicker from "~/components/common/WheelDatePicker";
-import WheelPicker from "~/components/common/WheelPicker";
-import KeyboardAwareScrollContainer from "~/components/common/container/KeyboardAwareScrollContainer";
-import UploadPhoto from "~/components/UploadPhoto";
-import CategoryTitle from "~/components/common/CategoryTitle";
-import SidePaddingContainer from "~/components/common/container/SidePaddingContainer";
-import Input from "~/components/common/Input";
-import AddCircleButton from "~/components/common/button/AddCircleButton";
-import ConfirmButton from "~/components/common/button/ConfirmButton";
 
 import useModal from "~/hooks/useModal";
 import useBottomModalSelector from "~/hooks/useBottomModalSelector";
@@ -23,6 +13,18 @@ import { animalInfoActions } from "~/store/animalInfo";
 import { PostAnimalInfoScreenNavigationProp } from "~/types/navigator";
 
 import { ISOStringToLocal } from "~/utils";
+
+import AuthSelector from "../Shared/AuthSelector";
+import WheelDatePicker from "~/components/common/WheelDatePicker";
+import WheelPicker from "~/components/common/WheelPicker";
+import KeyboardAwareScrollContainer from "~/components/common/container/KeyboardAwareScrollContainer";
+import UploadPhoto from "~/components/UploadPhoto";
+import CategoryTitle from "~/components/common/CategoryTitle";
+import SidePaddingContainer from "~/components/common/container/SidePaddingContainer";
+import Input from "~/components/common/Input";
+import AddCircleButton from "~/components/common/button/AddCircleButton";
+import ConfirmButton from "~/components/common/button/ConfirmButton";
+import ListPicker from "~/components/common/ListPicker";
 
 const RowContainer = styled.View`
   flex-direction: row;
@@ -48,7 +50,7 @@ const PostAnimalInfo = ({
   const { isLoggedIn } = useAppSelector(state => state.user);
   const { currentHomeTab } = useAppSelector(state => state.common);
 
-  const { open, modalProps, BottomModalComponent } = useModal({
+  const { open, close, modalProps, BottomModalComponent } = useModal({
     type: "bottom",
   });
   const isLost = currentHomeTab === "LostList";
@@ -101,7 +103,9 @@ const PostAnimalInfo = ({
               isRow
               onPress={() => {
                 handleOpen("동물 선택");
-                handleRememberIndex("species");
+                if (Platform.OS === "ios") {
+                  handleRememberIndex("species");
+                }
               }}
               onChangeText={text => {
                 dispatch(animalInfoActions.setSpecies(text));
@@ -168,10 +172,10 @@ const PostAnimalInfo = ({
         </SidePaddingContainer>
         <CategoryTitle>{isLost ? "보호자" : "목격자"} 연락처</CategoryTitle>
         <SidePaddingContainer>
-          {animalInfo.phoneNumber.map(field => (
+          {animalInfo.phoneNumber.map((field, index) => (
             <Input
               key={field.id}
-              placeholder="연락처*"
+              placeholder={index === 0 ? "연락처*" : "연락처"}
               keyboardType="number-pad"
               onChangeText={text =>
                 dispatch(
@@ -190,20 +194,43 @@ const PostAnimalInfo = ({
           </ButtonContainer>
         )}
         <SubmitContainer>
-          <ConfirmButton onPress={handleSubmit}>등록</ConfirmButton>
+          <ConfirmButton
+            disabled={
+              animalInfo.photos.length === 0 ||
+              !animalInfo.name ||
+              !animalInfo.species ||
+              !animalInfo.breed ||
+              !animalInfo.gender ||
+              !animalInfo.eventTime ||
+              !animalInfo.eventPlace ||
+              !animalInfo.phoneNumber[0].value
+            }
+            onPress={handleSubmit}>
+            등록
+          </ConfirmButton>
         </SubmitContainer>
       </KeyboardAwareScrollContainer>
       <Modal {...modalProps}>
         <BottomModalComponent
+          useHeaderButton={
+            Platform.OS === "ios" || clickedField.includes("시간")
+          }
           headerTitle={clickedField}
           handleDone={handleDone}>
           {clickedField.includes("시간") ? (
             <WheelDatePicker date={date} onDateChange={setDate} />
-          ) : (
+          ) : Platform.OS === "ios" ? (
             <WheelPicker
               data={handleOptionList()}
               selectedIndex={selectedIndex}
-              onValueChange={index => setSelectedIndex(index)}
+              setSelectedIndex={index => setSelectedIndex(index)}
+            />
+          ) : (
+            <ListPicker
+              data={handleOptionList()}
+              setSelectedIndex={setSelectedIndex}
+              handleDone={handleDone}
+              close={close}
             />
           )}
         </BottomModalComponent>

@@ -1,37 +1,21 @@
 import React from "react";
 import Picker from "@gregfrench/react-native-wheel-picker";
-import { WheelPicker as AndroidPicker } from "react-native-wheel-picker-android";
-import { Platform, StyleProp, useWindowDimensions } from "react-native";
+import { StyleProp, useWindowDimensions, ViewStyle } from "react-native";
 
 interface IProps {
-  style?: StyleProp<VizewStyle>;
+  style?: StyleProp<ViewStyle>;
   data: string[];
   selectedIndex: number;
-  onValueChange: (index: number) => void;
+  setSelectedIndex: (index: number) => void;
 }
 
-const WheelPicker = ({ style, data, selectedIndex, onValueChange }: IProps) => {
+const WheelPicker = ({
+  style,
+  data,
+  selectedIndex,
+  setSelectedIndex,
+}: IProps) => {
   const { width } = useWindowDimensions();
-
-  if (Platform.OS === "android") {
-    return (
-      <AndroidPicker
-        style={{
-          width,
-          height: "100%",
-          justifyContent: "center",
-          ...(style as object),
-        }}
-        data={data}
-        selectedItemTextSize={17}
-        itemTextSize={17}
-        selectedItem={selectedIndex}
-        onItemSelected={onValueChange}
-        selectedItemTextFontFamily=""
-        itemTextFontFamily=""
-      />
-    );
-  }
 
   return (
     <Picker
@@ -44,7 +28,7 @@ const WheelPicker = ({ style, data, selectedIndex, onValueChange }: IProps) => {
       lineColor="#000000"
       itemStyle={{ color: "black", fontSize: 17 }}
       selectedValue={selectedIndex}
-      onValueChange={onValueChange}>
+      onValueChange={setSelectedIndex}>
       {data.map((item, index) => (
         <Picker.Item key={index} label={String(item)} value={index} />
       ))}

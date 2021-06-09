@@ -1,5 +1,5 @@
 import React from "react";
-import { Dimensions } from "react-native";
+import { Dimensions, Platform } from "react-native";
 import styled from "styled-components/native";
 
 import AddCircleButton from "~/components/common/button/AddCircleButton";
@@ -16,6 +16,7 @@ import Search from "~/assets/svg/search.svg";
 import WheelPicker from "~/components/common/WheelPicker";
 import useDistrictSelector from "~/hooks/useDistrictSelector";
 import useGeolocation from "~/hooks/useGeolocation";
+import ListPicker from "~/components/common/ListPicker";
 
 const { width } = Dimensions.get("window");
 
@@ -71,14 +72,23 @@ const Home = ({ navigation }: { navigation: HomeScreenNavigationProp }) => {
       </SafeAreaContainer>
       <Modal {...modalProps}>
         <BottomModalComponent
+          useHeaderButton={Platform.OS === "ios"}
           handleDone={handleDone}
           isOneStep={false}
           headerTitle="지역 선택">
-          <WheelPicker
-            data={handleList()}
-            selectedIndex={selectedIndex}
-            onValueChange={index => setSelectedIndex(index)}
-          />
+          {Platform.OS === "ios" ? (
+            <WheelPicker
+              data={handleList()}
+              selectedIndex={selectedIndex}
+              setSelectedIndex={index => setSelectedIndex(index)}
+            />
+          ) : (
+            <ListPicker
+              data={handleList()}
+              handleDone={handleDone}
+              setSelectedIndex={setSelectedIndex}
+            />
+          )}
         </BottomModalComponent>
       </Modal>
     </>

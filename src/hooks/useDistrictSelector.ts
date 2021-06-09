@@ -68,18 +68,20 @@ const useDistrictSelector = () => {
     }
   };
 
-  const handleDone = () => {
+  const handleDone = (index?: number) => {
     switch (step) {
       case 1:
-        setBigCategory(bigCategoryList[bigCategoryIndex]);
+        setBigCategory(bigCategoryList[!index ? bigCategoryIndex : index]);
         setStep(prev => prev + 1);
         break;
       case 2:
-        setSubCategory(subCategoryList[subCategoryIndex]);
+        setSubCategory(subCategoryList[!index ? subCategoryIndex : index]);
         setStep(prev => prev + 1);
         break;
       default:
-        setDetailCategory(detailCategoryList[detailCategoryIndex]);
+        setDetailCategory(
+          detailCategoryList[!index ? detailCategoryIndex : index],
+        );
         setStep(prev => prev + 1);
         break;
     }

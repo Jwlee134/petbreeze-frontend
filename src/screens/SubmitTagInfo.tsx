@@ -17,6 +17,7 @@ import { animalInfoActions } from "~/store/animalInfo";
 import { useNavigation } from "@react-navigation/core";
 import { DeviceListScreenNavigationProp } from "~/types/navigator";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import ListPicker from "~/components/common/ListPicker";
 
 const Container = styled.View`
   width: 100%;
@@ -223,12 +224,21 @@ const SubmitTagInfo = () => {
       <Modal {...modalProps}>
         <BottomModalComponent
           headerTitle={clickedField}
+          useHeaderButton={Platform.OS === "ios"}
           handleDone={handleDone}>
-          <WheelPicker
-            data={handleOptionList()}
-            selectedIndex={selectedIndex}
-            onValueChange={index => setSelectedIndex(index)}
-          />
+          {Platform.OS === "ios" ? (
+            <WheelPicker
+              data={handleOptionList()}
+              selectedIndex={selectedIndex}
+              setSelectedIndex={index => setSelectedIndex(index)}
+            />
+          ) : (
+            <ListPicker
+              data={handleOptionList()}
+              handleDone={handleDone}
+              setSelectedIndex={setSelectedIndex}
+            />
+          )}
         </BottomModalComponent>
       </Modal>
     </>
