@@ -1,8 +1,9 @@
 import React, { ReactNode } from "react";
+import { TouchableHighlightProps } from "react-native";
 import styled, { css } from "styled-components/native";
 import palette from "~/styles/palette";
 
-interface IProps {
+interface IProps extends TouchableHighlightProps {
   children: ReactNode;
   RightIcon?: () => JSX.Element;
   LeftIcon?: () => JSX.Element;
@@ -52,11 +53,13 @@ const ListItem = ({
   RightIcon,
   onPress,
   isLastItem = false,
+  ...props
 }: IProps) => (
   <Container
     onPress={onPress}
     underlayColor={palette.gray_f3}
-    isLastItem={isLastItem}>
+    isLastItem={isLastItem}
+    {...props}>
     <>
       <LeftContainer>
         {LeftIcon && (
