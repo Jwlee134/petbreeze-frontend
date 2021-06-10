@@ -8,18 +8,11 @@ interface IProps {
   RightIconOnPress?: () => void;
 }
 
-const Container = styled.View<{ size: "big" | "small" }>`
+const Container = styled.View`
   flex-direction: row;
   justify-content: space-between;
-  ${({ size }) =>
-    size === "big"
-      ? css`
-          margin: 56px 0px 28px 0px;
-        `
-      : css`
-          width: 100%;
-          margin: 28px 0px;
-        `}
+  margin: 28px 0px;
+  width: 100%;
 `;
 
 const Block = styled.View`
@@ -28,7 +21,7 @@ const Block = styled.View`
 `;
 
 const TextContainer = styled(Block)`
-  align-items: center; the 
+  align-items: center;
 `;
 
 const HeaderText = styled.Text<{ size: "big" | "small" }>`
@@ -50,7 +43,7 @@ const CustomHeader = ({
   RightIcon,
   RightIconOnPress,
 }: IProps) => (
-  <Container size={size}>
+  <Container>
     <Block />
     <TextContainer>
       <HeaderText size={size}>{children}</HeaderText>
