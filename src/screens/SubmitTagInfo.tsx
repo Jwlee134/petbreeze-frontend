@@ -18,6 +18,7 @@ import { useNavigation } from "@react-navigation/core";
 import { DeviceListScreenNavigationProp } from "~/types/navigator";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import ListPicker from "~/components/common/ListPicker";
+import { userActions } from "~/store/user";
 
 const Container = styled.View`
   width: 100%;
@@ -70,7 +71,8 @@ const SubmitTagInfo = () => {
 
   const handleSave = () => {
     dispatch(animalInfoActions.initState());
-    navigation.navigate("DeviceList");
+    dispatch(userActions.setDeviceRegistered());
+    navigation.goBack();
   };
 
   const { open, modalProps, BottomModalComponent } = useModal({
@@ -210,13 +212,14 @@ const SubmitTagInfo = () => {
           <ConfirmButton
             style={{ margin: 13 }}
             onPress={handleSave}
-            disabled={
+            /* disabled={
               !animalInfo.name ||
               !animalInfo.birthYear ||
               !animalInfo.species ||
               !animalInfo.breed ||
               !animalInfo.phoneNumber[0].value
-            }>
+            } */
+          >
             저장
           </ConfirmButton>
         </SidePaddingContainer>

@@ -3,11 +3,13 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 interface IState {
   isLoggedIn: boolean;
   token: string | null;
+  isDeviceRegistered: boolean;
 }
 
 const initialState: IState = {
   isLoggedIn: false,
   token: null,
+  isDeviceRegistered: false,
 };
 
 const user = createSlice({
@@ -21,6 +23,9 @@ const user = createSlice({
     logout: state => {
       state.isLoggedIn = false;
       state.token = null;
+    },
+    setDeviceRegistered: state => {
+      state.isDeviceRegistered = true;
     },
   },
 });
