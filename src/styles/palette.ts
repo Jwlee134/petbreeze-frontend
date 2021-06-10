@@ -7,6 +7,7 @@ export default {
   gray_f3: "#F3F3F3",
   gray_d5: "#D5D8DE",
   gray_e5: "#E5E5E5",
+  gray_b4: "#B4B4B4",
   green_b6: "#B6E13D",
   kakao_yellow: "#FAE100",
   facebook_blue: "#4867AA",

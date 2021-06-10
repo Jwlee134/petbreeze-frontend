@@ -6,7 +6,7 @@ import {
 import WitnessedDetail from "~/screens/Shared/WitnessedDetail";
 import Notification from "~/screens/Notification";
 import AuthSelector from "~/screens/Shared/AuthSelector";
-import Location from "~/screens/Location";
+import Walk from "~/screens/Walk";
 import MyMenuStackNav from "./MyMenuStackNav";
 import LostDetail from "~/screens/Shared/LostDetail";
 import { stackNavScreenOptions } from "~/styles/navigator";
@@ -15,6 +15,7 @@ import UpdateWitnessedList from "~/screens/Shared/UpdateWitnessedList";
 import Home from "~/screens/Home";
 import PostAnimalInfo from "~/screens/Home/PostAnimalInfo";
 import { useAppSelector } from "~/store";
+import Community from "~/screens/Community";
 
 const Stack = createStackNavigator();
 
@@ -35,10 +36,17 @@ const SharedStack = ({ screenName }: { screenName: string }) => {
           options={{ headerShown: false }}
         />
       )}
-      {screenName === "Location" && (
+      {screenName === "Walk" && (
         <Stack.Screen
-          name="Location"
-          component={Location}
+          name="Walk"
+          component={Walk}
+          options={{ headerShown: false }}
+        />
+      )}
+      {screenName === "Community" && (
+        <Stack.Screen
+          name="Community"
+          component={Community}
           options={{ headerShown: false }}
         />
       )}
@@ -60,14 +68,15 @@ const SharedStack = ({ screenName }: { screenName: string }) => {
           }}
         />
       )}
-      <Stack.Screen name="AuthSelector" component={AuthSelector} />
+      <Stack.Screen
+        name="AuthSelector"
+        component={AuthSelector}
+        options={{ title: "" }}
+      />
       <Stack.Screen
         name="PostAnimalInfo"
         component={PostAnimalInfo}
-        options={{
-          headerShown: !isLoggedIn ? false : true,
-          title: "",
-        }}
+        options={{ title: "" }}
       />
       <Stack.Screen
         name="LostDetail"

@@ -4,6 +4,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 type SharedStackParamList = {
   Home: undefined;
   Location: undefined;
+  Community: undefined;
   Notification: undefined;
   PostAnimalInfo: undefined;
   LostDetail: {
@@ -15,6 +16,7 @@ type SharedStackParamList = {
   UpdateWitnessedList: undefined;
   CommentList: undefined;
   AuthSelector: undefined;
+  AddDevice: undefined;
 };
 
 export type HomeScreenNavigationProp = StackNavigationProp<
@@ -24,6 +26,10 @@ export type HomeScreenNavigationProp = StackNavigationProp<
 export type LocationScreenNavigationProp = StackNavigationProp<
   SharedStackParamList,
   "Location"
+>;
+export type CommunityScreenNavigationProp = StackNavigationProp<
+  SharedStackParamList,
+  "Community"
 >;
 export type NotificationScreenNavigationProp = StackNavigationProp<
   SharedStackParamList,
@@ -41,6 +47,10 @@ export type CommentScreenNavigationProp = StackNavigationProp<
   SharedStackParamList,
   "CommentList"
 >;
+export type AuthSelectorScreenNavigationProp = StackNavigationProp<
+  SharedStackParamList,
+  "AuthSelector"
+>;
 
 type PostListTabParamList = {
   PostList: undefined;
@@ -56,12 +66,10 @@ export type PostScreenNavigationProp = StackNavigationProp<
   PostListTabParamList,
   "PostList"
 >;
-
 export type LostDetailScreenRouteProp = RouteProp<
   PostListTabParamList,
   "LostDetail"
 >;
-
 export type WitnessedDetailScreenRouteProp = RouteProp<
   PostListTabParamList,
   "WitnessedDetail"
@@ -98,12 +106,10 @@ export type DeviceSettingScreenNavigationProp = StackNavigationProp<
   DeviceSettingStackParamList,
   "DeviceSetting"
 >;
-
 export type DeviceListScreenNavigationProp = StackNavigationProp<
   DeviceSettingStackParamList,
   "DeviceList"
 >;
-
 export type SafetyZoneScreenNavigationProp = StackNavigationProp<
   DeviceSettingStackParamList,
   "SafetyZoneSetting"

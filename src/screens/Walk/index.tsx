@@ -1,6 +1,5 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
-  Dimensions,
   FlatList,
   Linking,
   NativeEventEmitter,
@@ -29,21 +28,20 @@ const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
 
 import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 import { formatCoordinates, formatUTC } from "~/utils";
+import WalkTopTabNav from "~/navigator/WalkTopTabNav";
 
 const Container = styled.View``;
 
-const Location = ({
-  navigation,
-}: {
-  navigation: LocationScreenNavigationProp;
-}) => {
-  const { isLoggedIn } = useAppSelector(state => state.user);
+const Walk = ({ navigation }: { navigation: LocationScreenNavigationProp }) => {
+  const { isLoggedIn, isDeviceRegistered } = useAppSelector(
+    state => state.user,
+  );
 
   const { open, modalProps, CenterModalComponent } = useModal({
     type: "center",
   });
 
-  const [isScanning, setIsScanning] = useState(false);
+  /* const [isScanning, setIsScanning] = useState(false);
   const peripherals = new Map();
   const [list, setList] = useState<any[]>([]);
 
@@ -83,7 +81,6 @@ const Location = ({
       peripheral.name = "NO NAME";
     }
     if (!peripheral.name.includes("ESP")) return;
-    /* console.log("Got ble peripheral", peripheral); */
     peripherals.set(peripheral.id, peripheral);
     setList(Array.from(peripherals.values()));
   };
@@ -94,9 +91,9 @@ const Location = ({
       : AndroidOpenSettings.bluetoothSettings();
   };
 
-  /* const getPeripheral = (peripheral: any) => {
+   const getPeripheral = (peripheral: any) => {
     console.log(peripheral);
-  }; */
+  }; 
 
   useEffect(() => {
     BleManager.start({ showAlert: false }).then(() => {
@@ -104,7 +101,7 @@ const Location = ({
     });
 
     // 최초 페어링을 할 시 기기의 시리얼 넘버를 받아오기 위함
-    /* bleManagerEmitter.addListener("BleManagerConnectPeripheral", getPeripheral); */
+     bleManagerEmitter.addListener("BleManagerConnectPeripheral", getPeripheral); 
     bleManagerEmitter.addListener(
       "BleManagerDiscoverPeripheral",
       handleDiscoverPeripheral,
@@ -112,45 +109,24 @@ const Location = ({
     bleManagerEmitter.addListener("BleManagerStopScan", handleStopScan);
 
     return () => {
-      /* bleManagerEmitter.removeListener(
+       bleManagerEmitter.removeListener(
         "BleManagerConnectPeripheral",
         getPeripheral,
-      ); */
+      ); 
       bleManagerEmitter.removeListener(
         "BlemanagerDiscoverPeripheral",
         handleDiscoverPeripheral,
       );
       bleManagerEmitter.removeListener("BleManagerStopScan", handleStopScan);
     };
-  }, []);
+  }, []); */
 
   if (!isLoggedIn) return <AuthSelector />;
 
   return (
-    <>
-      <SafeAreaContainer>
-        {/*  <MapView
-          style={{
-            width: Dimensions.get("screen").width,
-            height: Dimensions.get("screen").height,
-          }}
-          provider={PROVIDER_GOOGLE}
-          initialRegion={{
-            latitude: 37.5642135,
-            longitude: 127.0016985,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
-          }}
-        /> */}
-        <CustomHeader
-          size="small"
-          RightIcon={() => (
-            <Ionicons name="information-circle-outline" size={26} />
-          )}
-          RightIconOnPress={open}>
-          어디개
-        </CustomHeader>
-        <TouchableOpacity onPress={handleOpenSetting}>
+    <SafeAreaContainer>
+      <WalkTopTabNav />
+      {/* <TouchableOpacity onPress={handleOpenSetting}>
           <Text style={{ fontSize: 40 }}>Open bluetooth setting</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={startScan}>
@@ -166,15 +142,9 @@ const Location = ({
             </View>
           )}
           keyExtractor={item => item.id}
-        />
-      </SafeAreaContainer>
-      <Modal {...modalProps}>
-        <CenterModalComponent headerTitle="주의사항">
-          <CautionModal />
-        </CenterModalComponent>
-      </Modal>
-    </>
+        /> */}
+    </SafeAreaContainer>
   );
 };
 
-export default Location;
+export default Walk;

@@ -5,7 +5,7 @@ import PostList from "~/screens/Home/PostList";
 
 const Tab = createMaterialTopTabNavigator();
 
-const HomeTopTapNavigator = () => (
+const CommunityTopTapNavigator = () => (
   <Tab.Navigator
     tabBarOptions={{
       activeTintColor: palette.blue_6e,
@@ -38,4 +38,4 @@ const HomeTopTapNavigator = () => (
   </Tab.Navigator>
 );
 
-export default HomeTopTapNavigator;
+export default CommunityTopTapNavigator;

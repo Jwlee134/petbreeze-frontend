@@ -1,95 +1,69 @@
 import React from "react";
-import { Dimensions, Platform } from "react-native";
 import styled from "styled-components/native";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
-import AddCircleButton from "~/components/common/button/AddCircleButton";
-import SafeAreaContainer from "~/components/common/container/SafeAreaContainer";
-import CustomHeader from "~/components/common/CustomHeader";
-import Input from "~/components/common/Input";
-import useFocusEvent from "~/hooks/useFocusEvent";
-import HomeTopTapNavigator from "~/navigator/HomeTopTabNav";
 import { HomeScreenNavigationProp } from "~/types/navigator";
 
+import SafeAreaContainer from "~/components/common/container/SafeAreaContainer";
+import CustomHeader from "~/components/common/CustomHeader";
+
 import Modal from "react-native-modal";
+import useModal from "~/hooks/useModal";
+import CautionModal from "~/components/modal/locationModal/CautionModal";
 
-import Search from "~/assets/svg/search.svg";
-import WheelPicker from "~/components/common/WheelPicker";
-import useDistrictSelector from "~/hooks/useDistrictSelector";
-import useGeolocation from "~/hooks/useGeolocation";
-import ListPicker from "~/components/common/ListPicker";
+import { useAppSelector } from "~/store";
+import Map from "~/components/map/Map";
 
-const { width } = Dimensions.get("window");
+const Notification = styled.TouchableOpacity`
+  background-color: rgba(110, 65, 226, 0.58);
+  position: absolute;
+  bottom: 24px;
+  width: 100%;
+  height: 40px;
+  justify-content: center;
+  align-items: center;
+`;
 
-const Container = styled.View`
-  flex: 1;
+const NotificationText = styled.Text`
+  font-size: 16px;
+  color: white;
 `;
 
 const Home = ({ navigation }: { navigation: HomeScreenNavigationProp }) => {
-  useFocusEvent();
+  const { isDeviceRegistered, isLoggedIn } = useAppSelector(
+    state => state.user,
+  );
 
-  const { lat, lng } = useGeolocation();
-
-  const {
-    handleList,
-    handleDone,
-    selectedIndex,
-    setSelectedIndex,
-    value,
-    open,
-    modalProps,
-    BottomModalComponent,
-  } = useDistrictSelector();
+  const { open, modalProps, CenterModalComponent } = useModal({
+    type: "center",
+  });
 
   return (
     <>
       <SafeAreaContainer>
-        <CustomHeader size="big">어디개</CustomHeader>
-        <Container>
-          <HomeTopTapNavigator />
-          <Input
-            onPress={open}
-            buttonStyle={{
-              position: "absolute",
-              top: 65,
-              left: 25,
-              width: width - 50,
-            }}
-            style={{
-              height: 35,
-              borderRadius: 0,
-            }}
-            hasShadow={false}
-            isInputEditable={false}
-            value={value}
-            RightIcon={() => <Search />}
-          />
-        </Container>
-        <AddCircleButton
-          isFloating={true}
-          size={50}
-          onPress={() => navigation.navigate("PostAnimalInfo")}
-        />
+        <CustomHeader
+          size="big"
+          RightIcon={() => (
+            <Ionicons name="information-circle-outline" size={26} />
+          )}
+          RightIconOnPress={open}>
+          어디개
+        </CustomHeader>
+        <Map isFullScreen isHome />
+        {!isDeviceRegistered && (
+          <Notification
+            activeOpacity={1}
+            onPress={() =>
+              navigation.navigate(!isLoggedIn ? "AuthSelector" : "AddDevice")
+            }>
+            <NotificationText>기기를 등록해주세요.</NotificationText>
+          </Notification>
+        )}
       </SafeAreaContainer>
       <Modal {...modalProps}>
-        <BottomModalComponent
-          useHeaderButton={Platform.OS === "ios"}
-          handleDone={handleDone}
-          isOneStep={false}
-          headerTitle="지역 선택">
-          {Platform.OS === "ios" ? (
-            <WheelPicker
-              data={handleList()}
-              selectedIndex={selectedIndex}
-              setSelectedIndex={index => setSelectedIndex(index)}
-            />
-          ) : (
-            <ListPicker
-              data={handleList()}
-              handleDone={handleDone}
-              setSelectedIndex={setSelectedIndex}
-            />
-          )}
-        </BottomModalComponent>
+        <CenterModalComponent headerTitle="주의사항">
+          <CautionModal />
+        </CenterModalComponent>
       </Modal>
     </>
   );
