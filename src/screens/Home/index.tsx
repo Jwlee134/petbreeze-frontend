@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "styled-components/native";
+import styled, { css } from "styled-components/native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 import { HomeScreenNavigationProp } from "~/types/navigator";
@@ -16,6 +16,9 @@ import useMap from "~/hooks/useMap";
 import useLocationTracking from "~/hooks/useLocationTracking";
 import HomeToggle from "~/components/map/HomeToggle";
 import OrangeCircleMarker from "~/components/map/OrangeCircleMarker";
+
+import data from "~/assets/deviceData.json";
+import DeviceAvatarCircle from "~/components/map/DeviceAvatarCircle";
 
 const Container = styled.View`
   flex: 1;
@@ -71,6 +74,7 @@ const Home = ({ navigation }: { navigation: HomeScreenNavigationProp }) => {
             startTracking={startTracking}
             clearTracking={clearTracking}
           />
+          <DeviceAvatarCircle devices={data} />
         </Container>
         {!isDeviceRegistered && (
           <Notification

@@ -1,0 +1,37 @@
+[
+  {
+    "name": "막둥이",
+    "battery": 80,
+    "remainingTime": 5,
+    "selected": false,
+    "path": [{ "latitude": 37.5666805, "longitude": 126.9784147 }]
+  },
+  {
+    "name": "막둥이",
+    "battery": 60,
+    "remainingTime": 5,
+    "selected": false,
+    "path": [{ "latitude": 37.5766805, "longitude": 126.9884147 }]
+  },
+  {
+    "name": "막둥이",
+    "battery": 60,
+    "remainingTime": 5,
+    "selected": false,
+    "path": [{ "latitude": 37.5766805, "longitude": 126.9884147 }]
+  },
+  {
+    "name": "막둥이",
+    "battery": 60,
+    "remainingTime": 5,
+    "selected": false,
+    "path": [{ "latitude": 37.5766805, "longitude": 126.9884147 }]
+  },
+  {
+    "name": "막둥이",
+    "battery": 60,
+    "remainingTime": 5,
+    "selected": false,
+    "path": [{ "latitude": 37.5766805, "longitude": 126.9884147 }]
+  }
+]
