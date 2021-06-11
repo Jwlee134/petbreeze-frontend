@@ -8,6 +8,7 @@ const useLocationTracking = ({
 }: {
   mapRef: React.RefObject<MapView>;
 }) => {
+  const [isTracking, setIsTracking] = useState(false);
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
 
@@ -17,6 +18,7 @@ const useLocationTracking = ({
     trackingId = Geolocation.watchPosition(
       pos => {
         const { latitude, longitude } = pos.coords;
+        setIsTracking(true);
         setLatitude(latitude);
         setLongitude(longitude);
       },
@@ -37,19 +39,18 @@ const useLocationTracking = ({
     );
   };
 
-  const clearTracking = () => Geolocation.clearWatch(trackingId);
+  const clearTracking = () => {
+    Geolocation.clearWatch(trackingId);
+    setIsTracking(false);
+  };
 
   useEffect(() => {
-    if (!mapRef?.current || !latitude || !longitude) return;
+    if (!mapRef?.current || !latitude || !longitude || !isTracking) return;
     mapRef.current.animateCamera({
       center: { latitude, longitude },
       zoom: 15,
     });
-  }, [mapRef, latitude, longitude]);
-
-  useEffect(() => {
-    console.log(latitude, longitude);
-  }, [latitude, longitude]);
+  }, [mapRef, latitude, longitude, isTracking]);
 
   useEffect(() => {
     return () => {
@@ -58,6 +59,7 @@ const useLocationTracking = ({
   }, []);
 
   return {
+    isTracking,
     latitude,
     longitude,
     startTracking,

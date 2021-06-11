@@ -22,7 +22,7 @@ const Circle = styled.View`
   background-color: #b6e13d;
 `;
 
-const MyLocationMarker = ({ ...props }: IProps) => (
+const OrangeCircleMarker = ({ ...props }: IProps) => (
   <Marker {...props}>
     <Container>
       <Circle />
@@ -30,4 +30,4 @@ const MyLocationMarker = ({ ...props }: IProps) => (
   </Marker>
 );
 
-export default MyLocationMarker;
+export default OrangeCircleMarker;

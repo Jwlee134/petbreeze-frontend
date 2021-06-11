@@ -12,7 +12,14 @@ import useModal from "~/hooks/useModal";
 import CautionModal from "~/components/modal/locationModal/CautionModal";
 
 import { useAppSelector } from "~/store";
-import Map from "~/components/map/Map";
+import useMap from "~/hooks/useMap";
+import useLocationTracking from "~/hooks/useLocationTracking";
+import HomeToggle from "~/components/map/HomeToggle";
+import OrangeCircleMarker from "~/components/map/OrangeCircleMarker";
+
+const Container = styled.View`
+  flex: 1;
+`;
 
 const Notification = styled.TouchableOpacity`
   background-color: rgba(110, 65, 226, 0.58);
@@ -38,6 +45,11 @@ const Home = ({ navigation }: { navigation: HomeScreenNavigationProp }) => {
     type: "center",
   });
 
+  const { Map, mapRef } = useMap();
+
+  const { isTracking, latitude, longitude, startTracking, clearTracking } =
+    useLocationTracking({ mapRef });
+
   return (
     <>
       <SafeAreaContainer>
@@ -49,7 +61,17 @@ const Home = ({ navigation }: { navigation: HomeScreenNavigationProp }) => {
           RightIconOnPress={open}>
           어디개
         </CustomHeader>
-        <Map isFullScreen isHome />
+        <Container>
+          <Map>
+            {isTracking && (
+              <OrangeCircleMarker coordinate={{ latitude, longitude }} />
+            )}
+          </Map>
+          <HomeToggle
+            startTracking={startTracking}
+            clearTracking={clearTracking}
+          />
+        </Container>
         {!isDeviceRegistered && (
           <Notification
             activeOpacity={1}
