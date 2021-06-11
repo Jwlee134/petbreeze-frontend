@@ -1,5 +1,6 @@
 import { addHours, format } from "date-fns";
 import { ko } from "date-fns/locale";
+import { IReverseGeocoding } from "~/types/api";
 
 export const localToISOString = (date: Date) => addHours(date, 9).toISOString();
 
@@ -39,4 +40,29 @@ export const formatCoordinates = (dataArray: number[]) => {
   const lng = _lng * ((dataArray[3] & 0x0f) >> 3 ? -1 : 1);
 
   return { lat, lng };
+};
+
+export const formatGeocodingAddr = (data: IReverseGeocoding) => {
+  return data.results.map(({ region, land }) => {
+    let fullAddr = "";
+
+    const regionName = Object.values(region)
+      .filter((area, index) => {
+        if (index === 0) return false;
+        return area.name;
+      })
+      .map(area => area.name)
+      .join(" ");
+
+    if (land) {
+      if (land.number1 && !land.number2) {
+        fullAddr = `${regionName} ${land.number1}`;
+      } else if (land.number1 && land.number2) {
+        fullAddr = `${regionName} ${land.number1}-${land.number2}`;
+      }
+    } else {
+      fullAddr = regionName;
+    }
+    return fullAddr;
+  });
 };

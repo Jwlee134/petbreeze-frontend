@@ -1,18 +1,14 @@
 import React, { ReactNode } from "react";
-import { StyleProp, ViewStyle } from "react-native";
+import { TouchableOpacityProps } from "react-native";
 import styled from "styled-components/native";
 import palette from "~/styles/palette";
 
-interface IProps {
+interface IProps extends TouchableOpacityProps {
   children: ReactNode;
-  onPress: () => void;
-  style?: StyleProp<ViewStyle>;
   disabled?: boolean;
 }
 
-const Container = styled.TouchableOpacity``;
-
-const Button = styled.View<{ disabled: boolean }>`
+const Container = styled.TouchableOpacity<{ disabled: boolean }>`
   width: 180px;
   height: 44px;
   background-color: ${({ disabled }) =>
@@ -27,16 +23,9 @@ const Label = styled.Text`
   color: white;
 `;
 
-const ConfirmButton = ({
-  children,
-  onPress,
-  style,
-  disabled = false,
-}: IProps) => (
-  <Container activeOpacity={0.8} disabled={disabled} onPress={onPress}>
-    <Button style={style} disabled={disabled}>
-      <Label>{children}</Label>
-    </Button>
+const ConfirmButton = ({ children, disabled = false, ...props }: IProps) => (
+  <Container activeOpacity={0.8} disabled={disabled} {...props}>
+    <Label>{children}</Label>
   </Container>
 );
 

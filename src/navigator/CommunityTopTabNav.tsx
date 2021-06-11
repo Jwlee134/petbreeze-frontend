@@ -1,7 +1,7 @@
 import React from "react";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import palette from "~/styles/palette";
-import PostList from "~/screens/Home/PostList";
+import PostList from "~/components/PostList";
 
 const Tab = createMaterialTopTabNavigator();
 

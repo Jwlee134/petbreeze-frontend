@@ -1,9 +1,10 @@
-import React, { useEffect } from "react";
-import { Platform } from "react-native";
+import React, { useEffect, useState } from "react";
+import { ActivityIndicator, Alert, Dimensions, Platform } from "react-native";
 import Modal from "react-native-modal";
 import styled from "styled-components/native";
 
 import useModal from "~/hooks/useModal";
+import useMap from "~/hooks/useMap";
 import useBottomModalSelector from "~/hooks/useBottomModalSelector";
 
 import { useAppSelector } from "~/store";
@@ -12,9 +13,9 @@ import { animalInfoActions } from "~/store/animalInfo";
 
 import { PostAnimalInfoScreenNavigationProp } from "~/types/navigator";
 
-import { ISOStringToLocal } from "~/utils";
+import { formatGeocodingAddr, ISOStringToLocal } from "~/utils";
 
-import AuthSelector from "../Shared/AuthSelector";
+import AuthSelector from "./AuthSelector";
 import WheelDatePicker from "~/components/common/WheelDatePicker";
 import WheelPicker from "~/components/common/WheelPicker";
 import KeyboardAwareScrollContainer from "~/components/common/container/KeyboardAwareScrollContainer";
@@ -25,6 +26,13 @@ import Input from "~/components/common/Input";
 import AddCircleButton from "~/components/common/button/AddCircleButton";
 import ConfirmButton from "~/components/common/button/ConfirmButton";
 import ListPicker from "~/components/common/ListPicker";
+
+import { reverseGeocodingAPI } from "~/api/postAnimalInfo";
+
+const MapContainer = styled.View`
+  width: 100%;
+  height: 100%;
+`;
 
 const RowContainer = styled.View`
   flex-direction: row;
@@ -50,6 +58,9 @@ const PostAnimalInfo = ({
   const { isLoggedIn } = useAppSelector(state => state.user);
   const { currentHomeTab } = useAppSelector(state => state.common);
 
+  const [showMap, setShowMap] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const { open, close, modalProps, BottomModalComponent } = useModal({
     type: "bottom",
   });
@@ -73,6 +84,8 @@ const PostAnimalInfo = ({
     setSelectedIndex,
   } = useBottomModalSelector({ open });
 
+  const { Map } = useMap();
+
   useEffect(() => {
     return () => {
       dispatch(animalInfoActions.initState());
@@ -80,6 +93,29 @@ const PostAnimalInfo = ({
   }, [dispatch]);
 
   const handleSubmit = async () => {};
+
+  const [latitude, setLatitude] = useState(0);
+  const [longitude, setLongitude] = useState(0);
+
+  const handleLocation = async () => {
+    try {
+      setLoading(true);
+      const { data } = await reverseGeocodingAPI({
+        latitude,
+        longitude,
+      });
+      if (data.status.code === 3) {
+        setLoading(false);
+        return Alert.alert("해당 지역의 주소를 불러올 수 없습니다.");
+      }
+      const address = formatGeocodingAddr(data);
+      dispatch(animalInfoActions.setEventPlace(address[0]));
+      setShowMap(false);
+    } catch (error) {
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (!isLoggedIn) return <AuthSelector />;
 
@@ -160,8 +196,9 @@ const PostAnimalInfo = ({
             }}
           />
           <Input
+            value={animalInfo.eventPlace /* .replace(/\s/g, "-") */}
             placeholder={`${isLost ? "잃어버린" : "발견한"} 장소*`}
-            onPress={() => {}}
+            onPress={() => setShowMap(true)}
             isInputEditable={false}
           />
           <Input placeholder="특징" maxLength={100} isMultiline />
@@ -235,6 +272,30 @@ const PostAnimalInfo = ({
           )}
         </BottomModalComponent>
       </Modal>
+      {showMap && (
+        <MapContainer>
+          <Map
+            onRegionChange={({ latitude, longitude }) => {
+              setLatitude(latitude);
+              setLongitude(longitude);
+            }}
+          />
+          {/* 페이크 마커, 지도 가운데에 position으로 두기 */}
+          <ConfirmButton
+            style={{
+              position: "absolute",
+              bottom: 24,
+              left: Dimensions.get("screen").width / 2 - 90,
+            }}
+            onPress={handleLocation}>
+            {loading ? (
+              <ActivityIndicator size="small" color="white" />
+            ) : (
+              "확인"
+            )}
+          </ConfirmButton>
+        </MapContainer>
+      )}
     </>
   );
 };

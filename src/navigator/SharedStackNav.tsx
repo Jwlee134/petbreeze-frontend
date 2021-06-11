@@ -13,7 +13,7 @@ import { stackNavScreenOptions } from "~/styles/navigator";
 import HeaderBackButton from "~/components/common/button/HeaderBackButton";
 import UpdateWitnessedList from "~/screens/Shared/UpdateWitnessedList";
 import Home from "~/screens/Home";
-import PostAnimalInfo from "~/screens/Home/PostAnimalInfo";
+import PostAnimalInfo from "~/screens/Shared/PostAnimalInfo";
 import { useAppSelector } from "~/store";
 import Community from "~/screens/Community";
 
