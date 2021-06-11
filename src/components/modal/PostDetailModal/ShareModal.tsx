@@ -7,7 +7,7 @@ import ModalText from "../ModalText";
 import ModalListItem from "../ModalListItem";
 import { ModalHeader } from "~/types";
 import ModalButtonContainer from "../ModalButtonContainer";
-import ModalButton from "~/components/common/button/ModalButton";
+import ModalButton from "~/components/modal/ModalButton";
 
 const Container = styled.View``;
 

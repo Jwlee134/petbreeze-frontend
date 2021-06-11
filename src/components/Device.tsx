@@ -1,25 +1,39 @@
 import React, { Fragment } from "react";
-import { PressableProps } from "react-native";
-import styled from "styled-components/native";
+import { TouchableHighlightProps } from "react-native";
+import styled, { css } from "styled-components/native";
 import palette from "~/styles/palette";
 
-interface IContainerProps extends PressableProps {
+interface IContainerProps {
   selected: boolean;
   isLast: boolean;
 }
 
-const Container = styled.Pressable<IContainerProps>`
+interface IProps extends TouchableHighlightProps {
+  data: any;
+  isLast: boolean;
+}
+
+const Container = styled.TouchableHighlight<IContainerProps>`
   width: 100%;
   flex-direction: row;
   height: 68px;
   justify-content: space-between;
   align-items: center;
   background-color: ${palette.gray_f3};
-  border-width: 1px;
-  border-color: ${({ selected }) => (!selected ? palette.gray_e5 : "black")};
   border-radius: 9px;
   padding: 0px 17px;
   margin-bottom: ${({ isLast }) => (isLast ? 0 : "11px")};
+  ${({ selected }) =>
+    selected
+      ? css`
+          border-width: 3px;
+          border-color: ${palette.blue_6e};
+          padding: 0px 15px;
+        `
+      : css`
+          border-width: 1px;
+          border-color: ${palette.gray_e5};
+        `}
 `;
 
 const LeftContainer = styled.View`
@@ -45,7 +59,7 @@ const BatteryBar = styled.View<{ isLast: boolean }>`
   margin-right: ${({ isLast }) => (isLast ? "8px" : "2px")};
 `;
 
-const Device = ({ data, isLast }: { data: any; isLast: boolean }) => {
+const Device = ({ data, isLast, ...props }: IProps) => {
   const numOfBatteryBar = () => {
     const length =
       data.battery > 75
@@ -61,10 +75,14 @@ const Device = ({ data, isLast }: { data: any; isLast: boolean }) => {
   };
 
   return (
-    <Container isLast={isLast} selected={data.selected}>
+    <Container
+      isLast={isLast}
+      selected={data.selected}
+      underlayColor={palette.gray_e5}
+      {...props}>
       <Fragment>
         <LeftContainer>
-          <Image source={data.avatarUrl} />
+          <Image source={require("~/assets/image/test.jpg")} />
           <Text style={{ marginRight: 8 }}>{data.name}</Text>
           {numOfBatteryBar().map((_, index) => (
             <BatteryBar

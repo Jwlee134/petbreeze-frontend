@@ -1,5 +1,5 @@
 import React, { ReactNode, useState } from "react";
-import { Dimensions, Keyboard } from "react-native";
+import { Dimensions, Keyboard, Platform } from "react-native";
 import { ModalProps } from "react-native-modal";
 import styled from "styled-components/native";
 import palette from "~/styles/palette";
@@ -17,8 +17,8 @@ interface IBottomProps {
   useHeaderButton?: boolean;
 }
 
-const centerModalWidth = Dimensions.get("screen").width - 76;
-const height = Dimensions.get("screen").height;
+const { width, height } = Dimensions.get("screen");
+const centerModalWidth = width - 76;
 
 interface ICenterProps {
   children: ReactNode;
@@ -89,7 +89,8 @@ const BottomContent = styled.View`
 
 const CenterContent = styled.View<{ useContentPadding: boolean }>`
   background-color: white;
-  padding: ${({ useContentPadding }) => (useContentPadding ? "22px" : "0px")};
+  padding: ${({ useContentPadding }) =>
+    useContentPadding ? "22px 25px 18px 25px" : "0px"};
 `;
 
 const useModal = ({ type, handleCancel }: IModalProps) => {
@@ -100,30 +101,28 @@ const useModal = ({ type, handleCancel }: IModalProps) => {
     Keyboard.dismiss();
   };
 
-  const close = () => setModalVisible(false);
+  const close = () => {
+    if (handleCancel) handleCancel();
+    setModalVisible(false);
+  };
 
   const modalProps: Partial<ModalProps> = {
     isVisible: isModalVisible,
     backdropTransitionOutTiming: 0,
-    onBackdropPress: () => {
-      if (handleCancel) handleCancel();
-      close();
-    },
-    onBackButtonPress: () => {
-      if (handleCancel) handleCancel();
-      close();
-    },
+    onBackdropPress: close,
+    onBackButtonPress: close,
     backdropOpacity: 0.3,
     style: {
+      margin: 0,
       ...(type === "bottom"
         ? { justifyContent: "flex-end" }
         : { alignItems: "center" }),
-      margin: 0,
     },
     ...(type === "center" && {
       animationIn: "fadeInUp",
       animationOut: "fadeOutDown",
     }),
+    deviceWidth: width,
     deviceHeight: height,
     statusBarTranslucent: true,
   };
