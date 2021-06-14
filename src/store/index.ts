@@ -20,13 +20,22 @@ import user from "./user";
 import common from "./common";
 import animalInfo from "./animalInfo";
 import settings from "./settings";
+import map from "./map";
+import device from "./device";
 
-const rootReducer = combineReducers({ user, common, animalInfo, settings });
+const rootReducer = combineReducers({
+  user,
+  common,
+  animalInfo,
+  settings,
+  map,
+  device,
+});
 
 const persistConfig = {
   key: "root",
   storage: AsyncStorage,
-  whitelist: ["user", "settings"],
+  whitelist: ["user", "settings", "device"],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

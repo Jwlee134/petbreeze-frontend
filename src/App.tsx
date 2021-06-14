@@ -12,6 +12,10 @@ import { persister, store } from "./store";
 import { Provider } from "react-redux";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
+import { Settings } from "react-native-fbsdk-next";
+
+Settings.initializeSDK();
+
 const App = () => {
   const isDarkMode = useColorScheme() === "dark";
 

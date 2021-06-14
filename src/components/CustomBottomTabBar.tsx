@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Platform, Keyboard, EmitterSubscription } from "react-native";
-import { BottomTabBar } from "@react-navigation/bottom-tabs";
+import {
+  BottomTabBar,
+  BottomTabBarOptions,
+  BottomTabBarProps,
+} from "@react-navigation/bottom-tabs";
 
-const CustomBottomTabBar = props => {
+const CustomBottomTabBar = (props: BottomTabBarProps<BottomTabBarOptions>) => {
   const [visible, setVisible] = useState(true);
 
   useEffect(() => {

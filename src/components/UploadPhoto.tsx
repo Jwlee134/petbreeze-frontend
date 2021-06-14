@@ -45,7 +45,7 @@ const UploadPhoto = () => {
     ImagePicker.openPicker({
       multiple: true,
       mediaType: "photo",
-      maxFiles: 100,
+      maxFiles: 5,
     }).then(images => {
       if (images.length === 0) return;
       dispatch(animalInfoActions.setPhotos(images));

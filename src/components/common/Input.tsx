@@ -1,4 +1,4 @@
-import React, { ForwardedRef, forwardRef, ReactNode } from "react";
+import React, { ForwardedRef, forwardRef } from "react";
 import {
   Platform,
   StyleProp,

@@ -6,7 +6,7 @@ import SidePaddingContainer from "~/components/common/container/SidePaddingConta
 import Fail from "~/components/lottie/Fail";
 import Loading from "~/components/lottie/Loading";
 import Success from "~/components/lottie/Success";
-import SubmitTagInfo from "./SubmitTagInfo";
+import SubmitDeviceInfo from "./SubmitDeviceInfo";
 
 const Text = styled.Text`
   font-size: 22px;
@@ -76,7 +76,7 @@ const AddDevice = () => {
   return (
     <SafeAreaContainer hasCustomHeader={false}>
       {showTagScreen ? (
-        <SubmitTagInfo />
+        <SubmitDeviceInfo />
       ) : (
         <SidePaddingContainer
           style={{

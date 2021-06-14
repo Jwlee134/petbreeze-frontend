@@ -63,13 +63,16 @@ const Underline = styled.View`
   background-color: black;
 `;
 
-const SubmitTagInfo = () => {
+const SubmitDeviceInfo = () => {
   const navigation = useNavigation<DeviceListScreenNavigationProp>();
 
   const animalInfo = useAppSelector(state => state.animalInfo);
   const dispatch = useDispatch();
 
   const handleSave = () => {
+    const formData = new FormData();
+    formData.append("avatar", animalInfo.avatar);
+
     dispatch(animalInfoActions.initState());
     dispatch(userActions.setDeviceRegistered());
     navigation.goBack();
@@ -248,4 +251,4 @@ const SubmitTagInfo = () => {
   );
 };
 
-export default SubmitTagInfo;
+export default SubmitDeviceInfo;

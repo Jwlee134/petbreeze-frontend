@@ -32,17 +32,6 @@ const TitleContainer = styled.View`
   margin: 17px 0px;
 `;
 
-const TitleTopContainer = styled.View`
-  flex-direction: row;
-  margin-bottom: 8px;
-`;
-
-const Block = styled.View`
-  width: 33.3%;
-  flex-direction: row;
-  align-items: center;
-`;
-
 const BigText = styled.Text`
   font-size: 24px;
   text-align: center;

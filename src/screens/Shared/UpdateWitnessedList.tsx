@@ -16,6 +16,9 @@ import { ISOStringToLocal } from "~/utils";
 import { useDispatch } from "react-redux";
 import { animalInfoActions } from "~/store/animalInfo";
 
+import Location from "~/assets/svg/location.svg";
+import Calendar from "~/assets/svg/calendar.svg";
+
 const ButtonContainer = styled.View`
   margin-top: 30px;
   align-items: center;
@@ -46,7 +49,8 @@ const UpdateWitnessedList = () => {
     <>
       <KeyboardAwareScrollContainer>
         <CategoryTitle>목격 내역 업데이트</CategoryTitle>
-        <SidePaddingContainer style={{ paddingTop: 12 }}>
+        <UploadPhoto />
+        <SidePaddingContainer>
           <Input
             onPress={() => handleOpen("날짜 선택")}
             value={
@@ -54,11 +58,13 @@ const UpdateWitnessedList = () => {
             }
             placeholder="날짜 선택*"
             isInputEditable={false}
+            RightIcon={() => <Calendar />}
           />
           <Input
             onPress={() => {}}
             placeholder="목격장소 선택*"
             isInputEditable={false}
+            RightIcon={() => <Location />}
           />
           <Input
             isMultiline
@@ -69,7 +75,7 @@ const UpdateWitnessedList = () => {
             }
           />
         </SidePaddingContainer>
-        <UploadPhoto />
+
         <ButtonContainer>
           <ConfirmButton
             disabled={!animalInfo.eventTime || !animalInfo.eventPlace}

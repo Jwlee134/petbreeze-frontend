@@ -1,16 +1,13 @@
 import { useEffect, useState } from "react";
 import { Alert, PermissionsAndroid } from "react-native";
 import Geolocation from "react-native-geolocation-service";
-import MapView from "react-native-maps";
+import { useDispatch } from "react-redux";
+import { mapActions } from "~/store/map";
 
-const useLocationTracking = ({
-  mapRef,
-}: {
-  mapRef: React.RefObject<MapView>;
-}) => {
+const useLocationTracking = () => {
+  const dispatch = useDispatch();
+
   const [isTracking, setIsTracking] = useState(false);
-  const [latitude, setLatitude] = useState(0);
-  const [longitude, setLongitude] = useState(0);
 
   let trackingId = 0;
 
@@ -18,9 +15,9 @@ const useLocationTracking = ({
     trackingId = Geolocation.watchPosition(
       pos => {
         const { latitude, longitude } = pos.coords;
+        dispatch(mapActions.setMyLatitude(latitude));
+        dispatch(mapActions.setMyLongitude(longitude));
         setIsTracking(true);
-        setLatitude(latitude);
-        setLongitude(longitude);
       },
       error => {
         console.log(error);
@@ -45,14 +42,6 @@ const useLocationTracking = ({
   };
 
   useEffect(() => {
-    if (!mapRef?.current || !latitude || !longitude || !isTracking) return;
-    mapRef.current.animateCamera({
-      center: { latitude, longitude },
-      zoom: 15,
-    });
-  }, [mapRef, latitude, longitude, isTracking]);
-
-  useEffect(() => {
     return () => {
       clearTracking();
     };
@@ -60,8 +49,6 @@ const useLocationTracking = ({
 
   return {
     isTracking,
-    latitude,
-    longitude,
     startTracking,
     clearTracking,
   };

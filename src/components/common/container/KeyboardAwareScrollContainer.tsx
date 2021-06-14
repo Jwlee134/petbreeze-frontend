@@ -1,6 +1,4 @@
-import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import React, { ReactNode } from "react";
-import { Platform } from "react-native";
 import {
   KeyboardAwareScrollView,
   KeyboardAwareScrollViewProps,
@@ -11,13 +9,8 @@ interface IProps extends KeyboardAwareScrollViewProps {
 }
 
 const KeyboardAwareScrollContainer = ({ children, ...props }: IProps) => {
-  const height = useBottomTabBarHeight();
-
   return (
-    <KeyboardAwareScrollView
-      keyboardShouldPersistTaps="handled"
-      extraScrollHeight={Platform.OS === "android" ? 0 : -height}
-      {...props}>
+    <KeyboardAwareScrollView keyboardShouldPersistTaps="handled" {...props}>
       {children}
     </KeyboardAwareScrollView>
   );

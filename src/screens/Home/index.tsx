@@ -1,5 +1,5 @@
-import React from "react";
-import styled, { css } from "styled-components/native";
+import React, { useState } from "react";
+import styled from "styled-components/native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 import { HomeScreenNavigationProp } from "~/types/navigator";
@@ -15,10 +15,16 @@ import { useAppSelector } from "~/store";
 import useMap from "~/hooks/useMap";
 import useLocationTracking from "~/hooks/useLocationTracking";
 import HomeToggle from "~/components/map/HomeToggle";
-import OrangeCircleMarker from "~/components/map/OrangeCircleMarker";
+import Marker from "~/components/map/Marker";
+import DeviceAvatarCircle from "~/components/map/DeviceAvatarCircle";
 
 import data from "~/assets/deviceData.json";
-import DeviceAvatarCircle from "~/components/map/DeviceAvatarCircle";
+import { MapEvent, Polyline } from "react-native-maps";
+import palette from "~/styles/palette";
+import { Text, TouchableOpacity } from "react-native";
+import { useDispatch } from "react-redux";
+import { mapActions } from "~/store/map";
+import useReverseGeocoding from "~/hooks/useReverseGeocoding";
 
 const Container = styled.View`
   flex: 1;
@@ -43,6 +49,9 @@ const Home = ({ navigation }: { navigation: HomeScreenNavigationProp }) => {
   const { isDeviceRegistered, isLoggedIn } = useAppSelector(
     state => state.user,
   );
+  const { myLatitude, myLongitude, coordinates } = useAppSelector(
+    state => state.map.home,
+  );
 
   const { open, modalProps, CenterModalComponent } = useModal({
     type: "center",
@@ -50,8 +59,25 @@ const Home = ({ navigation }: { navigation: HomeScreenNavigationProp }) => {
 
   const { Map, mapRef } = useMap();
 
-  const { isTracking, latitude, longitude, startTracking, clearTracking } =
-    useLocationTracking({ mapRef });
+  const { isTracking, startTracking, clearTracking } = useLocationTracking();
+
+  const [showPath, setShowPath] = useState(false);
+  const [showMyLocation, setShowMyLocation] = useState(false);
+
+  const dispatch = useDispatch();
+
+  const { getAddress } = useReverseGeocoding();
+
+  const handleMarkerPress = async (
+    e: MapEvent<{
+      action: "marker-press";
+      id: string;
+    }>,
+  ) => {
+    const { latitude, longitude } = e.nativeEvent.coordinate;
+    const address = await getAddress(latitude, longitude);
+    if (address) console.log(address);
+  };
 
   return (
     <>
@@ -67,15 +93,46 @@ const Home = ({ navigation }: { navigation: HomeScreenNavigationProp }) => {
         <Container>
           <Map>
             {isTracking && (
-              <OrangeCircleMarker coordinate={{ latitude, longitude }} />
+              <Marker
+                color="green"
+                coordinate={{ latitude: myLatitude, longitude: myLongitude }}
+              />
+            )}
+            {showPath && (
+              <>
+                <Polyline
+                  coordinates={coordinates}
+                  strokeWidth={2}
+                  strokeColor={palette.blue_34}
+                />
+                {coordinates.map((data, index) => (
+                  <Marker
+                    key={index}
+                    onPress={handleMarkerPress}
+                    color={index !== coordinates.length - 1 ? "blue" : "red"}
+                    coordinate={{
+                      latitude: data.latitude,
+                      longitude: data.longitude,
+                    }}
+                  />
+                ))}
+              </>
             )}
           </Map>
           <HomeToggle
+            showPath={showPath}
+            setShowPath={setShowPath}
+            showMyLocation={showMyLocation}
+            setShowMyLocation={setShowMyLocation}
             startTracking={startTracking}
             clearTracking={clearTracking}
+            mapRef={mapRef}
           />
           <DeviceAvatarCircle devices={data} />
         </Container>
+        <TouchableOpacity onPress={() => dispatch(mapActions.setCoordinates())}>
+          <Text>asdfasdf</Text>
+        </TouchableOpacity>
         {!isDeviceRegistered && (
           <Notification
             activeOpacity={1}

@@ -13,7 +13,7 @@ import { animalInfoActions } from "~/store/animalInfo";
 
 import { PostAnimalInfoScreenNavigationProp } from "~/types/navigator";
 
-import { formatGeocodingAddr, ISOStringToLocal } from "~/utils";
+import { ISOStringToLocal } from "~/utils";
 
 import AuthSelector from "./AuthSelector";
 import WheelDatePicker from "~/components/common/WheelDatePicker";
@@ -27,7 +27,7 @@ import AddCircleButton from "~/components/common/button/AddCircleButton";
 import ConfirmButton from "~/components/common/button/ConfirmButton";
 import ListPicker from "~/components/common/ListPicker";
 
-import { reverseGeocodingAPI } from "~/api/postAnimalInfo";
+import useReverseGeocoding from "~/hooks/useReverseGeocoding";
 
 const MapContainer = styled.View`
   width: 100%;
@@ -59,15 +59,11 @@ const PostAnimalInfo = ({
   const { currentHomeTab } = useAppSelector(state => state.common);
 
   const [showMap, setShowMap] = useState(false);
-  const [loading, setLoading] = useState(false);
 
   const { open, close, modalProps, BottomModalComponent } = useModal({
     type: "bottom",
   });
-  const isLost = currentHomeTab === "LostList";
-
-  const dispatch = useDispatch();
-
+  const { Map } = useMap();
   const {
     handleOpen,
     handleRememberIndex,
@@ -84,7 +80,14 @@ const PostAnimalInfo = ({
     setSelectedIndex,
   } = useBottomModalSelector({ open });
 
-  const { Map } = useMap();
+  const isLost = currentHomeTab === "LostList";
+
+  const dispatch = useDispatch();
+
+  const [latitude, setLatitude] = useState(0);
+  const [longitude, setLongitude] = useState(0);
+
+  const { loading, setLoading, getAddress } = useReverseGeocoding();
 
   useEffect(() => {
     return () => {
@@ -92,24 +95,20 @@ const PostAnimalInfo = ({
     };
   }, [dispatch]);
 
-  const handleSubmit = async () => {};
-
-  const [latitude, setLatitude] = useState(0);
-  const [longitude, setLongitude] = useState(0);
+  const handleSubmit = async () => {
+    const formData = new FormData();
+    for (let i = 0; i < animalInfo.length; i++) {
+      formData.append(`${i}`, animalInfo.photos[i]);
+    }
+  };
 
   const handleLocation = async () => {
     try {
       setLoading(true);
-      const { data } = await reverseGeocodingAPI({
-        latitude,
-        longitude,
-      });
-      if (data.status.code === 3) {
-        setLoading(false);
-        return Alert.alert("해당 지역의 주소를 불러올 수 없습니다.");
+      const address = await getAddress(latitude, longitude);
+      if (address) {
+        dispatch(animalInfoActions.setEventPlace(address[0]));
       }
-      const address = formatGeocodingAddr(data);
-      dispatch(animalInfoActions.setEventPlace(address[0]));
       setShowMap(false);
     } catch (error) {
     } finally {
@@ -232,7 +231,7 @@ const PostAnimalInfo = ({
         )}
         <SubmitContainer>
           <ConfirmButton
-            disabled={
+            /* disabled={
               animalInfo.photos.length === 0 ||
               !animalInfo.name ||
               !animalInfo.species ||
@@ -241,7 +240,7 @@ const PostAnimalInfo = ({
               !animalInfo.eventTime ||
               !animalInfo.eventPlace ||
               !animalInfo.phoneNumber[0].value
-            }
+            } */
             onPress={handleSubmit}>
             등록
           </ConfirmButton>
