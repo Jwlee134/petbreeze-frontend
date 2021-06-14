@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">Petbreeze</string>
     <string name="kakao_app_key">5155b1706489fb195c173509a87bb95c</string>
+    <string name="facebook_app_id">755816805082838</string>
+    <string name="facebook_client_token">92475fb54a2c974a83d2cb303f6ee758</string>
 </resources>
