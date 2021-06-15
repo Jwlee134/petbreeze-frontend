@@ -66,7 +66,6 @@ const Title = styled.Text`
 
 const CenterHeaderTitle = styled.Text`
   font-size: 18px;
-  color: ${palette.blue_6e};
 `;
 
 const Button = styled.TouchableOpacity`
@@ -89,8 +88,7 @@ const BottomContent = styled.View`
 
 const CenterContent = styled.View<{ useContentPadding: boolean }>`
   background-color: white;
-  padding: ${({ useContentPadding }) =>
-    useContentPadding ? "22px 25px 18px 25px" : "0px"};
+  padding: ${({ useContentPadding }) => (useContentPadding ? "23px" : "0px")};
 `;
 
 const useModal = ({ type, handleCancel }: IModalProps) => {

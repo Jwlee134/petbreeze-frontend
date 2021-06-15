@@ -5,8 +5,6 @@ import Heart from "~/assets/svg/heart-red.svg";
 import My from "~/assets/svg/my.svg";
 import Alert from "~/assets/svg/alert.svg";
 
-import ModalText from "./ModalText";
-
 const Container = styled.View``;
 
 const Item = styled.View`
@@ -30,11 +28,10 @@ const NotificationModal = () => (
       <My />
       <ItemText>작성한 게시물 업데이트</ItemText>
     </Item>
-    <Item>
+    <Item style={{ marginBottom: 0 }}>
       <Alert />
       <ItemText>내 주위의 실종신고 업데이트</ItemText>
     </Item>
-    <ModalText>알림을 받아볼 수 있습니다.</ModalText>
   </Container>
 );
 
