@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components/native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
@@ -18,13 +18,13 @@ import HomeToggle from "~/components/map/HomeToggle";
 import Marker from "~/components/map/Marker";
 import DeviceAvatarCircle from "~/components/map/DeviceAvatarCircle";
 
-import data from "~/assets/deviceData.json";
-import { MapEvent, Polyline } from "react-native-maps";
+import { Polyline } from "react-native-maps";
 import palette from "~/styles/palette";
-import { Text, TouchableOpacity } from "react-native";
-import { useDispatch } from "react-redux";
-import { mapActions } from "~/store/map";
 import useReverseGeocoding from "~/hooks/useReverseGeocoding";
+import { TouchableOpacity, Text } from "react-native";
+import { useDispatch } from "react-redux";
+import { deviceActions } from "~/store/device";
+import { storageActions } from "~/store/storage";
 
 const Container = styled.View`
   flex: 1;
@@ -46,38 +46,23 @@ const NotificationText = styled.Text`
 `;
 
 const Home = ({ navigation }: { navigation: HomeScreenNavigationProp }) => {
+  const data = useAppSelector(state => state.device);
   const { isDeviceRegistered, isLoggedIn } = useAppSelector(
     state => state.user,
   );
-  const { myLatitude, myLongitude, coordinates } = useAppSelector(
-    state => state.map.home,
+  const { myLatitude, myLongitude, showPath } = useAppSelector(
+    state => state.map,
   );
 
   const { open, modalProps, CenterModalComponent } = useModal({
     type: "center",
   });
-
   const { Map, mapRef } = useMap();
-
   const { isTracking, startTracking, clearTracking } = useLocationTracking();
-
-  const [showPath, setShowPath] = useState(false);
-  const [showMyLocation, setShowMyLocation] = useState(false);
-
+  const { getAddress } = useReverseGeocoding();
   const dispatch = useDispatch();
 
-  const { getAddress } = useReverseGeocoding();
-
-  const handleMarkerPress = async (
-    e: MapEvent<{
-      action: "marker-press";
-      id: string;
-    }>,
-  ) => {
-    const { latitude, longitude } = e.nativeEvent.coordinate;
-    const address = await getAddress(latitude, longitude);
-    if (address) console.log(address);
-  };
+  const selectedDevice = data.filter(device => device.selected)[0];
 
   return (
     <>
@@ -91,25 +76,45 @@ const Home = ({ navigation }: { navigation: HomeScreenNavigationProp }) => {
           어디개
         </CustomHeader>
         <Container>
-          <Map>
+          <Map
+            onRegionChangeComplete={async () => {
+              if (!mapRef.current) return;
+              const camera = await mapRef.current.getCamera();
+              dispatch(storageActions.setCamera(camera));
+            }}>
             {isTracking && (
               <Marker
                 color="green"
                 coordinate={{ latitude: myLatitude, longitude: myLongitude }}
               />
             )}
-            {showPath && (
+            {showPath && selectedDevice && (
               <>
                 <Polyline
-                  coordinates={coordinates}
+                  coordinates={selectedDevice.path.map(data => ({
+                    latitude: data.latitude,
+                    longitude: data.longitude,
+                  }))}
                   strokeWidth={2}
                   strokeColor={palette.blue_34}
                 />
-                {coordinates.map((data, index) => (
+                {selectedDevice.path.map((data, index) => (
                   <Marker
                     key={index}
-                    onPress={handleMarkerPress}
-                    color={index !== coordinates.length - 1 ? "blue" : "red"}
+                    onPress={async e => {
+                      const { latitude, longitude } = e.nativeEvent.coordinate;
+                      const address = await getAddress(latitude, longitude);
+                      if (address)
+                        console.log(
+                          String(data.utc)
+                            .substring(0, 4)
+                            .replace(/\B(?=(\d{2})+(?!\d))/g, ":"),
+                          address,
+                        );
+                    }}
+                    color={
+                      index !== selectedDevice.path.length - 1 ? "blue" : "red"
+                    }
                     coordinate={{
                       latitude: data.latitude,
                       longitude: data.longitude,
@@ -120,18 +125,25 @@ const Home = ({ navigation }: { navigation: HomeScreenNavigationProp }) => {
             )}
           </Map>
           <HomeToggle
-            showPath={showPath}
-            setShowPath={setShowPath}
-            showMyLocation={showMyLocation}
-            setShowMyLocation={setShowMyLocation}
             startTracking={startTracking}
             clearTracking={clearTracking}
             mapRef={mapRef}
           />
-          <DeviceAvatarCircle devices={data} />
+          <DeviceAvatarCircle />
         </Container>
-        <TouchableOpacity onPress={() => dispatch(mapActions.setCoordinates())}>
-          <Text>asdfasdf</Text>
+        <TouchableOpacity
+          onPress={() => {
+            dispatch(
+              deviceActions.setPath({
+                id: selectedDevice.id,
+                latitude: 37.480237,
+                longitude: 126.951657,
+                date: 210614,
+                utc: 215523,
+              }),
+            );
+          }}>
+          <Text>ㅁㄴㅇㄹㅁㄴㅇㄹ</Text>
         </TouchableOpacity>
         {!isDeviceRegistered && (
           <Notification

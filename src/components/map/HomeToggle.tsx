@@ -16,10 +16,6 @@ interface IProps {
   startTracking: () => void;
   clearTracking: () => void;
   mapRef: React.RefObject<MapView>;
-  showPath: boolean;
-  setShowPath: React.Dispatch<React.SetStateAction<boolean>>;
-  showMyLocation: boolean;
-  setShowMyLocation: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const ButtonContainer = styled.TouchableOpacity`
@@ -44,33 +40,19 @@ const ButtonText = styled.Text`
   color: ${palette.blue_6e};
 `;
 
-const HomeToggle = ({
-  startTracking,
-  clearTracking,
-  mapRef,
-  showPath,
-  setShowPath,
-  showMyLocation,
-  setShowMyLocation,
-}: IProps) => {
-  const { myLatitude, myLongitude, coordinates } = useAppSelector(
-    state => state.map.home,
+const HomeToggle = ({ startTracking, clearTracking, mapRef }: IProps) => {
+  const data = useAppSelector(state => state.device);
+  const { showPath, showMyLocation, myLatitude, myLongitude } = useAppSelector(
+    state => state.map,
   );
-  const dispatch = useDispatch();
 
-  const [isCameraMoved, setIsCameraMoved] = useState(false);
+  const dispatch = useDispatch();
 
   const edgePadding = Platform.OS === "android" ? 240 : 120;
 
-  useEffect(() => {
-    if (showMyLocation) {
-      startTracking();
-    } else {
-      dispatch(mapActions.initMyCoords());
-      setIsCameraMoved(false);
-      clearTracking();
-    }
-  }, [showMyLocation]);
+  const [isCameraMoved, setIsCameraMoved] = useState(false);
+
+  const selectedDevice = data.filter(device => device.selected)[0];
 
   useEffect(() => {
     if (!mapRef.current) return;
@@ -84,30 +66,46 @@ const HomeToggle = ({
   }, [mapRef, myLatitude, myLongitude, isCameraMoved]);
 
   useEffect(() => {
-    if (!mapRef.current) return;
-    if (showPath) {
-      mapRef.current.fitToCoordinates(coordinates, {
-        edgePadding: {
-          top: edgePadding,
-          left: edgePadding,
-          right: edgePadding,
-          bottom: edgePadding,
-        },
-      });
+    if (showMyLocation) {
+      startTracking();
+    } else {
+      dispatch(mapActions.initMyCoords());
+      setIsCameraMoved(false);
+      clearTracking();
     }
-  }, [mapRef, showPath]);
+  }, [showMyLocation]);
+
+  useEffect(() => {
+    if (!mapRef.current || !selectedDevice?.id) return;
+    if (showPath) {
+      mapRef.current.fitToCoordinates(
+        selectedDevice.path.map(coordinate => ({
+          latitude: coordinate.latitude,
+          longitude: coordinate.longitude,
+        })),
+        {
+          edgePadding: {
+            top: edgePadding,
+            left: edgePadding,
+            right: edgePadding,
+            bottom: edgePadding,
+          },
+        },
+      );
+    }
+  }, [mapRef, showPath, selectedDevice?.id]);
 
   return (
     <>
       <ButtonContainer
-        onPress={() => setShowPath(prev => !prev)}
+        onPress={() => dispatch(mapActions.setShowPath(!showPath))}
         style={{ top: 20 }}
         activeOpacity={0.7}>
         <Circle>{showPath ? <OrangeStar /> : <Star />}</Circle>
         <ButtonText>이동경로</ButtonText>
       </ButtonContainer>
       <ButtonContainer
-        onPress={() => setShowMyLocation(prev => !prev)}
+        onPress={() => dispatch(mapActions.setShowMyLocation(!showMyLocation))}
         style={{ top: 100 }}
         activeOpacity={0.8}>
         <Circle>

@@ -8,7 +8,7 @@ import KeyboardAwareScrollContainer from "~/components/common/container/Keyboard
 import SidePaddingContainer from "~/components/common/container/SidePaddingContainer";
 import Input from "~/components/common/Input";
 import { useAppSelector } from "~/store";
-import { settingsActions } from "~/store/settings";
+import { settingsActions } from "~/store/storage";
 
 const InputContainer = styled.View`
   margin: 22px 0px;

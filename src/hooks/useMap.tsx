@@ -1,5 +1,6 @@
 import React, { ReactNode, useCallback, useRef } from "react";
 import MapView, { MapViewProps, PROVIDER_GOOGLE } from "react-native-maps";
+import { useAppSelector } from "~/store";
 
 interface IProps extends MapViewProps {
   children?: ReactNode;
@@ -7,6 +8,7 @@ interface IProps extends MapViewProps {
 
 const useMap = () => {
   const mapRef = useRef<MapView>(null);
+  const camera = useAppSelector(state => state.storage.camera);
 
   const Map = useCallback(
     ({ children, ...props }: IProps) => (
@@ -14,12 +16,7 @@ const useMap = () => {
         ref={mapRef}
         style={{ width: "100%", height: "100%" }}
         provider={PROVIDER_GOOGLE}
-        initialRegion={{
-          latitude: 37.5666805,
-          longitude: 126.9784147,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
-        }}
+        initialCamera={camera}
         {...props}>
         {children ? children : null}
       </MapView>

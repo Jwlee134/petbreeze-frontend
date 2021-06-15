@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { Camera } from "react-native-maps";
 
 interface IState {
   notifications: {
@@ -6,7 +7,7 @@ interface IState {
     myPost: boolean;
     mySurrounding: boolean;
   };
-  wifiSSID: { id: string; password: string }[];
+  camera: Camera;
 }
 
 const initialState: IState = {
@@ -15,11 +16,20 @@ const initialState: IState = {
     myPost: false,
     mySurrounding: false,
   },
-  wifiSSID: [],
+  camera: {
+    center: {
+      latitude: 37.5666805,
+      longitude: 126.9784147,
+    },
+    altitude: 0,
+    heading: 0,
+    pitch: 0,
+    zoom: 15,
+  },
 };
 
-const settings = createSlice({
-  name: "settings",
+const storage = createSlice({
+  name: "storage",
   initialState,
   reducers: {
     setSavedPost: (state, action: PayloadAction<boolean>) => {
@@ -31,15 +41,12 @@ const settings = createSlice({
     setMySurrounding: (state, action: PayloadAction<boolean>) => {
       state.notifications.mySurrounding = action.payload;
     },
-    setWifiSSID: (
-      state,
-      action: PayloadAction<{ id: string; password: string }[]>,
-    ) => {
-      state.wifiSSID = action.payload;
+    setCamera: (state, action: PayloadAction<Camera>) => {
+      state.camera = action.payload;
     },
   },
 });
 
-export const settingsActions = { ...settings.actions };
+export const storageActions = { ...storage.actions };
 
-export default settings.reducer;
+export default storage.reducer;

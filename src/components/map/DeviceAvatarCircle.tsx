@@ -1,6 +1,9 @@
 import React from "react";
 import { Dimensions, ScrollView, View } from "react-native";
+import { useDispatch } from "react-redux";
 import styled, { css } from "styled-components/native";
+import { useAppSelector } from "~/store";
+import { deviceActions } from "~/store/device";
 
 interface IContainerProps {
   selected: boolean;
@@ -8,10 +11,6 @@ interface IContainerProps {
   index?: number;
   isScrollable?: boolean;
   isFirst?: boolean;
-}
-
-interface IProps {
-  devices: any[];
 }
 
 const width = Dimensions.get("screen").width;
@@ -93,15 +92,22 @@ const DeviceAvatar = styled.Image`
   border-radius: 27.5px;
 `;
 
-const DeviceAvatarCircle = ({ devices }: IProps) => {
-  const handlePress = () => {};
+const DeviceAvatarCircle = () => {
+  const devices = useAppSelector(state => state.device);
+  const dispatch = useDispatch();
+
+  const handlePress = (id: number) => {
+    dispatch(deviceActions.setSelected(id));
+  };
 
   if (devices.length < 4) {
     return (
       <View>
         {devices.map((device, index) => (
           <DeviceAvatarContainer
-            onPress={handlePress}
+            onPress={() => {
+              if (!device.selected) handlePress(device.id);
+            }}
             numOfDevices={devices.length}
             key={index}
             index={index}

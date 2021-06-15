@@ -9,8 +9,7 @@ import { DeviceListScreenNavigationProp } from "~/types/navigator";
 
 import Modal from "react-native-modal";
 import DeviceListModal from "~/components/modal/DeviceListModal";
-
-import data from "~/assets/deviceData.json";
+import { useAppSelector } from "~/store";
 
 const DeviceListContainer = styled.View`
   margin: 26px 0px;
@@ -25,6 +24,7 @@ const DeviceList = ({
 }: {
   navigation: DeviceListScreenNavigationProp;
 }) => {
+  const data = useAppSelector(state => state.device);
   const { open, close, modalProps, CenterModalComponent } = useModal({
     type: "center",
   });

@@ -8,7 +8,7 @@ import My from "~/assets/svg/my.svg";
 import Alert from "~/assets/svg/alert.svg";
 import { useAppSelector } from "~/store";
 import { useDispatch } from "react-redux";
-import { settingsActions } from "~/store/settings";
+import { settingsActions } from "~/store/storage";
 import { ScrollView } from "react-native";
 
 const Container = styled.View`
@@ -33,7 +33,7 @@ const Text = styled.Text`
 
 const NotificationSetting = () => {
   const { savedPost, myPost, mySurrounding } = useAppSelector(
-    state => state.settings.notifications,
+    state => state.storage.notifications,
   );
 
   const dispatch = useDispatch();
