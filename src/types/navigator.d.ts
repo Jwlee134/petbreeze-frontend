@@ -99,7 +99,6 @@ type DeviceSettingStackParamList = {
   AddDevice: undefined;
   LocationCollectInterval: undefined;
   SafetyZoneSetting: undefined;
-  WifiSSID: undefined;
 };
 
 export type DeviceSettingScreenNavigationProp = StackNavigationProp<

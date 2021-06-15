@@ -52,14 +52,6 @@ const DeviceSettingStackNav = () => (
         headerTitleStyle,
       }}
     />
-    <Stack.Screen
-      name="WifiSSID"
-      component={WifiSSID}
-      options={{
-        headerTitle: "WIFI SSID",
-        headerTitleStyle,
-      }}
-    />
   </Stack.Navigator>
 );
 

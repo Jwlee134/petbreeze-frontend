@@ -1,6 +1,7 @@
 import React, { Fragment } from "react";
 import { TouchableHighlightProps } from "react-native";
 import styled, { css } from "styled-components/native";
+import { IDevice } from "~/store/device";
 import palette from "~/styles/palette";
 
 interface IContainerProps {
@@ -9,7 +10,7 @@ interface IContainerProps {
 }
 
 interface IProps extends TouchableHighlightProps {
-  data: any;
+  data: IDevice;
   isLast: boolean;
 }
 

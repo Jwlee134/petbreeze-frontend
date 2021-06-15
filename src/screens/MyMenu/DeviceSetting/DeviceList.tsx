@@ -10,6 +10,7 @@ import { DeviceListScreenNavigationProp } from "~/types/navigator";
 import Modal from "react-native-modal";
 import DeviceListModal from "~/components/modal/DeviceListModal";
 import { useAppSelector } from "~/store";
+import { useState } from "react";
 
 const DeviceListContainer = styled.View`
   margin: 26px 0px;
@@ -25,6 +26,7 @@ const DeviceList = ({
   navigation: DeviceListScreenNavigationProp;
 }) => {
   const data = useAppSelector(state => state.device);
+  const [id, setId] = useState(0);
   const { open, close, modalProps, CenterModalComponent } = useModal({
     type: "center",
   });
@@ -39,7 +41,10 @@ const DeviceList = ({
                 key={index}
                 data={item}
                 isLast={index === data.length - 1}
-                onPress={open}
+                onPress={() => {
+                  open();
+                  setId(item.id);
+                }}
               />
             ))}
           </DeviceListContainer>
@@ -53,7 +58,7 @@ const DeviceList = ({
       </ScrollView>
       <Modal {...modalProps}>
         <CenterModalComponent>
-          <DeviceListModal close={close} />
+          <DeviceListModal close={close} id={id} />
         </CenterModalComponent>
       </Modal>
     </>

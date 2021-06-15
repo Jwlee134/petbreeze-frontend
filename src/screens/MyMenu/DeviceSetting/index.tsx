@@ -36,13 +36,6 @@ const DeviceSetting = ({
         )}>
         안심존 설정
       </ListItem>
-      <ListItem
-        onPress={() => navigation.navigate("WifiSSID")}
-        RightIcon={() => (
-          <Text style={{ textDecorationLine: "underline" }}>등록</Text>
-        )}>
-        WIFI SSID
-      </ListItem>
       <ListItem>배터리 잔량</ListItem>
       <ListItem RightIcon={() => <Text>1.0.0.</Text>}>앱 버전</ListItem>
       <ListItem>펌웨어 버전</ListItem>

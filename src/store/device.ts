@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-interface IState {
+export interface IDevice {
   id: number;
   avatarUrl: string;
   name: string;
@@ -9,7 +9,7 @@ interface IState {
   weight: number;
   phoneNumber: { id: number; value: string }[];
   battery: number;
-  remaningTime: number;
+  remainingTime: number;
   selected: boolean;
   path: {
     latitude: number;
@@ -19,17 +19,17 @@ interface IState {
   }[];
 }
 
-const initialState: IState[] = [
+const initialState: IDevice[] = [
   {
     id: 1,
     avatarUrl: require("~/assets/image/test.jpg"),
-    name: "막둥이",
+    name: "막둥이1",
     age: 10,
     breed: "말티즈",
     weight: 5,
     phoneNumber: [{ id: 1, value: "01040318103" }],
     battery: 80,
-    remaningTime: 5,
+    remainingTime: 5,
     selected: false,
     path: [
       { latitude: 37.477883, longitude: 126.950419, date: 210614, utc: 215523 },
@@ -41,13 +41,13 @@ const initialState: IState[] = [
   {
     id: 2,
     avatarUrl: require("~/assets/image/test.jpg"),
-    name: "막둥이",
+    name: "막둥이2",
     age: 10,
     breed: "말티즈",
     weight: 5,
     phoneNumber: [{ id: 1, value: "01040318103" }],
     battery: 80,
-    remaningTime: 5,
+    remainingTime: 5,
     selected: false,
     path: [
       { latitude: 37.480237, longitude: 126.951657, date: 210614, utc: 215523 },
@@ -59,13 +59,13 @@ const initialState: IState[] = [
   {
     id: 3,
     avatarUrl: require("~/assets/image/test.jpg"),
-    name: "막둥이",
+    name: "막둥이3",
     age: 10,
     breed: "말티즈",
     weight: 5,
     phoneNumber: [{ id: 1, value: "01040318103" }],
     battery: 80,
-    remaningTime: 5,
+    remainingTime: 5,
     selected: false,
     path: [
       { latitude: 37.479079, longitude: 126.953631, date: 210614, utc: 215523 },

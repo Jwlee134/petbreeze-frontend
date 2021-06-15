@@ -7,6 +7,6 @@ export const stackNavScreenOptions: StackNavigationOptions = {
 };
 
 export const headerTitleStyle: StyleProp<TextStyle> = {
-  fontSize: 22,
+  fontSize: 20,
   fontWeight: "400",
 };

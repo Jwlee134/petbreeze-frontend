@@ -1,4 +1,5 @@
 import React, { ReactNode } from "react";
+import { StyleProp, ViewStyle } from "react-native";
 import styled, { css } from "styled-components/native";
 
 interface IProps {
@@ -6,12 +7,14 @@ interface IProps {
   size: "big" | "small";
   RightIcon?: () => JSX.Element;
   RightIconOnPress?: () => void;
+  style?: StyleProp<ViewStyle>;
 }
 
 const Container = styled.View`
   flex-direction: row;
   justify-content: space-between;
-  margin: 28px 0px;
+  align-items: center;
+  padding: 28px 0px;
   width: 100%;
 `;
 
@@ -42,8 +45,9 @@ const CustomHeader = ({
   size,
   RightIcon,
   RightIconOnPress,
+  style,
 }: IProps) => (
-  <Container>
+  <Container style={style}>
     <Block />
     <TextContainer>
       <HeaderText size={size}>{children}</HeaderText>

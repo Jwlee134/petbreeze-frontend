@@ -8,7 +8,7 @@ import My from "~/assets/svg/my.svg";
 import Alert from "~/assets/svg/alert.svg";
 import { useAppSelector } from "~/store";
 import { useDispatch } from "react-redux";
-import { settingsActions } from "~/store/storage";
+import { storageActions } from "~/store/storage";
 import { ScrollView } from "react-native";
 
 const Container = styled.View`
@@ -50,7 +50,7 @@ const NotificationSetting = () => {
           </LeftContainer>
           <Switch
             isOn={savedPost}
-            onToggle={() => dispatch(settingsActions.setSavedPost(!savedPost))}
+            onToggle={() => dispatch(storageActions.setSavedPost(!savedPost))}
           />
         </Container>
         <Container>
@@ -62,7 +62,7 @@ const NotificationSetting = () => {
           </LeftContainer>
           <Switch
             isOn={myPost}
-            onToggle={() => dispatch(settingsActions.setMyPost(!myPost))}
+            onToggle={() => dispatch(storageActions.setMyPost(!myPost))}
           />
         </Container>
         <Container>
@@ -75,7 +75,7 @@ const NotificationSetting = () => {
           <Switch
             isOn={mySurrounding}
             onToggle={() =>
-              dispatch(settingsActions.setMySurrounding(!mySurrounding))
+              dispatch(storageActions.setMySurrounding(!mySurrounding))
             }
           />
         </Container>
