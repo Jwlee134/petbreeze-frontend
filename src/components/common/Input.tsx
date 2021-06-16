@@ -15,6 +15,7 @@ interface IInputProps {
   disabled?: boolean;
   isMultiline?: boolean;
   hasShadow?: boolean;
+  isSafetyZone?: boolean;
 }
 
 interface IProps extends IInputProps, TextInputProps {
@@ -43,8 +44,9 @@ const TextInputComponent = styled.TextInput<IInputProps>`
   background-color: white;
   border-radius: 4px;
   justify-content: center;
-  ${({ hasShadow }) =>
+  ${({ hasShadow, isSafetyZone }) =>
     !hasShadow &&
+    !isSafetyZone &&
     css`
       border-width: 1px;
       border-color: ${palette.gray_d5};
@@ -60,6 +62,14 @@ const TextInputComponent = styled.TextInput<IInputProps>`
       padding: ${Platform.OS === "android" ? "9px 11px" : "13px 11px"};
       min-height: 46px;
       height: auto;
+    `}
+  ${({ isSafetyZone }) =>
+    isSafetyZone &&
+    css`
+      height: auto;
+      padding: 5px 0px;
+      color: gray;
+      height: 36px;
     `}
 `;
 
@@ -85,6 +95,7 @@ const Input = forwardRef(
       isMultiline = false,
       hasShadow = true,
       RightIcon,
+      isSafetyZone = false,
       ...props
     }: IProps,
     ref: ForwardedRef<TextInput>,
@@ -130,13 +141,14 @@ const Input = forwardRef(
       <Button
         style={buttonStyle}
         onPress={!disabled ? onPress : undefined}
-        underlayColor={palette.gray_d5}>
+        underlayColor={!isSafetyZone ? palette.gray_d5 : "transparent"}>
         <Container pointerEvents={isInputEditable ? undefined : "none"}>
           <TextInputComponent
             hasShadow={hasShadow}
             disabled={disabled}
             multiline={isMultiline}
             isMultiline={isMultiline}
+            isSafetyZone={isSafetyZone}
             ref={ref}
             placeholderTextColor="gray"
             {...props}

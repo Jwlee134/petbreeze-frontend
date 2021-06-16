@@ -15,3 +15,11 @@ export const catBreeds = [
 ];
 
 export const gender = ["남", "여", "모름"];
+
+export const safetyZoneData = [
+  { label: "100m", value: 100 },
+  { label: "200m", value: 200 },
+  { label: "300m", value: 300 },
+  { label: "500m", value: 500 },
+  { label: "1km", value: 1000 },
+];

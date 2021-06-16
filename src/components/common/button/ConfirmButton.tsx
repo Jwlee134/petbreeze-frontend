@@ -12,7 +12,7 @@ const Container = styled.TouchableOpacity<{ disabled: boolean }>`
   width: 180px;
   height: 44px;
   background-color: ${({ disabled }) =>
-    !disabled ? palette.blue_6e : palette.gray_e5};
+    !disabled ? palette.blue_6e : palette.gray_b4};
   border-radius: 4px;
   justify-content: center;
   align-items: center;

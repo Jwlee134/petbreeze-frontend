@@ -1,6 +1,15 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Camera } from "react-native-maps";
 
+export interface ISafetyZone {
+  id: number;
+  latitude: number;
+  longitude: number;
+  name: string;
+  distanceLabel: string;
+  distanceValue: number;
+}
+
 interface IState {
   notifications: {
     savedPost: boolean;
@@ -8,13 +17,14 @@ interface IState {
     mySurrounding: boolean;
   };
   camera: Camera;
+  safetyZone: ISafetyZone[];
 }
 
 const initialState: IState = {
   notifications: {
-    savedPost: false,
-    myPost: false,
-    mySurrounding: false,
+    savedPost: true,
+    myPost: true,
+    mySurrounding: true,
   },
   camera: {
     center: {
@@ -26,6 +36,7 @@ const initialState: IState = {
     pitch: 0,
     zoom: 15,
   },
+  safetyZone: [],
 };
 
 const storage = createSlice({
@@ -43,6 +54,29 @@ const storage = createSlice({
     },
     setCamera: (state, action: PayloadAction<Camera>) => {
       state.camera = action.payload;
+    },
+    updateSafetyZone: (
+      state,
+      action: PayloadAction<{
+        id: number;
+        latitude: number;
+        longitude: number;
+        name: string;
+        distanceLabel: string;
+        distanceValue: number;
+      }>,
+    ) => {
+      const { id } = action.payload;
+      if (!id) {
+        state.safetyZone.push({
+          ...action.payload,
+          id: state.safetyZone[state.safetyZone.length - 1]?.id + 1 || 1,
+        });
+      } else {
+        state.safetyZone[state.safetyZone.findIndex(item => item.id === id)] = {
+          ...action.payload,
+        };
+      }
     },
   },
 });

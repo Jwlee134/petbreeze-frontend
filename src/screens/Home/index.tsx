@@ -57,7 +57,7 @@ const Home = ({ navigation }: { navigation: HomeScreenNavigationProp }) => {
   const { open, modalProps, CenterModalComponent } = useModal({
     type: "center",
   });
-  const { Map, mapRef } = useMap();
+  const { Map, mapRef, camera } = useMap();
   const { isTracking, startTracking, clearTracking } = useLocationTracking();
   const { getAddress } = useReverseGeocoding();
   const dispatch = useDispatch();
@@ -77,6 +77,7 @@ const Home = ({ navigation }: { navigation: HomeScreenNavigationProp }) => {
         </CustomHeader>
         <Container>
           <Map
+            initialCamera={camera}
             onRegionChangeComplete={async () => {
               if (!mapRef.current) return;
               const camera = await mapRef.current.getCamera();

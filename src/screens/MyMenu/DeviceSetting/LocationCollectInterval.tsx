@@ -1,11 +1,12 @@
-import React, { Fragment, useRef, useState } from "react";
-import { Animated, Easing, ScrollView, TouchableOpacity } from "react-native";
+import React, { Fragment, useState } from "react";
+import { Animated, ScrollView } from "react-native";
 import styled from "styled-components/native";
 import SidePaddingContainer from "~/components/common/container/SidePaddingContainer";
 
 import Ionicons from "react-native-vector-icons/Ionicons";
 import ShadowContainer from "~/components/common/container/ShadowContainer";
 import palette from "~/styles/palette";
+import useAnimatedList from "~/hooks/useAnimatedList";
 
 const TopContainer = styled.View`
   z-index: 1;
@@ -25,8 +26,6 @@ const Button = styled.TouchableHighlight`
 `;
 
 const LeftContainer = styled.View``;
-
-const RightContainer = styled(Animated.View)``;
 
 const Title = styled.Text`
   font-size: 13px;
@@ -58,63 +57,45 @@ const List = styled.TouchableHighlight`
 const data = ["실시간", "1분", "2분", "5분", "10분"];
 
 const LocationCollectInterval = () => {
-  const value = useRef(new Animated.Value(0)).current;
-
   const [selectedIndex, setSelectedIndex] = useState(2);
 
-  const [isOpened, setIsOpened] = useState(false);
-  const handlePress = () => setIsOpened(!isOpened);
-
-  const rotateInterpolate = value.interpolate({
-    inputRange: [0, 1],
-    outputRange: ["0deg", "180deg"],
-  });
-
-  const translateInterpolate = value.interpolate({
-    inputRange: [0, 1],
-    outputRange: ["-300px", "0px"],
-  });
-
-  const opacityInterpolate = value.interpolate({
-    inputRange: [0, 0.1, 1],
-    outputRange: [0, 0.9, 1],
-  });
-
-  Animated.timing(value, {
-    toValue: isOpened ? 1 : 0,
-    duration: 150,
-    easing: Easing.linear,
-    useNativeDriver: true,
-  }).start();
+  const {
+    isOpened,
+    setIsOpened,
+    OutsideClickHandler,
+    IconContainer,
+    ListContainer,
+  } = useAnimatedList();
 
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-      <TouchableOpacity
-        activeOpacity={1}
-        style={{ flexGrow: 1 }}
-        onPress={() => setIsOpened(false)}>
+      <OutsideClickHandler>
         <TopContainer>
           <ShadowContainer shadowContainerStyle={{ zIndex: 1 }}>
-            <Button onPress={handlePress} underlayColor={palette.gray_f3}>
+            <Button
+              onPress={() => {
+                setIsOpened(!isOpened);
+              }}
+              underlayColor={palette.gray_f3}>
               <Fragment>
                 <LeftContainer>
                   <Title>위치정보 수집주기</Title>
                   <Value>{data[selectedIndex]}</Value>
                 </LeftContainer>
-                <RightContainer
-                  style={{ transform: [{ rotate: rotateInterpolate }] }}>
+                <IconContainer>
                   <Ionicons name="chevron-down" size={24} />
-                </RightContainer>
+                </IconContainer>
               </Fragment>
             </Button>
           </ShadowContainer>
         </TopContainer>
         <SidePaddingContainer>
           <ShadowContainer>
-            <Content
+            <ListContainer
               style={{
-                opacity: opacityInterpolate,
-                transform: [{ translateY: translateInterpolate }],
+                borderRadius: 4,
+                marginTop: 5,
+                overflow: "hidden",
               }}>
               {data.map((item, index) => (
                 <List
@@ -132,10 +113,10 @@ const LocationCollectInterval = () => {
                   </Fragment>
                 </List>
               ))}
-            </Content>
+            </ListContainer>
           </ShadowContainer>
         </SidePaddingContainer>
-      </TouchableOpacity>
+      </OutsideClickHandler>
     </ScrollView>
   );
 };
