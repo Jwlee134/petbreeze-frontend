@@ -5,7 +5,7 @@ import { useAppSelector } from "~/store";
 import palette from "~/styles/palette";
 
 import data from "~/assets/data.json";
-import Post from "~/components/Post";
+import Post from "~/components/community/Post";
 import useFocusEvent from "~/hooks/useFocusEvent";
 
 const Container = styled.View`
@@ -41,7 +41,7 @@ const PostList = () => {
       numColumns={2}
       key={2}
       contentContainerStyle={{
-        paddingHorizontal: 25,
+        paddingHorizontal: 15,
       }}
     />
   );

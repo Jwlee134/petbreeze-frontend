@@ -19,7 +19,7 @@ import AuthSelector from "./AuthSelector";
 import WheelDatePicker from "~/components/common/WheelDatePicker";
 import WheelPicker from "~/components/common/WheelPicker";
 import KeyboardAwareScrollContainer from "~/components/common/container/KeyboardAwareScrollContainer";
-import UploadPhoto from "~/components/UploadPhoto";
+import UploadPhoto from "~/components/community/UploadPhoto";
 import CategoryTitle from "~/components/common/CategoryTitle";
 import SidePaddingContainer from "~/components/common/container/SidePaddingContainer";
 import Input from "~/components/common/Input";
@@ -28,6 +28,7 @@ import ConfirmButton from "~/components/common/button/ConfirmButton";
 import ListPicker from "~/components/common/ListPicker";
 
 import useReverseGeocoding from "~/hooks/useReverseGeocoding";
+import { api } from "~/api";
 
 const MapContainer = styled.View`
   width: 100%;
@@ -96,10 +97,68 @@ const PostAnimalInfo = ({
   }, [dispatch]);
 
   const handleSubmit = async () => {
-    const formData = new FormData();
-    for (let i = 0; i < animalInfo.length; i++) {
-      formData.append(`${i}`, animalInfo.photos[i]);
+    /* const { data } = await api.post("/lost/", {
+      name: "ssoya",
+      variety: "고등어",
+      sex: "2",
+      age: 3,
+      inner_chip: false,
+      lost_datetime: "2021-06-11 01:30:33.792503+00:00",
+      location_detail: "성복중앙교회 근처",
+      legal_district: "서울특별시-성북구",
+      characteristic: "우주 대졸귀",
+      coordinate: {
+        type: "Point",
+        coordinates: [37.3213, 127.3232],
+      },
+      contact_number1: "010-5278-8592",
+      contact_number2: "010-8610-5015",
+    }); */
+
+    /*  const filenameArr = animalInfo.photos.map(photo => {
+      return {
+        name: "image",
+        type: photo.mime,
+        uri: photo.sourceURL,
+      };
+    });
+
+    console.log(filenameArr); */
+
+    /* let obj = {};
+
+    for (let i = 0; i < filenameArr.length; i++) {
+      obj[`image${i + 1}`] = filenameArr[i];
     }
+
+    console.log(obj); */
+    console.log(animalInfo.photos);
+    const formData = new FormData();
+    for (let i = 0; i < animalInfo.photos.length; i++) {
+      formData.append(`image${i + 1}`, {
+        name:
+          Platform.OS === "ios"
+            ? animalInfo.photos[i].filename
+            : animalInfo.photos[i].path.substring(
+                animalInfo.photos[i].path.lastIndexOf("/") + 1,
+              ),
+        type: animalInfo.photos[i].mime,
+        uri:
+          Platform.OS === "ios"
+            ? animalInfo.photos[i].sourceURL
+            : animalInfo.photos[i].path,
+        data: animalInfo.photos[i]?.data || null,
+      });
+    }
+
+    await api.patch("/lost/15/", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    const { data } = await api.get("/lost/15/");
+    console.log(data);
   };
 
   const handleLocation = async () => {

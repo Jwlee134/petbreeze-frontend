@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  Dimensions,
-  Image,
-  Platform,
-  StyleProp,
-  ViewStyle,
-} from "react-native";
+import { Dimensions, Image, StyleProp, ViewStyle } from "react-native";
 import styled from "styled-components/native";
 import palette from "~/styles/palette";
 import { PostScreenNavigationProp } from "~/types/navigator";
@@ -20,8 +14,10 @@ interface IProps {
   style?: StyleProp<ViewStyle>;
 }
 
+const width = Dimensions.get("screen").width / 2 - 20;
+
 const Container = styled.TouchableOpacity`
-  width: ${Dimensions.get("screen").width / 2 - 30}px;
+  width: ${width}px;
 `;
 
 const TextContainer = styled.View`
@@ -56,7 +52,6 @@ const DateText = styled(IconRightText)`
 
 const Post = ({ data, style }: IProps) => {
   const { currentHomeTab } = useAppSelector(state => state.common);
-  const width = (Dimensions.get("screen").width - 60) / 2;
   const navigation = useNavigation<PostScreenNavigationProp>();
 
   const handlePress = () => {

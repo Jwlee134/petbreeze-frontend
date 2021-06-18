@@ -26,7 +26,7 @@ import ManageModal from "~/components/modal/PostDetailModal/ManageModal";
 import ConfirmButton from "~/components/common/button/ConfirmButton";
 
 import { ModalType, ModalHeader } from "~/types";
-import PhotoSlider from "~/components/PhotoSlider";
+import PhotoSlider from "~/components/community/PhotoSlider";
 
 const TitleContainer = styled.View`
   margin: 17px 0px;

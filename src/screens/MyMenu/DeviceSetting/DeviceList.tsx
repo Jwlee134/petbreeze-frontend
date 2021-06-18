@@ -3,7 +3,7 @@ import { ScrollView } from "react-native";
 import styled from "styled-components/native";
 import AddCircleButton from "~/components/common/button/AddCircleButton";
 import SidePaddingContainer from "~/components/common/container/SidePaddingContainer";
-import Device from "~/components/Device";
+import Device from "~/components/myPage/Device";
 import useModal from "~/hooks/useModal";
 import { DeviceListScreenNavigationProp } from "~/types/navigator";
 

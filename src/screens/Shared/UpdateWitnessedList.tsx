@@ -4,7 +4,7 @@ import CategoryTitle from "~/components/common/CategoryTitle";
 import KeyboardAwareScrollContainer from "~/components/common/container/KeyboardAwareScrollContainer";
 import SidePaddingContainer from "~/components/common/container/SidePaddingContainer";
 import Input from "~/components/common/Input";
-import UploadPhoto from "~/components/UploadPhoto";
+import UploadPhoto from "~/components/community/UploadPhoto";
 import styled from "styled-components/native";
 import useBottomModalSelector from "~/hooks/useBottomModalSelector";
 import useModal from "~/hooks/useModal";

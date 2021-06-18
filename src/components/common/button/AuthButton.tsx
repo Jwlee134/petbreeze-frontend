@@ -25,7 +25,7 @@ const ButtonText = styled.Text<{ type: AuthType }>`
 `;
 
 const AuthButton = ({ type, children, ...props }: IButton) => (
-  <Container type={type} activeOpacity={0.9} {...props}>
+  <Container type={type} activeOpacity={0.7} {...props}>
     <ButtonText type={type}>{children}</ButtonText>
   </Container>
 );
