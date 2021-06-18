@@ -15,7 +15,7 @@ const TabIcon = ({ name, focused, size, color, type }: IProps) => {
     return (
       <Ionicons
         name={focused ? name : `${name}-outline`}
-        size={size}
+        size={22}
         color={color}
       />
     );
@@ -24,7 +24,7 @@ const TabIcon = ({ name, focused, size, color, type }: IProps) => {
     return (
       <MaterialCommunityIcons
         name={focused ? name : `${name}-outline`}
-        size={size}
+        size={22}
         color={color}
       />
     );

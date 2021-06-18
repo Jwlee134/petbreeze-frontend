@@ -94,7 +94,9 @@ const useBottomModalSelector = ({ open }: IProps) => {
         } else {
           setIsBreedEditable(false);
         }
-        dispatch(animalInfoActions.setSpecies(species[selectedIndex]));
+        if (selectedIndex) {
+          dispatch(animalInfoActions.setSpecies(species[selectedIndex]));
+        }
         dispatch(animalInfoActions.setBreed(""));
         if (Platform.OS === "ios") setSelectedIndex(0);
         break;
@@ -109,19 +111,27 @@ const useBottomModalSelector = ({ open }: IProps) => {
           }, 600);
           return;
         }
-        if (animalInfo.species === "개") {
-          dispatch(animalInfoActions.setBreed(dogBreeds[selectedIndex]));
-        } else {
-          dispatch(animalInfoActions.setBreed(catBreeds[selectedIndex]));
+        if (selectedIndex) {
+          if (animalInfo.species === "개") {
+            dispatch(animalInfoActions.setBreed(dogBreeds[selectedIndex]));
+          } else {
+            dispatch(animalInfoActions.setBreed(catBreeds[selectedIndex]));
+          }
         }
         if (Platform.OS === "ios") setSelectedIndex(0);
         break;
       case "성별":
-        dispatch(animalInfoActions.setGender(gender[selectedIndex]));
+        if (selectedIndex) {
+          dispatch(animalInfoActions.setGender(gender[selectedIndex]));
+        }
         if (Platform.OS === "ios") setSelectedIndex(0);
         break;
       case "출생 연도":
-        dispatch(animalInfoActions.setBirthYear(Number(years[selectedIndex])));
+        if (selectedIndex) {
+          dispatch(
+            animalInfoActions.setBirthYear(Number(years[selectedIndex])),
+          );
+        }
         if (Platform.OS === "ios") setSelectedIndex(0);
         break;
       case "잃어버린 시간":

@@ -3,7 +3,7 @@ import { StyleProp, ViewStyle } from "react-native";
 import MapView, { MapViewProps, PROVIDER_GOOGLE } from "react-native-maps";
 import { useAppSelector } from "~/store";
 
-interface IProps extends MapViewProps {
+export interface IMapProps extends MapViewProps {
   children?: ReactNode;
   style?: StyleProp<ViewStyle>;
 }
@@ -13,7 +13,7 @@ const useMap = () => {
   const camera = useAppSelector(state => state.storage.camera);
 
   const Map = useCallback(
-    ({ children, style, ...props }: IProps) => (
+    ({ children, style, ...props }: IMapProps) => (
       <MapView
         ref={mapRef}
         style={{ width: "100%", height: "100%", ...(style as object) }}

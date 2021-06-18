@@ -24,6 +24,7 @@ const SharedStack = ({ screenName }: { screenName: string }) => {
 
   return (
     <Stack.Navigator
+      mode="modal"
       screenOptions={{
         headerBackImage: () => <HeaderBackButton />,
         ...stackNavScreenOptions,
@@ -33,7 +34,9 @@ const SharedStack = ({ screenName }: { screenName: string }) => {
         <Stack.Screen
           name="Home"
           component={Home}
-          options={{ headerShown: false }}
+          options={{
+            headerShown: false,
+          }}
         />
       )}
       {screenName === "Walk" && (
@@ -47,7 +50,17 @@ const SharedStack = ({ screenName }: { screenName: string }) => {
         <Stack.Screen
           name="Community"
           component={Community}
-          options={{ headerShown: false }}
+          options={{
+            title: "어디개",
+            headerTitleStyle: {
+              fontSize: 36,
+            },
+            headerStyle: {
+              height: 120,
+              elevation: 0,
+              shadowColor: "transparent",
+            },
+          }}
         />
       )}
       {screenName === "Notification" && (
@@ -55,7 +68,11 @@ const SharedStack = ({ screenName }: { screenName: string }) => {
           name="Notification"
           component={Notification}
           options={{
-            headerShown: false,
+            headerShown: isLoggedIn ? true : false,
+            title: "알림",
+            headerTitleStyle: {
+              fontSize: 24,
+            },
           }}
         />
       )}

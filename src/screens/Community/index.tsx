@@ -16,8 +16,6 @@ import Search from "~/assets/svg/search.svg";
 import WheelPicker from "~/components/common/WheelPicker";
 import ListPicker from "~/components/common/ListPicker";
 import AddCircleButton from "~/components/common/button/AddCircleButton";
-import SafeAreaContainer from "~/components/common/container/SafeAreaContainer";
-import CustomHeader from "~/components/common/CustomHeader";
 import Input from "~/components/common/Input";
 
 const { width } = Dimensions.get("window");
@@ -48,34 +46,31 @@ const Community = ({
 
   return (
     <>
-      <SafeAreaContainer>
-        <CustomHeader size="big">어디개</CustomHeader>
-        <Container>
-          <CommunityTopTapNavigator />
-          <Input
-            onPress={open}
-            buttonStyle={{
-              position: "absolute",
-              top: 65,
-              left: 25,
-              width: width - 50,
-            }}
-            style={{
-              height: 35,
-              borderRadius: 0,
-            }}
-            hasShadow={false}
-            isInputEditable={false}
-            value={value}
-            RightIcon={() => <Search />}
-          />
-        </Container>
-        <AddCircleButton
-          isFloating={true}
-          size={50}
-          onPress={() => navigation.navigate("PostAnimalInfo")}
+      <Container>
+        <CommunityTopTapNavigator />
+        <Input
+          onPress={open}
+          buttonStyle={{
+            position: "absolute",
+            top: 65,
+            left: 15,
+            width: width - 30,
+          }}
+          style={{
+            height: 35,
+            borderRadius: 0,
+          }}
+          hasShadow={false}
+          isInputEditable={false}
+          value={value}
+          RightIcon={() => <Search />}
         />
-      </SafeAreaContainer>
+      </Container>
+      <AddCircleButton
+        isFloating={true}
+        size={50}
+        onPress={() => navigation.navigate("PostAnimalInfo")}
+      />
       <Modal {...modalProps}>
         <BottomModalComponent
           useHeaderButton={Platform.OS === "ios"}

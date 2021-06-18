@@ -4,6 +4,7 @@ import { StyleProp, TextStyle } from "react-native";
 export const stackNavScreenOptions: StackNavigationOptions = {
   headerBackTitleVisible: false,
   headerPressColorAndroid: "transparent",
+  headerTitleAlign: "center",
 };
 
 export const headerTitleStyle: StyleProp<TextStyle> = {

@@ -37,6 +37,7 @@ const Main = () => {
 
   return (
     <Stack.Navigator
+      mode="modal"
       screenOptions={{
         headerBackImage: () => <HeaderBackButton />,
         ...stackNavScreenOptions,

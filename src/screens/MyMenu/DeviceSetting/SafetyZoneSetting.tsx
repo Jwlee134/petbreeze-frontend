@@ -15,13 +15,13 @@ import Octicons from "react-native-vector-icons/Octicons";
 import Input from "~/components/common/Input";
 import useAnimatedList from "~/hooks/useAnimatedList";
 import ShadowContainer from "~/components/common/container/ShadowContainer";
-import { Circle } from "react-native-maps";
+import { Camera, Circle } from "react-native-maps";
 import { useEffect } from "react";
 import { get4PointsAroundCircumference } from "~/utils";
 import { useAppSelector } from "~/store";
 import { useDispatch } from "react-redux";
 import { storageActions } from "~/store/storage";
-import SafetyZone from "~/components/SafetyZone";
+import SafetyZone from "~/components/myPage/SafetyZone";
 import SidePaddingContainer from "~/components/common/container/SidePaddingContainer";
 import { safetyZoneData } from "~/staticData";
 import { useMemo } from "react";
@@ -114,8 +114,7 @@ const SafetyZoneSetting = ({
   const [editMode, setEditMode] = useState(false);
   const [name, setName] = useState("");
   const [range, setRange] = useState({ label: "", value: 0 });
-  const [latitude, setLatitude] = useState(0);
-  const [longitude, setLongitude] = useState(0);
+  const [currentCamera, setCurrentCamera] = useState<Camera | null>(null);
 
   const circleRef = useRef<Circle>(null);
   const { Map, mapRef, camera } = useMap();
@@ -131,17 +130,21 @@ const SafetyZoneSetting = ({
     setCurrentId(0);
     setName("");
     setRange({ label: "", value: 0 });
-    setLatitude(0);
-    setLongitude(0);
+    setCurrentCamera(null);
   };
 
-  const coordsArr = useMemo(
-    () => get4PointsAroundCircumference(latitude, longitude, range.value),
-    [range.value],
-  );
+  const coordsArr = useMemo(() => {
+    if (currentCamera) {
+      return get4PointsAroundCircumference(
+        currentCamera?.center.latitude,
+        currentCamera?.center.longitude,
+        range.value,
+      );
+    }
+  }, [range.value]);
 
   useEffect(() => {
-    if (!mapRef.current || !range.value || !latitude || !longitude) return;
+    if (!mapRef.current || !range.value) return;
     mapRef.current.fitToCoordinates(coordsArr, {
       edgePadding: {
         left: edgePadding,
@@ -150,7 +153,7 @@ const SafetyZoneSetting = ({
         bottom: edgePadding,
       },
     });
-  }, [mapRef, range.value, latitude, longitude]);
+  }, [mapRef, range.value]);
 
   useEffect(() => {
     if (
@@ -180,8 +183,7 @@ const SafetyZoneSetting = ({
               item={item}
               handleEdit={() => {
                 setCurrentId(item.id);
-                setLatitude(item.latitude);
-                setLongitude(item.longitude);
+                setCurrentCamera(item.camera);
                 setName(item.name);
                 setRange({
                   label: item.distanceLabel,
@@ -265,21 +267,17 @@ const SafetyZoneSetting = ({
                 position: "relative",
               }}
               onPress={dismiss}
-              initialCamera={
-                latitude && longitude
-                  ? { ...camera, center: { latitude, longitude } }
-                  : camera
-              }
-              onRegionChangeComplete={({ latitude, longitude }) => {
-                setLatitude(latitude);
-                setLongitude(longitude);
+              initialCamera={currentCamera ? currentCamera : camera}
+              onRegionChangeComplete={async () => {
+                const camera = await mapRef.current?.getCamera();
+                if (camera) setCurrentCamera(camera);
               }}>
-              {latitude && longitude && range.value && (
+              {currentCamera && range.value && (
                 <Circle
                   ref={circleRef}
                   center={{
-                    latitude,
-                    longitude,
+                    latitude: currentCamera.center.latitude,
+                    longitude: currentCamera.center.longitude,
                   }}
                   radius={range.value}
                   fillColor="rgba(83, 135, 188, 0.1)"
@@ -297,12 +295,11 @@ const SafetyZoneSetting = ({
             disabled={editMode && (!name || !range.label)}
             onPress={() => {
               setEditMode(prev => !prev);
-              if (editMode) {
+              if (editMode && currentCamera) {
                 dispatch(
                   storageActions.updateSafetyZone({
                     id: currentId,
-                    latitude,
-                    longitude,
+                    camera: currentCamera,
                     name,
                     distanceLabel: range.label,
                     distanceValue: range.value,

@@ -10,7 +10,6 @@ import { darkTheme, lightTheme } from "./styles/theme";
 import { PersistGate } from "redux-persist/integration/react";
 import { persister, store } from "./store";
 import { Provider } from "react-redux";
-import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { Settings } from "react-native-fbsdk-next";
 
@@ -23,14 +22,12 @@ const App = () => {
     <Provider store={store}>
       <PersistGate persistor={persister}>
         <NavigationContainer theme={lightTheme}>
-          <SafeAreaProvider>
-            <StatusBar
-              barStyle="dark-content"
-              backgroundColor="transparent"
-              translucent={true}
-            />
-            <Main />
-          </SafeAreaProvider>
+          <StatusBar
+            barStyle="dark-content"
+            backgroundColor="transparent"
+            translucent={true}
+          />
+          <Main />
         </NavigationContainer>
       </PersistGate>
     </Provider>

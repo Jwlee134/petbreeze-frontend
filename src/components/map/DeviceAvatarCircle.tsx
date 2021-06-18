@@ -111,7 +111,7 @@ const DeviceAvatarCircle = () => {
             numOfDevices={devices.length}
             key={index}
             index={index}
-            activeOpacity={0.7}
+            activeOpacity={0.5}
             selected={device.selected}>
             <DeviceAvatar source={require("~/assets/image/test.jpg")} />
           </DeviceAvatarContainer>

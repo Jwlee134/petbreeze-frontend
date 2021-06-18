@@ -2,7 +2,7 @@ import React from "react";
 import { Platform, ScrollView } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import styled from "styled-components/native";
-import Comment from "~/components/Comment";
+import Comment from "~/components/community/Comment";
 import CategoryTitle from "~/components/common/CategoryTitle";
 import SafeAreaContainer from "~/components/common/container/SafeAreaContainer";
 import SidePaddingContainer from "~/components/common/container/SidePaddingContainer";

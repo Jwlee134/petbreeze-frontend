@@ -1,7 +1,7 @@
 import React from "react";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import palette from "~/styles/palette";
-import PostList from "~/components/PostList";
+import PostList from "~/components/community/PostList";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -20,7 +20,7 @@ const CommunityTopTapNavigator = () => (
           width: 0,
           height: 0,
         },
-        marginHorizontal: 25,
+        marginHorizontal: 15,
       },
       pressColor: "white",
       pressOpacity: 0.5,

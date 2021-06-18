@@ -3,8 +3,7 @@ import { Camera } from "react-native-maps";
 
 export interface ISafetyZone {
   id: number;
-  latitude: number;
-  longitude: number;
+  camera: Camera;
   name: string;
   distanceLabel: string;
   distanceValue: number;
@@ -59,8 +58,7 @@ const storage = createSlice({
       state,
       action: PayloadAction<{
         id: number;
-        latitude: number;
-        longitude: number;
+        camera: Camera;
         name: string;
         distanceLabel: string;
         distanceValue: number;

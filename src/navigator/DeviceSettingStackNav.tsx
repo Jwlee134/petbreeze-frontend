@@ -6,7 +6,6 @@ import {
 import DeviceSetting from "~/screens/MyMenu/DeviceSetting";
 import LocationCollectInterval from "~/screens/MyMenu/DeviceSetting/LocationCollectInterval";
 import SafetyZoneSetting from "~/screens/MyMenu/DeviceSetting/SafetyZoneSetting";
-import WifiSSID from "~/screens/MyMenu/DeviceSetting/WifiSSID";
 import DeviceList from "~/screens/MyMenu/DeviceSetting/DeviceList";
 import HeaderBackButton from "~/components/common/button/HeaderBackButton";
 import { headerTitleStyle, stackNavScreenOptions } from "~/styles/navigator";
@@ -15,6 +14,7 @@ const Stack = createStackNavigator();
 
 const DeviceSettingStackNav = () => (
   <Stack.Navigator
+    mode="modal"
     screenOptions={{
       headerBackImage: () => <HeaderBackButton />,
       ...stackNavScreenOptions,

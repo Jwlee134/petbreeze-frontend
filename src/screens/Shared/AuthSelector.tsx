@@ -40,7 +40,7 @@ const AuthSelector = () => {
       setLoading(true);
       let token: KakaoOAuthToken | null = await login();
       /* const { data } = await kakaoLoginAPI(token.accessToken); */
-      dispatch(userActions.login("asdf"));
+      dispatch(userActions.login("53d7e7141b87cdb0f1adbf48d007ec5e0a36a12b"));
       /* token = null; */
       if (route.name === "AuthSelector") {
         navigation.replace("Home");
