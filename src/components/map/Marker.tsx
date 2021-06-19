@@ -1,13 +1,17 @@
 import React from "react";
+import { ReactNode } from "react";
 import { Marker as GoogleMarker, MarkerProps } from "react-native-maps";
 import styled, { css } from "styled-components/native";
 import palette from "~/styles/palette";
 
+type Color = "green" | "blue" | "red" | undefined;
+
 interface IProps extends MarkerProps {
-  color: "green" | "blue" | "red";
+  color?: Color;
+  children?: ReactNode;
 }
 
-const Container = styled.View<{ color: "green" | "blue" | "red" }>`
+const Container = styled.View<{ color: Color }>`
   justify-content: center;
   align-items: center;
   ${({ color }) =>
@@ -35,7 +39,7 @@ const Container = styled.View<{ color: "green" | "blue" | "red" }>`
         `}
 `;
 
-const Circle = styled.View<{ color: "green" | "blue" | "red" }>`
+const Circle = styled.View<{ color: Color }>`
   width: 20px;
   height: 20px;
   border-radius: 10px;
@@ -49,11 +53,15 @@ const Circle = styled.View<{ color: "green" | "blue" | "red" }>`
       : "black"};
 `;
 
-const Marker = ({ color, ...props }: IProps) => (
-  <GoogleMarker anchor={{ x: 0.5, y: 0.5 }} {...props}>
-    <Container color={color}>
-      <Circle color={color} />
-    </Container>
+const Marker = ({ color, children, ...props }: IProps) => (
+  <GoogleMarker anchor={{ x: 0.5, y: children ? 1 : 0.5 }} {...props}>
+    {children ? (
+      children
+    ) : (
+      <Container color={color}>
+        <Circle color={color} />
+      </Container>
+    )}
   </GoogleMarker>
 );
 

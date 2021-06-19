@@ -51,11 +51,11 @@ const Home = ({ navigation }: { navigation: HomeScreenNavigationProp }) => {
           camera={camera}
           isTracking={isTracking}
         />
-        {/* <HomeToggle
+        <HomeToggle
           startTracking={startTracking}
           clearTracking={clearTracking}
           mapRef={mapRef}
-        /> */}
+        />
         <DeviceAvatarCircle />
       </Container>
       {!isDeviceRegistered && (

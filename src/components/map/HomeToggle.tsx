@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components/native";
 import MapView from "react-native-maps";
 
-import Star from "~/assets/svg/star-outline.svg";
-import DoubleCircle from "~/assets/svg/circle-double.svg";
-import OrangeStar from "~/assets/svg/star-outline-orange.svg";
-import OrangeDoubleCircle from "~/assets/svg/circle-double-orange.svg";
+import MyLocation from "~/assets/svg/myLocation.svg";
+import MyLocationSelected from "~/assets/svg/myLocation-selected.svg";
+import Path from "~/assets/svg/path.svg";
+import PathSelected from "~/assets/svg/path-selected.svg";
 import palette from "~/styles/palette";
 import { useAppSelector } from "~/store";
 import { useDispatch } from "react-redux";
@@ -25,20 +25,26 @@ const ButtonContainer = styled.TouchableOpacity`
   right: 10px;
 `;
 
-const Circle = styled.View`
+const Circle = styled.View<{ selected: boolean }>`
   width: 45px;
   height: 45px;
   border-radius: 22.5px;
-  background-color: ${palette.blue_6e};
+  background-color: ${({ selected }) => (selected ? palette.blue_6e : "white")};
   justify-content: center;
   align-items: center;
   margin-bottom: 5px;
 `;
 
-const ButtonText = styled.Text`
-  font-size: 18px;
-  color: ${palette.blue_6e};
-`;
+const shadow = {
+  shadowColor: "#000",
+  shadowOffset: {
+    width: 0,
+    height: 2,
+  },
+  shadowOpacity: 0.25,
+  shadowRadius: 3.84,
+  elevation: 7,
+};
 
 const HomeToggle = ({ startTracking, clearTracking, mapRef }: IProps) => {
   const data = useAppSelector(state => state.device);
@@ -99,19 +105,21 @@ const HomeToggle = ({ startTracking, clearTracking, mapRef }: IProps) => {
     <>
       <ButtonContainer
         onPress={() => dispatch(mapActions.setShowPath(!showPath))}
-        style={{ top: 20 }}
-        activeOpacity={0.7}>
-        <Circle>{showPath ? <OrangeStar /> : <Star />}</Circle>
-        <ButtonText>이동경로</ButtonText>
+        style={{
+          top: 20,
+        }}
+        activeOpacity={1}>
+        <Circle style={shadow} selected={showPath}>
+          {showPath ? <PathSelected /> : <Path />}
+        </Circle>
       </ButtonContainer>
       <ButtonContainer
         onPress={() => dispatch(mapActions.setShowMyLocation(!showMyLocation))}
-        style={{ top: 100 }}
-        activeOpacity={0.8}>
-        <Circle>
-          {showMyLocation ? <OrangeDoubleCircle /> : <DoubleCircle />}
+        style={{ top: 85 }}
+        activeOpacity={1}>
+        <Circle style={shadow} selected={showMyLocation}>
+          {showMyLocation ? <MyLocationSelected /> : <MyLocation />}
         </Circle>
-        <ButtonText>내 위치</ButtonText>
       </ButtonContainer>
     </>
   );
