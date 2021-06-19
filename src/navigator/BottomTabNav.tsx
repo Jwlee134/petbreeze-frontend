@@ -2,11 +2,18 @@ import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import palette from "~/styles/palette";
 import SharedStackNav from "./SharedStackNav";
-import TabIcon from "~/components/common/TabIcon";
 import { Platform } from "react-native";
 
+import Home from "~/assets/svg/home.svg";
+import HomeOutline from "~/assets/svg/home-outline.svg";
 import Footprint from "~/assets/svg/footprint.svg";
 import FootprintOutline from "~/assets/svg/footprint-outline.svg";
+import Search from "~/assets/svg/search-tab.svg";
+import SearchOutline from "~/assets/svg/search-tab-outline.svg";
+import Bell from "~/assets/svg/bell.svg";
+import BellOutline from "~/assets/svg/bell-outline.svg";
+import User from "~/assets/svg/user.svg";
+import UserOutline from "~/assets/svg/user-outline.svg";
 
 const Tab = createBottomTabNavigator();
 
@@ -28,15 +35,7 @@ const BottomTabNav = () => {
       <Tab.Screen
         name="Home"
         options={{
-          tabBarIcon: ({ focused, color, size }) => (
-            <TabIcon
-              type="Ionicons"
-              name="home"
-              focused={focused}
-              size={size}
-              color={color}
-            />
-          ),
+          tabBarIcon: ({ focused }) => (focused ? <Home /> : <HomeOutline />),
           tabBarLabel: "홈",
         }}>
         {() => <SharedStackNav screenName="Home" />}
@@ -44,12 +43,8 @@ const BottomTabNav = () => {
       <Tab.Screen
         name="Walk"
         options={{
-          tabBarIcon: ({ focused, color, size }) =>
-            focused ? (
-              <Footprint />
-            ) : (
-              <FootprintOutline stroke="gray" strokeWidth={0.5} />
-            ),
+          tabBarIcon: ({ focused }) =>
+            focused ? <Footprint /> : <FootprintOutline />,
           tabBarLabel: "산책",
         }}>
         {() => <SharedStackNav screenName="Walk" />}
@@ -57,31 +52,16 @@ const BottomTabNav = () => {
       <Tab.Screen
         name="Community"
         options={{
-          tabBarIcon: ({ focused, color, size }) => (
-            <TabIcon
-              type="Ionicons"
-              name="map"
-              focused={focused}
-              size={size}
-              color={color}
-            />
-          ),
-          tabBarLabel: "커뮤니티",
+          tabBarIcon: ({ focused }) =>
+            focused ? <Search /> : <SearchOutline />,
+          tabBarLabel: "실종/목격",
         }}>
         {() => <SharedStackNav screenName="Community" />}
       </Tab.Screen>
       <Tab.Screen
         name="Notification"
         options={{
-          tabBarIcon: ({ focused, color, size }) => (
-            <TabIcon
-              type="MaterialCommunityIcons"
-              name="bell"
-              focused={focused}
-              size={size}
-              color={color}
-            />
-          ),
+          tabBarIcon: ({ focused }) => (focused ? <Bell /> : <BellOutline />),
           tabBarLabel: "알림",
         }}>
         {() => <SharedStackNav screenName="Notification" />}
@@ -89,15 +69,7 @@ const BottomTabNav = () => {
       <Tab.Screen
         name="MyMenu"
         options={{
-          tabBarIcon: ({ focused, color, size }) => (
-            <TabIcon
-              type="Ionicons"
-              name="person"
-              focused={focused}
-              size={size}
-              color={color}
-            />
-          ),
+          tabBarIcon: ({ focused }) => (focused ? <User /> : <UserOutline />),
           tabBarLabel: "마이페이지",
         }}>
         {() => <SharedStackNav screenName="MyMenu" />}
