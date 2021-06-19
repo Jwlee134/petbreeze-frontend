@@ -27,13 +27,13 @@ const initialState: IState = {
   },
   camera: {
     center: {
-      latitude: 37.5666805,
-      longitude: 126.9784147,
+      latitude: 35.95,
+      longitude: 128.25,
     },
     altitude: 0,
     heading: 0,
     pitch: 0,
-    zoom: 15,
+    zoom: 6,
   },
   safetyZone: [],
 };
@@ -71,9 +71,8 @@ const storage = createSlice({
           id: state.safetyZone[state.safetyZone.length - 1]?.id + 1 || 1,
         });
       } else {
-        state.safetyZone[state.safetyZone.findIndex(item => item.id === id)] = {
-          ...action.payload,
-        };
+        state.safetyZone[state.safetyZone.findIndex(item => item.id === id)] =
+          action.payload;
       }
     },
   },

@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { ActivityIndicator, Alert, Dimensions, Platform } from "react-native";
+import React, { useEffect } from "react";
+import { Platform } from "react-native";
 import Modal from "react-native-modal";
 import styled from "styled-components/native";
 
 import useModal from "~/hooks/useModal";
-import useMap from "~/hooks/useMap";
 import useBottomModalSelector from "~/hooks/useBottomModalSelector";
 
 import { useAppSelector } from "~/store";
@@ -27,13 +26,7 @@ import AddCircleButton from "~/components/common/button/AddCircleButton";
 import ConfirmButton from "~/components/common/button/ConfirmButton";
 import ListPicker from "~/components/common/ListPicker";
 
-import useReverseGeocoding from "~/hooks/useReverseGeocoding";
 import { api } from "~/api";
-
-const MapContainer = styled.View`
-  width: 100%;
-  height: 100%;
-`;
 
 const RowContainer = styled.View`
   flex-direction: row;
@@ -59,12 +52,9 @@ const PostAnimalInfo = ({
   const { isLoggedIn } = useAppSelector(state => state.user);
   const { currentHomeTab } = useAppSelector(state => state.common);
 
-  const [showMap, setShowMap] = useState(false);
-
   const { open, close, modalProps, BottomModalComponent } = useModal({
     type: "bottom",
   });
-  const { Map } = useMap();
   const {
     handleOpen,
     handleRememberIndex,
@@ -84,11 +74,6 @@ const PostAnimalInfo = ({
   const isLost = currentHomeTab === "LostList";
 
   const dispatch = useDispatch();
-
-  const [latitude, setLatitude] = useState(0);
-  const [longitude, setLongitude] = useState(0);
-
-  const { loading, setLoading, getAddress } = useReverseGeocoding();
 
   useEffect(() => {
     return () => {
@@ -159,20 +144,6 @@ const PostAnimalInfo = ({
 
     const { data } = await api.get("/lost/15/");
     console.log(data);
-  };
-
-  const handleLocation = async () => {
-    try {
-      setLoading(true);
-      const address = await getAddress(latitude, longitude);
-      if (address) {
-        dispatch(animalInfoActions.setEventPlace(address[0]));
-      }
-      setShowMap(false);
-    } catch (error) {
-    } finally {
-      setLoading(false);
-    }
   };
 
   if (!isLoggedIn) return <AuthSelector />;
@@ -256,7 +227,9 @@ const PostAnimalInfo = ({
           <Input
             value={animalInfo.eventPlace /* .replace(/\s/g, "-") */}
             placeholder={`${isLost ? "잃어버린" : "발견한"} 장소*`}
-            onPress={() => setShowMap(true)}
+            onPress={() => {
+              navigation.navigate("Map");
+            }}
             isInputEditable={false}
           />
           <Input placeholder="특징" maxLength={100} isMultiline />
@@ -330,30 +303,6 @@ const PostAnimalInfo = ({
           )}
         </BottomModalComponent>
       </Modal>
-      {showMap && (
-        <MapContainer>
-          <Map
-            onRegionChange={({ latitude, longitude }) => {
-              setLatitude(latitude);
-              setLongitude(longitude);
-            }}
-          />
-          {/* 페이크 마커, 지도 가운데에 position으로 두기 */}
-          <ConfirmButton
-            style={{
-              position: "absolute",
-              bottom: 24,
-              left: Dimensions.get("screen").width / 2 - 90,
-            }}
-            onPress={handleLocation}>
-            {loading ? (
-              <ActivityIndicator size="small" color="white" />
-            ) : (
-              "확인"
-            )}
-          </ConfirmButton>
-        </MapContainer>
-      )}
     </>
   );
 };

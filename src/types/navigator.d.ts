@@ -1,5 +1,6 @@
 import { RouteProp } from "@react-navigation/core";
 import { StackNavigationProp } from "@react-navigation/stack";
+import { Camera } from "react-native-maps";
 
 type SharedStackParamList = {
   Home: undefined;
@@ -17,6 +18,7 @@ type SharedStackParamList = {
   CommentList: undefined;
   AuthSelector: undefined;
   AddDevice: undefined;
+  Map: undefined;
 };
 
 export type HomeScreenNavigationProp = StackNavigationProp<
@@ -50,6 +52,10 @@ export type CommentScreenNavigationProp = StackNavigationProp<
 export type AuthSelectorScreenNavigationProp = StackNavigationProp<
   SharedStackParamList,
   "AuthSelector"
+>;
+export type MapScreenNavigationProp = StackNavigationProp<
+  SharedStackParamList,
+  "Map"
 >;
 
 type PostListTabParamList = {
@@ -99,6 +105,17 @@ type DeviceSettingStackParamList = {
   AddDevice: undefined;
   LocationCollectInterval: undefined;
   SafetyZoneSetting: undefined;
+  SafetyZoneMap:
+    | {
+        id: number;
+        name: string;
+        camera: Camera;
+        range: {
+          label: string;
+          value: number;
+        };
+      }
+    | undefined;
 };
 
 export type DeviceSettingScreenNavigationProp = StackNavigationProp<
@@ -112,4 +129,12 @@ export type DeviceListScreenNavigationProp = StackNavigationProp<
 export type SafetyZoneScreenNavigationProp = StackNavigationProp<
   DeviceSettingStackParamList,
   "SafetyZoneSetting"
+>;
+export type SafetyZoneMapScreenNavigationProp = StackNavigationProp<
+  DeviceSettingStackParamList,
+  "SafetyZoneMap"
+>;
+export type SafetyZoneMapScreenRouteProp = RouteProp<
+  DeviceSettingStackParamList,
+  "SafetyZoneMap"
 >;

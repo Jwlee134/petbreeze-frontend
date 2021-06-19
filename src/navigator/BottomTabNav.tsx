@@ -14,10 +14,6 @@ const BottomTabNav = () => {
   return (
     <Tab.Navigator
       tabBarOptions={{
-        keyboardHidesTabBar: true,
-        /* showLabel: false,
-        activeTintColor: palette.blue_2e,
-        inactiveTintColor: palette.blue_2e, */
         activeTintColor: palette.blue_6e,
         inactiveTintColor: "#808080",
         labelStyle: {
@@ -102,7 +98,7 @@ const BottomTabNav = () => {
               color={color}
             />
           ),
-          tabBarLabel: "마이 페이지",
+          tabBarLabel: "마이페이지",
         }}>
         {() => <SharedStackNav screenName="MyMenu" />}
       </Tab.Screen>

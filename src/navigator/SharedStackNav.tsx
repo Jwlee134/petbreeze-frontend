@@ -16,6 +16,7 @@ import Home from "~/screens/Home";
 import PostAnimalInfo from "~/screens/Shared/PostAnimalInfo";
 import { useAppSelector } from "~/store";
 import Community from "~/screens/Community";
+import Map from "~/screens/Shared/Map";
 
 const Stack = createStackNavigator();
 
@@ -110,6 +111,7 @@ const SharedStack = ({ screenName }: { screenName: string }) => {
         component={UpdateWitnessedList}
         options={{ title: "" }}
       />
+      <Stack.Screen name="Map" component={Map} options={{ title: "" }} />
     </Stack.Navigator>
   );
 };

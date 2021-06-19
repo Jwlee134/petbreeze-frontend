@@ -9,6 +9,7 @@ import SafetyZoneSetting from "~/screens/MyMenu/DeviceSetting/SafetyZoneSetting"
 import DeviceList from "~/screens/MyMenu/DeviceSetting/DeviceList";
 import HeaderBackButton from "~/components/common/button/HeaderBackButton";
 import { headerTitleStyle, stackNavScreenOptions } from "~/styles/navigator";
+import SafetyZoneMap from "~/screens/MyMenu/DeviceSetting/SafetyZoneMap";
 
 const Stack = createStackNavigator();
 
@@ -24,7 +25,7 @@ const DeviceSettingStackNav = () => (
       name="DeviceSetting"
       component={DeviceSetting}
       options={{
-        headerTitle: "환경설정",
+        title: "환경설정",
         headerTitleStyle,
       }}
     />
@@ -32,7 +33,7 @@ const DeviceSettingStackNav = () => (
       name="DeviceList"
       component={DeviceList}
       options={{
-        headerTitle: "기기 목록",
+        title: "기기 목록",
         headerTitleStyle,
       }}
     />
@@ -40,7 +41,7 @@ const DeviceSettingStackNav = () => (
       name="LocationCollectInterval"
       component={LocationCollectInterval}
       options={{
-        headerTitle: "위치정보 수집주기",
+        title: "위치정보 수집주기",
         headerTitleStyle,
       }}
     />
@@ -48,8 +49,15 @@ const DeviceSettingStackNav = () => (
       name="SafetyZoneSetting"
       component={SafetyZoneSetting}
       options={{
-        headerTitle: "안심존 설정",
+        title: "안심존 설정",
         headerTitleStyle,
+      }}
+    />
+    <Stack.Screen
+      name="SafetyZoneMap"
+      component={SafetyZoneMap}
+      options={{
+        title: "",
       }}
     />
   </Stack.Navigator>
