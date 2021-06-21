@@ -8,6 +8,7 @@ type SharedStackParamList = {
   Community: undefined;
   Notification: undefined;
   PostAnimalInfo: undefined;
+  PostList: undefined;
   LostDetail: {
     id: number;
   };
@@ -19,6 +20,31 @@ type SharedStackParamList = {
   AuthSelector: undefined;
   AddDevice: undefined;
   Map: undefined;
+  StartWalking: undefined;
+  WalkMap: undefined;
+  MyPage: undefined;
+  PetProfile: undefined;
+  PassManagement: undefined;
+  ServiceCenter: undefined;
+  NotificationSetting: undefined;
+  DeleteAccount: undefined;
+  MyPost: undefined;
+  SavedPost: undefined;
+  DeviceSetting: undefined;
+  DeviceList: undefined;
+  LocationCollectInterval: undefined;
+  SafetyZoneSetting: undefined;
+  SafetyZoneMap:
+    | {
+        id: number;
+        name: string;
+        camera: Camera;
+        range: {
+          label: string;
+          value: number;
+        };
+      }
+    | undefined;
 };
 
 export type HomeScreenNavigationProp = StackNavigationProp<
@@ -57,84 +83,47 @@ export type MapScreenNavigationProp = StackNavigationProp<
   SharedStackParamList,
   "Map"
 >;
-
-type PostListTabParamList = {
-  PostList: undefined;
-  LostDetail: {
-    id: number;
-  };
-  WitnessedDetail: {
-    id: number;
-  };
-};
-
+export type StartWalkingScreenNavigationProp = StackNavigationProp<
+  SharedStackParamList,
+  "StartWalking"
+>;
+export type WalkMapScreenNavigationProp = StackNavigationProp<
+  SharedStackParamList,
+  "WalkMap"
+>;
 export type PostScreenNavigationProp = StackNavigationProp<
-  PostListTabParamList,
+  SharedStackParamList,
   "PostList"
 >;
-export type LostDetailScreenRouteProp = RouteProp<
-  PostListTabParamList,
-  "LostDetail"
+export type MyPageScreenNavigationProp = StackNavigationProp<
+  SharedStackParamList,
+  "MyPage"
 >;
-export type WitnessedDetailScreenRouteProp = RouteProp<
-  PostListTabParamList,
-  "WitnessedDetail"
->;
-
-type MyMenuStackParamList = {
-  MyMenu: undefined;
-  DeviceSettingStackNav: undefined;
-  PetProfile: undefined;
-  PassManagement: undefined;
-  ServiceCenter: undefined;
-  NotificationSetting: undefined;
-  DeleteAccount: undefined;
-  MyPost: undefined;
-  SavedPost: undefined;
-  Home: undefined;
-};
-
-export type MyMenuScreenNavigationProp = StackNavigationProp<
-  MyMenuStackParamList,
-  "MyMenu"
->;
-
-type DeviceSettingStackParamList = {
-  DeviceSetting: undefined;
-  DeviceList: undefined;
-  AddDevice: undefined;
-  LocationCollectInterval: undefined;
-  SafetyZoneSetting: undefined;
-  SafetyZoneMap:
-    | {
-        id: number;
-        name: string;
-        camera: Camera;
-        range: {
-          label: string;
-          value: number;
-        };
-      }
-    | undefined;
-};
-
 export type DeviceSettingScreenNavigationProp = StackNavigationProp<
-  DeviceSettingStackParamList,
+  SharedStackParamList,
   "DeviceSetting"
 >;
 export type DeviceListScreenNavigationProp = StackNavigationProp<
-  DeviceSettingStackParamList,
+  SharedStackParamList,
   "DeviceList"
 >;
 export type SafetyZoneScreenNavigationProp = StackNavigationProp<
-  DeviceSettingStackParamList,
+  SharedStackParamList,
   "SafetyZoneSetting"
 >;
 export type SafetyZoneMapScreenNavigationProp = StackNavigationProp<
-  DeviceSettingStackParamList,
+  SharedStackParamList,
   "SafetyZoneMap"
 >;
+export type LostDetailScreenRouteProp = RouteProp<
+  SharedStackParamList,
+  "LostDetail"
+>;
+export type WitnessedDetailScreenRouteProp = RouteProp<
+  SharedStackParamList,
+  "WitnessedDetail"
+>;
 export type SafetyZoneMapScreenRouteProp = RouteProp<
-  DeviceSettingStackParamList,
+  SharedStackParamList,
   "SafetyZoneMap"
 >;

@@ -67,12 +67,12 @@ const BottomTabNav = () => {
         {() => <SharedStackNav screenName="Notification" />}
       </Tab.Screen>
       <Tab.Screen
-        name="MyMenu"
+        name="MyPage"
         options={{
           tabBarIcon: ({ focused }) => (focused ? <User /> : <UserOutline />),
           tabBarLabel: "마이페이지",
         }}>
-        {() => <SharedStackNav screenName="MyMenu" />}
+        {() => <SharedStackNav screenName="MyPage" />}
       </Tab.Screen>
     </Tab.Navigator>
   );

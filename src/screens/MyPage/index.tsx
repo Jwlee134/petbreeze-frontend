@@ -3,7 +3,7 @@ import { Linking, ScrollView } from "react-native";
 import CategoryTitle from "~/components/common/CategoryTitle";
 import ListItem from "~/components/common/ListItem";
 import { useAppSelector } from "~/store";
-import { MyMenuScreenNavigationProp } from "~/types/navigator";
+import { MyPageScreenNavigationProp } from "~/types/navigator";
 import AuthSelector from "../Shared/AuthSelector";
 
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -11,13 +11,13 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import useModal from "~/hooks/useModal";
 
 import Modal from "react-native-modal";
-import LogoutModal from "~/components/modal/LogoutModal";
+import SimpleToggleModal from "~/components/modal/SimpleToggleModal";
 import { useDispatch } from "react-redux";
 import { userActions } from "~/store/user";
 
 const size = 22;
 
-const MyMenu = ({ navigation }: { navigation: MyMenuScreenNavigationProp }) => {
+const MyPage = ({ navigation }: { navigation: MyPageScreenNavigationProp }) => {
   const { isLoggedIn } = useAppSelector(state => state.user);
 
   const dispatch = useDispatch();
@@ -33,7 +33,7 @@ const MyMenu = ({ navigation }: { navigation: MyMenuScreenNavigationProp }) => {
       <ScrollView>
         <CategoryTitle>디바이스 관리</CategoryTitle>
         <ListItem
-          onPress={() => navigation.navigate("DeviceSettingStackNav")}
+          onPress={() => navigation.navigate("DeviceSetting")}
           LeftIcon={() => <Ionicons name="settings-sharp" size={size} />}>
           환경설정
         </ListItem>
@@ -92,8 +92,10 @@ const MyMenu = ({ navigation }: { navigation: MyMenuScreenNavigationProp }) => {
       </ScrollView>
       <Modal {...modalProps}>
         <CenterModalComponent>
-          <LogoutModal
-            onLogout={() => {
+          <SimpleToggleModal
+            onConfirmText="정말 로그아웃하시겠습니까?"
+            onConfirmButtonText="로그아웃"
+            onConfirm={() => {
               close();
               setTimeout(() => {
                 dispatch(userActions.logout());
@@ -108,4 +110,4 @@ const MyMenu = ({ navigation }: { navigation: MyMenuScreenNavigationProp }) => {
   );
 };
 
-export default MyMenu;
+export default MyPage;
