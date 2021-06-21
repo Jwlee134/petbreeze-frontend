@@ -9,7 +9,7 @@ import AuthSelector from "~/screens/Shared/AuthSelector";
 import Walk from "~/screens/Walk";
 import MyMenuStackNav from "./MyMenuStackNav";
 import LostDetail from "~/screens/Shared/LostDetail";
-import { stackNavScreenOptions } from "~/styles/navigator";
+import { mainTabHeaderStyle } from "~/styles/navigator";
 import HeaderBackButton from "~/components/common/button/HeaderBackButton";
 import UpdateWitnessedList from "~/screens/Shared/UpdateWitnessedList";
 import Home from "~/screens/Home";
@@ -28,7 +28,7 @@ const SharedStack = ({ screenName }: { screenName: string }) => {
       mode="modal"
       screenOptions={{
         headerBackImage: () => <HeaderBackButton />,
-        ...stackNavScreenOptions,
+        ...mainTabHeaderStyle,
         ...TransitionPresets.SlideFromRightIOS,
       }}>
       {screenName === "Home" && (
@@ -36,7 +36,7 @@ const SharedStack = ({ screenName }: { screenName: string }) => {
           name="Home"
           component={Home}
           options={{
-            headerShown: false,
+            title: "홈",
           }}
         />
       )}
@@ -44,7 +44,7 @@ const SharedStack = ({ screenName }: { screenName: string }) => {
         <Stack.Screen
           name="Walk"
           component={Walk}
-          options={{ headerShown: false }}
+          options={{ title: "산책" }}
         />
       )}
       {screenName === "Community" && (
@@ -52,15 +52,7 @@ const SharedStack = ({ screenName }: { screenName: string }) => {
           name="Community"
           component={Community}
           options={{
-            title: "어디개",
-            headerTitleStyle: {
-              fontSize: 36,
-            },
-            headerStyle: {
-              height: 120,
-              elevation: 0,
-              shadowColor: "transparent",
-            },
+            title: "실종/목격",
           }}
         />
       )}
@@ -71,9 +63,6 @@ const SharedStack = ({ screenName }: { screenName: string }) => {
           options={{
             headerShown: isLoggedIn ? true : false,
             title: "알림",
-            headerTitleStyle: {
-              fontSize: 24,
-            },
           }}
         />
       )}

@@ -8,7 +8,7 @@ import BottomTabNav from "./BottomTabNav";
 import { AppState, AppStateStatus } from "react-native";
 import CommentList from "~/screens/CommentList";
 import AddDevice from "~/screens/AddDevice";
-import { headerTitleStyle, stackNavScreenOptions } from "~/styles/navigator";
+import { headerStyle, mainTabHeaderStyle } from "~/styles/navigator";
 import HeaderBackButton from "~/components/common/button/HeaderBackButton";
 
 const Stack = createStackNavigator();
@@ -40,7 +40,7 @@ const Main = () => {
       mode="modal"
       screenOptions={{
         headerBackImage: () => <HeaderBackButton />,
-        ...stackNavScreenOptions,
+        ...mainTabHeaderStyle,
         ...TransitionPresets.SlideFromRightIOS,
       }}>
       <Stack.Screen
@@ -58,7 +58,7 @@ const Main = () => {
         component={AddDevice}
         options={{
           title: "기기 등록",
-          headerTitleStyle,
+          ...headerStyle,
         }}
       />
     </Stack.Navigator>

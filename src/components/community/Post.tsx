@@ -1,58 +1,79 @@
 import React from "react";
-import { Dimensions, Image, StyleProp, ViewStyle } from "react-native";
+import { Dimensions, Image } from "react-native";
 import styled from "styled-components/native";
-import palette from "~/styles/palette";
 import { PostScreenNavigationProp } from "~/types/navigator";
 
-import Calendar from "~/assets/svg/calendar.svg";
-import Location from "~/assets/svg/location.svg";
 import { useAppSelector } from "~/store";
 import { useNavigation } from "@react-navigation/core";
+import { formatCreatedAt } from "~/utils";
+import { useState } from "react";
 
 interface IProps {
-  data: any;
-  style?: StyleProp<ViewStyle>;
+  data: {
+    name: string;
+    createdAt: string;
+    location: string;
+    id: number;
+    creator: {
+      name: string;
+      avatarUrl: any;
+    };
+    description: string;
+  };
 }
 
-const width = Dimensions.get("screen").width / 2 - 20;
+const width = Dimensions.get("screen").width;
 
-const Container = styled.TouchableOpacity`
-  width: ${width}px;
-`;
+const Container = styled.View``;
 
 const TextContainer = styled.View`
-  margin: 9px 5px;
+  padding: 10px 15px;
+`;
+
+const CreatorAvatar = styled.Image`
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  margin-right: 15px;
+`;
+
+const SpaceBetweenContainer = styled.View`
+  justify-content: space-between;
 `;
 
 const RowContainer = styled.View`
   flex-direction: row;
-  margin-bottom: 3px;
-  align-items: center;
 `;
+
+const TextRowContainer = styled(RowContainer)`
+  align-items: center;
+  flex-wrap: wrap;
+`;
+
+const ImageContainer = styled.View``;
 
 const Name = styled.Text`
-  font-size: 18px;
+  font-size: 16px;
+  font-weight: bold;
 `;
 
-const Status = styled.Text`
-  text-transform: uppercase;
-  color: ${palette.red_ff};
-  margin-left: 3px;
-  font-size: 12px;
+const BelowName = styled.Text`
+  opacity: 0.5;
 `;
 
-const IconRightText = styled.Text`
-  margin-left: 10px;
-  flex-shrink: 1;
+const Description = styled.Text`
+  font-size: 14px;
+  line-height: 20px;
 `;
 
-const DateText = styled(IconRightText)`
-  font-weight: 300;
-`;
+const Toggle = styled.TouchableOpacity``;
 
-const Post = ({ data, style }: IProps) => {
+const Post = ({ data }: IProps) => {
   const { currentHomeTab } = useAppSelector(state => state.common);
   const navigation = useNavigation<PostScreenNavigationProp>();
+
+  const [showMore, setShowMore] = useState(false);
+  const [isMoreThanOneLine, setIsMoreThanOneLine] = useState(false);
 
   const handlePress = () => {
     if (currentHomeTab === "LostList") {
@@ -67,27 +88,46 @@ const Post = ({ data, style }: IProps) => {
   };
 
   return (
-    <Container activeOpacity={0.8} style={style} onPress={handlePress}>
-      <Image
-        source={require("~/assets/image/test.jpg")}
-        style={{ width, height: width }}
-      />
+    <Container>
       <TextContainer>
         <RowContainer>
-          <Name>{data.name}</Name>
-          <Status>New</Status>
+          <RowContainer>
+            <CreatorAvatar source={data.creator.avatarUrl} />
+            <SpaceBetweenContainer>
+              <Name>{data.creator.name}</Name>
+              <BelowName>
+                {data.location}, {formatCreatedAt(data.createdAt)}
+              </BelowName>
+            </SpaceBetweenContainer>
+          </RowContainer>
         </RowContainer>
-        <RowContainer>
-          <Calendar />
-          <DateText>{data.date}</DateText>
-        </RowContainer>
-        <RowContainer>
-          <Location />
-          <IconRightText>{data.location}</IconRightText>
-        </RowContainer>
+      </TextContainer>
+      <ImageContainer>
+        <Image
+          source={require("~/assets/image/test.jpg")}
+          style={{ width, height: width }}
+        />
+      </ImageContainer>
+      <TextContainer>
+        <TextRowContainer>
+          <Description
+            numberOfLines={isMoreThanOneLine && !showMore ? 1 : undefined}
+            onTextLayout={e => {
+              if (e.nativeEvent.lines.length > 1) {
+                setIsMoreThanOneLine(true);
+              }
+            }}>
+            {data.description}
+          </Description>
+          {isMoreThanOneLine && !showMore && (
+            <Toggle onPress={() => setShowMore(true)}>
+              <BelowName>더보기</BelowName>
+            </Toggle>
+          )}
+        </TextRowContainer>
       </TextContainer>
     </Container>
   );
 };
 
-export default Post;
+export default React.memo(Post);

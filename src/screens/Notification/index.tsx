@@ -1,29 +1,14 @@
 import React from "react";
 import { useAppSelector } from "~/store";
-import styled from "styled-components/native";
 import { NotificationScreenNavigationProp } from "~/types/navigator";
 import AuthSelector from "../Shared/AuthSelector";
-import Ionicons from "react-native-vector-icons/Ionicons";
 import useModal from "~/hooks/useModal";
 
 import Modal from "react-native-modal";
 import NotificationModal from "~/components/modal/NotificationModal";
-import palette from "~/styles/palette";
 import NothingToShowContainer from "~/components/common/container/NothingToShowContainer";
 import { useLayoutEffect } from "react";
-import { TouchableOpacity } from "react-native";
-
-const EmptyContainer = styled.View`
-  flex: 1;
-  justify-content: center;
-  align-items: center;
-`;
-
-const Text = styled.Text`
-  font-size: 20px;
-  text-align: center;
-  line-height: 25px;
-`;
+import HeaderRightButton from "~/components/common/button/HeaderRightButton";
 
 const Notification = ({
   navigation,
@@ -38,11 +23,7 @@ const Notification = ({
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerRight: () => (
-        <TouchableOpacity style={{ marginRight: 25 }} onPress={open}>
-          <Ionicons name="information-circle-outline" size={26} />
-        </TouchableOpacity>
-      ),
+      headerRight: () => <HeaderRightButton open={open} />,
     });
   }, []);
 

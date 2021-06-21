@@ -20,7 +20,6 @@ const CommunityTopTapNavigator = () => (
           width: 0,
           height: 0,
         },
-        marginHorizontal: 15,
       },
       pressColor: "white",
       pressOpacity: 0.5,

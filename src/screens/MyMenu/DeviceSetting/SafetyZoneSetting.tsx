@@ -1,7 +1,6 @@
 import React, { useLayoutEffect } from "react";
 import styled from "styled-components/native";
 import { SafetyZoneScreenNavigationProp } from "~/types/navigator";
-import HelpCircle from "~/assets/svg/help-circle.svg";
 import useModal from "~/hooks/useModal";
 import Modal from "react-native-modal";
 import ConfirmButton from "~/components/common/button/ConfirmButton";
@@ -9,6 +8,7 @@ import SafetyZoneModal from "~/components/modal/SafetyZoneModal";
 import { useAppSelector } from "~/store";
 import SafetyZone from "~/components/myPage/SafetyZone";
 import SidePaddingContainer from "~/components/common/container/SidePaddingContainer";
+import HeaderRightButton from "~/components/common/button/HeaderRightButton";
 
 const Container = styled.View`
   flex: 1;
@@ -37,11 +37,7 @@ const SafetyZoneSetting = ({
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerRight: () => (
-        <Button onPress={open} activeOpacity={0.5}>
-          <HelpCircle />
-        </Button>
-      ),
+      headerRight: () => <HeaderRightButton isQuestion open={open} />,
     });
   }, [navigation, open]);
 

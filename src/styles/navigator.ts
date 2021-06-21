@@ -1,13 +1,22 @@
 import { StackNavigationOptions } from "@react-navigation/stack";
-import { StyleProp, TextStyle } from "react-native";
+import palette from "./palette";
 
-export const stackNavScreenOptions: StackNavigationOptions = {
+export const mainTabHeaderStyle: StackNavigationOptions = {
   headerBackTitleVisible: false,
   headerPressColorAndroid: "transparent",
-  headerTitleAlign: "center",
+  headerTitleAlign: "left",
+  headerTitleStyle: {
+    fontWeight: "bold",
+    fontSize: 24,
+    color: palette.blue_6e,
+  },
 };
 
-export const headerTitleStyle: StyleProp<TextStyle> = {
-  fontSize: 20,
-  fontWeight: "400",
+export const headerStyle: StackNavigationOptions = {
+  headerBackTitleVisible: false,
+  headerTitleAlign: "center",
+  headerTitleStyle: {
+    fontSize: 20,
+    fontWeight: "400",
+  },
 };

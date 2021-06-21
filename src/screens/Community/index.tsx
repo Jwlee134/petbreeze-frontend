@@ -1,5 +1,5 @@
 import React from "react";
-import { Dimensions, Platform } from "react-native";
+import { Platform } from "react-native";
 import styled from "styled-components/native";
 
 import useFocusEvent from "~/hooks/useFocusEvent";
@@ -11,14 +11,9 @@ import { CommunityScreenNavigationProp } from "~/types/navigator";
 
 import Modal from "react-native-modal";
 
-import Search from "~/assets/svg/search.svg";
-
 import WheelPicker from "~/components/common/WheelPicker";
 import ListPicker from "~/components/common/ListPicker";
 import AddCircleButton from "~/components/common/button/AddCircleButton";
-import Input from "~/components/common/Input";
-
-const { width } = Dimensions.get("window");
 
 const Container = styled.View`
   flex: 1;
@@ -48,7 +43,7 @@ const Community = ({
     <>
       <Container>
         <CommunityTopTapNavigator />
-        <Input
+        {/* <Input
           onPress={open}
           buttonStyle={{
             position: "absolute",
@@ -64,7 +59,7 @@ const Community = ({
           isInputEditable={false}
           value={value}
           RightIcon={() => <Search />}
-        />
+        /> */}
       </Container>
       <AddCircleButton
         isFloating={true}

@@ -8,7 +8,7 @@ import LocationCollectInterval from "~/screens/MyMenu/DeviceSetting/LocationColl
 import SafetyZoneSetting from "~/screens/MyMenu/DeviceSetting/SafetyZoneSetting";
 import DeviceList from "~/screens/MyMenu/DeviceSetting/DeviceList";
 import HeaderBackButton from "~/components/common/button/HeaderBackButton";
-import { headerTitleStyle, stackNavScreenOptions } from "~/styles/navigator";
+import { headerStyle, mainTabHeaderStyle } from "~/styles/navigator";
 import SafetyZoneMap from "~/screens/MyMenu/DeviceSetting/SafetyZoneMap";
 
 const Stack = createStackNavigator();
@@ -18,7 +18,7 @@ const DeviceSettingStackNav = () => (
     mode="modal"
     screenOptions={{
       headerBackImage: () => <HeaderBackButton />,
-      ...stackNavScreenOptions,
+      ...mainTabHeaderStyle,
       ...TransitionPresets.SlideFromRightIOS,
     }}>
     <Stack.Screen
@@ -26,7 +26,7 @@ const DeviceSettingStackNav = () => (
       component={DeviceSetting}
       options={{
         title: "환경설정",
-        headerTitleStyle,
+        ...headerStyle,
       }}
     />
     <Stack.Screen
@@ -34,7 +34,7 @@ const DeviceSettingStackNav = () => (
       component={DeviceList}
       options={{
         title: "기기 목록",
-        headerTitleStyle,
+        ...headerStyle,
       }}
     />
     <Stack.Screen
@@ -42,7 +42,7 @@ const DeviceSettingStackNav = () => (
       component={LocationCollectInterval}
       options={{
         title: "위치정보 수집주기",
-        headerTitleStyle,
+        ...headerStyle,
       }}
     />
     <Stack.Screen
@@ -50,7 +50,7 @@ const DeviceSettingStackNav = () => (
       component={SafetyZoneSetting}
       options={{
         title: "안심존 설정",
-        headerTitleStyle,
+        ...headerStyle,
       }}
     />
     <Stack.Screen

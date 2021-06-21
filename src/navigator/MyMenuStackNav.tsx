@@ -13,7 +13,7 @@ import MyPost from "~/screens/MyMenu/MyPost";
 import SavedPost from "~/screens/MyMenu/SavedPost";
 import DeviceSettingStackNav from "./DeviceSettingStackNav";
 import HeaderBackButton from "~/components/common/button/HeaderBackButton";
-import { headerTitleStyle, stackNavScreenOptions } from "~/styles/navigator";
+import { headerStyle, mainTabHeaderStyle } from "~/styles/navigator";
 import { useAppSelector } from "~/store";
 
 const Stack = createStackNavigator();
@@ -26,7 +26,6 @@ const MyMenuStackNav = () => {
       mode="modal"
       screenOptions={{
         headerBackImage: () => <HeaderBackButton />,
-        ...stackNavScreenOptions,
         ...TransitionPresets.SlideFromRightIOS,
       }}>
       <Stack.Screen
@@ -34,13 +33,8 @@ const MyMenuStackNav = () => {
         component={MyMenu}
         options={{
           headerShown: isLoggedIn ? true : false,
-          title: "My Menu",
-          headerTitleStyle: {
-            fontSize: 36,
-          },
-          headerStyle: {
-            height: 120,
-          },
+          ...mainTabHeaderStyle,
+          title: "마이페이지",
         }}
       />
       <Stack.Screen
@@ -55,7 +49,7 @@ const MyMenuStackNav = () => {
         component={PetProfile}
         options={{
           headerTitle: "반려동물 프로필",
-          headerTitleStyle,
+          ...headerStyle,
         }}
       />
       <Stack.Screen
@@ -63,7 +57,7 @@ const MyMenuStackNav = () => {
         component={PassManagement}
         options={{
           headerTitle: "이용권 관리",
-          headerTitleStyle,
+          ...headerStyle,
         }}
       />
       <Stack.Screen
@@ -78,7 +72,7 @@ const MyMenuStackNav = () => {
         component={NotificationSetting}
         options={{
           headerTitle: "알림 설정",
-          headerTitleStyle,
+          ...headerStyle,
         }}
       />
       <Stack.Screen
@@ -86,7 +80,7 @@ const MyMenuStackNav = () => {
         component={DeleteAccount}
         options={{
           headerTitle: "탈퇴하기",
-          headerTitleStyle,
+          ...headerStyle,
         }}
       />
       <Stack.Screen
@@ -94,7 +88,7 @@ const MyMenuStackNav = () => {
         component={MyPost}
         options={{
           headerTitle: "내가 쓴 게시물",
-          headerTitleStyle,
+          ...headerStyle,
         }}
       />
       <Stack.Screen
@@ -102,7 +96,7 @@ const MyMenuStackNav = () => {
         component={SavedPost}
         options={{
           headerTitle: "저장한 게시물",
-          headerTitleStyle,
+          ...headerStyle,
         }}
       />
     </Stack.Navigator>

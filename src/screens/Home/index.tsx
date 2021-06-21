@@ -14,6 +14,8 @@ import HomeToggle from "~/components/map/HomeToggle";
 import DeviceAvatarCircle from "~/components/map/DeviceAvatarCircle";
 
 import HomeMap from "~/components/map/HomeMap";
+import { useLayoutEffect } from "react";
+import HeaderRightButton from "~/components/common/button/HeaderRightButton";
 
 const Container = styled.View``;
 
@@ -41,6 +43,12 @@ const Home = ({ navigation }: { navigation: HomeScreenNavigationProp }) => {
   });
   const { Map, mapRef, camera } = useMap();
   const { isTracking, startTracking, clearTracking } = useLocationTracking();
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => <HeaderRightButton open={open} />,
+    });
+  }, []);
 
   return (
     <>
