@@ -18,9 +18,10 @@ interface IProps {
 
 const HomeMap = ({ Map, mapRef, camera, isTracking }: IProps) => {
   const data = useAppSelector(state => state.device);
-  const { myLatitude, myLongitude, showPath } = useAppSelector(
-    state => state.map,
-  );
+  const {
+    showPath,
+    myCoords: { latitude, longitude },
+  } = useAppSelector(state => state.map);
   const { getAddress } = useReverseGeocoding();
   const dispatch = useDispatch();
 
@@ -29,17 +30,18 @@ const HomeMap = ({ Map, mapRef, camera, isTracking }: IProps) => {
   return (
     <Map
       initialCamera={camera}
+      showsUserLocation={isTracking}
       onRegionChangeComplete={async () => {
         if (!mapRef.current) return;
         const camera = await mapRef.current.getCamera();
         dispatch(storageActions.setCamera(camera));
       }}>
-      {isTracking && (
+      {/* {isTracking && (
         <Marker
           color="green"
           coordinate={{ latitude: myLatitude, longitude: myLongitude }}
         />
-      )}
+      )} */}
       {showPath && selectedDevice && (
         <>
           <Polyline
@@ -47,7 +49,7 @@ const HomeMap = ({ Map, mapRef, camera, isTracking }: IProps) => {
               latitude: data.latitude,
               longitude: data.longitude,
             }))}
-            strokeWidth={2}
+            strokeWidth={3}
             strokeColor={palette.blue_34}
           />
           {selectedDevice.path.map((data, index) => (

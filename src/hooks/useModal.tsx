@@ -88,7 +88,7 @@ const BottomContent = styled.View`
 
 const CenterContent = styled.View<{ useContentPadding: boolean }>`
   background-color: white;
-  padding: ${({ useContentPadding }) => (useContentPadding ? "23px" : "0px")};
+  padding: ${({ useContentPadding }) => (useContentPadding ? "15px" : "0px")};
 `;
 
 const useModal = ({ type, handleCancel }: IModalProps) => {

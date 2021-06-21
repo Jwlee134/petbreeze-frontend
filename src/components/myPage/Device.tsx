@@ -4,14 +4,20 @@ import styled, { css } from "styled-components/native";
 import { IDevice } from "~/store/device";
 import palette from "~/styles/palette";
 
+import CheckCircle from "~/assets/svg/check-circle.svg";
+import CheckCircleOutline from "~/assets/svg/check-circle-outline.svg";
+
 interface IContainerProps {
   selected: boolean;
   isLast: boolean;
+  isWalk?: boolean;
 }
 
 interface IProps extends TouchableHighlightProps {
   data: IDevice;
   isLast: boolean;
+  isWalk?: boolean;
+  selected?: boolean;
 }
 
 const Container = styled.TouchableHighlight<IContainerProps>`
@@ -22,19 +28,18 @@ const Container = styled.TouchableHighlight<IContainerProps>`
   align-items: center;
   background-color: ${palette.gray_f3};
   border-radius: 9px;
-  padding: 0px 17px;
-  margin-bottom: ${({ isLast }) => (isLast ? 0 : "11px")};
-  ${({ selected }) =>
-    selected
-      ? css`
-          border-width: 3px;
-          border-color: ${palette.blue_6e};
-          padding: 0px 15px;
-        `
-      : css`
-          border-width: 1px;
-          border-color: ${palette.gray_e5};
-        `}
+  padding: 0px 15px;
+  margin-bottom: ${({ isLast }) => (isLast ? 0 : "10px")};
+  border-width: 1px;
+  border-color: ${palette.gray_e5};
+  ${({ selected, isWalk }) =>
+    !isWalk &&
+    selected &&
+    css`
+      border-width: 3px;
+      border-color: ${palette.blue_6e};
+      padding: 0px 15px;
+    `}
 `;
 
 const LeftContainer = styled.View`
@@ -60,7 +65,13 @@ const BatteryBar = styled.View<{ isLast: boolean }>`
   margin-right: ${({ isLast }) => (isLast ? "8px" : "2px")};
 `;
 
-const Device = ({ data, isLast, ...props }: IProps) => {
+const Device = ({
+  data,
+  isLast,
+  isWalk = false,
+  selected,
+  ...props
+}: IProps) => {
   const numOfBatteryBar = () => {
     const length =
       data.battery > 75
@@ -80,6 +91,7 @@ const Device = ({ data, isLast, ...props }: IProps) => {
       isLast={isLast}
       selected={data.selected}
       underlayColor={palette.gray_e5}
+      isWalk={isWalk}
       {...props}>
       <Fragment>
         <LeftContainer>
@@ -93,7 +105,8 @@ const Device = ({ data, isLast, ...props }: IProps) => {
           ))}
           <Text>{data.battery}%</Text>
         </LeftContainer>
-        <Text>{data.remainingTime}분</Text>
+        {!isWalk && <Text>{data.remainingTime}분</Text>}
+        {isWalk && (selected ? <CheckCircle /> : <CheckCircleOutline />)}
       </Fragment>
     </Container>
   );

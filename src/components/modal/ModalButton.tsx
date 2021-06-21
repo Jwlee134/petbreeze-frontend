@@ -16,7 +16,7 @@ const Container = styled.TouchableHighlight<{ isLeft: boolean }>`
   border-radius: 4px;
   justify-content: center;
   align-items: center;
-  padding: 6px;
+  padding: 8px;
   ${({ isLeft }) =>
     isLeft &&
     css`

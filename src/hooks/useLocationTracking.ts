@@ -15,8 +15,12 @@ const useLocationTracking = () => {
     trackingId = Geolocation.watchPosition(
       pos => {
         const { latitude, longitude } = pos.coords;
-        dispatch(mapActions.setMyLatitude(latitude));
-        dispatch(mapActions.setMyLongitude(longitude));
+        dispatch(
+          mapActions.setMyCoords({
+            latitude,
+            longitude,
+          }),
+        );
         setIsTracking(true);
       },
       error => {

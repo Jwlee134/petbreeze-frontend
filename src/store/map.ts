@@ -3,15 +3,19 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 interface IState {
   showPath: boolean;
   showMyLocation: boolean;
-  myLatitude: number;
-  myLongitude: number;
+  myCoords: {
+    latitude: number;
+    longitude: number;
+  };
 }
 
 const initialState: IState = {
   showPath: false,
   showMyLocation: false,
-  myLatitude: 0,
-  myLongitude: 0,
+  myCoords: {
+    latitude: 0,
+    longitude: 0,
+  },
 };
 
 const map = createSlice({
@@ -24,15 +28,20 @@ const map = createSlice({
     setShowMyLocation: (state, action: PayloadAction<boolean>) => {
       state.showMyLocation = action.payload;
     },
-    setMyLatitude: (state, action: PayloadAction<number>) => {
-      state.myLatitude = action.payload;
-    },
-    setMyLongitude: (state, action: PayloadAction<number>) => {
-      state.myLongitude = action.payload;
+    setMyCoords: (
+      state,
+      action: PayloadAction<{
+        latitude: number;
+        longitude: number;
+      }>,
+    ) => {
+      const { latitude, longitude } = action.payload;
+      state.myCoords.latitude = latitude;
+      state.myCoords.longitude = longitude;
     },
     initMyCoords: state => {
-      state.myLatitude = 0;
-      state.myLongitude = 0;
+      state.myCoords.latitude = 0;
+      state.myCoords.longitude = 0;
     },
   },
 });

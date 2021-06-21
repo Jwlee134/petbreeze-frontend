@@ -50,7 +50,7 @@ const PostAnimalInfo = ({
 }) => {
   const animalInfo = useAppSelector(state => state.animalInfo);
   const { isLoggedIn } = useAppSelector(state => state.user);
-  const { currentHomeTab } = useAppSelector(state => state.common);
+  const { currentTabName } = useAppSelector(state => state.common);
 
   const { open, close, modalProps, BottomModalComponent } = useModal({
     type: "bottom",
@@ -71,7 +71,7 @@ const PostAnimalInfo = ({
     setSelectedIndex,
   } = useBottomModalSelector({ open });
 
-  const isLost = currentHomeTab === "LostList";
+  const isLost = currentTabName === "LostList";
 
   const dispatch = useDispatch();
 

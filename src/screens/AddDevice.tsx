@@ -6,6 +6,7 @@ import SidePaddingContainer from "~/components/common/container/SidePaddingConta
 import Fail from "~/components/lottie/Fail";
 import Loading from "~/components/lottie/Loading";
 import Success from "~/components/lottie/Success";
+import { useAppSelector } from "~/store";
 import SubmitDeviceInfo from "./SubmitDeviceInfo";
 
 const Text = styled.Text`
@@ -22,8 +23,6 @@ const SmallText = styled.Text`
 
 const ButtonContainer = styled.View`
   margin-bottom: 66px;
-  border-radius: 15px;
-  overflow: hidden;
 `;
 
 const LottieContainer = styled.View`
@@ -40,11 +39,18 @@ const Reference = styled.Text`
 `;
 
 const AddDevice = () => {
+  const { currentTabName } = useAppSelector(state => state.common);
+
   const [isBefore, setIsBefore] = useState(true);
   const [isSearching, setIsSearching] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
   const [isFailed, setIsFailed] = useState(false);
   const [showTagScreen, setShowTagScreen] = useState(false);
+
+  const handleStart = () => {
+    setIsBefore(false);
+    setIsSearching(true);
+  };
 
   useEffect(() => {
     if (isSearching) {
@@ -72,6 +78,12 @@ const AddDevice = () => {
       }, 2000);
     }
   }, [isFailed]);
+
+  useEffect(() => {
+    if (currentTabName === "StartWalking") {
+      handleStart();
+    }
+  }, []);
 
   return (
     <SafeAreaContainer hasCustomHeader={false}>
@@ -113,13 +125,7 @@ const AddDevice = () => {
           )}
           {isBefore && (
             <ButtonContainer>
-              <ConfirmButton
-                onPress={() => {
-                  setIsBefore(false);
-                  setIsSearching(true);
-                }}>
-                시작
-              </ConfirmButton>
+              <ConfirmButton onPress={handleStart}>시작</ConfirmButton>
             </ButtonContainer>
           )}
         </SidePaddingContainer>

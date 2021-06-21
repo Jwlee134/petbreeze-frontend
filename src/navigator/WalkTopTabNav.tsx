@@ -10,15 +10,17 @@ const WalkTopTabNav = () => (
   <Tab.Navigator
     tabBarOptions={{
       activeTintColor: palette.blue_6e,
-      inactiveTintColor: palette.gray_b4,
+      inactiveTintColor: "black",
       labelStyle: {
-        fontSize: 18,
-        fontWeight: "bold",
+        fontSize: 16,
         justifyContent: "center",
       },
-      indicatorContainerStyle: {
-        borderBottomWidth: 0.5,
-        borderBottomColor: palette.gray_b4,
+      style: {
+        elevation: 0,
+        shadowOffset: {
+          width: 0,
+          height: 0,
+        },
       },
       pressColor: "white",
       pressOpacity: 0.5,

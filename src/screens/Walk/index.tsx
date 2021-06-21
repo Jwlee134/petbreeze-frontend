@@ -18,7 +18,6 @@ import Modal from "react-native-modal";
 
 import BleManager, { start } from "react-native-ble-manager";
 import AndroidOpenSettings from "react-native-android-open-settings";
-import CustomHeader from "~/components/common/CustomHeader";
 import useModal from "~/hooks/useModal";
 import SafeAreaContainer from "~/components/common/container/SafeAreaContainer";
 import CautionModal from "~/components/modal/locationModal/CautionModal";
@@ -124,7 +123,7 @@ const Walk = ({ navigation }: { navigation: LocationScreenNavigationProp }) => {
   if (!isLoggedIn) return <AuthSelector />;
 
   return (
-    <SafeAreaContainer>
+    <>
       <WalkTopTabNav />
       {/* <TouchableOpacity onPress={handleOpenSetting}>
           <Text style={{ fontSize: 40 }}>Open bluetooth setting</Text>
@@ -143,7 +142,7 @@ const Walk = ({ navigation }: { navigation: LocationScreenNavigationProp }) => {
           )}
           keyExtractor={item => item.id}
         /> */}
-    </SafeAreaContainer>
+    </>
   );
 };
 

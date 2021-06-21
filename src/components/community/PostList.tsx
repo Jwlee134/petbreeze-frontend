@@ -72,11 +72,11 @@ const data = [
 ];
 
 const PostList = () => {
-  useFocusEvent({ isHomeTab: true });
-  const { currentHomeTab } = useAppSelector(state => state.common);
+  useFocusEvent({ isTab: true });
+  const { currentTabName } = useAppSelector(state => state.common);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {}, [currentHomeTab]);
+  useEffect(() => {}, [currentTabName]);
 
   if (loading)
     return (

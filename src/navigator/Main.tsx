@@ -10,6 +10,7 @@ import CommentList from "~/screens/CommentList";
 import AddDevice from "~/screens/AddDevice";
 import { headerStyle, mainTabHeaderStyle } from "~/styles/navigator";
 import HeaderBackButton from "~/components/common/button/HeaderBackButton";
+import WalkMap from "~/screens/WalkMap";
 
 const Stack = createStackNavigator();
 
@@ -60,6 +61,11 @@ const Main = () => {
           title: "기기 등록",
           ...headerStyle,
         }}
+      />
+      <Stack.Screen
+        name="WalkMap"
+        component={WalkMap}
+        options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );
