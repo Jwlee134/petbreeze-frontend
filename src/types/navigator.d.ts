@@ -4,7 +4,6 @@ import { Camera } from "react-native-maps";
 
 type SharedStackParamList = {
   Home: undefined;
-  Location: undefined;
   Community: undefined;
   Notification: undefined;
   PostAnimalInfo: undefined;
@@ -18,7 +17,11 @@ type SharedStackParamList = {
   UpdateWitnessedList: undefined;
   CommentList: undefined;
   AuthSelector: undefined;
-  AddDevice: undefined;
+  AddDevice:
+    | {
+        execute: boolean;
+      }
+    | undefined;
   Map: undefined;
   StartWalking: undefined;
   WalkMap: undefined;
@@ -50,10 +53,6 @@ type SharedStackParamList = {
 export type HomeScreenNavigationProp = StackNavigationProp<
   SharedStackParamList,
   "Home"
->;
-export type LocationScreenNavigationProp = StackNavigationProp<
-  SharedStackParamList,
-  "Location"
 >;
 export type CommunityScreenNavigationProp = StackNavigationProp<
   SharedStackParamList,
@@ -126,4 +125,8 @@ export type WitnessedDetailScreenRouteProp = RouteProp<
 export type SafetyZoneMapScreenRouteProp = RouteProp<
   SharedStackParamList,
   "SafetyZoneMap"
+>;
+export type AddDeviceScreenRouteProp = RouteProp<
+  SharedStackParamList,
+  "AddDevice"
 >;

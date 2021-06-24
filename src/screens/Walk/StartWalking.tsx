@@ -41,7 +41,10 @@ const StartWalking = ({
 
   const handleStart = () => navigation.navigate("WalkMap");
 
-  const handleNavigate = () => navigation.navigate("AddDevice");
+  const handleNavigate = () =>
+    navigation.navigate("AddDevice", {
+      execute: true,
+    });
 
   const [selected, setSelected] = useState<number[]>([]);
 

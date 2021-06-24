@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
+import { useEffect } from "react";
+import { Animated, View } from "react-native";
 import styled from "styled-components/native";
 import ConfirmButton from "~/components/common/button/ConfirmButton";
 import SafeAreaContainer from "~/components/common/container/SafeAreaContainer";
@@ -6,7 +8,9 @@ import SidePaddingContainer from "~/components/common/container/SidePaddingConta
 import Fail from "~/components/lottie/Fail";
 import Loading from "~/components/lottie/Loading";
 import Success from "~/components/lottie/Success";
-import { useAppSelector } from "~/store";
+import useOTAUpdate from "~/hooks/useOTAUpdate";
+import palette from "~/styles/palette";
+import { AddDeviceScreenRouteProp } from "~/types/navigator";
 import SubmitDeviceInfo from "./SubmitDeviceInfo";
 
 const Text = styled.Text`
@@ -38,95 +42,82 @@ const Reference = styled.Text`
   font-size: 12px;
 `;
 
-const AddDevice = () => {
-  const { currentTabName } = useAppSelector(state => state.common);
-
-  const [isBefore, setIsBefore] = useState(true);
-  const [isSearching, setIsSearching] = useState(false);
-  const [isConnected, setIsConnected] = useState(false);
-  const [isFailed, setIsFailed] = useState(false);
-  const [showTagScreen, setShowTagScreen] = useState(false);
-
-  const handleStart = () => {
-    setIsBefore(false);
-    setIsSearching(true);
-  };
+const AddDevice = ({ route }: { route: AddDeviceScreenRouteProp }) => {
+  const { status, animatedProgress, handleStart, widthInterpolate } =
+    useOTAUpdate();
 
   useEffect(() => {
-    if (isSearching) {
-      setTimeout(() => {
-        setIsSearching(false);
-        setIsConnected(true);
-      }, 2000);
-    }
-  }, [isSearching]);
-
-  useEffect(() => {
-    if (isConnected) {
-      setTimeout(() => {
-        setIsConnected(false);
-        setIsFailed(true);
-      }, 2000);
-    }
-  }, [isConnected]);
-
-  useEffect(() => {
-    if (isFailed) {
-      setTimeout(() => {
-        setIsFailed(false);
-        setShowTagScreen(true);
-      }, 2000);
-    }
-  }, [isFailed]);
-
-  useEffect(() => {
-    if (currentTabName === "StartWalking") {
+    if (route?.params?.execute) {
       handleStart();
     }
   }, []);
 
   return (
     <SafeAreaContainer hasCustomHeader={false}>
-      {showTagScreen ? (
+      {status === "profile" ? (
         <SubmitDeviceInfo />
       ) : (
         <SidePaddingContainer
           style={{
             flex: 1,
             alignItems: "center",
-            ...(isBefore && { justifyContent: "space-between" }),
+            ...(status === "before" && { justifyContent: "space-between" }),
           }}>
           <Text>
-            {isBefore && "기기등록을 시작하시겠습니까?"}
-            {isSearching && "기기를 찾고 있습니다."}
-            {isConnected && "연결이 완료되었습니다."}
-            {isFailed && "연결에 실패하였습니다."}
+            {status === "before" && "기기등록을 시작하시겠습니까?"}
+            {status === "searching" && "기기를 찾고 있습니다."}
+            {status === "connected" && "연결이 완료되었습니다."}
+            {status === "failed" && "연결에 실패하였습니다."}
+            {status === "downloading" && "펌웨어를 다운받는 중입니다."}
+            {status === "updating" && "펌웨어를 업데이트하는 중입니다."}
           </Text>
-          {isFailed && (
+          {status === "failed" && (
             <SmallText>블루투스가 켜져있는지 확인해주세요.</SmallText>
           )}
-          {isSearching && (
+          {status === "updating" && (
+            <SmallText>잠시만 기다려 주세요.</SmallText>
+          )}
+          {(status === "searching" || status === "updating") && (
             <LottieContainer>
               <Loading />
               <Reference>Source: @Hânnely Ribeiro / LottieFiles</Reference>
             </LottieContainer>
           )}
-          {isConnected && (
+          {status === "connected" && (
             <LottieContainer>
               <Success />
               <Reference>Source: @Travis Gregory / LottieFiles</Reference>
             </LottieContainer>
           )}
-          {isFailed && (
+          {status === "failed" && (
             <LottieContainer style={{ marginTop: 27 }}>
               <Fail />
               <Reference>Source: @Behrouz Poursoltani / LottieFiles</Reference>
             </LottieContainer>
           )}
-          {isBefore && (
+          {status === "before" && (
             <ButtonContainer>
               <ConfirmButton onPress={handleStart}>시작</ConfirmButton>
             </ButtonContainer>
+          )}
+          {status === "downloading" && (
+            <>
+              <View
+                style={{
+                  backgroundColor: palette.gray_f3,
+                  width: "100%",
+                  height: 15,
+                }}>
+                <Animated.View
+                  style={{
+                    backgroundColor: palette.blue_6e,
+                    height: "100%",
+                    width: widthInterpolate,
+                  }}
+                />
+              </View>
+              <SmallText>{animatedProgress}%</SmallText>
+            </>
           )}
         </SidePaddingContainer>
       )}
