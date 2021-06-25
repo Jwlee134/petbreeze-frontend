@@ -12,6 +12,8 @@ const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
 
 import RNFetchBlob from "rn-fetch-blob";
 import { bytesToString, stringToBytes } from "convert-string";
+import { useDispatch } from "react-redux";
+import { userActions } from "~/store/user";
 
 type Status =
   | "before"
@@ -31,6 +33,8 @@ const useOTAUpdate = () => {
   const [progress, setProgress] = useState(0);
   const [animatedProgress, setAnimatedProgress] = useState(0);
   const [firmware, setFirmware] = useState<number[]>([]);
+
+  const dispatch = useDispatch();
 
   const value = useRef(new Animated.Value(0)).current;
   const timeout = useRef<NodeJS.Timeout>();
@@ -188,7 +192,10 @@ const useOTAUpdate = () => {
     }
   };
 
-  const handleStart = () => setStatus("searching");
+  const handleStart = () => {
+    /* setStatus("searching") */
+    dispatch(userActions.setDeviceRegistered(true));
+  };
 
   const handleStop = async (status: "connected" | "failed") => {
     await BleManager.stopScan();

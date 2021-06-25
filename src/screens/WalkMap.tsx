@@ -15,6 +15,7 @@ import Camera from "~/assets/svg/camera.svg";
 import PauseCircle from "~/assets/svg/pause-circle.svg";
 import PlayCircle from "~/assets/svg/play-circle.svg";
 import SimpleToggleModal from "~/components/modal/SimpleToggleModal";
+import { api } from "~/api";
 
 const Controller = styled.View<{ bottom: number }>`
   position: absolute;
@@ -81,6 +82,8 @@ const WalkMap = ({
   const [meter, setMeter] = useState(0);
   const [time, setTime] = useState(0);
 
+  const [startTime, setStartTime] = useState<Date | null>(null);
+
   useEffect(() => {
     if (!mapRef.current || !latitude || !longitude) return;
     console.log(latitude, longitude);
@@ -116,11 +119,27 @@ const WalkMap = ({
     };
   }, [isWalking]);
 
+  useEffect(() => {
+    setStartTime(new Date());
+  }, []);
+
   const hour = Math.floor(time / 3600) % 60;
   const min = Math.floor(time / 60) % 60;
   const sec = Math.floor(time) % 60;
 
-  const handleFinish = async () => {};
+  const handleFinish = async () => {
+    /*  const { data } = await api.post("/walk/2/", {
+      start_date_time: startTime as Date,
+      end_date_time: new Date((startTime as Date).getTime() + time * 1000),
+      distance: meter,
+      travel_path: {
+        type: "MultiPoint",
+        coordinates: path.map(coord => [coord.latitude, coord.longitude]),
+      },
+    });
+    const { data: data2 } = await api.patch(`/walk/2/?walk_id=${data.id}`);
+    console.log(data2); */
+  };
 
   return (
     <>
