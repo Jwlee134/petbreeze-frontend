@@ -4,6 +4,7 @@ import { Camera } from "react-native-maps";
 
 type SharedStackParamList = {
   Home: undefined;
+  Walk: undefined;
   Community: undefined;
   Notification: undefined;
   PostAnimalInfo: undefined;

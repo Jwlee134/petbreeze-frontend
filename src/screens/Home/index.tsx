@@ -16,6 +16,7 @@ import DeviceAvatarCircle from "~/components/map/DeviceAvatarCircle";
 import HomeMap from "~/components/map/HomeMap";
 import { useLayoutEffect } from "react";
 import HeaderRightButton from "~/components/common/button/HeaderRightButton";
+import { useEffect } from "react";
 
 const Container = styled.View``;
 
@@ -35,6 +36,7 @@ const NotificationText = styled.Text`
 `;
 
 const Home = ({ navigation }: { navigation: HomeScreenNavigationProp }) => {
+  const { notification } = useAppSelector(state => state.common);
   const { isDeviceRegistered, isLoggedIn } = useAppSelector(
     state => state.user,
   );
@@ -49,6 +51,14 @@ const Home = ({ navigation }: { navigation: HomeScreenNavigationProp }) => {
       headerRight: () => <HeaderRightButton open={open} />,
     });
   }, []);
+
+  useEffect(() => {
+    if (notification.includes("안심존")) {
+      setTimeout(() => {
+        navigation.navigate("Walk");
+      }, 1);
+    }
+  }, [notification]);
 
   return (
     <>

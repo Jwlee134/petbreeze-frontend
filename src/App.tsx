@@ -12,6 +12,9 @@ import { persister, store } from "./store";
 import { Provider } from "react-redux";
 
 import { Settings } from "react-native-fbsdk-next";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+
+import "./NotificationHandler";
 
 Settings.initializeSDK();
 
@@ -27,7 +30,9 @@ const App = () => {
             backgroundColor="transparent"
             translucent={true}
           />
-          <Main />
+          <SafeAreaProvider>
+            <Main />
+          </SafeAreaProvider>
         </NavigationContainer>
       </PersistGate>
     </Provider>
