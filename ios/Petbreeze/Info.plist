@@ -32,12 +32,12 @@
 			</array>
 		</dict>
 	</array>
+	<key>CFBundleVersion</key>
+	<string>1</string>
 	<key>FacebookAppID</key>
 	<string>755816805082838</string>
 	<key>FacebookDisplayName</key>
 	<string>어디개</string>
-	<key>CFBundleVersion</key>
-	<string>1</string>
 	<key>KAKAO_APP_KEY</key>
 	<string>5155b1706489fb195c173509a87bb95c</string>
 	<key>LSApplicationQueriesSchemes</key>
@@ -90,6 +90,10 @@
 		<string>SimpleLineIcons.ttf</string>
 		<string>Zocial.ttf</string>
 		<string>Fontisto.ttf</string>
+	</array>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
