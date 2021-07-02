@@ -48,9 +48,11 @@ const shadow = {
 
 const HomeToggle = ({ startTracking, clearTracking, mapRef }: IProps) => {
   const data = useAppSelector(state => state.device);
-  const { showPath, showMyLocation, myLatitude, myLongitude } = useAppSelector(
-    state => state.map,
-  );
+  const {
+    showPath,
+    showMyLocation,
+    myCoords: { latitude, longitude },
+  } = useAppSelector(state => state.map);
 
   const dispatch = useDispatch();
 
@@ -62,14 +64,14 @@ const HomeToggle = ({ startTracking, clearTracking, mapRef }: IProps) => {
 
   useEffect(() => {
     if (!mapRef.current) return;
-    if (myLatitude && myLongitude && !isCameraMoved) {
+    if (latitude && longitude && !isCameraMoved) {
       mapRef.current.animateCamera({
-        center: { latitude: myLatitude, longitude: myLongitude },
+        center: { latitude, longitude },
         zoom: 17,
       });
       setIsCameraMoved(true);
     }
-  }, [mapRef, myLatitude, myLongitude, isCameraMoved]);
+  }, [mapRef, latitude, longitude, isCameraMoved]);
 
   useEffect(() => {
     if (showMyLocation) {

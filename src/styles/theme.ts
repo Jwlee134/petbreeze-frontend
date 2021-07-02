@@ -8,12 +8,3 @@ export const lightTheme = {
     text: "#2c2c2c",
   },
 };
-
-export const darkTheme = {
-  ...DefaultTheme,
-  colors: {
-    ...DefaultTheme.colors,
-    background: "#2c2c2c",
-    text: "#ffffff",
-  },
-};

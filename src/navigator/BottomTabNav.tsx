@@ -8,8 +8,6 @@ import Home from "~/assets/svg/home.svg";
 import HomeOutline from "~/assets/svg/home-outline.svg";
 import Footprint from "~/assets/svg/footprint.svg";
 import FootprintOutline from "~/assets/svg/footprint-outline.svg";
-import Search from "~/assets/svg/search-tab.svg";
-import SearchOutline from "~/assets/svg/search-tab-outline.svg";
 import Bell from "~/assets/svg/bell.svg";
 import BellOutline from "~/assets/svg/bell-outline.svg";
 import User from "~/assets/svg/user.svg";
@@ -48,15 +46,6 @@ const BottomTabNav = () => {
           tabBarLabel: "산책",
         }}>
         {() => <SharedStackNav screenName="Walk" />}
-      </Tab.Screen>
-      <Tab.Screen
-        name="Community"
-        options={{
-          tabBarIcon: ({ focused }) =>
-            focused ? <Search /> : <SearchOutline />,
-          tabBarLabel: "실종/목격",
-        }}>
-        {() => <SharedStackNav screenName="Community" />}
       </Tab.Screen>
       <Tab.Screen
         name="Notification"

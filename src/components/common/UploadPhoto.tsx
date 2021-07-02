@@ -7,7 +7,7 @@ import AddCircleButton from "../common/button/AddCircleButton";
 import { ScrollView, TouchableWithoutFeedback } from "react-native";
 import { useAppSelector } from "~/store";
 import { useDispatch } from "react-redux";
-import { animalInfoActions } from "~/store/animalInfo";
+import { animalInfoActions } from "~/store/form";
 
 const Container = styled.View`
   flex-direction: row;
@@ -48,6 +48,7 @@ const UploadPhoto = () => {
       maxFiles: 5,
     }).then(images => {
       if (images.length === 0) return;
+      console.log(images);
       dispatch(animalInfoActions.setPhotos(images));
     });
   };

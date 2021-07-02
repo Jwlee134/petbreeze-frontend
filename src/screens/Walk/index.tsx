@@ -1,15 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Linking, Platform } from "react-native";
-import { useAppSelector } from "~/store";
-import AuthSelector from "../Shared/AuthSelector";
 import AndroidOpenSettings from "react-native-android-open-settings";
 
 import { formatCoordinates, formatUTC } from "~/utils";
 import WalkTopTabNav from "~/navigator/WalkTopTabNav";
 
 const Walk = () => {
-  const { isLoggedIn } = useAppSelector(state => state.user);
-
   const [list, setList] = useState<any[]>([]);
 
   /* useEffect(() => {
@@ -30,8 +26,6 @@ const Walk = () => {
       ? Linking.openURL("App-Prefs:Bluetooth")
       : AndroidOpenSettings.bluetoothSettings();
   };
-
-  if (!isLoggedIn) return <AuthSelector />;
 
   return <WalkTopTabNav />;
 };

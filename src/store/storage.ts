@@ -9,20 +9,20 @@ export interface ISafetyZone {
   distanceValue: number;
 }
 
-interface IState {
+interface IStorage {
   notifications: {
-    savedPost: boolean;
-    myPost: boolean;
     mySurrounding: boolean;
   };
   camera: Camera;
   safetyZone: ISafetyZone[];
+  user: {
+    isLoggedIn: boolean;
+    token: string;
+  };
 }
 
-const initialState: IState = {
+const initialState: IStorage = {
   notifications: {
-    savedPost: true,
-    myPost: true,
     mySurrounding: true,
   },
   camera: {
@@ -36,18 +36,16 @@ const initialState: IState = {
     zoom: 6,
   },
   safetyZone: [],
+  user: {
+    isLoggedIn: false,
+    token: "",
+  },
 };
 
 const storage = createSlice({
   name: "storage",
   initialState,
   reducers: {
-    setSavedPost: (state, action: PayloadAction<boolean>) => {
-      state.notifications.savedPost = action.payload;
-    },
-    setMyPost: (state, action: PayloadAction<boolean>) => {
-      state.notifications.myPost = action.payload;
-    },
     setMySurrounding: (state, action: PayloadAction<boolean>) => {
       state.notifications.mySurrounding = action.payload;
     },
@@ -74,6 +72,14 @@ const storage = createSlice({
         state.safetyZone[state.safetyZone.findIndex(item => item.id === id)] =
           action.payload;
       }
+    },
+    login: (state, { payload }: PayloadAction<string>) => {
+      state.user.isLoggedIn = true;
+      state.user.token = payload;
+    },
+    logout: state => {
+      state.user.isLoggedIn = false;
+      state.user.token = "";
     },
   },
 });

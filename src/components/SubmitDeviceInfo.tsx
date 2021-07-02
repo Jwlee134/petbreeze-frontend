@@ -8,17 +8,15 @@ import ImagePicker from "react-native-image-crop-picker";
 
 import Modal from "react-native-modal";
 import useModal from "~/hooks/useModal";
-import useBottomModalSelector from "~/hooks/useBottomModalSelector";
 import { useAppSelector } from "~/store";
 import { useDispatch } from "react-redux";
 import { Platform, Text } from "react-native";
 import WheelPicker from "~/components/common/WheelPicker";
-import { animalInfoActions } from "~/store/animalInfo";
+import { animalInfoActions } from "~/store/form";
 import { useNavigation } from "@react-navigation/core";
 import { DeviceListScreenNavigationProp } from "~/types/navigator";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import ListPicker from "~/components/common/ListPicker";
-import { userActions } from "~/store/user";
 
 const Container = styled.View`
   width: 100%;

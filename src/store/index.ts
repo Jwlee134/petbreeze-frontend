@@ -16,26 +16,27 @@ import {
   REGISTER,
 } from "redux-persist";
 
-import user from "./user";
 import common from "./common";
-import animalInfo from "./animalInfo";
+import form from "./form";
 import storage from "./storage";
 import map from "./map";
 import device from "./device";
 
+import api from "~/api";
+
 const rootReducer = combineReducers({
-  user,
   common,
-  animalInfo,
+  form,
   storage,
   map,
   device,
+  [api.reducerPath]: api.reducer,
 });
 
 const persistConfig = {
   key: "root",
   storage: AsyncStorage,
-  whitelist: ["user", "storage"],
+  whitelist: ["storage"],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -46,7 +47,7 @@ export const store = configureStore({
     serializableCheck: {
       ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
     },
-  }),
+  }).concat(api.middleware),
 });
 
 export const persister = persistStore(store);

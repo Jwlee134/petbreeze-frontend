@@ -15,7 +15,6 @@ import Camera from "~/assets/svg/camera.svg";
 import PauseCircle from "~/assets/svg/pause-circle.svg";
 import PlayCircle from "~/assets/svg/play-circle.svg";
 import SimpleToggleModal from "~/components/modal/SimpleToggleModal";
-import { api } from "~/api";
 
 const Controller = styled.View<{ bottom: number }>`
   position: absolute;

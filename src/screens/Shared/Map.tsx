@@ -2,7 +2,7 @@ import React, { useLayoutEffect, useState } from "react";
 import useMap from "~/hooks/useMap";
 import styled from "styled-components/native";
 import { useDispatch } from "react-redux";
-import { animalInfoActions } from "~/store/animalInfo";
+import { animalInfoActions } from "~/store/form";
 import useReverseGeocoding from "~/hooks/useReverseGeocoding";
 import { MapScreenNavigationProp } from "~/types/navigator";
 import palette from "~/styles/palette";

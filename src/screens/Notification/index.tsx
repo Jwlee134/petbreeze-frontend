@@ -1,7 +1,5 @@
 import React from "react";
-import { useAppSelector } from "~/store";
 import { NotificationScreenNavigationProp } from "~/types/navigator";
-import AuthSelector from "../Shared/AuthSelector";
 import useModal from "~/hooks/useModal";
 
 import Modal from "react-native-modal";
@@ -15,8 +13,6 @@ const Notification = ({
 }: {
   navigation: NotificationScreenNavigationProp;
 }) => {
-  const { isLoggedIn } = useAppSelector(state => state.user);
-
   const { open, modalProps, CenterModalComponent } = useModal({
     type: "center",
   });
@@ -26,8 +22,6 @@ const Notification = ({
       headerRight: () => <HeaderRightButton open={open} />,
     });
   }, []);
-
-  if (!isLoggedIn) return <AuthSelector />;
 
   return (
     <>

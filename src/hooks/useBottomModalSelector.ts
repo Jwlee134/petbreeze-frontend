@@ -1,9 +1,9 @@
-import { useCallback, useRef, useState } from "react";
+/* import { useCallback, useRef, useState } from "react";
 import { Platform, TextInput } from "react-native";
 import { useDispatch } from "react-redux";
 import { catBreeds, dogBreeds, gender, species, years } from "~/staticData";
 import { useAppSelector } from "~/store";
-import { animalInfoActions } from "~/store/animalInfo";
+import { animalInfoActions } from "~/store/form";
 import { AnimalInfoClickedField, HandleRememberIndexArg } from "~/types";
 import { localToISOString } from "~/utils";
 
@@ -162,3 +162,4 @@ const useBottomModalSelector = ({ open }: IProps) => {
 };
 
 export default useBottomModalSelector;
+ */

@@ -1,17 +1,19 @@
-import axios from "axios";
-import { store } from "~/store";
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { RootState } from "~/store";
 
-export const api = axios.create({
-  baseURL: "http://192.168.0.44:5050",
-  headers: {
-    "Content-Type": "application/json",
-  },
+const api = createApi({
+  baseQuery: fetchBaseQuery({
+    baseUrl: "http://192.168.0.44:5050",
+    prepareHeaders: (headers, { getState }) => {
+      const token = (getState() as RootState).storage.user.token;
+      if (token) {
+        headers.set("Authorization", `Token ${token}`);
+      }
+      return headers;
+    },
+  }),
+  tagTypes: ["User"],
+  endpoints: () => ({}),
 });
 
-api.interceptors.request.use(config => {
-  const token = store.getState().user.token;
-  if (token) {
-    config.headers.Authorization = `Token ${token}`;
-  }
-  return config;
-});
+export default api;

@@ -20,26 +20,9 @@ import { useEffect } from "react";
 
 const Container = styled.View``;
 
-const Notification = styled.TouchableOpacity`
-  background-color: rgba(110, 65, 226, 0.58);
-  position: absolute;
-  bottom: 24px;
-  width: 100%;
-  height: 40px;
-  justify-content: center;
-  align-items: center;
-`;
-
-const NotificationText = styled.Text`
-  font-size: 16px;
-  color: white;
-`;
-
 const Home = ({ navigation }: { navigation: HomeScreenNavigationProp }) => {
   const { notification } = useAppSelector(state => state.common);
-  const { isDeviceRegistered, isLoggedIn } = useAppSelector(
-    state => state.user,
-  );
+  const { isLoggedIn } = useAppSelector(state => state.storage.user);
   const { open, modalProps, CenterModalComponent } = useModal({
     type: "center",
   });
@@ -69,22 +52,12 @@ const Home = ({ navigation }: { navigation: HomeScreenNavigationProp }) => {
           camera={camera}
           isTracking={isTracking}
         />
-        <HomeToggle
+        {/*  <HomeToggle
           startTracking={startTracking}
           clearTracking={clearTracking}
           mapRef={mapRef}
-        />
-        <DeviceAvatarCircle />
+        /> */}
       </Container>
-      {!isDeviceRegistered && (
-        <Notification
-          activeOpacity={1}
-          onPress={() =>
-            navigation.navigate(!isLoggedIn ? "AuthSelector" : "AddDevice")
-          }>
-          <NotificationText>기기를 등록해주세요.</NotificationText>
-        </Notification>
-      )}
       <Modal {...modalProps}>
         <CenterModalComponent headerTitle="주의사항">
           <CautionModal />

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Alert } from "react-native";
-import { reverseGeocodingAPI } from "~/api/postAnimalInfo";
+import { reverseGeocodingAPI } from "~/api/reverseGeocoding";
 import { formatGeocodingAddr } from "~/utils";
 
 const useReverseGeocoding = () => {

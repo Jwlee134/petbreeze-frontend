@@ -2,9 +2,7 @@ import React from "react";
 import { Linking, ScrollView } from "react-native";
 import CategoryTitle from "~/components/common/CategoryTitle";
 import ListItem from "~/components/common/ListItem";
-import { useAppSelector } from "~/store";
 import { MyPageScreenNavigationProp } from "~/types/navigator";
-import AuthSelector from "../Shared/AuthSelector";
 
 import Ionicons from "react-native-vector-icons/Ionicons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -13,20 +11,16 @@ import useModal from "~/hooks/useModal";
 import Modal from "react-native-modal";
 import SimpleToggleModal from "~/components/modal/SimpleToggleModal";
 import { useDispatch } from "react-redux";
-import { userActions } from "~/store/user";
+import { storageActions } from "~/store/storage";
 
 const size = 22;
 
 const MyPage = ({ navigation }: { navigation: MyPageScreenNavigationProp }) => {
-  const { isLoggedIn } = useAppSelector(state => state.user);
-
   const dispatch = useDispatch();
 
   const { open, close, modalProps, CenterModalComponent } = useModal({
     type: "center",
   });
-
-  if (!isLoggedIn) return <AuthSelector />;
 
   return (
     <>
@@ -98,7 +92,7 @@ const MyPage = ({ navigation }: { navigation: MyPageScreenNavigationProp }) => {
             onConfirm={() => {
               close();
               setTimeout(() => {
-                dispatch(userActions.logout());
+                dispatch(storageActions.logout());
                 navigation.navigate("Home");
               }, 400);
             }}

@@ -13,7 +13,6 @@ const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
 import RNFetchBlob from "rn-fetch-blob";
 import { bytesToString, stringToBytes } from "convert-string";
 import { useDispatch } from "react-redux";
-import { userActions } from "~/store/user";
 
 type Status =
   | "before"
@@ -69,6 +68,11 @@ const useOTAUpdate = () => {
     if (progress === animatedProgress && timeout.current) {
       clearInterval(timeout.current);
     }
+    if (animatedProgress === 100) {
+      setTimeout(() => {
+        setStatus("updating");
+      }, 2000);
+    }
   }, [progress, animatedProgress]);
 
   useEffect(() => {
@@ -77,14 +81,6 @@ const useOTAUpdate = () => {
       setProgress(100);
     }
   }, [firmware]);
-
-  useEffect(() => {
-    if (animatedProgress === 100) {
-      setTimeout(() => {
-        setStatus("updating");
-      }, 2000);
-    }
-  }, [animatedProgress]);
 
   const sendFirmwareToDevice = async (
     peripheralId: string,
@@ -193,8 +189,7 @@ const useOTAUpdate = () => {
   };
 
   const handleStart = () => {
-    /* setStatus("searching") */
-    dispatch(userActions.setDeviceRegistered(true));
+    setStatus("searching");
   };
 
   const handleStop = async (status: "connected" | "failed") => {

@@ -11,7 +11,7 @@ import Success from "~/components/lottie/Success";
 import useOTAUpdate from "~/hooks/useOTAUpdate";
 import palette from "~/styles/palette";
 import { AddDeviceScreenRouteProp } from "~/types/navigator";
-import SubmitDeviceInfo from "./SubmitDeviceInfo";
+import SubmitDeviceInfo from "~/components/SubmitDeviceInfo";
 
 const Text = styled.Text`
   font-size: 22px;

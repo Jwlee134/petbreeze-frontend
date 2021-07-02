@@ -5,8 +5,7 @@ import {
 } from "@react-navigation/stack";
 
 import BottomTabNav from "./BottomTabNav";
-import { AppState, AppStateStatus } from "react-native";
-import CommentList from "~/screens/CommentList";
+import { AppState, AppStateStatus, StatusBar } from "react-native";
 import AddDevice from "~/screens/AddDevice";
 import { headerStyle, mainTabHeaderStyle } from "~/styles/navigator";
 import HeaderBackButton from "~/components/common/button/HeaderBackButton";
@@ -14,7 +13,7 @@ import WalkMap from "~/screens/WalkMap";
 
 const Stack = createStackNavigator();
 
-const Main = () => {
+const LoggedInNav = () => {
   const [state, setState] = useState<AppStateStatus>();
 
   const handleAppStateChange = (status: AppStateStatus) => {
@@ -44,15 +43,11 @@ const Main = () => {
         ...mainTabHeaderStyle,
         ...TransitionPresets.SlideFromRightIOS,
       }}>
+      <StatusBar translucent barStyle="dark-content" />
       <Stack.Screen
         name="BottomTabNav"
         component={BottomTabNav}
         options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="CommentList"
-        component={CommentList}
-        options={{ title: "" }}
       />
       <Stack.Screen
         name="AddDevice"
@@ -71,4 +66,4 @@ const Main = () => {
   );
 };
 
-export default Main;
+export default LoggedInNav;
