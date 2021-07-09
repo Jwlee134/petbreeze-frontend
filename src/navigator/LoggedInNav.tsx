@@ -5,7 +5,7 @@ import {
 } from "@react-navigation/stack";
 
 import BottomTabNav from "./BottomTabNav";
-import { AppState, AppStateStatus, StatusBar } from "react-native";
+import { AppState, AppStateStatus } from "react-native";
 import AddDevice from "~/screens/AddDevice";
 import { headerStyle, mainTabHeaderStyle } from "~/styles/navigator";
 import HeaderBackButton from "~/components/common/button/HeaderBackButton";
@@ -43,7 +43,6 @@ const LoggedInNav = () => {
         ...mainTabHeaderStyle,
         ...TransitionPresets.SlideFromRightIOS,
       }}>
-      <StatusBar translucent barStyle="dark-content" />
       <Stack.Screen
         name="BottomTabNav"
         component={BottomTabNav}

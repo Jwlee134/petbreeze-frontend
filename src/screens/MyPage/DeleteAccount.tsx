@@ -3,7 +3,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import styled from "styled-components/native";
 import ConfirmButton from "~/components/common/button/ConfirmButton";
 import SidePaddingContainer from "~/components/common/container/SidePaddingContainer";
-import Input from "~/components/common/Input";
+import Input from "~/components/common/InputLegacy";
 
 const InputContainer = styled.View`
   margin: 26px 0px;

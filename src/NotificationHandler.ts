@@ -1,4 +1,4 @@
-import PushNotificationIOS from "@react-native-community/push-notification-ios";
+/* import PushNotificationIOS from "@react-native-community/push-notification-ios";
 import PushNotification from "react-native-push-notification";
 import { store } from "./store";
 import { commonActions } from "./store/common";
@@ -59,3 +59,4 @@ PushNotification.configure({
     notification.finish(PushNotificationIOS.FetchResult.NoData);
   },
 });
+ */

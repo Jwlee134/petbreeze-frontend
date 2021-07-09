@@ -16,7 +16,7 @@ const useMap = () => {
     ({ children, style, ...props }: IMapProps) => (
       <MapView
         ref={mapRef}
-        style={{ width: "100%", height: "100%", ...(style as object) }}
+        style={style}
         provider={PROVIDER_GOOGLE}
         initialCamera={camera}
         {...props}>

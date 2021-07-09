@@ -3,7 +3,7 @@ import useMap from "~/hooks/useMap";
 import { WalkMapScreenNavigationProp } from "~/types/navigator";
 import styled, { css } from "styled-components/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import useLocationTracking from "~/hooks/useLocationTracking";
+import useMyLocation from "~/hooks/useMyLocation";
 import { useAppSelector } from "~/store";
 import Marker from "~/components/map/Marker";
 import palette from "~/styles/palette";
@@ -69,7 +69,7 @@ const WalkMap = ({
   const { latitude, longitude } = useAppSelector(state => state.map.myCoords);
   const { bottom } = useSafeAreaInsets();
   const { Map, mapRef } = useMap();
-  const { startTracking, clearTracking } = useLocationTracking();
+  const { startTracking, clearTracking } = useMyLocation();
   const { open, close, modalProps, CenterModalComponent } = useModal({
     type: "center",
   });

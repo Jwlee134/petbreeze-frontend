@@ -8,6 +8,7 @@ import { storageActions } from "~/store/storage";
 import palette from "~/styles/palette";
 import Marker from "./Marker";
 import FootprintMarker from "~/assets/svg/footprint-marker.svg";
+import { StyleSheet } from "react-native";
 
 interface IProps {
   Map: ({ children, style, ...props }: IMapProps) => JSX.Element;
@@ -29,6 +30,7 @@ const HomeMap = ({ Map, mapRef, camera, isTracking }: IProps) => {
 
   return (
     <Map
+      style={StyleSheet.absoluteFill}
       initialCamera={camera}
       showsUserLocation={isTracking}
       onRegionChangeComplete={async () => {

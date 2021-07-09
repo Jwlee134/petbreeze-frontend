@@ -13,7 +13,7 @@ import { Alert, Dimensions, Keyboard, Platform } from "react-native";
 import ShadowContainer from "~/components/common/container/ShadowContainer";
 import useAnimatedList from "~/hooks/useAnimatedList";
 import { useDispatch } from "react-redux";
-import Input from "~/components/common/Input";
+import Input from "~/components/common/InputLegacy";
 import Octicons from "react-native-vector-icons/Octicons";
 import { Camera, Circle } from "react-native-maps";
 import { storageActions } from "~/store/storage";
@@ -72,17 +72,6 @@ const FakeMarker = styled.View`
   margin-top: 41px;
 `;
 
-const Button = styled.TouchableOpacity`
-  margin-right: 25px;
-`;
-
-const ButtonText = styled.Text`
-  font-size: 18px;
-  color: ${palette.blue_6e};
-`;
-
-const edgePadding = Platform.OS === "ios" ? 75 : 100;
-
 const SafetyZoneMap = ({
   route,
   navigation,
@@ -105,16 +94,6 @@ const SafetyZoneMap = ({
     Keyboard.dismiss();
     if (isOpened) setIsOpened(false);
   };
-
-  const coordsArr = useMemo(() => {
-    if (currentCamera) {
-      return get4PointsAroundCircumference(
-        currentCamera.center.latitude,
-        currentCamera.center.longitude,
-        range.value,
-      );
-    }
-  }, [range.value]);
 
   const handleFinish = useCallback(() => {
     if (!name || !range.value) {
@@ -142,41 +121,6 @@ const SafetyZoneMap = ({
     setCurrentCamera(camera);
     setRange(range);
   }, [route.params]);
-
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerRight: () => (
-        <Button onPress={handleFinish}>
-          <ButtonText>완료</ButtonText>
-        </Button>
-      ),
-    });
-  }, [handleFinish]);
-
-  useEffect(() => {
-    if (!mapRef.current || !range.value) return;
-    mapRef.current.fitToCoordinates(coordsArr, {
-      edgePadding: {
-        left: edgePadding,
-        right: edgePadding,
-        top: edgePadding,
-        bottom: edgePadding,
-      },
-    });
-  }, [mapRef, range.value]);
-
-  useEffect(() => {
-    if (!circleRef.current || Platform.OS === "android" || !range.value) {
-      return;
-    }
-    setTimeout(() => {
-      circleRef.current?.setNativeProps({
-        fillColor: "rgba(83, 135, 188, 0.1)",
-        strokeColor: palette.blue_53,
-        strokeWidth: 2,
-      });
-    }, 10);
-  }, [circleRef, range.value]);
 
   return (
     <Container>

@@ -4,14 +4,18 @@ import Geolocation from "react-native-geolocation-service";
 import { useDispatch } from "react-redux";
 import { mapActions } from "~/store/map";
 
-const useLocationTracking = () => {
+const useMyLocation = () => {
   const dispatch = useDispatch();
 
   const [isTracking, setIsTracking] = useState(false);
 
   let trackingId = 0;
 
-  const startTracking = () => {
+  const startTracking = () => setIsTracking(true);
+
+  const clearTracking = () => setIsTracking(false);
+
+  const setCoords = () => {
     trackingId = Geolocation.watchPosition(
       pos => {
         const { latitude, longitude } = pos.coords;
@@ -21,7 +25,6 @@ const useLocationTracking = () => {
             longitude,
           }),
         );
-        setIsTracking(true);
       },
       error => {
         console.log(error);
@@ -40,16 +43,13 @@ const useLocationTracking = () => {
     );
   };
 
-  const clearTracking = () => {
-    Geolocation.clearWatch(trackingId);
-    setIsTracking(false);
-  };
-
   useEffect(() => {
-    return () => {
-      clearTracking();
-    };
-  }, []);
+    if (isTracking) {
+      setCoords();
+    } else {
+      Geolocation.clearWatch(trackingId);
+    }
+  }, [isTracking]);
 
   return {
     isTracking,
@@ -58,4 +58,4 @@ const useLocationTracking = () => {
   };
 };
 
-export default useLocationTracking;
+export default useMyLocation;

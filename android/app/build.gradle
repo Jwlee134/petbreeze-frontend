@@ -155,6 +155,14 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        release {
+            if (project.hasProperty('petbreeze.keystore')) {
+                storeFile file('petbreeze.keystore')
+                storePassword '125897'
+                keyAlias 'petbreeze'
+                keyPassword '125897'
+            }
+        }
     }
     buildTypes {
         debug {

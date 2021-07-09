@@ -1,15 +1,10 @@
 import React, { ReactNode } from "react";
-import { Platform, SafeAreaView as IOSSafeAreaView } from "react-native";
+import { SafeAreaView as IOSSafeAreaView } from "react-native";
 import { SafeAreaView as AndroidSafeAreaView } from "react-native-safe-area-context";
+import { isAndroid } from "~/utils";
 
-const SafeAreaContainer = ({
-  children,
-  hasCustomHeader = true,
-}: {
-  children: ReactNode;
-  hasCustomHeader?: boolean;
-}) => {
-  if (Platform.OS === "android" && hasCustomHeader) {
+const SafeAreaContainer = ({ children }: { children: ReactNode }) => {
+  if (isAndroid) {
     return (
       <AndroidSafeAreaView style={{ flex: 1 }}>{children}</AndroidSafeAreaView>
     );

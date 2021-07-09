@@ -1,25 +1,29 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { ImageSourcePropType } from "react-native";
 import { Image } from "react-native-image-crop-picker";
 
 interface IForm {
-  avatar: Image | NodeRequire;
+  avatar: Image | ImageSourcePropType;
   name: string;
   breed: string;
-  age: number;
+  age: string;
   phoneNumber: { id: number; value: string }[];
   caution: string;
-  weight: number;
+  weight: string;
   [key: string]: any;
 }
 
 const initialState: IForm = {
-  avatar: require("~/assets/image/default-avatar.jpg"),
+  avatar: require("~/assets/image/petbreeze-logo.jpg"),
   name: "",
   breed: "",
-  age: 0,
-  phoneNumber: [{ id: 0, value: "" }],
+  age: "",
+  phoneNumber: [
+    { id: 0, value: "" },
+    { id: 1, value: "" },
+  ],
   caution: "",
-  weight: 0,
+  weight: "",
 };
 
 const form = createSlice({
@@ -35,7 +39,7 @@ const form = createSlice({
     setBreed: (state, action: PayloadAction<string>) => {
       state.breed = action.payload;
     },
-    setAge: (state, action: PayloadAction<number>) => {
+    setAge: (state, action: PayloadAction<string>) => {
       state.age = action.payload;
     },
     setPhoneNumber: (
@@ -46,7 +50,7 @@ const form = createSlice({
       const index = state.phoneNumber.findIndex(field => field.id === id);
       state.phoneNumber[index].value = text;
     },
-    setWeight: (state, action: PayloadAction<number>) => {
+    setWeight: (state, action: PayloadAction<string>) => {
       state.weight = action.payload;
     },
     setCaution: (state, action: PayloadAction<string>) => {

@@ -9,7 +9,7 @@ import CautionModal from "~/components/modal/locationModal/CautionModal";
 
 import { useAppSelector } from "~/store";
 import useMap from "~/hooks/useMap";
-import useLocationTracking from "~/hooks/useLocationTracking";
+import useMyLocation from "~/hooks/useMyLocation";
 import HomeToggle from "~/components/map/HomeToggle";
 import DeviceAvatarCircle from "~/components/map/DeviceAvatarCircle";
 
@@ -18,7 +18,9 @@ import { useLayoutEffect } from "react";
 import HeaderRightButton from "~/components/common/button/HeaderRightButton";
 import { useEffect } from "react";
 
-const Container = styled.View``;
+const Container = styled.View`
+  flex: 1;
+`;
 
 const Home = ({ navigation }: { navigation: HomeScreenNavigationProp }) => {
   const { notification } = useAppSelector(state => state.common);
@@ -27,7 +29,7 @@ const Home = ({ navigation }: { navigation: HomeScreenNavigationProp }) => {
     type: "center",
   });
   const { Map, mapRef, camera } = useMap();
-  const { isTracking, startTracking, clearTracking } = useLocationTracking();
+  const { isTracking, startTracking, clearTracking } = useMyLocation();
 
   useLayoutEffect(() => {
     navigation.setOptions({

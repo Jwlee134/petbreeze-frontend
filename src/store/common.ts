@@ -4,26 +4,35 @@ interface IState {
   currentRouteName: string;
   currentTabName: string;
   notification: string;
+  page: number;
 }
 
 const initialState: IState = {
   currentRouteName: "",
   currentTabName: "",
   notification: "",
+  page: 0,
 };
 
 const common = createSlice({
   name: "common",
   initialState,
   reducers: {
-    setCurrentRouteName: (state, action: PayloadAction<string>) => {
-      state.currentRouteName = action.payload;
+    setCurrentRouteName: (state, { payload }: PayloadAction<string>) => {
+      state.currentRouteName = payload;
     },
-    setCurrentTabName: (state, action: PayloadAction<string>) => {
-      state.currentTabName = action.payload;
+    setCurrentTabName: (state, { payload }: PayloadAction<string>) => {
+      state.currentTabName = payload;
     },
-    setNotification: (state, action: PayloadAction<string>) => {
-      state.notification = action.payload;
+    setNotification: (state, { payload }: PayloadAction<string>) => {
+      state.notification = payload;
+    },
+    setPage: (state, { payload }: PayloadAction<"next" | "prev">) => {
+      if (payload === "next") {
+        state.page++;
+      } else {
+        state.page--;
+      }
     },
   },
 });

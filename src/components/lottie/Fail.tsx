@@ -6,7 +6,7 @@ const Fail = () => (
     source={require("~/assets/lottie/fail.json")}
     autoPlay
     loop={false}
-    style={{ width: 70 }}
+    style={{ width: 80, height: 80 }}
   />
 );
 

@@ -4,9 +4,11 @@ import LoggedInNav from "./LoggedInNav";
 import LoggedOutNav from "./LoggedOutNav";
 
 const RootNav = () => {
-  const isLoggedIn = useAppSelector(state => state.storage.user.isLoggedIn);
+  const isInitialized = useAppSelector(
+    state => state.storage.initialization.isInitialized,
+  );
 
-  return isLoggedIn ? <LoggedInNav /> : <LoggedOutNav />;
+  return isInitialized ? <LoggedInNav /> : <LoggedOutNav />;
 };
 
 export default RootNav;

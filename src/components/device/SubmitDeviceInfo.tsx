@@ -2,7 +2,7 @@ import React, { useLayoutEffect } from "react";
 import styled from "styled-components/native";
 import ConfirmButton from "~/components/common/button/ConfirmButton";
 import SidePaddingContainer from "~/components/common/container/SidePaddingContainer";
-import Input from "~/components/common/Input";
+import Input from "~/components/common/InputLegacy";
 
 import ImagePicker from "react-native-image-crop-picker";
 
@@ -12,7 +12,6 @@ import { useAppSelector } from "~/store";
 import { useDispatch } from "react-redux";
 import { Platform, Text } from "react-native";
 import WheelPicker from "~/components/common/WheelPicker";
-import { animalInfoActions } from "~/store/form";
 import { useNavigation } from "@react-navigation/core";
 import { DeviceListScreenNavigationProp } from "~/types/navigator";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";

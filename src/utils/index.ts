@@ -1,6 +1,11 @@
 import { addHours, format } from "date-fns";
 import { ko } from "date-fns/locale";
+import { Platform } from "react-native";
 import { IReverseGeocoding } from "~/types/api";
+
+export const isAndroid = Platform.OS === "android";
+
+export const isIos = Platform.OS === "ios";
 
 export const localToISOString = (date: Date) => addHours(date, 9).toISOString();
 

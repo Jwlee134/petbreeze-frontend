@@ -16,8 +16,15 @@ interface IStorage {
   camera: Camera;
   safetyZone: ISafetyZone[];
   user: {
-    isLoggedIn: boolean;
     token: string;
+    nickname: string;
+  };
+  initialization: {
+    isPermissionAllowed: boolean;
+    isDeviceRegistered: boolean;
+    isSafetyZoneRegistered: boolean;
+    isPetProfileRegistered: boolean;
+    isInitialized: boolean;
   };
 }
 
@@ -37,8 +44,15 @@ const initialState: IStorage = {
   },
   safetyZone: [],
   user: {
-    isLoggedIn: false,
     token: "",
+    nickname: "",
+  },
+  initialization: {
+    isPermissionAllowed: false,
+    isDeviceRegistered: false,
+    isSafetyZoneRegistered: false,
+    isPetProfileRegistered: false,
+    isInitialized: false,
   },
 };
 
@@ -73,13 +87,42 @@ const storage = createSlice({
           action.payload;
       }
     },
-    login: (state, { payload }: PayloadAction<string>) => {
-      state.user.isLoggedIn = true;
-      state.user.token = payload;
+    login: (
+      state,
+      { payload }: PayloadAction<{ token: string; nickname: string }>,
+    ) => {
+      state.user.token = payload.token;
+      state.user.nickname = payload.nickname;
+    },
+    setInitialization: (
+      state,
+      {
+        payload,
+      }: PayloadAction<
+        "permission" | "device" | "safetZone" | "petProfile" | "initialization"
+      >,
+    ) => {
+      switch (payload) {
+        case "permission":
+          state.initialization.isPermissionAllowed = true;
+          break;
+        case "device":
+          state.initialization.isDeviceRegistered = true;
+          break;
+        case "safetZone":
+          state.initialization.isSafetyZoneRegistered = true;
+          break;
+        case "petProfile":
+          state.initialization.isPetProfileRegistered = true;
+          break;
+        case "initialization":
+          state.initialization.isInitialized = true;
+          break;
+      }
     },
     logout: state => {
-      state.user.isLoggedIn = false;
       state.user.token = "";
+      state.user.nickname = "";
     },
   },
 });

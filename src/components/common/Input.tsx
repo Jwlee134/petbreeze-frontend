@@ -1,167 +1,73 @@
-import React, { ForwardedRef, forwardRef } from "react";
-import {
-  Platform,
-  StyleProp,
-  TextInput,
-  TextInputProps,
-  useWindowDimensions,
-  ViewStyle,
-} from "react-native";
+import React from "react";
+import { useState } from "react";
+import { TextInputProps } from "react-native";
 import styled, { css } from "styled-components/native";
-import palette from "~/styles/palette";
-import ShadowContainer from "./container/ShadowContainer";
+import { isAndroid } from "~/utils";
 
-interface IInputProps {
-  disabled?: boolean;
+interface IProps extends TextInputProps {
+  placeholder: string;
+  isEditable?: boolean;
   isMultiline?: boolean;
-  hasShadow?: boolean;
-  isSafetyZone?: boolean;
-}
-
-interface IProps extends IInputProps, TextInputProps {
-  shadowContainerStyle?: StyleProp<ViewStyle>;
-  buttonStyle?: StyleProp<ViewStyle>;
-  isInputEditable?: boolean;
   onPress?: () => void;
-  isRow?: boolean;
-  RightIcon?: () => JSX.Element;
 }
 
-const Button = styled.TouchableHighlight`
-  border-radius: 4px;
+interface ITextInputProps {
+  focused: boolean;
+  multiline: boolean;
+}
+
+const Button = styled.TouchableOpacity``;
+
+const Container = styled.View``;
+
+const Placeholder = styled.Text`
+  color: rgba(0, 0, 0, 0.5);
+  font-size: 14px;
 `;
 
-const Container = styled.View`
-  justify-content: center;
-`;
-
-const TextInputComponent = styled.TextInput<IInputProps>`
-  font-size: 16px;
+const TextInput = styled.TextInput<ITextInputProps>`
+  padding: 0;
+  margin: 0;
   color: black;
-  padding: 0px 11px;
+  height: 36px;
+  margin-bottom: 24px;
   width: 100%;
-  height: 46px;
-  background-color: white;
-  border-radius: 4px;
-  justify-content: center;
-  ${({ hasShadow, isSafetyZone }) =>
-    !hasShadow &&
-    !isSafetyZone &&
-    css`
-      border-width: 1px;
-      border-color: ${palette.gray_d5};
-    `}
-  ${({ disabled }) =>
-    disabled &&
-    css`
-      background-color: ${palette.gray_f3};
-    `}
-  ${({ isMultiline }) =>
-    isMultiline &&
-    css`
-      padding: ${Platform.OS === "android" ? "9px 11px" : "13px 11px"};
-      min-height: 46px;
-      height: auto;
-    `}
-  ${({ isSafetyZone }) =>
-    isSafetyZone &&
+  font-size: 16px;
+  border-bottom-width: 1px;
+  border-bottom-color: ${({ focused }) =>
+    focused ? "black" : "rgba(0, 0, 0, 0.2)"};
+  ${({ multiline }) =>
+    multiline &&
     css`
       height: auto;
-      padding: 5px 0px;
-      color: gray;
-      height: 36px;
+      padding: ${isAndroid ? "3.5px 0px" : "8px 0px"};
     `}
 `;
 
-const IconContainer = styled.View<{ isMultiline: boolean }>`
-  position: absolute;
-  right: 11px;
-  ${({ isMultiline }) =>
-    isMultiline &&
-    css`
-      bottom: 10.5px;
-    `}
-`;
+const Input = ({
+  placeholder,
+  isEditable = true,
+  isMultiline = false,
+  onPress,
+  ...props
+}: IProps) => {
+  const [focused, setFocused] = useState(false);
 
-const Input = forwardRef(
-  (
-    {
-      shadowContainerStyle,
-      buttonStyle,
-      disabled = false,
-      isInputEditable = true,
-      onPress,
-      isRow = false,
-      isMultiline = false,
-      hasShadow = true,
-      RightIcon,
-      isSafetyZone = false,
-      ...props
-    }: IProps,
-    ref: ForwardedRef<TextInput>,
-  ) => {
-    const rowWidth = (useWindowDimensions().width - 63) / 2;
-
-    /* input editable 속성으로 컨트롤할 시 iOS에서는 클릭이 아예 불가 */
-
-    if (hasShadow) {
-      return (
-        <ShadowContainer
-          shadowContainerStyle={{
-            ...(shadowContainerStyle as object),
-            marginTop: 13,
-            ...(isRow && { width: rowWidth }),
-          }}>
-          <Button
-            style={buttonStyle}
-            onPress={!disabled ? onPress : undefined}
-            underlayColor={palette.gray_d5}>
-            <Container pointerEvents={isInputEditable ? undefined : "none"}>
-              <TextInputComponent
-                hasShadow={hasShadow}
-                disabled={disabled}
-                multiline={isMultiline}
-                isMultiline={isMultiline}
-                ref={ref}
-                placeholderTextColor="gray"
-                {...props}
-              />
-              {RightIcon && (
-                <IconContainer isMultiline={isMultiline}>
-                  <RightIcon />
-                </IconContainer>
-              )}
-            </Container>
-          </Button>
-        </ShadowContainer>
-      );
-    }
-
-    return (
-      <Button
-        style={buttonStyle}
-        onPress={!disabled ? onPress : undefined}
-        underlayColor={!isSafetyZone ? palette.gray_d5 : "transparent"}>
-        <Container pointerEvents={isInputEditable ? undefined : "none"}>
-          <TextInputComponent
-            hasShadow={hasShadow}
-            disabled={disabled}
-            multiline={isMultiline}
-            isMultiline={isMultiline}
-            isSafetyZone={isSafetyZone}
-            ref={ref}
-            placeholderTextColor="gray"
-            {...props}
-          />
-          {RightIcon && (
-            <IconContainer isMultiline={isMultiline}>
-              <RightIcon />
-            </IconContainer>
-          )}
-        </Container>
-      </Button>
-    );
-  },
-);
+  return (
+    <Button onPress={onPress} activeOpacity={1}>
+      <Container pointerEvents={isEditable ? undefined : "none"}>
+        <Placeholder>{placeholder}</Placeholder>
+        <TextInput
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
+          selectionColor="rgba(0, 0, 0, 0.5)"
+          focused={focused}
+          multiline={isMultiline}
+          {...props}
+        />
+      </Container>
+    </Button>
+  );
+};
 
 export default Input;

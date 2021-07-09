@@ -6,7 +6,7 @@ const Loading = () => (
     source={require("~/assets/lottie/loading.json")}
     autoPlay
     loop
-    style={{ width: 70 }}
+    style={{ width: 80, height: 80 }}
   />
 );
 
