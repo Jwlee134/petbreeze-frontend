@@ -1,7 +1,7 @@
-import api from ".";
+import api, { providesList } from ".";
 
-interface IDevice {
-  id: number;
+interface IDeviceProfile {
+  id: string;
   devEUI: string;
   name: string;
   profile_image: string;
@@ -42,7 +42,7 @@ interface IDeviceProfileBody {
 }
 
 interface IDeviceProfile extends IDeviceProfileBody {
-  id: number;
+  id: string;
   devEUI: string;
   profile_image: string;
 }
@@ -95,18 +95,9 @@ const device = api.injectEndpoints({
       },
     }),
 
-    getDeviceList: builder.query<IDevice[], void>({
+    getDeviceList: builder.query<IDeviceProfile[], void>({
       query: () => "/device/device-list/",
-      providesTags: result =>
-        result
-          ? [
-              ...result.map(({ id }) => ({
-                type: "Device" as const,
-                id,
-              })),
-              { type: "Device", id: "DEVICE" },
-            ]
-          : [{ type: "Device", id: "DEVICE" }],
+      providesTags: result => providesList(result, "Device"),
     }),
 
     deleteDevice: builder.mutation<void, string>({
@@ -114,9 +105,24 @@ const device = api.injectEndpoints({
         url: `/device/device-list/?device_id=${deviceId}`,
         method: "DELETE",
       }),
+      onQueryStarted: async (deviceId, { dispatch, queryFulfilled }) => {
+        const deleteResult = dispatch(
+          device.util.updateQueryData("getDeviceList", undefined, draft => {
+            draft.splice(
+              draft.findIndex(device => device.id === deviceId),
+              1,
+            );
+          }),
+        );
+        try {
+          await queryFulfilled;
+        } catch {
+          deleteResult.undo();
+        }
+      },
     }),
 
-    getDevice: builder.query<IDevice, string>({
+    getDeviceProfile: builder.query<IDeviceProfile, string>({
       query: deviceId => `/device/profile/${deviceId}/`,
       providesTags: (result, error, deviceId) => [
         { type: "Device", id: deviceId },
@@ -135,6 +141,21 @@ const device = api.injectEndpoints({
         method: "PUT",
         body,
       }),
+      onQueryStarted: async (
+        { deviceId, body },
+        { dispatch, queryFulfilled },
+      ) => {
+        const putResult = dispatch(
+          device.util.updateQueryData("getDeviceProfile", deviceId, draft => {
+            Object.assign(draft, body);
+          }),
+        );
+        try {
+          await queryFulfilled;
+        } catch {
+          putResult.undo();
+        }
+      },
     }),
 
     updateDeviceProfileAvatar: builder.mutation<
@@ -151,6 +172,21 @@ const device = api.injectEndpoints({
           profile_image: avatar,
         },
       }),
+      onQueryStarted: async (
+        { deviceId, avatar },
+        { dispatch, queryFulfilled },
+      ) => {
+        const patchResult = dispatch(
+          device.util.updateQueryData("getDeviceProfile", deviceId, draft => {
+            Object.assign(draft, { profile_image: avatar });
+          }),
+        );
+        try {
+          await queryFulfilled;
+        } catch {
+          patchResult.undo();
+        }
+      },
     }),
 
     registerDevice: builder.query<void, string>({
@@ -178,9 +214,34 @@ const device = api.injectEndpoints({
         method: "PUT",
         body,
       }),
+      onQueryStarted: async (
+        { deviceId, body },
+        { dispatch, queryFulfilled },
+      ) => {
+        const putResult = dispatch(
+          device.util.updateQueryData("getSafetyZone", deviceId, draft => {
+            Object.assign(draft, body);
+          }),
+        );
+        try {
+          await queryFulfilled;
+        } catch {
+          putResult.undo();
+        }
+      },
     }),
   }),
 });
 
-export const { useLazyRegisterDeviceQuery, useUpdateSafetyZoneMutation } =
-  device;
+export const {
+  useUpdateDeviceProfileAvatarMutation,
+  useDeleteDeviceMutation,
+  useUpdateSafetyZoneMutation,
+  useUpdateDeviceProfileMutation,
+  useUpdateLocationCollectionIntervalMutation,
+  useLazyRegisterDeviceQuery,
+  useGetLocationCollectionIntervalQuery,
+  useGetDeviceListQuery,
+  useGetDeviceProfileQuery,
+  useGetSafetyZoneQuery,
+} = device;
