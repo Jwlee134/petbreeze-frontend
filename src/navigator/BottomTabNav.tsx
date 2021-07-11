@@ -4,14 +4,14 @@ import palette from "~/styles/palette";
 import SharedStackNav from "./SharedStackNav";
 import { Platform } from "react-native";
 
-import Home from "~/assets/svg/home.svg";
-import HomeOutline from "~/assets/svg/home-outline.svg";
-import Footprint from "~/assets/svg/footprint.svg";
-import FootprintOutline from "~/assets/svg/footprint-outline.svg";
-import Bell from "~/assets/svg/bell.svg";
-import BellOutline from "~/assets/svg/bell-outline.svg";
-import User from "~/assets/svg/user.svg";
-import UserOutline from "~/assets/svg/user-outline.svg";
+import Home from "~/assets/svg/tab/home.svg";
+import HomeOutline from "~/assets/svg/tab/home-outline.svg";
+import Footprint from "~/assets/svg/tab/footprint.svg";
+import FootprintOutline from "~/assets/svg/tab/footprint-outline.svg";
+import Bell from "~/assets/svg/tab/bell.svg";
+import BellOutline from "~/assets/svg/tab/bell-outline.svg";
+import User from "~/assets/svg/tab/user.svg";
+import UserOutline from "~/assets/svg/tab/user-outline.svg";
 
 const Tab = createBottomTabNavigator();
 
