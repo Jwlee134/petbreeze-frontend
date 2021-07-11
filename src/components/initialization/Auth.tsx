@@ -12,6 +12,7 @@ import { LoginManager, AccessToken } from "react-native-fbsdk-next";
 import palette from "~/styles/palette";
 import { storageActions } from "~/store/storage";
 import { Container } from "./Styles";
+import { commonActions } from "~/store/common";
 
 const HalfContainer = styled.View`
   flex: 1;
@@ -35,27 +36,28 @@ const BoldText = styled(SmallText)`
   font-weight: bold;
 `;
 
-const Auth = ({ handleNext }: { handleNext: () => void }) => {
+const Auth = () => {
   const [getFacebookUser, facebookUser] = useLazyFacebookLoginQuery();
   const [getKakaoUser, kakaoUser] = useLazyKakaoLoginQuery();
 
   const dispatch = useDispatch();
 
   const handleKakaoLogin = async () => {
-    /* dispatch(
+    /* dispatch(storageActions.setInitialization("initialization")); */
+    dispatch(
       storageActions.login({
         token: "f8a328a8bff0c51a6e6f4423cc54001d3b4050f3",
         nickname: "이재원",
       }),
     );
-    handleNext(); */
-    try {
+    dispatch(commonActions.setPage("next"));
+    /*  try {
       let token: KakaoOAuthToken | null = await login();
       console.log(token);
       if (token) getKakaoUser(token.accessToken);
     } catch (error) {
       console.log("카카오 서버 에러: ", error);
-    }
+    } */
   };
 
   useEffect(() => {
@@ -67,7 +69,7 @@ const Auth = ({ handleNext }: { handleNext: () => void }) => {
           nickname: kakaoUser.data.nickname,
         }),
       );
-      handleNext();
+      dispatch(commonActions.setPage("next"));
     }
     if (kakaoUser.error) {
       console.log("Failed to login");
@@ -99,7 +101,7 @@ const Auth = ({ handleNext }: { handleNext: () => void }) => {
           nickname: facebookUser.data.nickname,
         }),
       );
-      handleNext();
+      dispatch(commonActions.setPage("next"));
     }
     if (facebookUser.error) {
       console.log("Failed to login");

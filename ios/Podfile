@@ -6,6 +6,7 @@ platform :ios, '11.0'
 target 'Petbreeze' do
   rn_maps_path = '../node_modules/react-native-maps'
   pod 'react-native-google-maps', :path => rn_maps_path
+  pod 'Firebase/Analytics'
   config = use_native_modules!
 
   use_react_native!(
@@ -24,6 +25,8 @@ target 'Petbreeze' do
   pod 'Permission-PhotoLibrary', :path => "#{permissions_path}/PhotoLibrary"
   pod 'Permission-PhotoLibraryAddOnly', :path => "#{permissions_path}/PhotoLibraryAddOnly"
     
+
+
   target 'PetbreezeTests' do
     inherit! :complete
     # Pods for testing

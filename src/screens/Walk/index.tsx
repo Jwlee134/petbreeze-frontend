@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { Linking, Platform } from "react-native";
-import AndroidOpenSettings from "react-native-android-open-settings";
+import React, { useState } from "react";
 
 import { formatCoordinates, formatUTC } from "~/utils";
 import WalkTopTabNav from "~/navigator/WalkTopTabNav";
@@ -20,12 +18,6 @@ const Walk = () => {
 
     console.log(date, utc, lat, lng, battery);
   }, [list]); */
-
-  const handleOpenSetting = () => {
-    Platform.OS === "ios"
-      ? Linking.openURL("App-Prefs:Bluetooth")
-      : AndroidOpenSettings.bluetoothSettings();
-  };
 
   return <WalkTopTabNav />;
 };

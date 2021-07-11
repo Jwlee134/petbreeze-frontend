@@ -14,6 +14,7 @@
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		8405B7922668C7C200BEE203 /* SwiftBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8405B7912668C7C200BEE203 /* SwiftBridge.swift */; };
 		8408C036BBEF720BBDB6E105 /* libPods-Petbreeze.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F50C09CE2B924FCC7A4B2FE2 /* libPods-Petbreeze.a */; };
+		84BE911B26980EB900287561 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 84BE911A26980EB900287561 /* GoogleService-Info.plist */; };
 		F016418510F2E3103A3BCE48 /* libPods-Petbreeze-PetbreezeTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8EB3D11E76E5AA33B5CD828E /* libPods-Petbreeze-PetbreezeTests.a */; };
 /* End PBXBuildFile section */
 
@@ -43,22 +44,7 @@
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = Petbreeze/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8405B7902668C7C200BEE203 /* Petbreeze-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Petbreeze-Bridging-Header.h"; sourceTree = "<group>"; };
 		8405B7912668C7C200BEE203 /* SwiftBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftBridge.swift; sourceTree = "<group>"; };
-		8405B7E12668CACF00BEE203 /* Entypo.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Entypo.ttf; sourceTree = "<group>"; };
-		8405B7E22668CACF00BEE203 /* Ionicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Ionicons.ttf; sourceTree = "<group>"; };
-		8405B7E32668CACF00BEE203 /* EvilIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = EvilIcons.ttf; sourceTree = "<group>"; };
-		8405B7E42668CACF00BEE203 /* AntDesign.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = AntDesign.ttf; sourceTree = "<group>"; };
-		8405B7E52668CACF00BEE203 /* Zocial.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Zocial.ttf; sourceTree = "<group>"; };
-		8405B7E62668CACF00BEE203 /* FontAwesome5_Brands.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome5_Brands.ttf; sourceTree = "<group>"; };
-		8405B7E72668CACF00BEE203 /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = SimpleLineIcons.ttf; sourceTree = "<group>"; };
-		8405B7E82668CACF00BEE203 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = MaterialCommunityIcons.ttf; sourceTree = "<group>"; };
-		8405B7E92668CACF00BEE203 /* MaterialIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = MaterialIcons.ttf; sourceTree = "<group>"; };
-		8405B7EA2668CACF00BEE203 /* Octicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Octicons.ttf; sourceTree = "<group>"; };
-		8405B7EB2668CACF00BEE203 /* Foundation.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Foundation.ttf; sourceTree = "<group>"; };
-		8405B7EC2668CACF00BEE203 /* Fontisto.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Fontisto.ttf; sourceTree = "<group>"; };
-		8405B7ED2668CACF00BEE203 /* FontAwesome.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome.ttf; sourceTree = "<group>"; };
-		8405B7EE2668CACF00BEE203 /* FontAwesome5_Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome5_Regular.ttf; sourceTree = "<group>"; };
-		8405B7EF2668CACF00BEE203 /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome5_Solid.ttf; sourceTree = "<group>"; };
-		8405B7F02668CACF00BEE203 /* Feather.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Feather.ttf; sourceTree = "<group>"; };
+		84BE911A26980EB900287561 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		8EB3D11E76E5AA33B5CD828E /* libPods-Petbreeze-PetbreezeTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Petbreeze-PetbreezeTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E79577DFDC5E1FD49BDDFB89 /* Pods-Petbreeze.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Petbreeze.debug.xcconfig"; path = "Target Support Files/Pods-Petbreeze/Pods-Petbreeze.debug.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
@@ -113,6 +99,7 @@
 				13B07FB71A68108700A75B9A /* main.m */,
 				8405B7912668C7C200BEE203 /* SwiftBridge.swift */,
 				8405B7902668C7C200BEE203 /* Petbreeze-Bridging-Header.h */,
+				84BE911A26980EB900287561 /* GoogleService-Info.plist */,
 			);
 			name = Petbreeze;
 			sourceTree = "<group>";
@@ -137,7 +124,6 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				8405B7DE2668CAB400BEE203 /* Fonts */,
 				13B07FAE1A68108700A75B9A /* Petbreeze */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* PetbreezeTests */,
@@ -157,29 +143,6 @@
 				00E356EE1AD99517003FC87E /* PetbreezeTests.xctest */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		8405B7DE2668CAB400BEE203 /* Fonts */ = {
-			isa = PBXGroup;
-			children = (
-				8405B7E42668CACF00BEE203 /* AntDesign.ttf */,
-				8405B7E12668CACF00BEE203 /* Entypo.ttf */,
-				8405B7E32668CACF00BEE203 /* EvilIcons.ttf */,
-				8405B7F02668CACF00BEE203 /* Feather.ttf */,
-				8405B7ED2668CACF00BEE203 /* FontAwesome.ttf */,
-				8405B7E62668CACF00BEE203 /* FontAwesome5_Brands.ttf */,
-				8405B7EE2668CACF00BEE203 /* FontAwesome5_Regular.ttf */,
-				8405B7EF2668CACF00BEE203 /* FontAwesome5_Solid.ttf */,
-				8405B7EC2668CACF00BEE203 /* Fontisto.ttf */,
-				8405B7EB2668CACF00BEE203 /* Foundation.ttf */,
-				8405B7E22668CACF00BEE203 /* Ionicons.ttf */,
-				8405B7E82668CACF00BEE203 /* MaterialCommunityIcons.ttf */,
-				8405B7E92668CACF00BEE203 /* MaterialIcons.ttf */,
-				8405B7EA2668CACF00BEE203 /* Octicons.ttf */,
-				8405B7E72668CACF00BEE203 /* SimpleLineIcons.ttf */,
-				8405B7E52668CACF00BEE203 /* Zocial.ttf */,
-			);
-			path = Fonts;
 			sourceTree = "<group>";
 		};
 		CF896127FF45287790927086 /* Pods */ = {
@@ -289,6 +252,7 @@
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				84BE911B26980EB900287561 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

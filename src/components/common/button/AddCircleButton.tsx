@@ -1,6 +1,5 @@
 import React from "react";
 import styled, { css } from "styled-components/native";
-import AntDesign from "react-native-vector-icons/AntDesign";
 import palette from "~/styles/palette";
 import { TouchableOpacityProps } from "react-native";
 
@@ -34,9 +33,7 @@ const AddCircleButton = ({
     activeOpacity={0.9}
     onPress={onPress}
     size={size}
-    {...props}>
-    <AntDesign name="pluscircle" size={size} color={palette.blue_6e} />
-  </Button>
+    {...props}></Button>
 );
 
 export default AddCircleButton;

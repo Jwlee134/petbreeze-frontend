@@ -35,7 +35,6 @@ const StartWalking = ({
 }: {
   navigation: StartWalkingScreenNavigationProp;
 }) => {
-  const { isDeviceRegistered } = useAppSelector(state => state.user);
   const device = useAppSelector(state => state.device);
   useFocusEvent({ isTab: true });
 
@@ -51,17 +50,17 @@ const StartWalking = ({
   return (
     <Container>
       <TextContainer>
-        {isDeviceRegistered && (
+        {device.length === 0 && (
           <Text>산책을 시작할 반려동물을 선택해주세요.</Text>
         )}
-        {!isDeviceRegistered && (
+        {device.length !== 0 && (
           <>
             <Text>산책할 반려동물을 등록해주세요.</Text>
             <Text style={{ marginTop: 25 }}>기기등록을 시작하시겠습니까?</Text>
           </>
         )}
       </TextContainer>
-      {isDeviceRegistered && (
+      {device.length && (
         <SidePaddingContainer>
           <ScrollView showsVerticalScrollIndicator={false}>
             {device.map((item, index) => (
@@ -94,7 +93,7 @@ const StartWalking = ({
       )}
       <ButtonContainer>
         <ConfirmButton
-          onPress={isDeviceRegistered ? handleStart : handleNavigate}>
+          onPress={device.length !== 0 ? handleStart : handleNavigate}>
           시작
         </ConfirmButton>
       </ButtonContainer>

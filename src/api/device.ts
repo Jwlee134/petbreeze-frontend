@@ -64,20 +64,49 @@ const device = api.injectEndpoints({
       ILocationCollectionInterval,
       {
         deviceId: string;
-        location_info_collection_period: number;
+        interval: number;
       }
     >({
-      query: ({ deviceId, location_info_collection_period }) => ({
+      query: ({ deviceId, interval }) => ({
         url: `/device/collection-period/${deviceId}/`,
         method: "PUT",
         body: {
-          location_info_collection_period,
+          location_info_collection_period: interval,
         },
       }),
+      onQueryStarted: async (
+        { deviceId, interval },
+        { dispatch, queryFulfilled },
+      ) => {
+        const putResult = dispatch(
+          device.util.updateQueryData(
+            "getLocationCollectionInterval",
+            deviceId,
+            draft => {
+              draft.location_info_collection_period = interval;
+            },
+          ),
+        );
+        try {
+          await queryFulfilled;
+        } catch {
+          putResult.undo();
+        }
+      },
     }),
 
     getDeviceList: builder.query<IDevice[], void>({
       query: () => "/device/device-list/",
+      providesTags: result =>
+        result
+          ? [
+              ...result.map(({ id }) => ({
+                type: "Device" as const,
+                id,
+              })),
+              { type: "Device", id: "DEVICE" },
+            ]
+          : [{ type: "Device", id: "DEVICE" }],
     }),
 
     deleteDevice: builder.mutation<void, string>({
@@ -89,6 +118,9 @@ const device = api.injectEndpoints({
 
     getDevice: builder.query<IDevice, string>({
       query: deviceId => `/device/profile/${deviceId}/`,
+      providesTags: (result, error, deviceId) => [
+        { type: "Device", id: deviceId },
+      ],
     }),
 
     updateDeviceProfile: builder.mutation<

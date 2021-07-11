@@ -27,8 +27,8 @@ const Initialization = () => {
 
   const scrollViewRef = useRef<ScrollView>(null);
 
-  const [renderAuth] = useState(!token);
   const [renderPermission] = useState(!status.isPermissionAllowed && isIos);
+  const [renderAuth] = useState(!token);
   const [renderDevice] = useState(!status.isDeviceRegistered);
   const [renderSafetyZone] = useState(!status.isSafetyZoneRegistered);
   const [renderPetProfile] = useState(!status.isPetProfileRegistered);
@@ -42,12 +42,7 @@ const Initialization = () => {
     }
   }, [page]);
 
-  const {
-    status: OTAStatus,
-    setStatus,
-    progress,
-    handleStart,
-  } = useOTAUpdate();
+  const { status: OTAStatus, setStatus, progress, disconnect } = useOTAUpdate();
 
   return (
     <ScrollView
@@ -58,21 +53,8 @@ const Initialization = () => {
       scrollEnabled={false}
       showsHorizontalScrollIndicator={false}
       contentContainerStyle={{ marginBottom: isIos ? 24 : 0 }}>
-      {renderAuth && (
-        <Auth
-          handleNext={() => {
-            dispatch(commonActions.setPage("next"));
-          }}
-        />
-      )}
-      {isIos && renderPermission && (
-        <Permissions
-          handleNext={() => {
-            dispatch(commonActions.setPage("next"));
-            dispatch(storageActions.setInitialization("permission"));
-          }}
-        />
-      )}
+      {isIos && renderPermission && <Permissions />}
+      {renderAuth && <Auth />}
       {renderDevice && (
         <>
           <DeviceCheck />
@@ -92,6 +74,7 @@ const Initialization = () => {
             handleComplete={() => {
               dispatch(commonActions.setPage("next"));
               dispatch(storageActions.setInitialization("device"));
+              disconnect();
             }}
           />
         </>
@@ -100,7 +83,7 @@ const Initialization = () => {
         <>
           <SafetyZoneSetting />
           <SafetyZoneMap
-            handleNext={() => {
+            handleComplete={() => {
               dispatch(commonActions.setPage("next"));
               dispatch(storageActions.setInitialization("safetZone"));
             }}
@@ -109,7 +92,7 @@ const Initialization = () => {
       )}
       {renderPetProfile && (
         <PetProfileForm
-          handleNext={() => {
+          handleComplete={() => {
             dispatch(commonActions.setPage("next"));
             dispatch(storageActions.setInitialization("petProfile"));
           }}

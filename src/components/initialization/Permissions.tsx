@@ -16,6 +16,8 @@ import {
 import { useDispatch } from "react-redux";
 import { BigText, BottomContainer, Container, TopContainer } from "./Styles";
 import { width } from "~/styles";
+import { storageActions } from "~/store/storage";
+import { commonActions } from "~/store/common";
 
 const PermissionContainer = styled.View<{ isTop?: boolean }>`
   flex-direction: row;
@@ -44,7 +46,7 @@ const SmallText = styled.Text`
   opacity: 0.5;
 `;
 
-const Permissions = ({ handleNext }: { handleNext: () => void }) => {
+const Permissions = () => {
   const dispatch = useDispatch();
 
   const handleAllow = () => {
@@ -54,7 +56,8 @@ const Permissions = ({ handleNext }: { handleNext: () => void }) => {
         PERMISSIONS.IOS.BLUETOOTH_PERIPHERAL,
         PERMISSIONS.IOS.PHOTO_LIBRARY,
       ]).finally(() => {
-        handleNext();
+        dispatch(commonActions.setPage("next"));
+        dispatch(storageActions.setInitialization("permission"));
       });
     });
   };

@@ -28,7 +28,6 @@ import { Settings } from "react-native-fbsdk-next";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 
-import "./NotificationHandler";
 import RootNav from "./navigator/RootNav";
 import { StatusBar } from "react-native";
 
@@ -126,17 +125,6 @@ const App = () => {
     }
   }, [value]);
 
-  useEffect(() => {
-    if (!mapRef.current || !coords.latitude || !coords.longitude) return;
-    mapRef.current.animateCamera({
-      center: {
-        latitude: coords.latitude,
-        longitude: coords.longitude,
-      },
-      zoom: 18,
-    });
-  }, [mapRef, coords.latitude, coords.longitude]);
-
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <TouchableOpacity
@@ -155,8 +143,8 @@ const App = () => {
             height: "100%",
           }}
           initialRegion={{
-            latitude: 37.78825,
-            longitude: -122.4324,
+            latitude: 37.479316,
+            longitude: 126.952768,
             latitudeDelta: 0.0922,
             longitudeDelta: 0.0421,
           }}>

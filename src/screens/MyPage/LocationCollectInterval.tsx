@@ -3,7 +3,6 @@ import { Animated, ScrollView } from "react-native";
 import styled from "styled-components/native";
 import SidePaddingContainer from "~/components/common/container/SidePaddingContainer";
 
-import Ionicons from "react-native-vector-icons/Ionicons";
 import ShadowContainer from "~/components/common/container/ShadowContainer";
 import palette from "~/styles/palette";
 import useAnimatedList from "~/hooks/useAnimatedList";
@@ -82,9 +81,7 @@ const LocationCollectInterval = () => {
                   <Title>위치정보 수집주기</Title>
                   <Value>{data[selectedIndex]}</Value>
                 </LeftContainer>
-                <IconContainer>
-                  <Ionicons name="chevron-down" size={24} />
-                </IconContainer>
+                <IconContainer></IconContainer>
               </Fragment>
             </Button>
           </ShadowContainer>
@@ -107,9 +104,7 @@ const LocationCollectInterval = () => {
                   underlayColor={palette.gray_f3}>
                   <Fragment>
                     <Value>{item}</Value>
-                    {selectedIndex === index && (
-                      <Ionicons name="checkmark" size={24} />
-                    )}
+                    {selectedIndex === index && <></>}
                   </Fragment>
                 </List>
               ))}

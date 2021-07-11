@@ -33,7 +33,11 @@ const SmallText = styled.Text`
   opacity: 0.5;
 `;
 
-const PetProfileForm = ({ handleNext }: { handleNext?: () => void }) => {
+const PetProfileForm = ({
+  handleComplete,
+}: {
+  handleComplete?: () => void;
+}) => {
   const { avatar, name, breed, age, weight, phoneNumber, caution } =
     useAppSelector(state => state.form);
   const dispatch = useDispatch();
@@ -99,7 +103,7 @@ const PetProfileForm = ({ handleNext }: { handleNext?: () => void }) => {
           isLoading={loading}
           text="완료"
           onPress={() => {
-            handleNext && handleNext();
+            handleComplete && handleComplete();
           }}
         />
       </KeyboardAwareScrollContainer>

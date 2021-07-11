@@ -14,9 +14,9 @@ import HomeToggle from "~/components/map/HomeToggle";
 import DeviceAvatarCircle from "~/components/map/DeviceAvatarCircle";
 
 import HomeMap from "~/components/map/HomeMap";
-import { useLayoutEffect } from "react";
-import HeaderRightButton from "~/components/common/button/HeaderRightButton";
 import { useEffect } from "react";
+
+import "~/NotificationHandler";
 
 const Container = styled.View`
   flex: 1;
@@ -24,18 +24,11 @@ const Container = styled.View`
 
 const Home = ({ navigation }: { navigation: HomeScreenNavigationProp }) => {
   const { notification } = useAppSelector(state => state.common);
-  const { isLoggedIn } = useAppSelector(state => state.storage.user);
   const { open, modalProps, CenterModalComponent } = useModal({
     type: "center",
   });
   const { Map, mapRef, camera } = useMap();
   const { isTracking, startTracking, clearTracking } = useMyLocation();
-
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerRight: () => <HeaderRightButton open={open} />,
-    });
-  }, []);
 
   useEffect(() => {
     if (notification.includes("안심존")) {

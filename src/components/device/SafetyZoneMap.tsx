@@ -70,7 +70,7 @@ const destructiveButtonIndex = 0;
 const cancelButtonIndex = 5;
 const edgePadding = isIos ? 75 : 100;
 
-const SafetyZoneMap = ({ handleNext }: { handleNext?: () => void }) => {
+const SafetyZoneMap = ({ handleComplete }: { handleComplete?: () => void }) => {
   const { Map, mapRef, camera } = useMap();
   const { isTracking, startTracking } = useMyLocation();
   const { latitude, longitude } = useAppSelector(state => state.map.myCoords);
@@ -227,7 +227,7 @@ const SafetyZoneMap = ({ handleNext }: { handleNext?: () => void }) => {
             disabled={/* !name || !radiusValue */ false}
             style={{ marginBottom: show ? 0 : isIos ? 24 : 48 }}
             onPress={() => {
-              handleNext && handleNext();
+              handleComplete && handleComplete();
             }}
             text="완료"
           />

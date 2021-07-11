@@ -14,7 +14,6 @@ import ShadowContainer from "~/components/common/container/ShadowContainer";
 import useAnimatedList from "~/hooks/useAnimatedList";
 import { useDispatch } from "react-redux";
 import Input from "~/components/common/InputLegacy";
-import Octicons from "react-native-vector-icons/Octicons";
 import { Camera, Circle } from "react-native-maps";
 import { storageActions } from "~/store/storage";
 import { safetyZoneData } from "~/staticData";
@@ -146,15 +145,7 @@ const SafetyZoneMap = ({
               Keyboard.dismiss();
               setIsOpened(!isOpened);
             }}
-            RightIcon={() => (
-              <IconContainer>
-                <Octicons
-                  name="triangle-down"
-                  size={18}
-                  color={palette.gray_b4}
-                />
-              </IconContainer>
-            )}
+            RightIcon={() => <IconContainer></IconContainer>}
           />
           <BorderBottom />
         </GrowContainer>

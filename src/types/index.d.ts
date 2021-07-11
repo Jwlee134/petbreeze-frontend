@@ -1,4 +1,4 @@
-export type AnimalInfoClickedField =
+/* export type AnimalInfoClickedField =
   | "동물 선택"
   | "품종 선택"
   | "출생 연도"
@@ -41,7 +41,7 @@ export type ModalHeader =
   | "게시물 저장"
   | "게시물 관리"
   | "전단지 이미지로 저장"
-  | "";
+  | ""; */
 
 type StatusValue =
   | "before"

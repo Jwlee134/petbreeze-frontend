@@ -1,10 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import {
-  Animated,
-  Easing,
-  NativeEventEmitter,
-  NativeModules,
-} from "react-native";
+import { useEffect, useState } from "react";
+import { NativeEventEmitter, NativeModules } from "react-native";
 
 import BleManager, { Peripheral } from "react-native-ble-manager";
 const BleManagerModule = NativeModules.BleManager;
@@ -13,67 +8,115 @@ const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
 import RNFetchBlob from "rn-fetch-blob";
 import { bytesToString, stringToBytes } from "convert-string";
 import { useDispatch } from "react-redux";
+import { Status } from "~/types";
+import { useLazyRegisterDeviceQuery } from "~/api/device";
 
-type Status =
-  | "before"
-  | "searching"
-  | "connected"
-  | "failed"
-  | "downloading"
-  | "updating"
-  | "profile";
+const interval = 20;
 
-const interval = 1024;
+const OTAControlPoint = {
+  UUID: "c4a10060-dd6e-11eb-ba80-0242ac130004",
+  CharacteristicA: "c4a1020e-dd6e-11eb-ba80-0242ac130004",
+  CharacteristicB: "c4a10146-dd6e-11eb-ba80-0242ac130004",
+};
+
+const DeviceInformation = {
+  UUID: "c4a0fbce-dd6e-11eb-ba80-0242ac130004",
+  CharacteristicA: "c4a0fdf4-dd6e-11eb-ba80-0242ac130004",
+};
 
 const useOTAUpdate = () => {
   const [peripheral, setPeripheral] = useState<Peripheral | null>(null);
 
-  const [status, setStatus] = useState<Status>("before");
+  const [status, setStatus] = useState<Status>({
+    value: "before",
+    text: "",
+  });
   const [progress, setProgress] = useState(0);
-  const [animatedProgress, setAnimatedProgress] = useState(0);
   const [firmware, setFirmware] = useState<number[]>([]);
+  const [notifStatus, setNotifStatus] = useState<number[]>([]);
+
+  const [registerDevice, devEUIResult] = useLazyRegisterDeviceQuery();
 
   const dispatch = useDispatch();
 
-  const value = useRef(new Animated.Value(0)).current;
-  const timeout = useRef<NodeJS.Timeout>();
+  const disconnect = () => {
+    if (peripheral) {
+      BleManager.isPeripheralConnected(peripheral.id, []).then(isConnected => {
+        if (isConnected) {
+          BleManager.disconnect(peripheral.id);
+        }
+      });
+    }
+  };
 
-  const enableNotification = [1, 0];
+  const stopNotification = () => {
+    BleManager.stopNotification(
+      (peripheral as Peripheral).id,
+      OTAControlPoint.UUID,
+      OTAControlPoint.CharacteristicA,
+    )
+      .then(() => {
+        console.log("Succeded to stop notification");
+      })
+      .catch(error => {
+        console.log("Failed to stop notification: ", error);
+      });
+  };
 
-  const widthInterpolate = value.interpolate({
-    inputRange: [0, animatedProgress],
-    outputRange: ["0%", `${animatedProgress}%`],
-  });
-
-  Animated.timing(value, {
-    toValue: animatedProgress,
-    duration: 75,
-    easing: Easing.linear,
-    useNativeDriver: false,
-  }).start();
-
-  useEffect(() => {
-    if (animatedProgress === progress) return;
-    timeout.current = setInterval(() => {
-      setAnimatedProgress(prev => prev + 1);
-    }, 25);
-    return () => {
-      if (timeout.current) {
-        clearInterval(timeout.current);
+  const sendFirmwareToDevice = async () => {
+    console.log(firmware.length);
+    try {
+      for (let i = 0; i < Math.floor(firmware.length / interval); i++) {
+        const data = firmware.slice(i * interval, (i + 1) * interval);
+        console.log(`count: ${i}`, data);
+        await BleManager.write(
+          (peripheral as Peripheral).id,
+          OTAControlPoint.UUID,
+          OTAControlPoint.CharacteristicB,
+          firmware.slice(i * interval, (i + 1) * interval),
+        );
       }
-    };
-  }, [progress]);
+      if (firmware.length % interval !== 0) {
+        console.log(firmware.slice(-(firmware.length % interval)));
+        await BleManager.write(
+          (peripheral as Peripheral).id,
+          OTAControlPoint.UUID,
+          OTAControlPoint.CharacteristicB,
+          firmware.slice(-(firmware.length % interval)),
+        );
+      }
+      stopNotification();
+    } catch (error) {
+      disconnect();
+      console.log("Failed to send firmware: ", error);
+      setStatus({
+        value: "connectFailed",
+        text: "펌웨어 설치에\n실패했어요.",
+      });
+    }
+  };
 
   useEffect(() => {
-    if (progress === animatedProgress && timeout.current) {
-      clearInterval(timeout.current);
+    if (
+      firmware.length !== 0 &&
+      notifStatus[0] === 79 &&
+      notifStatus[1] === 75 &&
+      status.value === "installing"
+    ) {
+      sendFirmwareToDevice();
     }
-    if (animatedProgress === 100) {
+  }, [firmware, status, notifStatus]);
+
+  useEffect(() => {
+    if (progress === 100 && status.value !== "downloadFailed") {
       setTimeout(() => {
-        setStatus("updating");
-      }, 2000);
+        setStatus({
+          value: "installing",
+          text: "펌웨어 설치 중...",
+        });
+      }, 3000);
     }
-  }, [progress, animatedProgress]);
+  }, [progress]);
 
   useEffect(() => {
     if (firmware.length !== 0) {
@@ -82,145 +125,174 @@ const useOTAUpdate = () => {
     }
   }, [firmware]);
 
-  const sendFirmwareToDevice = async (
-    peripheralId: string,
-    serviceUUID: string,
-    characteristicUUID: string,
-  ) => {
-    for (let i = 0; i < Math.floor(firmware.length / interval); i++) {
-      await BleManager.write(
-        peripheralId,
-        serviceUUID,
-        characteristicUUID,
-        firmware.slice(i * interval, (i + 1) * interval),
-      );
+  useEffect(() => {
+    if (status.value === "downloading") {
+      RNFetchBlob.fetch("GET", "http://192.168.137.1:8888/Release.bin")
+        .progress({ count: 1 }, (received, total) => {
+          console.log("progress", `${Math.floor((received / total) * 100)}%`);
+          setProgress(Math.floor((received / total) * 100));
+        })
+        .then(res => {
+          const status = res.info().status;
+          if (status === 200) {
+            const bytesArr = stringToBytes(res.text() as string);
+            setFirmware(bytesArr);
+          }
+        })
+        .catch(error => {
+          console.log("Failed to download: ", error);
+          setStatus({
+            value: "downloadFailed",
+            text: `펌웨어 다운로드에\n실패했어요.`,
+          });
+        });
     }
-    BleManager.write(
-      peripheralId,
-      serviceUUID,
-      characteristicUUID,
-      firmware.slice(-(firmware.length % interval)),
-    );
-  };
+  }, [status]);
 
-  const handleDownloadFirmware = async () => {
-    setStatus("downloading");
-    const res = await RNFetchBlob.fetch(
-      "GET",
-      "http://192.168.137.1:8888/Release.bin",
-    ).progress({ interval: 10 }, (received, total) => {
-      console.log("progress", `${Math.round((received / total) * 100)}%`);
-      setProgress(Math.round((received / total) * 100));
-    });
-    const status = res.info().status;
-    if (status === 200) {
-      const bytesArr = stringToBytes(res.text() as string);
-      setFirmware(bytesArr);
-    } else {
-      console.log("Download failed.");
-    }
-  };
-
-  const handleReadData = async (
-    peripheralId: string,
-    serviceUUID: string,
-    characteristicUUID: string,
-  ) => {
-    const readData = await BleManager.read(
-      peripheralId,
-      serviceUUID,
-      characteristicUUID,
-    );
-    console.log(readData);
-    /* readData = DevEUI, 서비스 서버로 DevEUI 전송 */
-  };
-
-  const getPeripheralData = async (peripheral: Peripheral) => {
-    const peripheralData = await new Promise<BleManager.PeripheralInfo>(
-      resolve => {
-        setTimeout(async () => {
-          const peripheralData = await BleManager.retrieveServices(
-            peripheral.id,
-          );
-          resolve(peripheralData);
-        }, 900);
-      },
-    );
-    console.log(peripheralData);
-    const serviceUUID = peripheralData.characteristics[4].service;
-    const characteristicUUID = peripheralData.characteristics[4].characteristic;
-
-    /* Client에서 Notification 수신 이벤트 활성화 */
-    await BleManager.startNotification(
-      peripheral.id,
-      serviceUUID,
-      characteristicUUID,
-    );
-    /* 디바이스에 Notification 활성화 요청 */
-    await BleManager.writeWithoutResponse(
-      peripheral.id,
-      serviceUUID,
-      characteristicUUID,
-      enableNotification,
-    );
-
-    handleReadData(peripheral.id, serviceUUID, characteristicUUID);
-  };
-
-  const handleDiscoverPeripheral = async (peripheral: Peripheral) => {
-    if (!peripheral || !peripheral.name || !peripheral.name.includes("ESP")) {
-      return;
-    }
-    setPeripheral(peripheral);
-  };
-
-  const handleConnect = async (peripheral: Peripheral) => {
-    const id = "AC:67:B2:DD:EB:42";
-    if (peripheral.id === id) {
-      console.log(peripheral);
-      await BleManager.connect(peripheral.id);
-      setStatus("connected");
-      console.log("Connected to: ", peripheral.id);
+  useEffect(() => {
+    if (notifStatus[0] === 79 && notifStatus[1] === 75) {
+      console.log("yes");
       setTimeout(() => {
-        handleDownloadFirmware();
+        setStatus({
+          value: "downloading",
+          text: "펌웨어 다운로드 중...",
+        });
       }, 2000);
-      getPeripheralData(peripheral);
     }
+    if (notifStatus[0] === 78 && notifStatus[1] === 79) {
+      disconnect();
+      console.log("no");
+      setStatus({
+        value: "notifFailed",
+        text: "디바이스에 문제가",
+      });
+    }
+  }, [notifStatus]);
+
+  const startNotification = () => {
+    BleManager.startNotification(
+      (peripheral as Peripheral).id,
+      OTAControlPoint.UUID,
+      OTAControlPoint.CharacteristicA,
+    )
+      .then(() => {
+        console.log("Succeded to start notification");
+      })
+      .catch(error => {
+        disconnect();
+        console.log("Failed to start notification: ", error);
+        setStatus({
+          value: "connectFailed",
+          text: "연결이 끊어졌어요.",
+        });
+      });
   };
 
-  const handleStart = () => {
-    setStatus("searching");
+  useEffect(() => {
+    console.log(devEUIResult);
+  }, [devEUIResult]);
+
+  const handleReadDevEUI = () => {
+    BleManager.read(
+      (peripheral as Peripheral).id,
+      DeviceInformation.UUID,
+      DeviceInformation.CharacteristicA,
+    )
+      .then(devEUI => {
+        console.log("Succeded to read devEUI: ", bytesToString(devEUI));
+        /* devEUI 서버로 전송 후 status code에 따라 기등록인지 미등록인지 체크 */
+        /* registerDevice(bytesToString(devEUI)); */
+
+        startNotification();
+      })
+      .catch(error => {
+        disconnect();
+        console.log("Failed to read devEUI", error);
+        setStatus({
+          value: "connectFailed",
+          text: "디바이스의 데이터를\n가져오지 못했어요.",
+        });
+      });
   };
 
-  const handleStop = async (status: "connected" | "failed") => {
-    await BleManager.stopScan();
-    console.log("Scan is stopped.");
-    if (status === "connected") {
-      setStatus("connected");
-    } else {
-      setStatus("failed");
-    }
+  const getPeripheralData = (peripheral: Peripheral) => {
+    BleManager.retrieveServices(peripheral.id)
+      .then(data => {
+        console.log("Succeeded to retrieve data: ", data);
+        handleReadDevEUI();
+      })
+      .catch(error => {
+        disconnect();
+        console.log("Failed to retrieve data: ", error);
+        setStatus({
+          value: "connectFailed",
+          text: "디바이스의 데이터를\n가져오지 못했어요.",
+        });
+      });
+  };
+
+  const handleConnect = (peripheral: Peripheral) => {
+    console.log(peripheral);
+    BleManager.connect(peripheral.id)
+      .then(async () => {
+        console.log("Connected to: ", peripheral.id);
+        await BleManager.requestMTU(peripheral.id, 500);
+        getPeripheralData(peripheral);
+      })
+      .catch(error => {
+        console.log("Failed to connect: ", error);
+        BleManager.stopScan().then(() => {
+          setStatus({
+            value: "connectFailed",
+            text: "연결에 실패했어요.",
+          });
+        });
+      });
   };
 
   useEffect(() => {
     if (!peripheral) return;
-    handleConnect(peripheral);
-    handleStop("connected");
+    BleManager.stopScan().then(() => {
+      setStatus({
+        value: "connected",
+        text: "연결에 성공했어요.",
+      });
+      handleConnect(peripheral);
+    });
   }, [peripheral]);
 
   useEffect(() => {
-    if (status === "searching" && !peripheral) {
+    let timeout: NodeJS.Timeout;
+    if (status.value === "searching") {
       BleManager.scan([], 10, false).then(() => {
         console.log("Scanning...");
       });
+      timeout = setTimeout(() => {
+        if (!peripheral) {
+          BleManager.stopScan().then(() => {
+            setStatus({
+              value: "connectFailed",
+              text: "연결에 실패했어요.",
+            });
+          });
+        }
+      }, 10000);
     }
-    const timeout = setTimeout(async () => {
-      if (!peripheral) handleStop("failed");
-    }, 10000);
     return () => {
       clearTimeout(timeout);
     };
-  }, [status, peripheral]);
+  }, [status]);
+
+  const handleDiscoverPeripheral = (peripheral: Peripheral) => {
+    if (
+      !peripheral ||
+      !peripheral.name ||
+      !peripheral.name.includes("EODIGAE")
+    ) {
+      return;
+    }
+    setPeripheral(peripheral);
+  };
 
   useEffect(() => {
     BleManager.start({ showAlert: false });
@@ -230,8 +302,9 @@ const useOTAUpdate = () => {
     );
     const notification = bleManagerEmitter.addListener(
       "BleManagerDidUpdateValueForCharacteristic",
-      ({ value, peripheral, characteristic, service }) => {
-        console.log(`Recieved ${value} for characteristic ${characteristic}`);
+      ({ value }) => {
+        console.log("Notification has been arrived: ", value);
+        setNotifStatus(value);
       },
     );
     return () => {
@@ -240,20 +313,11 @@ const useOTAUpdate = () => {
     };
   }, []);
 
-  useEffect(() => {
-    return () => {
-      if (peripheral) {
-        console.log("Disconnected to: ", peripheral.id);
-        BleManager.disconnect(peripheral.id);
-      }
-    };
-  }, [peripheral]);
-
   return {
     status,
-    animatedProgress,
-    handleStart,
-    widthInterpolate,
+    setStatus,
+    progress,
+    disconnect,
   };
 };
 

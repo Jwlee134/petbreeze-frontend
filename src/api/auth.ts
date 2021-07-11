@@ -1,6 +1,6 @@
 import api from ".";
 
-interface AuthReturnType {
+interface User {
   user_id: number;
   key: string;
   nickname: string;
@@ -8,18 +8,16 @@ interface AuthReturnType {
 
 const auth = api.injectEndpoints({
   endpoints: builder => ({
-    facebookLogin: builder.query<AuthReturnType, { token: string; id: string }>(
-      {
-        query: ({ token, id }) => ({
-          url: "/accounts/facebook/login/",
-          headers: {
-            "access-token": token,
-            id,
-          },
-        }),
-      },
-    ),
-    kakaoLogin: builder.query<AuthReturnType, string>({
+    facebookLogin: builder.query<User, { token: string; id: string }>({
+      query: ({ token, id }) => ({
+        url: "/accounts/facebook/login/",
+        headers: {
+          "access-token": token,
+          id,
+        },
+      }),
+    }),
+    kakaoLogin: builder.query<User, string>({
       query: token => ({
         url: "/accounts/kakao/login/",
         headers: {
@@ -43,7 +41,7 @@ const auth = api.injectEndpoints({
         body: { nickname },
       }),
     }),
-    withdraw: builder.mutation({
+    deleteAccount: builder.mutation({
       query: () => ({
         url: "/accounts/withdraw/",
         method: "POST",
@@ -57,5 +55,5 @@ export const {
   useLazyKakaoLoginQuery,
   useLogoutMutation,
   useUpdateNicknameMutation,
-  useWithdrawMutation,
+  useDeleteAccountMutation,
 } = auth;
