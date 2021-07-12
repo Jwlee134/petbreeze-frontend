@@ -5,5 +5,6 @@ module.exports = {
       "babel-plugin-root-import",
       { rootPathPrefix: "~", rootPathSuffix: "src" },
     ],
+    "react-native-reanimated/plugin", //Reanimated plugin has to be listed last.
   ],
 };
