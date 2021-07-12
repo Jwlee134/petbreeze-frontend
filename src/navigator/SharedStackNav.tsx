@@ -9,7 +9,6 @@ import { headerStyle, mainTabHeaderStyle } from "~/styles/navigator";
 import HeaderBackButton from "~/components/common/button/HeaderBackButton";
 import Home from "~/screens/Home";
 import { useAppSelector } from "~/store";
-import Map from "~/screens/Shared/Map";
 import MyPage from "~/screens/MyPage";
 import PetProfile from "~/screens/MyPage/PetProfile";
 import PassManagement from "~/screens/MyPage/PassManagement";
@@ -60,7 +59,6 @@ const SharedStack = ({ screenName }: { screenName: string }) => (
         }}
       />
     )}
-    <Stack.Screen name="Map" component={Map} options={{ title: "" }} />
     <Stack.Screen
       name="PetProfile"
       component={PetProfile}
