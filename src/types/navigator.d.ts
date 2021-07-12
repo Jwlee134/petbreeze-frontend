@@ -7,23 +7,11 @@ type SharedStackParamList = {
   Walk: undefined;
   Community: undefined;
   Notification: undefined;
-  PostAnimalInfo: undefined;
-  PostList: undefined;
-  LostDetail: {
-    id: number;
-  };
-  WitnessedDetail: {
-    id: number;
-  };
-  UpdateWitnessedList: undefined;
-  CommentList: undefined;
-  AuthSelector: undefined;
   AddDevice:
     | {
         execute: boolean;
       }
     | undefined;
-  Map: undefined;
   StartWalking: undefined;
   WalkMap: undefined;
   MyPage: undefined;
@@ -32,8 +20,6 @@ type SharedStackParamList = {
   ServiceCenter: undefined;
   NotificationSetting: undefined;
   DeleteAccount: undefined;
-  MyPost: undefined;
-  SavedPost: undefined;
   DeviceSetting: undefined;
   DeviceList: undefined;
   LocationCollectInterval: undefined;
@@ -63,26 +49,6 @@ export type NotificationScreenNavigationProp = StackNavigationProp<
   SharedStackParamList,
   "Notification"
 >;
-export type PostAnimalInfoScreenNavigationProp = StackNavigationProp<
-  SharedStackParamList,
-  "PostAnimalInfo"
->;
-export type LostDetailScreenNavigationProp = StackNavigationProp<
-  SharedStackParamList,
-  "LostDetail"
->;
-export type CommentScreenNavigationProp = StackNavigationProp<
-  SharedStackParamList,
-  "CommentList"
->;
-export type AuthSelectorScreenNavigationProp = StackNavigationProp<
-  SharedStackParamList,
-  "AuthSelector"
->;
-export type MapScreenNavigationProp = StackNavigationProp<
-  SharedStackParamList,
-  "Map"
->;
 export type StartWalkingScreenNavigationProp = StackNavigationProp<
   SharedStackParamList,
   "StartWalking"
@@ -90,10 +56,6 @@ export type StartWalkingScreenNavigationProp = StackNavigationProp<
 export type WalkMapScreenNavigationProp = StackNavigationProp<
   SharedStackParamList,
   "WalkMap"
->;
-export type PostScreenNavigationProp = StackNavigationProp<
-  SharedStackParamList,
-  "PostList"
 >;
 export type MyPageScreenNavigationProp = StackNavigationProp<
   SharedStackParamList,
@@ -114,14 +76,6 @@ export type SafetyZoneScreenNavigationProp = StackNavigationProp<
 export type SafetyZoneMapScreenNavigationProp = StackNavigationProp<
   SharedStackParamList,
   "SafetyZoneMap"
->;
-export type LostDetailScreenRouteProp = RouteProp<
-  SharedStackParamList,
-  "LostDetail"
->;
-export type WitnessedDetailScreenRouteProp = RouteProp<
-  SharedStackParamList,
-  "WitnessedDetail"
 >;
 export type SafetyZoneMapScreenRouteProp = RouteProp<
   SharedStackParamList,
