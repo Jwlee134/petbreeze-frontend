@@ -42,20 +42,3 @@ export type ModalHeader =
   | "게시물 관리"
   | "전단지 이미지로 저장"
   | ""; */
-
-type StatusValue =
-  | "before"
-  | "searching"
-  | "connected"
-  | "connectFailed"
-  | "downloading"
-  | "downloadFailed"
-  | "installing"
-  | "completed"
-  | "profile"
-  | "notifFailed";
-
-export interface Status {
-  value: StatusValue;
-  text: string;
-}

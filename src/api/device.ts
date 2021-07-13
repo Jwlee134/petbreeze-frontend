@@ -189,11 +189,14 @@ const device = api.injectEndpoints({
       },
     }),
 
-    registerDevice: builder.query<void, string>({
+    registerDevice: builder.query<
+      { detail: string; device_id: number },
+      string
+    >({
       query: devEUI => ({
         url: "/device/register/",
         headers: {
-          devEUI,
+          devEUI: devEUI,
         },
       }),
     }),

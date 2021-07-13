@@ -5,6 +5,7 @@ interface IState {
   currentTabName: string;
   notification: string;
   page: number;
+  isOtaUpdate: boolean;
 }
 
 const initialState: IState = {
@@ -12,6 +13,7 @@ const initialState: IState = {
   currentTabName: "",
   notification: "",
   page: 0,
+  isOtaUpdate: false,
 };
 
 const common = createSlice({
@@ -33,6 +35,9 @@ const common = createSlice({
       } else {
         state.page--;
       }
+    },
+    setIsOtaUpdate: (state, { payload }: PayloadAction<boolean>) => {
+      state.isOtaUpdate = payload;
     },
   },
 });

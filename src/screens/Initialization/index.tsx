@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from "react";
 import { useState } from "react";
 import { ScrollView } from "react-native";
-import InteractionWithDevice from "~/components/device/InteractionWithDevice";
+import Progress from "~/components/device/Progress";
 import Auth from "~/components/initialization/Auth";
 import BluetoothCheck from "~/components/device/BluetoothCheck";
 import DeviceCheck from "~/components/initialization/DeviceCheck";
@@ -13,10 +13,10 @@ import SafetyZoneSetting from "~/components/device/SafetyZoneSetting";
 import { useDispatch } from "react-redux";
 import { commonActions } from "~/store/common";
 import SafetyZoneMap from "~/components/device/SafetyZoneMap";
-import PetProfileForm from "~/components/device/PetProfileForm";
+import DeviceProfileForm from "~/components/device/DeviceProfileForm";
 import Completion from "~/components/initialization/Completion";
 import { storageActions } from "~/store/storage";
-import useOTAUpdate from "~/hooks/useOTAUpdate";
+import useBleMaganer from "~/hooks/useBleManager";
 
 const Initialization = () => {
   const dispatch = useDispatch();
@@ -42,7 +42,12 @@ const Initialization = () => {
     }
   }, [page]);
 
-  const { status: OTAStatus, setStatus, progress, disconnect } = useOTAUpdate();
+  const {
+    status: OTAStatus,
+    setStatus,
+    progress,
+    disconnect,
+  } = useBleMaganer();
 
   return (
     <ScrollView
@@ -62,19 +67,23 @@ const Initialization = () => {
             handleNext={() => {
               dispatch(commonActions.setPage("next"));
               setStatus({
-                value: "searching",
-                text: "디바이스 검색 중...",
+                value: "downloading",
+                text: "펌웨어 다운로드 중...",
               });
             }}
           />
-          <InteractionWithDevice
+          <Progress
             status={OTAStatus}
             setStatus={setStatus}
             progress={progress}
-            handleComplete={() => {
-              dispatch(commonActions.setPage("next"));
-              dispatch(storageActions.setInitialization("device"));
-              disconnect();
+            handleComplete={async () => {
+              await disconnect();
+              if (OTAStatus.value === "completedWith200") {
+                dispatch(storageActions.setInitialization("initialization"));
+              } else {
+                dispatch(commonActions.setPage("next"));
+                dispatch(storageActions.setInitialization("device"));
+              }
             }}
           />
         </>
@@ -91,14 +100,18 @@ const Initialization = () => {
         </>
       )}
       {renderPetProfile && (
-        <PetProfileForm
+        <DeviceProfileForm
           handleComplete={() => {
             dispatch(commonActions.setPage("next"));
             dispatch(storageActions.setInitialization("petProfile"));
           }}
         />
       )}
-      <Completion />
+      <Completion
+        handleClose={() => {
+          dispatch(storageActions.setInitialization("initialization"));
+        }}
+      />
     </ScrollView>
   );
 };

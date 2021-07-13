@@ -8,10 +8,27 @@ const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
 import RNFetchBlob from "rn-fetch-blob";
 import { bytesToString, stringToBytes } from "convert-string";
 import { useDispatch } from "react-redux";
-import { Status } from "~/types";
 import { useLazyRegisterDeviceQuery } from "~/api/device";
+import { useAppSelector } from "~/store";
 
-const interval = 20;
+type StatusValue =
+  | "before"
+  | "searching"
+  | "connected"
+  | "downloading"
+  | "installing"
+  | "completed"
+  | "completedWith200"
+  | "connectFailed"
+  | "downloadFailed"
+  | "notifFailed";
+
+export interface Status {
+  value: StatusValue;
+  text: string;
+}
+
+const interval = 512;
 
 const OTAControlPoint = {
   UUID: "c4a10060-dd6e-11eb-ba80-0242ac130004",
@@ -24,9 +41,10 @@ const DeviceInformation = {
   CharacteristicA: "c4a0fdf4-dd6e-11eb-ba80-0242ac130004",
 };
 
-const useOTAUpdate = () => {
-  const [peripheral, setPeripheral] = useState<Peripheral | null>(null);
+const useBleMaganer = () => {
+  const isOtaUpdate = useAppSelector(state => state.common.isOtaUpdate);
 
+  const [peripheral, setPeripheral] = useState<Peripheral | null>(null);
   const [status, setStatus] = useState<Status>({
     value: "before",
     text: "",
@@ -36,16 +54,19 @@ const useOTAUpdate = () => {
   const [notifStatus, setNotifStatus] = useState<number[]>([]);
 
   const [registerDevice, devEUIResult] = useLazyRegisterDeviceQuery();
-
   const dispatch = useDispatch();
 
-  const disconnect = () => {
+  const disconnect = async () => {
     if (peripheral) {
-      BleManager.isPeripheralConnected(peripheral.id, []).then(isConnected => {
-        if (isConnected) {
-          BleManager.disconnect(peripheral.id);
-        }
-      });
+      const connected = await BleManager.isPeripheralConnected(
+        peripheral.id,
+        [],
+      );
+      if (connected) {
+        await BleManager.disconnect(peripheral.id).then(() => {
+          console.log("Disconnected to: ", peripheral.id);
+        });
+      }
     }
   };
 
@@ -74,6 +95,7 @@ const useOTAUpdate = () => {
           OTAControlPoint.UUID,
           OTAControlPoint.CharacteristicB,
           firmware.slice(i * interval, (i + 1) * interval),
+          512,
         );
       }
       if (firmware.length % interval !== 0) {
@@ -83,15 +105,20 @@ const useOTAUpdate = () => {
           OTAControlPoint.UUID,
           OTAControlPoint.CharacteristicB,
           firmware.slice(-(firmware.length % interval)),
-        );
+          512,
+        )
+          .then(() => {
+            stopNotification();
+          })
+          .catch(err => console.log(err));
       }
-      stopNotification();
     } catch (error) {
-      disconnect();
-      console.log("Failed to send firmware: ", error);
-      setStatus({
-        value: "connectFailed",
-        text: "펌웨어 설치에\n실패했어요.",
+      disconnect().finally(() => {
+        console.log("Failed to send firmware: ", error);
+        setStatus({
+          value: "connectFailed",
+          text: "펌웨어 설치에\n실패했어요.",
+        });
       });
     }
   };
@@ -108,6 +135,7 @@ const useOTAUpdate = () => {
   }, [firmware, status, notifStatus]);
 
   useEffect(() => {
+    console.log(progress);
     if (progress === 100 && status.value !== "downloadFailed") {
       setTimeout(() => {
         setStatus({
@@ -127,9 +155,11 @@ const useOTAUpdate = () => {
 
   useEffect(() => {
     if (status.value === "downloading") {
-      RNFetchBlob.fetch("GET", "http://192.168.137.1:8888/Release.bin")
-        .progress({ count: 1 }, (received, total) => {
-          console.log("progress", `${Math.floor((received / total) * 100)}%`);
+      RNFetchBlob.fetch(
+        "GET",
+        "https://next-bnb-jw.s3.ap-northeast-2.amazonaws.com/release_factory.bin",
+      )
+        .progress({ interval: 10 }, (received, total) => {
           setProgress(Math.floor((received / total) * 100));
         })
         .then(res => {
@@ -160,11 +190,12 @@ const useOTAUpdate = () => {
       }, 2000);
     }
     if (notifStatus[0] === 78 && notifStatus[1] === 79) {
-      disconnect();
-      console.log("no");
-      setStatus({
-        value: "notifFailed",
-        text: "디바이스에 문제가",
+      disconnect().finally(() => {
+        console.log("no");
+        setStatus({
+          value: "notifFailed",
+          text: "디바이스를 리셋하고\n다시 시도해 주세요.",
+        });
       });
     }
   }, [notifStatus]);
@@ -179,17 +210,36 @@ const useOTAUpdate = () => {
         console.log("Succeded to start notification");
       })
       .catch(error => {
-        disconnect();
-        console.log("Failed to start notification: ", error);
-        setStatus({
-          value: "connectFailed",
-          text: "연결이 끊어졌어요.",
+        disconnect().finally(() => {
+          console.log("Failed to start notification: ", error);
+          setStatus({
+            value: "connectFailed",
+            text: "연결이 끊어졌어요.",
+          });
         });
       });
   };
 
   useEffect(() => {
-    console.log(devEUIResult);
+    if (devEUIResult.data) {
+      startNotification();
+      /* if (devEUIResult.data.detail.includes("relation")) {
+        setStatus({
+          value: "completedWith200",
+          text: "등록이 완료되었어요.",
+        });
+      } else {
+        startNotification();
+      } */
+    }
+    if (devEUIResult.isError && devEUIResult.error.status === 400) {
+      disconnect().finally(() => {
+        setStatus({
+          value: "connectFailed",
+          text: "유효하지 않은 DevEUI.",
+        });
+      });
+    }
   }, [devEUIResult]);
 
   const handleReadDevEUI = () => {
@@ -200,17 +250,15 @@ const useOTAUpdate = () => {
     )
       .then(devEUI => {
         console.log("Succeded to read devEUI: ", bytesToString(devEUI));
-        /* devEUI 서버로 전송 후 status code에 따라 기등록인지 미등록인지 체크 */
-        /* registerDevice(bytesToString(devEUI)); */
-
-        startNotification();
+        registerDevice("cccc");
       })
       .catch(error => {
-        disconnect();
-        console.log("Failed to read devEUI", error);
-        setStatus({
-          value: "connectFailed",
-          text: "디바이스의 데이터를\n가져오지 못했어요.",
+        disconnect().finally(() => {
+          console.log("Failed to read devEUI", error);
+          setStatus({
+            value: "connectFailed",
+            text: "디바이스의 데이터를\n가져오지 못했어요.",
+          });
         });
       });
   };
@@ -219,14 +267,19 @@ const useOTAUpdate = () => {
     BleManager.retrieveServices(peripheral.id)
       .then(data => {
         console.log("Succeeded to retrieve data: ", data);
-        handleReadDevEUI();
+        if (isOtaUpdate) {
+          startNotification();
+        } else {
+          handleReadDevEUI();
+        }
       })
       .catch(error => {
-        disconnect();
-        console.log("Failed to retrieve data: ", error);
-        setStatus({
-          value: "connectFailed",
-          text: "디바이스의 데이터를\n가져오지 못했어요.",
+        disconnect().finally(() => {
+          console.log("Failed to retrieve data: ", error);
+          setStatus({
+            value: "connectFailed",
+            text: "디바이스의 데이터를\n가져오지 못했어요.",
+          });
         });
       });
   };
@@ -236,7 +289,7 @@ const useOTAUpdate = () => {
     BleManager.connect(peripheral.id)
       .then(async () => {
         console.log("Connected to: ", peripheral.id);
-        await BleManager.requestMTU(peripheral.id, 500);
+        await BleManager.requestMTU(peripheral.id, 515);
         getPeripheralData(peripheral);
       })
       .catch(error => {
@@ -261,6 +314,17 @@ const useOTAUpdate = () => {
     });
   }, [peripheral]);
 
+  const handleDiscoverPeripheral = (peripheral: Peripheral) => {
+    if (
+      !peripheral ||
+      !peripheral.name ||
+      !peripheral.name.includes("EODIGAE")
+    ) {
+      return;
+    }
+    setPeripheral(peripheral);
+  };
+
   useEffect(() => {
     let timeout: NodeJS.Timeout;
     if (status.value === "searching") {
@@ -283,19 +347,7 @@ const useOTAUpdate = () => {
     };
   }, [status]);
 
-  const handleDiscoverPeripheral = (peripheral: Peripheral) => {
-    if (
-      !peripheral ||
-      !peripheral.name ||
-      !peripheral.name.includes("EODIGAE")
-    ) {
-      return;
-    }
-    setPeripheral(peripheral);
-  };
-
   useEffect(() => {
-    BleManager.start({ showAlert: false });
     const discover = bleManagerEmitter.addListener(
       "BleManagerDiscoverPeripheral",
       handleDiscoverPeripheral,
@@ -321,4 +373,4 @@ const useOTAUpdate = () => {
   };
 };
 
-export default useOTAUpdate;
+export default useBleMaganer;

@@ -13,6 +13,8 @@ import { BigText } from "../initialization/Styles";
 import ImagePicker from "react-native-image-crop-picker";
 import { useState } from "react";
 import { commonActions } from "~/store/common";
+import { isIos } from "~/utils";
+import { useUpdateDeviceProfileAvatarMutation } from "~/api/device";
 
 const AvatarContainer = styled.TouchableOpacity`
   justify-content: center;
@@ -33,7 +35,7 @@ const SmallText = styled.Text`
   opacity: 0.5;
 `;
 
-const PetProfileForm = ({
+const DeviceProfileForm = ({
   handleComplete,
 }: {
   handleComplete?: () => void;
@@ -41,6 +43,7 @@ const PetProfileForm = ({
   const { avatar, name, breed, age, weight, phoneNumber, caution } =
     useAppSelector(state => state.form);
   const dispatch = useDispatch();
+  const [updateAvatar] = useUpdateDeviceProfileAvatarMutation();
 
   const [loading, setLoading] = useState(true);
 
@@ -52,6 +55,18 @@ const PetProfileForm = ({
     }).then(image => {
       if (!image) return;
       dispatch(formActions.setAvatar(image));
+    });
+  };
+
+  const handlePatchAvatar = () => {
+    const image = new FormData();
+    image.append(`image1`, {
+      name: isIos
+        ? avatar.filename
+        : avatar.path.substring(avatar.path.lastIndexOf("/") + 1),
+      type: avatar.mime,
+      uri: isIos ? avatar.sourceURL : avatar.path,
+      data: avatar?.data || null,
     });
   };
 
@@ -111,4 +126,4 @@ const PetProfileForm = ({
   );
 };
 
-export default PetProfileForm;
+export default DeviceProfileForm;

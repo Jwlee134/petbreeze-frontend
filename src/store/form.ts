@@ -3,7 +3,7 @@ import { ImageSourcePropType } from "react-native";
 import { Image } from "react-native-image-crop-picker";
 
 interface IForm {
-  avatar: Image | ImageSourcePropType;
+  avatar: Image | any;
   name: string;
   breed: string;
   age: string;

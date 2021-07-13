@@ -10,10 +10,9 @@ import {
 import Fail from "../lottie/Fail";
 import Loading from "../lottie/Loading";
 import Success from "../lottie/Success";
-import SubmitDeviceInfo from "./SubmitDeviceInfo";
 import palette from "~/styles/palette";
 import Button from "../common/Button";
-import { Status } from "~/types";
+import { Status } from "~/hooks/useBleManager";
 
 const DownloadingView = styled.View`
   width: 100%;
@@ -25,12 +24,12 @@ const DownloadingView = styled.View`
   overflow: hidden;
 `;
 
-const Progress = styled(Animated.View)`
+const DownloadProgress = styled(Animated.View)`
   background-color: ${palette.blue_6e};
   height: 40px;
 `;
 
-const InteractionWithDevice = ({
+const Progress = ({
   handleComplete,
   status,
   setStatus,
@@ -55,21 +54,18 @@ const InteractionWithDevice = ({
     useNativeDriver: false,
   }).start();
 
-  return status.value === "profile" ? (
-    <SubmitDeviceInfo />
-  ) : (
+  return (
     <Container>
       <TopContainer>
-        {(status.value === "searching" || status.value === "installing") && (
-          <Loading />
-        )}
+        {(status.value === "searching" ||
+          status.value === "installing" ||
+          status.value === "connected") && <Loading />}
         {status.value.includes("Fail") && <Fail />}
-        {(status.value === "connected" || status.value === "completed") && (
-          <Success />
-        )}
+        {status.value.includes("completed") && <Success />}
         {status.value === "downloading" && (
           <DownloadingView>
-            <Progress style={{ width: widthInterpolate }} />
+            <DownloadProgress style={{ width: widthInterpolate }} />
+            <BigText>{progress}</BigText>
           </DownloadingView>
         )}
         <BigText>{status.text}</BigText>
@@ -79,7 +75,10 @@ const InteractionWithDevice = ({
           <Button
             background="transparent"
             onPress={() => {
-              if (status.value === "connectFailed") {
+              if (
+                status.value === "connectFailed" ||
+                status.value === "notifFailed"
+              ) {
                 setStatus({
                   value: "searching",
                   text: "디바이스 검색 중...",
@@ -95,7 +94,7 @@ const InteractionWithDevice = ({
             text="다시 시도"
           />
         )}
-        {status.value === "completed" && (
+        {status.value.includes("completed") && (
           <Button text="다음" onPress={handleComplete} />
         )}
       </BottomContainer>
@@ -103,4 +102,4 @@ const InteractionWithDevice = ({
   );
 };
 
-export default InteractionWithDevice;
+export default Progress;
