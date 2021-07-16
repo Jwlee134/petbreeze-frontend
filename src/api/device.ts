@@ -1,13 +1,18 @@
 import api, { providesList } from ".";
 
-interface IDeviceProfile {
+interface IDevice {
   id: string;
-  devEUI: string;
   name: string;
   profile_image: string;
   location_info_collection_period: number;
   battery: number;
   firmware_version: string;
+}
+
+interface ISharedDevice {
+  key: string;
+  device_id: string;
+  expiry_time: string;
 }
 
 interface ISafetyZone {
@@ -42,33 +47,95 @@ interface IDeviceProfileBody {
 }
 
 interface IDeviceProfile extends IDeviceProfileBody {
-  id: string;
-  devEUI: string;
   profile_image: string;
-}
-
-interface ILocationCollectionInterval {
-  location_info_collection_period: number;
 }
 
 const device = api.injectEndpoints({
   endpoints: builder => ({
+    getDeviceList: builder.query<IDevice[], void>({
+      query: () => "/device/",
+      providesTags: result => providesList(result, "Device"),
+    }),
+
+    postDevice: builder.mutation<void, string>({
+      query: devEUI => ({
+        url: "/device/",
+        method: "POST",
+        headers: {
+          devEUI,
+        },
+      }),
+      invalidatesTags: [{ type: "Device", id: "LIST" }],
+    }),
+
+    postDeviceSharingPermission: builder.mutation<
+      ISharedDevice,
+      { device_id: string; duration: number }
+    >({
+      query: ({ device_id, duration }) => ({
+        url: `/device/share/${device_id}/?expire-hours=${duration}`,
+        method: "POST",
+      }),
+    }),
+
+    getSharedDeviceList: builder.query<IDevice[], void>({
+      query: () => "/device/shared/",
+      providesTags: result => providesList(result, "SharedDevice"),
+    }),
+
+    postSharedDevice: builder.mutation<void, string>({
+      query: sharing_key => ({
+        url: "/device/shared/",
+        method: "POST",
+        header: {
+          "sharing-key": sharing_key,
+        },
+      }),
+      invalidatesTags: [{ type: "SharedDevice", id: "LIST" }],
+    }),
+
+    deleteDevice: builder.mutation<void, string>({
+      query: deviceId => ({
+        url: `/device/${deviceId}/`,
+        method: "DELETE",
+      }),
+      onQueryStarted: async (deviceId, { dispatch, queryFulfilled }) => {
+        const deleteResult = dispatch(
+          device.util.updateQueryData("getDeviceList", undefined, draft => {
+            draft.splice(
+              draft.findIndex(device => device.id === deviceId),
+              1,
+            );
+          }),
+        );
+        try {
+          await queryFulfilled;
+        } catch {
+          deleteResult.undo();
+        }
+      },
+    }),
+
     getLocationCollectionInterval: builder.query<
-      ILocationCollectionInterval,
+      {
+        location_info_collection_period: number;
+      },
       string
     >({
-      query: deviceId => `/device/collection-period/${deviceId}/`,
+      query: deviceId => `/device/${deviceId}/collection-period/`,
     }),
 
     updateLocationCollectionInterval: builder.mutation<
-      ILocationCollectionInterval,
+      {
+        location_info_collection_period: number;
+      },
       {
         deviceId: string;
         interval: number;
       }
     >({
       query: ({ deviceId, interval }) => ({
-        url: `/device/collection-period/${deviceId}/`,
+        url: `/device/${deviceId}/collection-period/`,
         method: "PUT",
         body: {
           location_info_collection_period: interval,
@@ -95,35 +162,8 @@ const device = api.injectEndpoints({
       },
     }),
 
-    getDeviceList: builder.query<IDeviceProfile[], void>({
-      query: () => "/device/device-list/",
-      providesTags: result => providesList(result, "Device"),
-    }),
-
-    deleteDevice: builder.mutation<void, string>({
-      query: deviceId => ({
-        url: `/device/device-list/?device_id=${deviceId}`,
-        method: "DELETE",
-      }),
-      onQueryStarted: async (deviceId, { dispatch, queryFulfilled }) => {
-        const deleteResult = dispatch(
-          device.util.updateQueryData("getDeviceList", undefined, draft => {
-            draft.splice(
-              draft.findIndex(device => device.id === deviceId),
-              1,
-            );
-          }),
-        );
-        try {
-          await queryFulfilled;
-        } catch {
-          deleteResult.undo();
-        }
-      },
-    }),
-
     getDeviceProfile: builder.query<IDeviceProfile, string>({
-      query: deviceId => `/device/profile/${deviceId}/`,
+      query: deviceId => `/device/${deviceId}/profile/`,
       providesTags: (result, error, deviceId) => [
         { type: "Device", id: deviceId },
       ],
@@ -137,7 +177,7 @@ const device = api.injectEndpoints({
       }
     >({
       query: ({ deviceId, body }) => ({
-        url: `/device/profile/${deviceId}/`,
+        url: `/device/${deviceId}/profile/`,
         method: "PUT",
         body,
       }),
@@ -166,7 +206,7 @@ const device = api.injectEndpoints({
       }
     >({
       query: ({ deviceId, avatar }) => ({
-        url: `/device/profile/${deviceId}/`,
+        url: `/device/profile/`,
         method: "PATCH",
         body: {
           profile_image: avatar,
@@ -189,20 +229,8 @@ const device = api.injectEndpoints({
       },
     }),
 
-    registerDevice: builder.query<
-      { detail: string; device_id: number },
-      string
-    >({
-      query: devEUI => ({
-        url: "/device/register/",
-        headers: {
-          devEUI: devEUI,
-        },
-      }),
-    }),
-
     getSafetyZone: builder.query<ISafetyZone, string>({
-      query: deviceId => `/device/safety-zone/${deviceId}/`,
+      query: deviceId => `/device/${deviceId}/safety-zone/`,
     }),
 
     updateSafetyZone: builder.mutation<
@@ -213,7 +241,7 @@ const device = api.injectEndpoints({
       }
     >({
       query: ({ deviceId, body }) => ({
-        url: `/device/safety-zone/${deviceId}/`,
+        url: `/device/${deviceId}/safety-zone/`,
         method: "PUT",
         body,
       }),
@@ -237,14 +265,17 @@ const device = api.injectEndpoints({
 });
 
 export const {
-  useUpdateDeviceProfileAvatarMutation,
-  useDeleteDeviceMutation,
-  useUpdateSafetyZoneMutation,
-  useUpdateDeviceProfileMutation,
-  useUpdateLocationCollectionIntervalMutation,
-  useLazyRegisterDeviceQuery,
-  useGetLocationCollectionIntervalQuery,
   useGetDeviceListQuery,
+  usePostDeviceMutation,
+  usePostDeviceSharingPermissionMutation,
+  useGetSharedDeviceListQuery,
+  usePostSharedDeviceMutation,
+  useDeleteDeviceMutation,
+  useGetLocationCollectionIntervalQuery,
+  useUpdateLocationCollectionIntervalMutation,
   useGetDeviceProfileQuery,
+  useUpdateDeviceProfileMutation,
+  useUpdateDeviceProfileAvatarMutation,
   useGetSafetyZoneQuery,
+  useUpdateSafetyZoneMutation,
 } = device;

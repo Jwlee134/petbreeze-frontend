@@ -3,7 +3,7 @@ import { RootState } from "~/store";
 
 const api = createApi({
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://52.79.178.50/wheredog-api/",
+    baseUrl: "http://52.78.28.201/wheredog-api",
     prepareHeaders: (headers, { getState }) => {
       const token = (getState() as RootState).storage.user.token;
       if (token) {
@@ -12,7 +12,7 @@ const api = createApi({
       return headers;
     },
   }),
-  tagTypes: ["Device", "Walk"],
+  tagTypes: ["Device", "SharedDevice", "Walk"],
   endpoints: () => ({}),
 });
 

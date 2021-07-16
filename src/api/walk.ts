@@ -27,7 +27,7 @@ interface IWalkPostRequestForm {
   start_date_time: Date;
   walking_time: number;
   distance: number;
-  coordinates: number[];
+  coordinates: number[][];
 }
 
 interface IWalkDetailGetResponse {
@@ -81,7 +81,7 @@ const walk = api.injectEndpoints({
       query: walk_id => `/walk/${walk_id}/detail/`,
     }),
 
-    patchWalkRecordImage: builder.query<
+    patchWalkRecordImage: builder.mutation<
       IWalkDetailGetResponse,
       { walk_id: string; image: FormData }
     >({
@@ -100,4 +100,5 @@ export const {
   useGetWalkQuery,
   usePostWalkMutation,
   useLazyGetWalkDetailQuery,
+  usePatchWalkRecordImageMutation,
 } = walk;
