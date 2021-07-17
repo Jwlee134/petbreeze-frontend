@@ -445,6 +445,8 @@ PODS:
     - React-jsi (= 0.64.1)
     - React-perflogger (= 0.64.1)
   - React-jsinspector (0.64.1)
+  - react-native-background-actions (2.6.2):
+    - React-Core
   - react-native-ble-manager (7.5.0):
     - React-Core
   - react-native-fbsdk-next (4.3.0):
@@ -650,6 +652,7 @@ DEPENDENCIES:
   - React-jsi (from `../node_modules/react-native/ReactCommon/jsi`)
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
+  - react-native-background-actions (from `../node_modules/react-native-background-actions`)
   - react-native-ble-manager (from `../node_modules/react-native-ble-manager`)
   - react-native-fbsdk-next (from `../node_modules/react-native-fbsdk-next`)
   - react-native-flipper (from `../node_modules/react-native-flipper`)
@@ -775,6 +778,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsiexecutor"
   React-jsinspector:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
+  react-native-background-actions:
+    :path: "../node_modules/react-native-background-actions"
   react-native-ble-manager:
     :path: "../node_modules/react-native-ble-manager"
   react-native-fbsdk-next:
@@ -901,6 +906,7 @@ SPEC CHECKSUMS:
   React-jsi: 5de8204706bd872b78ea646aee5d2561ca1214b6
   React-jsiexecutor: 124e8f99992490d0d13e0649d950d3e1aae06fe9
   React-jsinspector: 500a59626037be5b3b3d89c5151bc3baa9abf1a9
+  react-native-background-actions: 5acd5851ac2d3bb8b1c39fcc9332abe45977fd04
   react-native-ble-manager: c51fe60663155712b17f35895eceffcd1343a818
   react-native-fbsdk-next: 19e974b071047b7ed1dad86a9dc3fe77dff76b8c
   react-native-flipper: a5b02e319fab599965d522d79aa34dc865a07d16
