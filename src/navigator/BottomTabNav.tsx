@@ -12,6 +12,7 @@ import Bell from "~/assets/svg/tab/bell.svg";
 import BellOutline from "~/assets/svg/tab/bell-outline.svg";
 import User from "~/assets/svg/tab/user.svg";
 import UserOutline from "~/assets/svg/tab/user-outline.svg";
+import WalkStackNav from "./WalkStackNav";
 
 const Tab = createBottomTabNavigator();
 
@@ -40,13 +41,13 @@ const BottomTabNav = () => {
       </Tab.Screen>
       <Tab.Screen
         name="Walk"
+        component={WalkStackNav}
         options={{
           tabBarIcon: ({ focused }) =>
             focused ? <Footprint /> : <FootprintOutline />,
           tabBarLabel: "산책",
-        }}>
-        {() => <SharedStackNav screenName="Walk" />}
-      </Tab.Screen>
+        }}
+      />
       <Tab.Screen
         name="Notification"
         options={{

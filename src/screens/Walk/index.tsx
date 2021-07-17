@@ -2,8 +2,13 @@ import React, { useState } from "react";
 
 import { formatCoordinates, formatUTC } from "~/utils";
 import WalkTopTabNav from "~/navigator/WalkTopTabNav";
+import { useAppSelector } from "~/store";
+import SafeAreaContainer from "~/components/common/container/SafeAreaContainer";
+import { WalkScreenNavigationProp } from "~/types/navigator";
+import { useEffect } from "react";
 
-const Walk = () => {
+const Walk = ({ navigation }: { navigation: WalkScreenNavigationProp }) => {
+  const coords = useAppSelector(state => state.storage.walk.coords);
   const [list, setList] = useState<any[]>([]);
 
   /* useEffect(() => {
@@ -19,7 +24,17 @@ const Walk = () => {
     console.log(date, utc, lat, lng, battery);
   }, [list]); */
 
-  return <WalkTopTabNav />;
+  useEffect(() => {
+    if (coords.length !== 0) {
+      navigation.navigate("WalkMap");
+    }
+  }, []);
+
+  return (
+    <SafeAreaContainer>
+      <WalkTopTabNav />
+    </SafeAreaContainer>
+  );
 };
 
 export default Walk;

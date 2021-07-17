@@ -4,11 +4,9 @@ import {
   TransitionPresets,
 } from "@react-navigation/stack";
 import Notification from "~/screens/Notification";
-import Walk from "~/screens/Walk";
 import { headerStyle, mainTabHeaderStyle } from "~/styles/navigator";
 import HeaderBackButton from "~/components/common/button/HeaderBackButton";
 import Home from "~/screens/Home";
-import { useAppSelector } from "~/store";
 import MyPage from "~/screens/MyPage";
 import PetProfile from "~/screens/MyPage/PetProfile";
 import PassManagement from "~/screens/MyPage/PassManagement";
@@ -39,9 +37,6 @@ const SharedStack = ({ screenName }: { screenName: string }) => (
           headerShown: false,
         }}
       />
-    )}
-    {screenName === "Walk" && (
-      <Stack.Screen name="Walk" component={Walk} options={{ title: "산책" }} />
     )}
     {screenName === "Notification" && (
       <Stack.Screen

@@ -12,8 +12,6 @@ type SharedStackParamList = {
         execute: boolean;
       }
     | undefined;
-  StartWalking: undefined;
-  WalkMap: undefined;
   MyPage: undefined;
   PetProfile: undefined;
   PassManagement: undefined;
@@ -49,14 +47,6 @@ export type NotificationScreenNavigationProp = StackNavigationProp<
   SharedStackParamList,
   "Notification"
 >;
-export type StartWalkingScreenNavigationProp = StackNavigationProp<
-  SharedStackParamList,
-  "StartWalking"
->;
-export type WalkMapScreenNavigationProp = StackNavigationProp<
-  SharedStackParamList,
-  "WalkMap"
->;
 export type MyPageScreenNavigationProp = StackNavigationProp<
   SharedStackParamList,
   "MyPage"
@@ -84,4 +74,29 @@ export type SafetyZoneMapScreenRouteProp = RouteProp<
 export type AddDeviceScreenRouteProp = RouteProp<
   SharedStackParamList,
   "AddDevice"
+>;
+
+type WalkStackParamList = {
+  Walk: undefined;
+  WalkMap: undefined;
+  StartWalking: undefined;
+  WalkRecord: undefined;
+  AddDevice: undefined;
+};
+
+export type WalkScreenNavigationProp = StackNavigationProp<
+  WalkStackParamList,
+  "Walk"
+>;
+export type WalkMapScreenNavigationProp = StackNavigationProp<
+  WalkStackParamList,
+  "WalkMap"
+>;
+export type StartWalkingScreenNavigationProp = StackNavigationProp<
+  WalkStackParamList,
+  "StartWalking"
+>;
+export type WalkRecordScreenNavigationProp = StackNavigationProp<
+  WalkStackParamList,
+  "WalkRecord"
 >;

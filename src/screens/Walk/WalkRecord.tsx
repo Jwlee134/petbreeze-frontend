@@ -7,8 +7,13 @@ import Calendar from "~/components/common/Calendar";
 import useFocusEvent from "~/hooks/useFocusEvent";
 import { useAppSelector } from "~/store";
 import palette from "~/styles/palette";
+import { WalkRecordScreenNavigationProp } from "~/types/navigator";
 
-const WalkRecord = () => {
+const WalkRecord = ({
+  navigation,
+}: {
+  navigation: WalkRecordScreenNavigationProp;
+}) => {
   const { currentTabName } = useAppSelector(state => state.common);
   useFocusEvent({ isTab: true });
 
