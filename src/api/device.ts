@@ -65,7 +65,8 @@ const device = api.injectEndpoints({
           devEUI,
         },
       }),
-      invalidatesTags: [{ type: "Device", id: "LIST" }],
+      invalidatesTags: (result, error) =>
+        !error ? [{ type: "Device", id: "LIST" }] : [],
     }),
 
     postDeviceSharingPermission: builder.mutation<
@@ -91,7 +92,8 @@ const device = api.injectEndpoints({
           "sharing-key": sharing_key,
         },
       }),
-      invalidatesTags: [{ type: "SharedDevice", id: "LIST" }],
+      invalidatesTags: (result, error) =>
+        !error ? [{ type: "SharedDevice", id: "LIST" }] : [],
     }),
 
     deleteDevice: builder.mutation<void, string>({

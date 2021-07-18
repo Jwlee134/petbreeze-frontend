@@ -72,9 +72,8 @@ const walk = api.injectEndpoints({
           },
         },
       }),
-      invalidatesTags: (result, error, { deviceId }) => [
-        { type: "Walk", id: deviceId },
-      ],
+      invalidatesTags: (result, error, { deviceId }) =>
+        !error ? [{ type: "Walk", id: deviceId }] : [],
     }),
 
     getWalkDetail: builder.query<IWalkDetailGetResponse, { walk_id: number }>({
