@@ -1,8 +1,11 @@
 @import Firebase;
 #import "AppDelegate.h"
+#import <CodePush/CodePush.h>
 
 #import <UserNotifications/UserNotifications.h>
 #import <RNCPushNotificationIOS.h>
+#import <RNKakaoLogins.h>
+#import <GoogleMaps/GoogleMaps.h>
 
 #if RCT_DEV
 #import <React/RCTDevLoadingView.h>
@@ -23,8 +26,7 @@
 #import <FlipperKitNetworkPlugin/FlipperKitNetworkPlugin.h>
 #import <SKIOSNetworkPlugin/SKIOSNetworkAdapter.h>
 #import <FlipperKitReactPlugin/FlipperKitReactPlugin.h>
-#import <RNKakaoLogins.h>
-#import <GoogleMaps/GoogleMaps.h>
+
 
 static void InitializeFlipper(UIApplication *application) {
   FlipperClient *client = [FlipperClient sharedClient];
@@ -105,7 +107,7 @@ self.moduleRegistryAdapter = [[UMModuleRegistryAdapter alloc] initWithModuleRegi
 #if DEBUG
   return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
 #else
-  return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
+  return [CodePush bundleURL];
 #endif
 }
 

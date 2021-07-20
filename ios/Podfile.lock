@@ -1,7 +1,13 @@
 PODS:
   - Alamofire (5.4.3)
+  - Base64 (1.1.2)
   - boost-for-react-native (1.63.0)
   - CocoaAsyncSocket (7.6.5)
+  - CodePush (7.0.1):
+    - Base64 (~> 1.1)
+    - JWT (~> 3.0.0-beta.12)
+    - React-Core
+    - SSZipArchive (~> 2.2.2)
   - DoubleConversion (1.1.6)
   - EXConstants (11.0.1):
     - ExpoModulesCore
@@ -188,6 +194,8 @@ PODS:
   - GoogleUtilities/UserDefaults (7.4.3):
     - GoogleUtilities/Logger
   - hermes-engine (0.7.2)
+  - JWT (3.0.0-beta.14):
+    - Base64 (~> 1.1.2)
   - kakao-login (3.3.2):
     - KakaoSDK (~> 2.4.0)
     - KakaoSDKAuth (~> 2.4.0)
@@ -615,6 +623,7 @@ PODS:
     - React-RCTImage
   - RNSVG (12.1.1):
     - React
+  - SSZipArchive (2.2.3)
   - TOCropViewController (2.6.0)
   - UMAppLoader (2.2.0)
   - UMCore (7.1.1)
@@ -629,6 +638,7 @@ PODS:
     - Yoga (~> 1.14)
 
 DEPENDENCIES:
+  - CodePush (from `../node_modules/react-native-code-push`)
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - EXConstants (from `../node_modules/expo-constants/ios`)
   - EXFileSystem (from `../node_modules/expo-file-system/ios`)
@@ -723,6 +733,7 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - Alamofire
+    - Base64
     - boost-for-react-native
     - CocoaAsyncSocket
     - FBSDKCoreKit
@@ -746,6 +757,7 @@ SPEC REPOS:
     - GoogleMaps
     - GoogleUtilities
     - hermes-engine
+    - JWT
     - KakaoSDK
     - KakaoSDKAuth
     - KakaoSDKCommon
@@ -759,10 +771,13 @@ SPEC REPOS:
     - nanopb
     - OpenSSL-Universal
     - PromisesObjC
+    - SSZipArchive
     - TOCropViewController
     - YogaKit
 
 EXTERNAL SOURCES:
+  CodePush:
+    :path: "../node_modules/react-native-code-push"
   DoubleConversion:
     :podspec: "../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec"
   EXConstants:
@@ -896,8 +911,10 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Alamofire: e447a2774a40c996748296fa2c55112fdbbc42f9
+  Base64: cecfb41a004124895a7bcee567a89bae5a89d49b
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
   CocoaAsyncSocket: 065fd1e645c7abab64f7a6a2007a48038fdc6a99
+  CodePush: 9bb93f52a44ee80b72739d89dead9c7e86c3bd3a
   DoubleConversion: cf9b38bf0b2d048436d9a82ad2abe1404f11e7de
   EXConstants: 3babb61f8f4bb7dffe85b8b7d6eaa31d903e4d7e
   EXFileSystem: 0a04aba8da751b9ac954065911bcf166503f8267
@@ -927,6 +944,7 @@ SPEC CHECKSUMS:
   GoogleMaps: 32ca02de09de357a10ac773f2c70f1986751392d
   GoogleUtilities: 45dbb24a7f351d69d0a601482b39ad6c32e30dab
   hermes-engine: 7d97ba46a1e29bacf3e3c61ecb2804a5ddd02d4f
+  JWT: ef71dfb03e1f842081e64dc42eef0e164f35d251
   kakao-login: f545fda326cdf9419645abb7c8f36ec97132c26b
   KakaoSDK: 1e80d6877c0eac6a310f93c73fb15ca56c05f2bd
   KakaoSDKAuth: fcba1c9ede431683f5bdd84c835a96981cb115a5
@@ -992,6 +1010,7 @@ SPEC CHECKSUMS:
   RNReanimated: 9c13c86454bfd54dab7505c1a054470bfecd2563
   RNScreens: bf59f17fbf001f1025243eeed5f19419d3c11ef2
   RNSVG: 551acb6562324b1d52a4e0758f7ca0ec234e278f
+  SSZipArchive: 62d4947b08730e4cda640473b0066d209ff033c9
   TOCropViewController: 3105367e808b7d3d886a74ff59bf4804e7d3ab38
   UMAppLoader: 21af63390e55c82e037fb9752d93114a80ecf16e
   UMCore: 2f671796d7439604a1cf8ac7bbe5809cd5c50437

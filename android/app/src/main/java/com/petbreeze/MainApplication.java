@@ -1,5 +1,6 @@
 package com.petbreeze;
 
+import com.microsoft.codepush.react.CodePush;
 import com.petbreeze.generated.BasePackageList;
 
 import android.app.Application;
@@ -51,6 +52,11 @@ public class MainApplication extends Application implements ReactApplication {
         @Override
         protected String getJSMainModuleName() {
           return "index";
+        }
+
+        @Override
+        protected String getJSBundleFile() {
+          return CodePush.getJSBundleFile();
         }
 
         @Override
