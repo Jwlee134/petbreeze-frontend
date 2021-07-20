@@ -17,7 +17,6 @@ import { Status } from "~/hooks/useBleManager";
 const DownloadingView = styled.View`
   width: 100%;
   height: 40px;
-  margin: 20px 0px;
   border-radius: 20px;
   border-width: 1px;
   border-color: rgba(0, 0, 0, 0.2);
@@ -50,7 +49,7 @@ const Progress = ({
   Animated.timing(value, {
     toValue: progress,
     duration: 500,
-    easing: Easing.linear,
+    easing: Easing.ease,
     useNativeDriver: false,
   }).start();
 
@@ -63,10 +62,11 @@ const Progress = ({
         {status.value.includes("Fail") && <Fail />}
         {status.value.includes("completed") && <Success />}
         {status.value === "downloading" && (
-          <DownloadingView>
-            <DownloadProgress style={{ width: widthInterpolate }} />
-            <BigText>{progress}</BigText>
-          </DownloadingView>
+          <>
+            <DownloadingView>
+              <DownloadProgress style={{ width: widthInterpolate }} />
+            </DownloadingView>
+          </>
         )}
         <BigText>{status.text}</BigText>
       </TopContainer>

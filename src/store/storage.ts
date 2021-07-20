@@ -20,6 +20,14 @@ interface IStorage {
   device: {
     isOtaUpdateAvailable: boolean;
   };
+  walk: {
+    didMountInitially: boolean;
+    duration: number;
+    coords: number[][];
+    meter: number;
+    isWalking: boolean;
+    startTime: string;
+  };
 }
 
 const initialState: IStorage = {
@@ -50,17 +58,25 @@ const initialState: IStorage = {
   device: {
     isOtaUpdateAvailable: false,
   },
+  walk: {
+    didMountInitially: true,
+    duration: 0,
+    coords: [],
+    meter: 0,
+    isWalking: false,
+    startTime: "",
+  },
 };
 
 const storage = createSlice({
   name: "storage",
   initialState,
   reducers: {
-    setMySurrounding: (state, action: PayloadAction<boolean>) => {
-      state.notifications.mySurrounding = action.payload;
+    setMySurrounding: (state, { payload }: PayloadAction<boolean>) => {
+      state.notifications.mySurrounding = payload;
     },
-    setCamera: (state, action: PayloadAction<Camera>) => {
-      state.camera = action.payload;
+    setCamera: (state, { payload }: PayloadAction<Camera>) => {
+      state.camera = payload;
     },
     login: (
       state,
@@ -101,6 +117,30 @@ const storage = createSlice({
     },
     setIsOtaUpdateAvailable: (state, { payload }: PayloadAction<boolean>) => {
       state.device.isOtaUpdateAvailable = payload;
+    },
+    setDidMountInitially: (state, { payload }: PayloadAction<boolean>) => {
+      state.walk.didMountInitially = payload;
+    },
+    setDuration: (state, { payload }: PayloadAction<number>) => {
+      state.walk.duration = payload;
+    },
+    setCoords: (
+      state,
+      { payload }: PayloadAction<{ latitude: number; longitude: number }>,
+    ) => {
+      state.walk.coords.push([payload.latitude, payload.longitude]);
+    },
+    setIsWalking: (state, { payload }: PayloadAction<boolean>) => {
+      state.walk.isWalking = payload;
+    },
+    setMeter: (state, { payload }: PayloadAction<number>) => {
+      state.walk.meter = payload;
+    },
+    setStartTime: (state, { payload }: PayloadAction<string>) => {
+      state.walk.startTime = payload;
+    },
+    clearWalk: state => {
+      state.walk = initialState.walk;
     },
   },
 });

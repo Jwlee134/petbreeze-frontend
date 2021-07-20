@@ -17,6 +17,7 @@ import HomeMap from "~/components/map/HomeMap";
 import { useEffect } from "react";
 
 import "~/NotificationHandler";
+import { Linking } from "react-native";
 
 const Container = styled.View`
   flex: 1;
@@ -38,6 +39,14 @@ const Home = ({ navigation }: { navigation: HomeScreenNavigationProp }) => {
     }
   }, [notification]);
 
+  useEffect(() => {
+    Linking.getInitialURL().then(url => {
+      if (url === "petbreeze://walk/map") {
+        navigation.navigate("Walk");
+      }
+    });
+  }, []);
+
   return (
     <>
       <Container>
@@ -47,11 +56,12 @@ const Home = ({ navigation }: { navigation: HomeScreenNavigationProp }) => {
           camera={camera}
           isTracking={isTracking}
         />
-        {/*  <HomeToggle
+        <HomeToggle
+          isTracking={isTracking}
           startTracking={startTracking}
           clearTracking={clearTracking}
           mapRef={mapRef}
-        /> */}
+        />
       </Container>
       <Modal {...modalProps}>
         <CenterModalComponent headerTitle="주의사항">

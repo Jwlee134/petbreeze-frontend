@@ -8,7 +8,7 @@ const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
 import RNFetchBlob from "rn-fetch-blob";
 import { bytesToString, stringToBytes } from "convert-string";
 import { useDispatch } from "react-redux";
-import { useLazyRegisterDeviceQuery } from "~/api/device";
+import { usePostDeviceMutation } from "~/api/device";
 import { useAppSelector } from "~/store";
 
 type StatusValue =
@@ -53,7 +53,7 @@ const useBleMaganer = () => {
   const [firmware, setFirmware] = useState<number[]>([]);
   const [notifStatus, setNotifStatus] = useState<number[]>([]);
 
-  const [registerDevice, devEUIResult] = useLazyRegisterDeviceQuery();
+  const [registerDevice, devEUIResult] = usePostDeviceMutation();
   const dispatch = useDispatch();
 
   const disconnect = async () => {
@@ -159,7 +159,7 @@ const useBleMaganer = () => {
         "GET",
         "https://next-bnb-jw.s3.ap-northeast-2.amazonaws.com/release_factory.bin",
       )
-        .progress({ interval: 10 }, (received, total) => {
+        .progress({ interval: 1 }, (received, total) => {
           setProgress(Math.floor((received / total) * 100));
         })
         .then(res => {
@@ -221,25 +221,26 @@ const useBleMaganer = () => {
   };
 
   useEffect(() => {
-    if (devEUIResult.data) {
-      startNotification();
-      /* if (devEUIResult.data.detail.includes("relation")) {
-        setStatus({
-          value: "completedWith200",
-          text: "등록이 완료되었어요.",
-        });
-      } else {
-        startNotification();
-      } */
-    }
-    if (devEUIResult.isError && devEUIResult.error.status === 400) {
-      disconnect().finally(() => {
-        setStatus({
-          value: "connectFailed",
-          text: "유효하지 않은 DevEUI.",
-        });
-      });
-    }
+    console.log(devEUIResult);
+    // if (devEUIResult.data) {
+    //   startNotification();
+    //   if (devEUIResult.data.detail.includes("relation")) {
+    //     setStatus({
+    //       value: "completedWith200",
+    //       text: "등록이 완료되었어요.",
+    //     });
+    //   } else {
+    //     startNotification();
+    //   }
+    // }
+    // if (devEUIResult.isError && devEUIResult.error.status === 400) {
+    //   disconnect().finally(() => {
+    //     setStatus({
+    //       value: "connectFailed",
+    //       text: "유효하지 않은 DevEUI.",
+    //     });
+    //   });
+    // }
   }, [devEUIResult]);
 
   const handleReadDevEUI = () => {
@@ -250,7 +251,7 @@ const useBleMaganer = () => {
     )
       .then(devEUI => {
         console.log("Succeded to read devEUI: ", bytesToString(devEUI));
-        registerDevice("cccc");
+        registerDevice("aaaa");
       })
       .catch(error => {
         disconnect().finally(() => {

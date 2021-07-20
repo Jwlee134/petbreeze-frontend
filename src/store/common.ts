@@ -29,11 +29,13 @@ const common = createSlice({
     setNotification: (state, { payload }: PayloadAction<string>) => {
       state.notification = payload;
     },
-    setPage: (state, { payload }: PayloadAction<"next" | "prev">) => {
+    setPage: (state, { payload }: PayloadAction<"next" | "prev" | "init">) => {
       if (payload === "next") {
         state.page++;
-      } else {
+      } else if (payload === "prev") {
         state.page--;
+      } else {
+        state.page = 0;
       }
     },
     setIsOtaUpdate: (state, { payload }: PayloadAction<boolean>) => {

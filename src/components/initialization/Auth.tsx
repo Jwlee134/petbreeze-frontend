@@ -43,7 +43,6 @@ const Auth = () => {
   const dispatch = useDispatch();
 
   const handleKakaoLogin = async () => {
-    /* dispatch(storageActions.setInitialization("initialization")); */
     dispatch(
       storageActions.login({
         token: "f8a328a8bff0c51a6e6f4423cc54001d3b4050f3",
@@ -51,13 +50,13 @@ const Auth = () => {
       }),
     );
     dispatch(commonActions.setPage("next"));
-    /*  try {
-      let token: KakaoOAuthToken | null = await login();
-      console.log(token);
-      if (token) getKakaoUser(token.accessToken);
-    } catch (error) {
-      console.log("카카오 서버 에러: ", error);
-    } */
+    // try {
+    //   let token: KakaoOAuthToken | null = await login();
+    //   console.log(token);
+    //   if (token) getKakaoUser(token.accessToken);
+    // } catch (error) {
+    //   console.log("카카오 서버 에러: ", error);
+    // }
   };
 
   useEffect(() => {

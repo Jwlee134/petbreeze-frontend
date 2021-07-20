@@ -23,9 +23,10 @@ const DeviceCheck = () => {
           }}
           background="transparent"
           text="건너뛰기"
-          onPress={() =>
-            dispatch(storageActions.setInitialization("initialization"))
-          }
+          onPress={() => {
+            dispatch(storageActions.setInitialization("initialization"));
+            dispatch(commonActions.setPage("init"));
+          }}
         />
         <Button
           onPress={() => dispatch(commonActions.setPage("next"))}

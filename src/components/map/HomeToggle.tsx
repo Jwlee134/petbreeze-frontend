@@ -13,6 +13,7 @@ import { mapActions } from "~/store/map";
 import { Platform } from "react-native";
 
 interface IProps {
+  isTracking: boolean;
   startTracking: () => void;
   clearTracking: () => void;
   mapRef: React.RefObject<MapView>;
@@ -46,7 +47,12 @@ const shadow = {
   elevation: 7,
 };
 
-const HomeToggle = ({ startTracking, clearTracking, mapRef }: IProps) => {
+const HomeToggle = ({
+  isTracking,
+  startTracking,
+  clearTracking,
+  mapRef,
+}: IProps) => {
   const data = useAppSelector(state => state.device);
   const {
     showPath,
@@ -74,14 +80,15 @@ const HomeToggle = ({ startTracking, clearTracking, mapRef }: IProps) => {
   }, [mapRef, latitude, longitude, isCameraMoved]);
 
   useEffect(() => {
-    if (showMyLocation) {
+    if (showMyLocation && !isTracking) {
       startTracking();
-    } else {
+    }
+    if (!showMyLocation && isTracking) {
       dispatch(mapActions.initMyCoords());
       setIsCameraMoved(false);
       clearTracking();
     }
-  }, [showMyLocation]);
+  }, [showMyLocation, isTracking]);
 
   useEffect(() => {
     if (!mapRef.current || !selectedDevice?.id) return;
