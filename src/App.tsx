@@ -7,7 +7,7 @@ import { lightTheme } from "./styles/theme";
 import { PersistGate } from "redux-persist/integration/react";
 import { persister, store } from "./store";
 import { Provider } from "react-redux";
-import BleManager from "react-native-ble-manager";
+
 import { Settings } from "react-native-fbsdk-next";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { ActionSheetProvider } from "@expo/react-native-action-sheet";
@@ -41,30 +41,25 @@ Settings.initializeSDK();
 //   CharacteristicB: "c4a10146-dd6e-11eb-ba80-0242ac130004",
 // };
 
-const App = () => {
-  useEffect(() => {
-    BleManager.start({ showAlert: false });
-  }, []);
+const App = () => (
+  <Provider store={store}>
+    <PersistGate persistor={persister}>
+      <NavigationContainer theme={lightTheme}>
+        <SafeAreaProvider>
+          <StatusBar
+            translucent
+            barStyle="dark-content"
+            backgroundColor="transparent"
+          />
+          <ActionSheetProvider useNativeDriver>
+            <RootNav />
+          </ActionSheetProvider>
+        </SafeAreaProvider>
+      </NavigationContainer>
+    </PersistGate>
+  </Provider>
+);
 
-  return (
-    <Provider store={store}>
-      <PersistGate persistor={persister}>
-        <NavigationContainer theme={lightTheme}>
-          <SafeAreaProvider>
-            <StatusBar
-              translucent
-              barStyle="dark-content"
-              backgroundColor="transparent"
-            />
-            <ActionSheetProvider useNativeDriver>
-              <RootNav />
-            </ActionSheetProvider>
-          </SafeAreaProvider>
-        </NavigationContainer>
-      </PersistGate>
-    </Provider>
-  );
-};
 // const App = () => {
 //   const [peripheral, setPeripheral] = useState<Peripheral | null>(null);
 //   const [value, setValue] = useState<number[]>([]);

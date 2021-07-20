@@ -15,6 +15,7 @@
 		8405B7922668C7C200BEE203 /* SwiftBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8405B7912668C7C200BEE203 /* SwiftBridge.swift */; };
 		8408C036BBEF720BBDB6E105 /* libPods-Petbreeze.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F50C09CE2B924FCC7A4B2FE2 /* libPods-Petbreeze.a */; };
 		84BE911B26980EB900287561 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 84BE911A26980EB900287561 /* GoogleService-Info.plist */; };
+		8E5AB30024994C0696326D8E /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 19D0AFA487144E03891D8685 /* SplashScreen.storyboard */; };
 		F016418510F2E3103A3BCE48 /* libPods-Petbreeze-PetbreezeTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8EB3D11E76E5AA33B5CD828E /* libPods-Petbreeze-PetbreezeTests.a */; };
 /* End PBXBuildFile section */
 
@@ -38,6 +39,7 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Petbreeze/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Petbreeze/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Petbreeze/main.m; sourceTree = "<group>"; };
+		19D0AFA487144E03891D8685 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = Petbreeze/SplashScreen.storyboard; sourceTree = "<group>"; };
 		230F107C51798AB1F65DA5C3 /* Pods-Petbreeze.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Petbreeze.release.xcconfig"; path = "Target Support Files/Pods-Petbreeze/Pods-Petbreeze.release.xcconfig"; sourceTree = "<group>"; };
 		301A13219160F0B008A366F5 /* Pods-Petbreeze.staging.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Petbreeze.staging.xcconfig"; path = "Target Support Files/Pods-Petbreeze/Pods-Petbreeze.staging.xcconfig"; sourceTree = "<group>"; };
 		58430C0E1FDA06EA7000AF21 /* Pods-Petbreeze-PetbreezeTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Petbreeze-PetbreezeTests.release.xcconfig"; path = "Target Support Files/Pods-Petbreeze-PetbreezeTests/Pods-Petbreeze-PetbreezeTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -102,6 +104,7 @@
 				8405B7912668C7C200BEE203 /* SwiftBridge.swift */,
 				8405B7902668C7C200BEE203 /* Petbreeze-Bridging-Header.h */,
 				84BE911A26980EB900287561 /* GoogleService-Info.plist */,
+				19D0AFA487144E03891D8685 /* SplashScreen.storyboard */,
 			);
 			name = Petbreeze;
 			sourceTree = "<group>";
@@ -257,6 +260,7 @@
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				84BE911B26980EB900287561 /* GoogleService-Info.plist in Resources */,
+				8E5AB30024994C0696326D8E /* SplashScreen.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -578,7 +582,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODEPUSH_KEY = "";
+				CODEPUSH_KEY = N04dY4yvPDzdyLCP7CQKjJZEOzA5qVtnEerOZ;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
