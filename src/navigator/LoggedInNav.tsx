@@ -10,29 +10,33 @@ import AddDevice from "~/screens/AddDevice";
 import { headerStyle, mainTabHeaderStyle } from "~/styles/navigator";
 import HeaderBackButton from "~/components/common/button/HeaderBackButton";
 
+import BleManager from "react-native-ble-manager";
+
 const Stack = createStackNavigator();
 
 const LoggedInNav = () => {
-  const [state, setState] = useState<AppStateStatus>();
+  // const [state, setState] = useState<AppStateStatus>();
 
-  const handleAppStateChange = (status: AppStateStatus) => {
-    setState(status);
-  };
+  // const handleAppStateChange = (status: AppStateStatus) => {
+  //   setState(status);
+  // };
 
   useEffect(() => {
-    AppState.addEventListener("change", handleAppStateChange);
-    return () => {
-      AppState.removeEventListener("change", handleAppStateChange);
-    };
+    BleManager.start({ showAlert: false });
+
+    // AppState.addEventListener("change", handleAppStateChange);
+    // return () => {
+    //   AppState.removeEventListener("change", handleAppStateChange);
+    // };
   }, []);
 
-  useEffect(() => {
-    if (!state || state === "active") {
-      console.log("foreground");
-    } else if (state === "background") {
-      console.log("background");
-    }
-  }, [state]);
+  // useEffect(() => {
+  //   if (!state || state === "active") {
+  //     console.log("foreground");
+  //   } else if (state === "background") {
+  //     console.log("background");
+  //   }
+  // }, [state]);
 
   return (
     <Stack.Navigator

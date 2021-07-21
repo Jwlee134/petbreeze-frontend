@@ -11,6 +11,7 @@ interface IStorage {
     nickname: string;
   };
   initialization: {
+    isCodePushUpdated: boolean;
     isPermissionAllowed: boolean;
     isDeviceRegistered: boolean;
     isSafetyZoneRegistered: boolean;
@@ -49,6 +50,7 @@ const initialState: IStorage = {
     nickname: "",
   },
   initialization: {
+    isCodePushUpdated: false,
     isPermissionAllowed: false,
     isDeviceRegistered: false,
     isSafetyZoneRegistered: false,
@@ -90,7 +92,12 @@ const storage = createSlice({
       {
         payload,
       }: PayloadAction<
-        "permission" | "device" | "safetZone" | "petProfile" | "initialization"
+        | "permission"
+        | "device"
+        | "safetZone"
+        | "petProfile"
+        | "initialization"
+        | "codePush"
       >,
     ) => {
       switch (payload) {
@@ -108,6 +115,9 @@ const storage = createSlice({
           break;
         case "initialization":
           state.initialization.isInitialized = true;
+          break;
+        case "codePush":
+          state.initialization.isCodePushUpdated = true;
           break;
       }
     },

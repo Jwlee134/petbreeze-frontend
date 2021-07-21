@@ -1,6 +1,6 @@
 import "react-native-gesture-handler";
 
-import React, { useEffect } from "react";
+import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 
 import { lightTheme } from "./styles/theme";
@@ -13,7 +13,6 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 
 import RootNav from "./navigator/RootNav";
-import { StatusBar } from "react-native";
 
 Settings.initializeSDK();
 
@@ -46,11 +45,6 @@ const App = () => (
     <PersistGate persistor={persister}>
       <NavigationContainer theme={lightTheme}>
         <SafeAreaProvider>
-          <StatusBar
-            translucent
-            barStyle="dark-content"
-            backgroundColor="transparent"
-          />
           <ActionSheetProvider useNativeDriver>
             <RootNav />
           </ActionSheetProvider>
