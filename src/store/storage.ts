@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Camera } from "react-native-maps";
+import { isAndroid } from "~/utils";
 
 interface IStorage {
   notifications: {
@@ -51,7 +52,7 @@ const initialState: IStorage = {
   },
   initialization: {
     isCodePushUpdated: false,
-    isPermissionAllowed: false,
+    isPermissionAllowed: isAndroid ? true : false,
     isDeviceRegistered: false,
     isSafetyZoneRegistered: false,
     isPetProfileRegistered: false,

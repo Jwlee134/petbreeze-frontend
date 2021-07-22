@@ -13,11 +13,16 @@ import { useDispatch } from "react-redux";
 import { storageActions } from "~/store/storage";
 import { StatusBar, StatusBarStyle } from "react-native";
 
+import Blemanager from "react-native-ble-manager";
+
 SplashScreen.preventAutoHideAsync();
 
 const RootNav = () => {
   const isInitialized = useAppSelector(
     state => state.storage.initialization.isInitialized,
+  );
+  const isPermissonAllowed = useAppSelector(
+    state => state.storage.initialization.isPermissionAllowed,
   );
   const isCodePushUpdated = useAppSelector(
     state => state.storage.initialization.isCodePushUpdated,
@@ -32,12 +37,16 @@ const RootNav = () => {
   const handleStatus = (status: CodePush.SyncStatus) => {
     switch (status) {
       case CodePush.SyncStatus.UP_TO_DATE:
+        setProgress(100);
         dispatch(storageActions.setInitialization("codePush"));
-        setShowFirmwareUpdate(false);
+        setTimeout(() => {
+          setShowFirmwareUpdate(false);
+        }, 300);
       case CodePush.SyncStatus.UPDATE_INSTALLED:
         dispatch(storageActions.setInitialization("codePush"));
         setTimeout(() => {
           CodePush.restartApp();
+          setBarStyle("light-content");
         }, 300);
         break;
       default:
@@ -60,8 +69,15 @@ const RootNav = () => {
       } else {
         CodePush.sync();
       }
-    }, 1000);
+    }, 500);
   }, []);
+
+  useEffect(() => {
+    if (isPermissonAllowed)
+      Blemanager.start({ showAlert: false }).then(() => {
+        console.log("BLE Module is initialized.");
+      });
+  }, [isPermissonAllowed]);
 
   return (
     <>

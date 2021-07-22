@@ -11,6 +11,7 @@ import { useAppSelector } from "~/store";
 import { useDispatch } from "react-redux";
 import { mapActions } from "~/store/map";
 import { Platform } from "react-native";
+import { permissionCheck } from "~/utils";
 
 interface IProps {
   isTracking: boolean;
@@ -123,7 +124,11 @@ const HomeToggle = ({
         </Circle>
       </ButtonContainer>
       <ButtonContainer
-        onPress={() => dispatch(mapActions.setShowMyLocation(!showMyLocation))}
+        onPress={() => {
+          permissionCheck("location").then(() => {
+            dispatch(mapActions.setShowMyLocation(!showMyLocation));
+          });
+        }}
         style={{ top: 85 }}
         activeOpacity={1}>
         <Circle style={shadow} selected={showMyLocation}>
