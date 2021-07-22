@@ -2,7 +2,6 @@ import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import palette from "~/styles/palette";
 import SharedStackNav from "./SharedStackNav";
-import { Platform } from "react-native";
 
 import Home from "~/assets/svg/tab/home.svg";
 import HomeOutline from "~/assets/svg/tab/home-outline.svg";
@@ -13,22 +12,24 @@ import BellOutline from "~/assets/svg/tab/bell-outline.svg";
 import User from "~/assets/svg/tab/user.svg";
 import UserOutline from "~/assets/svg/tab/user-outline.svg";
 import WalkStackNav from "./WalkStackNav";
+import { isAndroid } from "~/utils";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const Tab = createBottomTabNavigator();
 
 const BottomTabNav = () => {
+  const { bottom } = useSafeAreaInsets();
+
   return (
     <Tab.Navigator
       tabBarOptions={{
         activeTintColor: palette.blue_6e,
         inactiveTintColor: "#808080",
         labelStyle: {
-          marginTop: -5,
-          marginBottom: Platform.OS === "android" ? 10 : 0,
+          marginBottom: 6,
         },
         style: {
-          height: Platform.OS === "ios" ? 80 : 60,
-          justifyContent: "center",
+          height: isAndroid ? 56 : 56 + bottom,
         },
       }}>
       <Tab.Screen
