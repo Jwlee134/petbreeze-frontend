@@ -26,7 +26,7 @@ const Walk = ({ navigation }: { navigation: WalkScreenNavigationProp }) => {
 
   useEffect(() => {
     if (coords.length !== 0) {
-      navigation.navigate("WalkMap");
+      navigation.replace("WalkMap");
     }
   }, []);
 

@@ -38,7 +38,7 @@ const StartWalking = ({
   const device = useAppSelector(state => state.device);
   useFocusEvent({ isTab: true });
 
-  const handleStart = () => navigation.navigate("WalkMap");
+  const handleStart = () => navigation.replace("WalkMap");
 
   const handleNavigate = () => navigation.navigate("AddDevice");
 

@@ -183,7 +183,7 @@ const WalkMap = ({
       clearTracking();
     }
     dispatch(storageActions.clearWalk());
-    navigation.goBack();
+    navigation.replace("Walk");
     /*  const { data } = await api.post("/walk/2/", {
       start_date_time: startTime as Date,
       end_date_time: new Date((startTime as Date).getTime() + time * 1000),
