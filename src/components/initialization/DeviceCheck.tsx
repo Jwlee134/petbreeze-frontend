@@ -6,9 +6,11 @@ import Device from "~/assets/svg/initialization/device.svg";
 import Button from "../common/Button";
 import { storageActions } from "~/store/storage";
 import { commonActions } from "~/store/common";
+import useDisableButton from "~/hooks/useDisableButton";
 
 const DeviceCheck = () => {
   const dispatch = useDispatch();
+  const { disabled, disable } = useDisableButton();
 
   return (
     <Container>
@@ -29,7 +31,11 @@ const DeviceCheck = () => {
           }}
         />
         <Button
-          onPress={() => dispatch(commonActions.setPage("next"))}
+          onPress={() => {
+            if (disabled) return;
+            dispatch(commonActions.setPage("next"));
+            disable();
+          }}
           text="등록"
         />
       </BottomContainer>

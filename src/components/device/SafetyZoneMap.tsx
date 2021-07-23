@@ -18,6 +18,7 @@ import { Camera, Circle } from "react-native-maps";
 import { Keyboard } from "react-native";
 import { useDispatch } from "react-redux";
 import { commonActions } from "~/store/common";
+import useDisableButton from "~/hooks/useDisableButton";
 
 const Container = styled.KeyboardAvoidingView`
   width: ${width}px;
@@ -72,6 +73,7 @@ const edgePadding = isIos ? 75 : 100;
 
 const SafetyZoneMap = ({ handleComplete }: { handleComplete?: () => void }) => {
   const { Map, mapRef, camera } = useMap();
+  const { disable, disabled } = useDisableButton();
   const { isTracking, startTracking } = useMyLocation();
   const { latitude, longitude } = useAppSelector(state => state.map.myCoords);
   const { showActionSheetWithOptions } = useActionSheet();
@@ -227,7 +229,9 @@ const SafetyZoneMap = ({ handleComplete }: { handleComplete?: () => void }) => {
             disabled={/* !name || !radiusValue */ false}
             style={{ marginBottom: show ? 0 : isIos ? 24 : 48 }}
             onPress={() => {
+              if (disabled) return;
               handleComplete && handleComplete();
+              disable();
             }}
             text="완료"
           />

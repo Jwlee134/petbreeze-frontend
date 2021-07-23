@@ -16,8 +16,8 @@ const DeviceInteraction = () => {
         handleNext={() => {
           dispatch(commonActions.setPage("next"));
           setStatus({
-            value: "downloading",
-            text: "펌웨어 다운로드 중...",
+            value: "completed",
+            text: "완료되었습니다.",
           });
         }}
       />

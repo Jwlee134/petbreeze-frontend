@@ -13,6 +13,7 @@ import Success from "../lottie/Success";
 import palette from "~/styles/palette";
 import Button from "../common/Button";
 import { Status } from "~/hooks/useBleManager";
+import useDisableButton from "~/hooks/useDisableButton";
 
 const DownloadingView = styled.View`
   width: 100%;
@@ -40,6 +41,7 @@ const Progress = ({
   progress: number;
 }) => {
   const value = useRef(new Animated.Value(0)).current;
+  const { disable, disabled } = useDisableButton();
 
   const widthInterpolate = value.interpolate({
     inputRange: [0, progress],
@@ -95,7 +97,14 @@ const Progress = ({
           />
         )}
         {status.value.includes("completed") && (
-          <Button text="다음" onPress={handleComplete} />
+          <Button
+            text="다음"
+            onPress={() => {
+              if (disabled) return;
+              handleComplete();
+              disable();
+            }}
+          />
         )}
       </BottomContainer>
     </Container>

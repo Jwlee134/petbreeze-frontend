@@ -12,6 +12,7 @@ import styled from "styled-components/native";
 import CheckShield from "~/assets/svg/safetyZone/check-shield.svg";
 import CheckCircle from "~/assets/svg/safetyZone/check-circle.svg";
 import { commonActions } from "~/store/common";
+import useDisableButton from "~/hooks/useDisableButton";
 
 const DescriptionContainer = styled.View`
   width: 100%;
@@ -31,6 +32,7 @@ const DescriptionText = styled.Text`
 
 const SafetyZoneSetting = () => {
   const dispatch = useDispatch();
+  const { disable, disabled } = useDisableButton();
 
   return (
     <Container>
@@ -62,7 +64,11 @@ const SafetyZoneSetting = () => {
         </DescriptionContainer>
         <Button
           text="설정"
-          onPress={() => dispatch(commonActions.setPage("next"))}
+          onPress={() => {
+            if (disabled) return;
+            dispatch(commonActions.setPage("next"));
+            disable();
+          }}
         />
       </BottomContainer>
     </Container>

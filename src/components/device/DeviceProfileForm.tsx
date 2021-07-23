@@ -15,6 +15,7 @@ import { useState } from "react";
 import { commonActions } from "~/store/common";
 import { isIos } from "~/utils";
 import { useUpdateDeviceProfileAvatarMutation } from "~/api/device";
+import useDisableButton from "~/hooks/useDisableButton";
 
 const AvatarContainer = styled.TouchableOpacity`
   justify-content: center;
@@ -44,6 +45,7 @@ const DeviceProfileForm = ({
     useAppSelector(state => state.form);
   const dispatch = useDispatch();
   const [updateAvatar] = useUpdateDeviceProfileAvatarMutation();
+  const { disable, disabled } = useDisableButton();
 
   const [loading, setLoading] = useState(true);
 
@@ -118,7 +120,9 @@ const DeviceProfileForm = ({
           isLoading={loading}
           text="완료"
           onPress={() => {
+            if (disabled) return;
             handleComplete && handleComplete();
+            disable();
           }}
         />
       </KeyboardAwareScrollContainer>
