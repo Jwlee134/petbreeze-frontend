@@ -22,7 +22,7 @@ const MyPage = ({ navigation }: { navigation: MyPageScreenNavigationProp }) => {
   return (
     <>
       <ScrollView>
-        <CategoryTitle>디바이스 관리</CategoryTitle>
+        {/* <CategoryTitle>디바이스 관리</CategoryTitle>
         <ListItem onPress={() => navigation.navigate("DeviceSetting")}>
           환경설정
         </ListItem>
@@ -55,9 +55,9 @@ const MyPage = ({ navigation }: { navigation: MyPageScreenNavigationProp }) => {
         </ListItem>
         <ListItem onPress={() => navigation.navigate("SavedPost")}>
           저장한 게시물
-        </ListItem>
+        </ListItem> */}
       </ScrollView>
-      <Modal {...modalProps}>
+      {/* <Modal {...modalProps}>
         <CenterModalComponent>
           <SimpleToggleModal
             onConfirmText="정말 로그아웃하시겠습니까?"
@@ -72,7 +72,7 @@ const MyPage = ({ navigation }: { navigation: MyPageScreenNavigationProp }) => {
             onAbort={close}
           />
         </CenterModalComponent>
-      </Modal>
+      </Modal> */}
     </>
   );
 };

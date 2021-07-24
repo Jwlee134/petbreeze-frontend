@@ -54,7 +54,7 @@ const SharedStack = ({ screenName }: { screenName: string }) => (
         }}
       />
     )}
-    <Stack.Screen
+    {/* <Stack.Screen
       name="PetProfile"
       component={PetProfile}
       options={{
@@ -131,7 +131,7 @@ const SharedStack = ({ screenName }: { screenName: string }) => (
       options={{
         title: "",
       }}
-    />
+    /> */}
   </Stack.Navigator>
 );
 

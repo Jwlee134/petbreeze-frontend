@@ -1,8 +1,11 @@
+import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { RouteProp } from "@react-navigation/core";
+import { MaterialTopTabNavigationProp } from "@react-navigation/material-top-tabs";
+import { CompositeNavigationProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { Camera } from "react-native-maps";
 
-type SharedStackParamList = {
+/* type SharedStackParamList = {
   Home: undefined;
   Walk: undefined;
   Community: undefined;
@@ -35,10 +38,6 @@ type SharedStackParamList = {
     | undefined;
 };
 
-export type HomeScreenNavigationProp = StackNavigationProp<
-  SharedStackParamList,
-  "Home"
->;
 export type CommunityScreenNavigationProp = StackNavigationProp<
   SharedStackParamList,
   "Community"
@@ -70,33 +69,84 @@ export type SafetyZoneMapScreenNavigationProp = StackNavigationProp<
 export type SafetyZoneMapScreenRouteProp = RouteProp<
   SharedStackParamList,
   "SafetyZoneMap"
->;
+>;*/
+
+type LoggedInNavParamList = {
+  AddDevice: {
+    isOtaUpdate: boolean;
+  };
+};
 export type AddDeviceScreenRouteProp = RouteProp<
-  SharedStackParamList,
+  LoggedInNavParamList,
   "AddDevice"
 >;
 
-type WalkStackParamList = {
+type BottomTabParamList = {
+  Home: undefined;
   Walk: undefined;
-  WalkMap: undefined;
-  StartWalking: undefined;
-  WalkRecord: undefined;
-  AddDevice: undefined;
+  Notification: undefined;
+  MyMenu: undefined;
 };
 
-export type WalkScreenNavigationProp = StackNavigationProp<
-  WalkStackParamList,
-  "Walk"
+type SharedStackParamList = {
+  Home: undefined;
+  Notification: undefined;
+};
+export type HomeScreenNavigationProp = CompositeNavigationProp<
+  StackNavigationProp<SharedStackParamList, "Home">,
+  CompositeNavigationProp<
+    BottomTabNavigationProp<BottomTabParamList>,
+    StackNavigationProp<LoggedInNavParamList>
+  >
 >;
-export type WalkMapScreenNavigationProp = StackNavigationProp<
-  WalkStackParamList,
-  "WalkMap"
+export type NotificationScreenNavigationProp = CompositeNavigationProp<
+  StackNavigationProp<SharedStackParamList, "Notification">,
+  CompositeNavigationProp<
+    BottomTabNavigationProp<BottomTabParamList>,
+    StackNavigationProp<LoggedInNavParamList>
+  >
 >;
-export type StartWalkingScreenNavigationProp = StackNavigationProp<
-  WalkStackParamList,
-  "StartWalking"
+
+type WalkStackNavParamList = {
+  Walk: undefined;
+  WalkMap: undefined;
+};
+export type WalkScreenNavigationProp = CompositeNavigationProp<
+  StackNavigationProp<WalkStackNavParamList, "Walk">,
+  CompositeNavigationProp<
+    BottomTabNavigationProp<BottomTabParamList>,
+    StackNavigationProp<LoggedInNavParamList>
+  >
 >;
-export type WalkRecordScreenNavigationProp = StackNavigationProp<
-  WalkStackParamList,
-  "WalkRecord"
+export type WalkMapScreenNavigationProp = CompositeNavigationProp<
+  StackNavigationProp<WalkStackNavParamList, "WalkMap">,
+  CompositeNavigationProp<
+    BottomTabNavigationProp<BottomTabParamList>,
+    StackNavigationProp<LoggedInNavParamList>
+  >
+>;
+
+type WalkTopTabParamList = {
+  StartWalking: undefined;
+  WalkRecord: undefined;
+};
+export type StartWalkingScreenNavigationProp = CompositeNavigationProp<
+  MaterialTopTabNavigationProp<WalkTopTabParamList, "StartWalking">,
+  CompositeNavigationProp<
+    StackNavigationProp<WalkStackNavParamList>,
+    CompositeNavigationProp<
+      BottomTabNavigationProp<BottomTabParamList>,
+      StackNavigationProp<LoggedInNavParamList>
+    >
+  >
+>;
+export type WalkRecordScreenNavigationProp = CompositeNavigationProp<
+  MaterialTopTabNavigationProp<WalkTopTabParamList, "WalkRecord">,
+  CompositeNavigationProp<
+    StackNavigationProp<WalkStackNavParamList>,
+    CompositeNavigationProp<
+      BottomTabNavigationProp<BottomTabParamList>,
+      StackNavigationProp<LoggedInNavParamList>
+    >
+  >
 >;
