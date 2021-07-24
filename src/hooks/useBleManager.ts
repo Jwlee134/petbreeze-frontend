@@ -222,25 +222,24 @@ const useBleMaganer = () => {
 
   useEffect(() => {
     console.log(devEUIResult);
-    // if (devEUIResult.data) {
-    //   startNotification();
-    //   if (devEUIResult.data.detail.includes("relation")) {
-    //     setStatus({
-    //       value: "completedWith200",
-    //       text: "등록이 완료되었어요.",
-    //     });
-    //   } else {
-    //     startNotification();
-    //   }
-    // }
-    // if (devEUIResult.isError && devEUIResult.error.status === 400) {
-    //   disconnect().finally(() => {
-    //     setStatus({
-    //       value: "connectFailed",
-    //       text: "유효하지 않은 DevEUI.",
-    //     });
-    //   });
-    // }
+    if (devEUIResult.data) {
+      if (devEUIResult.data.detail.includes("relation")) {
+        setStatus({
+          value: "completedWith200",
+          text: "등록이 완료되었어요.",
+        });
+      } else {
+        startNotification();
+      }
+    }
+    if (devEUIResult.isError && devEUIResult.error.status === 400) {
+      disconnect().finally(() => {
+        setStatus({
+          value: "connectFailed",
+          text: "유효하지 않은 DevEUI.",
+        });
+      });
+    }
   }, [devEUIResult]);
 
   const handleReadDevEUI = () => {

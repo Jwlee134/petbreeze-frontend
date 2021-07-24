@@ -57,17 +57,19 @@ const device = api.injectEndpoints({
       providesTags: result => providesList(result, "Device"),
     }),
 
-    postDevice: builder.mutation<void, string>({
-      query: devEUI => ({
-        url: "/device/",
-        method: "POST",
-        headers: {
-          devEUI,
-        },
-      }),
-      invalidatesTags: (result, error) =>
-        !error ? [{ type: "Device", id: "LIST" }] : [],
-    }),
+    postDevice: builder.mutation<{ detail: string; device_id: number }, string>(
+      {
+        query: devEUI => ({
+          url: "/device/",
+          method: "POST",
+          headers: {
+            devEUI,
+          },
+        }),
+        invalidatesTags: (result, error) =>
+          !error ? [{ type: "Device", id: "LIST" }] : [],
+      },
+    ),
 
     postDeviceSharingPermission: builder.mutation<
       ISharedDevice,
