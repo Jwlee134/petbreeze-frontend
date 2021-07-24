@@ -15,10 +15,10 @@ import { useEffect } from "react";
 import { useActionSheet } from "@expo/react-native-action-sheet";
 import Input from "../common/Input";
 import { Camera, Circle } from "react-native-maps";
-import { Keyboard } from "react-native";
+import { Alert, Keyboard } from "react-native";
 import { useDispatch } from "react-redux";
-import { commonActions } from "~/store/common";
 import useDisableButton from "~/hooks/useDisableButton";
+import { useUpdateSafetyZoneMutation } from "~/api/device";
 
 const Container = styled.KeyboardAvoidingView`
   width: ${width}px;
@@ -71,11 +71,20 @@ const destructiveButtonIndex = 0;
 const cancelButtonIndex = 5;
 const edgePadding = isIos ? 75 : 100;
 
-const SafetyZoneMap = ({ handleComplete }: { handleComplete?: () => void }) => {
+const SafetyZoneMap = ({
+  handleComplete,
+  id = 1,
+}: {
+  handleComplete?: () => void;
+  id?: number;
+}) => {
   const { Map, mapRef, camera } = useMap();
   const { disable, disabled } = useDisableButton();
-  const { isTracking, startTracking } = useMyLocation();
+  const { isTracking, startTracking, clearTracking } = useMyLocation();
   const { latitude, longitude } = useAppSelector(state => state.map.myCoords);
+  const deviceId = useAppSelector(
+    state => state.storage.device.deviceIdInProgress,
+  );
   const { showActionSheetWithOptions } = useActionSheet();
   const circleRef = useRef<Circle>(null);
   const dispatch = useDispatch();
@@ -86,11 +95,15 @@ const SafetyZoneMap = ({ handleComplete }: { handleComplete?: () => void }) => {
   const [radius, setRadius] = useState("");
   const [currentCamera, setCurrentCamera] = useState<Camera | null>(null);
 
+  const [updateSafetyZone, result] = useUpdateSafetyZoneMutation();
+
   const radiusValue =
     Number(radius.replace(/\D/g, "")) === 1
       ? 1000
       : Number(radius.replace(/\D/g, ""));
 
+  // 원의 top, bottom, left, right 좌표 추출
+  // 반경 변경 시 원 크기에 맞게 fitToCoordinates 메소드 사용하기 위함
   const coordsArr = useMemo(() => {
     if (currentCamera) {
       return get4PointsAroundCircumference(
@@ -101,6 +114,7 @@ const SafetyZoneMap = ({ handleComplete }: { handleComplete?: () => void }) => {
     }
   }, [radiusValue]);
 
+  // 내 위치 클릭하여 위치에 맞게 지도 조절, 내 위치가 계속 변경되어도 지도가 내 위치를 따라가지 않음
   useEffect(() => {
     if (!mapRef.current) return;
     if (latitude && longitude && !isCameraMoved) {
@@ -112,6 +126,7 @@ const SafetyZoneMap = ({ handleComplete }: { handleComplete?: () => void }) => {
     }
   }, [mapRef, latitude, longitude, isCameraMoved, radiusValue]);
 
+  // 반경 변경 시 원 edgePadding 만큼 지도 줌 자동 조절
   useEffect(() => {
     if (!mapRef.current || !radiusValue) return;
     mapRef.current.fitToCoordinates(coordsArr, {
@@ -124,6 +139,7 @@ const SafetyZoneMap = ({ handleComplete }: { handleComplete?: () => void }) => {
     });
   }, [mapRef, radiusValue]);
 
+  // Circle 스타일 설정 (iOS 전용으로, iOS에서 스타일이 적용되지 않는 버그 때문)
   useEffect(() => {
     if (!circleRef.current || isAndroid || !radiusValue) {
       return;
@@ -151,6 +167,41 @@ const SafetyZoneMap = ({ handleComplete }: { handleComplete?: () => void }) => {
       hide.remove();
     };
   }, []);
+
+  useEffect(() => {
+    if (result.isSuccess) {
+      clearTracking();
+      handleComplete && handleComplete();
+      disable();
+    }
+    if (result.isError) {
+      if (result.error.status === 400) {
+        Alert.alert("유효하지 않은 데이터입니다.");
+      } else if (result.error.status === 404) {
+        Alert.alert("존재하지 않는 디바이스입니다.");
+      }
+    }
+  }, [result]);
+
+  const body = () => {
+    const obj: { [key: string]: any } = {};
+    obj[`safety_zone_${id}_name`] = name;
+    obj[`safety_zone_${id}_coordinate`] = {
+      type: "point",
+      coordinates: [
+        currentCamera?.center.latitude,
+        currentCamera?.center.longitude,
+      ],
+    };
+    obj[`safety_zone_${id}_radius`] = radiusValue;
+    return obj;
+  };
+
+  const handleSubmit = () => {
+    handleComplete();
+    // if (disabled || result.isLoading) return;
+    // updateSafetyZone({ deviceId, body: body() });
+  };
 
   return (
     <Container behavior="height">
@@ -228,11 +279,8 @@ const SafetyZoneMap = ({ handleComplete }: { handleComplete?: () => void }) => {
           <Button
             disabled={/* !name || !radiusValue */ false}
             style={{ marginBottom: show ? 0 : isIos ? 24 : 48 }}
-            onPress={() => {
-              if (disabled) return;
-              handleComplete && handleComplete();
-              disable();
-            }}
+            isLoading={result.isLoading}
+            onPress={handleSubmit}
             text="완료"
           />
         </BottomContainer>
