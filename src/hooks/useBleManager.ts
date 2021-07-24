@@ -9,7 +9,7 @@ import RNFetchBlob from "rn-fetch-blob";
 import { bytesToString, stringToBytes } from "convert-string";
 import { useDispatch } from "react-redux";
 import { usePostDeviceMutation } from "~/api/device";
-import { useAppSelector } from "~/store";
+import { storageActions } from "~/store/storage";
 
 type StatusValue =
   | "before"
@@ -41,9 +41,7 @@ const DeviceInformation = {
   CharacteristicA: "c4a0fdf4-dd6e-11eb-ba80-0242ac130004",
 };
 
-const useBleMaganer = () => {
-  const isOtaUpdate = useAppSelector(state => state.common.isOtaUpdate);
-
+const useBleMaganer = ({ isOtaUpdate = false } = {}) => {
   const [peripheral, setPeripheral] = useState<Peripheral | null>(null);
   const [status, setStatus] = useState<Status>({
     value: "before",
@@ -75,13 +73,16 @@ const useBleMaganer = () => {
       (peripheral as Peripheral).id,
       OTAControlPoint.UUID,
       OTAControlPoint.CharacteristicA,
-    )
-      .then(() => {
-        console.log("Succeded to stop notification");
-      })
-      .catch(error => {
-        console.log("Failed to stop notification: ", error);
+    ).finally(() => {
+      disconnect().finally(() => {
+        setStatus({
+          value: "completed",
+          text: isOtaUpdate
+            ? "업데이트가 완료되었어요."
+            : "디바이스 등록이\n완료되었어요.",
+        });
       });
+    });
   };
 
   const sendFirmwareToDevice = async () => {
@@ -224,11 +225,18 @@ const useBleMaganer = () => {
     console.log(devEUIResult);
     if (devEUIResult.data) {
       if (devEUIResult.data.detail.includes("relation")) {
-        setStatus({
-          value: "completedWith200",
-          text: "등록이 완료되었어요.",
+        disconnect().finally(() => {
+          setStatus({
+            value: "completedWith200",
+            text: "등록이 완료되었어요.",
+          });
         });
       } else {
+        dispatch(
+          storageActions.setDeviceRegistrationStep({
+            id: devEUIResult.data.device_id,
+          }),
+        );
         startNotification();
       }
     }
@@ -369,7 +377,6 @@ const useBleMaganer = () => {
     status,
     setStatus,
     progress,
-    disconnect,
   };
 };
 

@@ -13,21 +13,25 @@ import DeviceProfileForm from "~/components/device/DeviceProfileForm";
 import Completion from "~/components/initialization/Completion";
 import { storageActions } from "~/store/storage";
 import usePagingScrollView from "~/hooks/usePagingScrollView";
-import DeviceInteraction from "~/components/device";
+import useBleMaganer from "~/hooks/useBleManager";
+import Progress from "~/components/device/Progress";
+import BluetoothCheck from "~/components/device/BluetoothCheck";
 
 const Initialization = () => {
   const dispatch = useDispatch();
 
   const token = useAppSelector(state => state.storage.user.token);
-  const status = useAppSelector(state => state.storage.initialization);
+  const step = useAppSelector(state => state.storage.initialization);
+  const deviceStatus = useAppSelector(state => state.storage.device);
 
-  const [renderPermission] = useState(!status.isPermissionAllowed && isIos);
+  const [renderPermission] = useState(!step.isPermissionAllowed && isIos);
   const [renderAuth] = useState(!token);
-  const [renderDevice] = useState(!status.isDeviceRegistered);
-  const [renderSafetyZone] = useState(!status.isSafetyZoneRegistered);
-  const [renderPetProfile] = useState(!status.isPetProfileRegistered);
+  const [renderDevice] = useState(!deviceStatus.isDeviceRegistered);
+  const [renderSafetyZone] = useState(!deviceStatus.isSafetyZoneRegistered);
+  const [renderPetProfile] = useState(!deviceStatus.isProfileRegistered);
 
   const { PagingScrollView } = usePagingScrollView();
+  const { status: status, setStatus, progress } = useBleMaganer();
 
   return (
     <PagingScrollView>
@@ -36,7 +40,28 @@ const Initialization = () => {
       {renderDevice && (
         <>
           <DeviceCheck />
-          <DeviceInteraction />
+          <BluetoothCheck
+            handleNext={() => {
+              dispatch(commonActions.setPage("next"));
+              setStatus({
+                value: "completed",
+                text: "완료되었습니다.",
+              });
+            }}
+          />
+          <Progress
+            status={status}
+            setStatus={setStatus}
+            progress={progress}
+            handleComplete={() => {
+              if (status.value === "completedWith200") {
+                dispatch(storageActions.setInitialization("initialization"));
+              } else {
+                dispatch(commonActions.setPage("next"));
+                dispatch(storageActions.setDeviceRegistrationStep("device"));
+              }
+            }}
+          />
         </>
       )}
       {renderSafetyZone && (
@@ -45,7 +70,7 @@ const Initialization = () => {
           <SafetyZoneMap
             handleComplete={() => {
               dispatch(commonActions.setPage("next"));
-              dispatch(storageActions.setInitialization("safetZone"));
+              dispatch(storageActions.setDeviceRegistrationStep("safetyZone"));
             }}
           />
         </>
@@ -54,13 +79,14 @@ const Initialization = () => {
         <DeviceProfileForm
           handleComplete={() => {
             dispatch(commonActions.setPage("next"));
-            dispatch(storageActions.setInitialization("petProfile"));
+            dispatch(storageActions.setDeviceRegistrationStep("profile"));
           }}
         />
       )}
       <Completion
         handleClose={() => {
           dispatch(storageActions.setInitialization("initialization"));
+          dispatch(storageActions.initDeviceRegistrationStep());
           dispatch(commonActions.setPage("init"));
         }}
       />

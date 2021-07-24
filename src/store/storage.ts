@@ -14,13 +14,14 @@ interface IStorage {
   initialization: {
     isCodePushUpdated: boolean;
     isPermissionAllowed: boolean;
-    isDeviceRegistered: boolean;
-    isSafetyZoneRegistered: boolean;
-    isPetProfileRegistered: boolean;
     isInitialized: boolean;
   };
   device: {
     isOtaUpdateAvailable: boolean;
+    isDeviceRegistered: boolean;
+    isSafetyZoneRegistered: boolean;
+    isProfileRegistered: boolean;
+    deviceIdInProgress: string;
   };
   walk: {
     didMountInitially: boolean;
@@ -53,13 +54,14 @@ const initialState: IStorage = {
   initialization: {
     isCodePushUpdated: false,
     isPermissionAllowed: isAndroid ? true : false,
-    isDeviceRegistered: false,
-    isSafetyZoneRegistered: false,
-    isPetProfileRegistered: false,
     isInitialized: false,
   },
   device: {
     isOtaUpdateAvailable: false,
+    isDeviceRegistered: false,
+    isSafetyZoneRegistered: false,
+    isProfileRegistered: false,
+    deviceIdInProgress: "1",
   },
   walk: {
     didMountInitially: true,
@@ -90,29 +92,11 @@ const storage = createSlice({
     },
     setInitialization: (
       state,
-      {
-        payload,
-      }: PayloadAction<
-        | "permission"
-        | "device"
-        | "safetZone"
-        | "petProfile"
-        | "initialization"
-        | "codePush"
-      >,
+      { payload }: PayloadAction<"permission" | "initialization" | "codePush">,
     ) => {
       switch (payload) {
         case "permission":
           state.initialization.isPermissionAllowed = true;
-          break;
-        case "device":
-          state.initialization.isDeviceRegistered = true;
-          break;
-        case "safetZone":
-          state.initialization.isSafetyZoneRegistered = true;
-          break;
-        case "petProfile":
-          state.initialization.isPetProfileRegistered = true;
           break;
         case "initialization":
           state.initialization.isInitialized = true;
@@ -121,6 +105,35 @@ const storage = createSlice({
           state.initialization.isCodePushUpdated = true;
           break;
       }
+    },
+    setDeviceRegistrationStep: (
+      state,
+      {
+        payload,
+      }: PayloadAction<
+        "device" | "safetyZone" | "profile" | "ota" | { id: number }
+      >,
+    ) => {
+      switch (payload) {
+        case "device":
+          state.device.isDeviceRegistered = true;
+          break;
+        case "safetyZone":
+          state.device.isSafetyZoneRegistered = true;
+          break;
+        case "profile":
+          state.device.isProfileRegistered = true;
+          break;
+        case "ota":
+          state.device.isOtaUpdateAvailable = true;
+          break;
+        default:
+          state.device.deviceIdInProgress = payload.id;
+          break;
+      }
+    },
+    initDeviceRegistrationStep: state => {
+      state.device = initialState.device;
     },
     logout: state => {
       state.user.token = "";

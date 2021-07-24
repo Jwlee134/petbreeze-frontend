@@ -1,9 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ImageSourcePropType } from "react-native";
 import { Image } from "react-native-image-crop-picker";
 
 interface IForm {
-  avatar: Image | any;
+  avatar: Image | number;
   name: string;
   breed: string;
   age: string;
