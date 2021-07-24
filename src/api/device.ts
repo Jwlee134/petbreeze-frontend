@@ -17,19 +17,19 @@ interface ISharedDevice {
 
 interface ISafetyZone {
   safety_zone_1_name?: string;
-  safety_zone_1_cordinate?: {
+  safety_zone_1_coordinate?: {
     type: "point";
     coordinates: number[];
   };
   safety_zone_1_radius?: number;
   safety_zone_2_name?: string;
-  safety_zone_2_cordinate?: {
+  safety_zone_2_coordinate?: {
     type: "point";
     coordinates: number[];
   };
   safety_zone_2_radius?: number;
   safety_zone_3_name?: string;
-  safety_zone_3_cordinate?: {
+  safety_zone_3_coordinate?: {
     type: "point";
     coordinates?: number[];
   };
@@ -42,7 +42,7 @@ interface IDeviceProfileBody {
   variety: string;
   weight: number;
   contact_number1: string;
-  contact_number2: string;
+  contact_number2: string | null;
   precaution: string;
 }
 
@@ -210,7 +210,7 @@ const device = api.injectEndpoints({
       }
     >({
       query: ({ deviceId, avatar }) => ({
-        url: `/device/profile/`,
+        url: `/device/${deviceId}/profile/`,
         method: "PATCH",
         body: {
           profile_image: avatar,
