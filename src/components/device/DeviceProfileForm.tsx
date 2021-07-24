@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import styled from "styled-components/native";
 import { useAppSelector } from "~/store";
@@ -12,10 +12,13 @@ import { BigText } from "../initialization/Styles";
 
 import ImagePicker from "react-native-image-crop-picker";
 import { useState } from "react";
-import { commonActions } from "~/store/common";
 import { isIos } from "~/utils";
-import { useUpdateDeviceProfileAvatarMutation } from "~/api/device";
+import {
+  useUpdateDeviceProfileAvatarMutation,
+  useUpdateDeviceProfileMutation,
+} from "~/api/device";
 import useDisableButton from "~/hooks/useDisableButton";
+import { Alert } from "react-native";
 
 const AvatarContainer = styled.TouchableOpacity`
   justify-content: center;
@@ -44,12 +47,26 @@ const DeviceProfileForm = ({
   const { avatar, name, breed, age, weight, phoneNumber, caution } =
     useAppSelector(state => state.form);
   const dispatch = useDispatch();
-  const [updateAvatar] = useUpdateDeviceProfileAvatarMutation();
+  const deviceId = useAppSelector(
+    state => state.storage.device.deviceIdInProgress,
+  );
+  const [updateProfile, profileResult] = useUpdateDeviceProfileMutation();
+  const [updateAvatar, avatarResult] = useUpdateDeviceProfileAvatarMutation();
   const { disable, disabled } = useDisableButton();
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
-  const handleAvatar = () => {
+  const body = {
+    name,
+    age: Number(age),
+    variety: breed,
+    weight: Number(weight),
+    contact_number1: phoneNumber[0].value,
+    contact_number2: phoneNumber[1].value ? phoneNumber[1].value : null,
+    precaution: caution,
+  };
+
+  const handleAvatarThumbnail = () => {
     ImagePicker.openPicker({
       mediaType: "photo",
       cropping: true,
@@ -61,6 +78,7 @@ const DeviceProfileForm = ({
   };
 
   const handlePatchAvatar = () => {
+    if (typeof avatar === "number") return;
     const image = new FormData();
     image.append(`image1`, {
       name: isIos
@@ -69,6 +87,61 @@ const DeviceProfileForm = ({
       type: avatar.mime,
       uri: isIos ? avatar.sourceURL : avatar.path,
       data: avatar?.data || null,
+    });
+    return image;
+  };
+
+  useEffect(() => {
+    if (profileResult.isLoading) {
+      setLoading(true);
+    } else {
+      setLoading(false);
+    }
+    if (profileResult.error) {
+      if (profileResult.error.status === 400) {
+        Alert.alert("잘못된 데이터입니다.");
+      } else if (profileResult.error.status === 404) {
+        Alert.alert("존재하지 않는 디바이스입니다.");
+      }
+    }
+    if (profileResult.isSuccess) {
+      if (disabled) return;
+      handleComplete && handleComplete();
+      disable();
+    }
+  }, [profileResult]);
+
+  useEffect(() => {
+    if (avatarResult.isLoading) {
+      setLoading(true);
+    } else {
+      setLoading(false);
+    }
+    if (avatarResult.error) {
+      if (avatarResult.error.status === 400) {
+        Alert.alert("잘못된 데이터입니다.");
+      } else if (avatarResult.error.status === 404) {
+        Alert.alert("존재하지 않는 디바이스입니다.");
+      }
+    }
+    if (avatarResult.isSuccess) {
+      updateProfile({
+        deviceId,
+        body,
+      });
+    }
+  }, [avatarResult]);
+
+  const handleSubmit = () => {
+    if (!name || !breed || !age || !phoneNumber[0].value || !caution || !weight)
+      return;
+    if (typeof avatar !== "number") {
+      updateAvatar({ deviceId, avatar: handlePatchAvatar() as FormData });
+      return;
+    }
+    updateProfile({
+      deviceId,
+      body,
     });
   };
 
@@ -82,8 +155,14 @@ const DeviceProfileForm = ({
         <BigText style={{ marginBottom: 24 }}>
           반려동물 프로필을{"\n"}설정해주세요.
         </BigText>
-        <AvatarContainer onPress={handleAvatar} activeOpacity={1}>
-          <Avatar source={avatar} />
+        <AvatarContainer onPress={handleAvatarThumbnail} activeOpacity={1}>
+          <Avatar
+            source={
+              typeof avatar === "number"
+                ? avatar
+                : { uri: isIos ? avatar.sourceURL : avatar.path }
+            }
+          />
           <SmallText>클릭하여 변경</SmallText>
         </AvatarContainer>
         <Input
@@ -119,11 +198,7 @@ const DeviceProfileForm = ({
           style={{ marginBottom: 24 }}
           isLoading={loading}
           text="완료"
-          onPress={() => {
-            if (disabled) return;
-            handleComplete && handleComplete();
-            disable();
-          }}
+          onPress={handleSubmit}
         />
       </KeyboardAwareScrollContainer>
     </SafeAreaContainer>
