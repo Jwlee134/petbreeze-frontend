@@ -17,8 +17,9 @@ import Input from "../common/Input";
 import { Camera, Circle } from "react-native-maps";
 import { Alert, Keyboard } from "react-native";
 import { useDispatch } from "react-redux";
-import useDisableButton from "~/hooks/useDisableButton";
 import { useUpdateSafetyZoneMutation } from "~/api/device";
+import { commonActions } from "~/store/common";
+import { storageActions } from "~/store/storage";
 
 const Container = styled.KeyboardAvoidingView`
   width: ${width}px;
@@ -71,15 +72,16 @@ const destructiveButtonIndex = 0;
 const cancelButtonIndex = 5;
 const edgePadding = isIos ? 75 : 100;
 
+const safetyZoneNumber = 1;
+
 const SafetyZoneMap = ({
-  handleComplete,
-  id = 1,
+  navigation,
+  route,
 }: {
-  handleComplete?: () => void;
-  id?: number;
+  navigation?: any;
+  route?: any;
 }) => {
   const { Map, mapRef, camera } = useMap();
-  const { disable, disabled } = useDisableButton();
   const { isTracking, startTracking, clearTracking } = useMyLocation();
   const { latitude, longitude } = useAppSelector(state => state.map.myCoords);
   const deviceId = useAppSelector(
@@ -170,9 +172,13 @@ const SafetyZoneMap = ({
 
   useEffect(() => {
     if (result.isSuccess) {
-      clearTracking();
-      handleComplete && handleComplete();
-      disable();
+      if (isTracking) clearTracking();
+      if (!navigation) {
+        dispatch(commonActions.setPage("next"));
+        dispatch(storageActions.setDeviceRegistrationStep("safetyZone"));
+      } else {
+        // navigation goBack
+      }
     }
     if (result.isError) {
       if (result.error.status === 400) {
@@ -185,6 +191,9 @@ const SafetyZoneMap = ({
 
   const body = () => {
     const obj: { [key: string]: any } = {};
+    const id = route.params.safetyZoneNumber
+      ? route.params.safetyZoneNumber
+      : safetyZoneNumber;
     obj[`safety_zone_${id}_name`] = name;
     obj[`safety_zone_${id}_coordinate`] = {
       type: "point",
@@ -198,9 +207,20 @@ const SafetyZoneMap = ({
   };
 
   const handleSubmit = () => {
-    handleComplete();
-    // if (disabled || result.isLoading) return;
-    // updateSafetyZone({ deviceId, body: body() });
+    if (
+      result.isLoading ||
+      !name ||
+      !radius ||
+      !currentCamera?.center.latitude ||
+      !currentCamera.center.longitude
+    ) {
+      return;
+    }
+
+    updateSafetyZone({
+      deviceId: route.params.deviceId ? route.params.deviceId : deviceId,
+      body: body(),
+    });
   };
 
   return (
@@ -277,11 +297,11 @@ const SafetyZoneMap = ({
             </InputContainer>
           </InputWrapper>
           <Button
-            disabled={/* !name || !radiusValue */ false}
+            disabled={!name || !radiusValue}
             style={{ marginBottom: show ? 0 : isIos ? 24 : 48 }}
             isLoading={result.isLoading}
             onPress={handleSubmit}
-            text="완료"
+            text={navigation ? "저장" : "다음"}
           />
         </BottomContainer>
       </ShadowContainer>

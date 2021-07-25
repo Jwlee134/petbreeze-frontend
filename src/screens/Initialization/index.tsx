@@ -18,8 +18,6 @@ import Progress from "~/components/device/Progress";
 import BluetoothCheck from "~/components/device/BluetoothCheck";
 
 const Initialization = () => {
-  const dispatch = useDispatch();
-
   const token = useAppSelector(state => state.storage.user.token);
   const step = useAppSelector(state => state.storage.initialization);
   const deviceStatus = useAppSelector(state => state.storage.device);
@@ -40,56 +38,18 @@ const Initialization = () => {
       {renderDevice && (
         <>
           <DeviceCheck />
-          <BluetoothCheck
-            handleNext={() => {
-              dispatch(commonActions.setPage("next"));
-              setStatus({
-                value: "completed",
-                text: "완료되었습니다.",
-              });
-            }}
-          />
-          <Progress
-            status={status}
-            setStatus={setStatus}
-            progress={progress}
-            handleComplete={() => {
-              if (status.value === "completedWith200") {
-                dispatch(storageActions.setInitialization("initialization"));
-              } else {
-                dispatch(commonActions.setPage("next"));
-                dispatch(storageActions.setDeviceRegistrationStep("device"));
-              }
-            }}
-          />
+          <BluetoothCheck setStatus={setStatus} />
+          <Progress status={status} setStatus={setStatus} progress={progress} />
         </>
       )}
       {renderSafetyZone && (
         <>
           <SafetyZoneSetting />
-          <SafetyZoneMap
-            handleComplete={() => {
-              dispatch(commonActions.setPage("next"));
-              dispatch(storageActions.setDeviceRegistrationStep("safetyZone"));
-            }}
-          />
+          <SafetyZoneMap />
         </>
       )}
-      {renderPetProfile && (
-        <DeviceProfileForm
-          handleComplete={() => {
-            dispatch(commonActions.setPage("next"));
-            dispatch(storageActions.setDeviceRegistrationStep("profile"));
-          }}
-        />
-      )}
-      <Completion
-        handleClose={() => {
-          dispatch(storageActions.setInitialization("initialization"));
-          dispatch(storageActions.initDeviceRegistrationStep());
-          dispatch(commonActions.setPage("init"));
-        }}
-      />
+      {renderPetProfile && <DeviceProfileForm />}
+      <Completion />
     </PagingScrollView>
   );
 };

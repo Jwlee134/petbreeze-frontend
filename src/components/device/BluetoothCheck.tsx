@@ -9,9 +9,17 @@ import {
 
 import Bluetooth from "~/assets/svg/initialization/bluetooth.svg";
 import useDisableButton from "~/hooks/useDisableButton";
+import { commonActions } from "~/store/common";
+import { Status } from "~/hooks/useBleManager";
+import { useDispatch } from "react-redux";
 
-const BluetoothCheck = ({ handleNext }: { handleNext: () => void }) => {
+const BluetoothCheck = ({
+  setStatus,
+}: {
+  setStatus: React.Dispatch<React.SetStateAction<Status>>;
+}) => {
   const { disable, disabled } = useDisableButton();
+  const dispatch = useDispatch();
 
   return (
     <Container>
@@ -23,7 +31,11 @@ const BluetoothCheck = ({ handleNext }: { handleNext: () => void }) => {
         <Button
           onPress={() => {
             if (disabled) return;
-            handleNext();
+            dispatch(commonActions.setPage("next"));
+            setStatus({
+              value: "searching",
+              text: "디바이스 검색 중...",
+            });
             disable();
           }}
           text="예, 켜져 있습니다."

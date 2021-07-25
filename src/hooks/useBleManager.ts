@@ -19,6 +19,7 @@ type StatusValue =
   | "installing"
   | "completed"
   | "completedWith200"
+  | "completedOtaUpdate"
   | "connectFailed"
   | "downloadFailed"
   | "notifFailed";
@@ -76,7 +77,7 @@ const useBleMaganer = ({ isOtaUpdate = false } = {}) => {
     ).finally(() => {
       disconnect().finally(() => {
         setStatus({
-          value: "completed",
+          value: isOtaUpdate ? "completedOtaUpdate" : "completed",
           text: isOtaUpdate
             ? "업데이트가 완료되었어요."
             : "디바이스 등록이\n완료되었어요.",

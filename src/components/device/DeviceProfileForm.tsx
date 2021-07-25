@@ -17,8 +17,9 @@ import {
   useUpdateDeviceProfileAvatarMutation,
   useUpdateDeviceProfileMutation,
 } from "~/api/device";
-import useDisableButton from "~/hooks/useDisableButton";
 import { Alert } from "react-native";
+import { commonActions } from "~/store/common";
+import { storageActions } from "~/store/storage";
 
 const AvatarContainer = styled.TouchableOpacity`
   justify-content: center;
@@ -40,9 +41,11 @@ const SmallText = styled.Text`
 `;
 
 const DeviceProfileForm = ({
-  handleComplete,
+  navigation,
+  route,
 }: {
-  handleComplete?: () => void;
+  navigation?: any;
+  route?: any;
 }) => {
   const { avatar, name, breed, age, weight, phoneNumber, caution } =
     useAppSelector(state => state.form);
@@ -52,7 +55,6 @@ const DeviceProfileForm = ({
   );
   const [updateProfile, profileResult] = useUpdateDeviceProfileMutation();
   const [updateAvatar, avatarResult] = useUpdateDeviceProfileAvatarMutation();
-  const { disable, disabled } = useDisableButton();
 
   const [loading, setLoading] = useState(false);
 
@@ -77,7 +79,7 @@ const DeviceProfileForm = ({
     });
   };
 
-  const handlePatchAvatar = () => {
+  const handleFormData = () => {
     if (typeof avatar === "number") return;
     const image = new FormData();
     image.append(`image1`, {
@@ -105,9 +107,12 @@ const DeviceProfileForm = ({
       }
     }
     if (profileResult.isSuccess) {
-      if (disabled) return;
-      handleComplete && handleComplete();
-      disable();
+      if (navigation) {
+        // navigation goBack
+      } else {
+        dispatch(commonActions.setPage("next"));
+        dispatch(storageActions.setDeviceRegistrationStep("profile"));
+      }
     }
   }, [profileResult]);
 
@@ -126,21 +131,34 @@ const DeviceProfileForm = ({
     }
     if (avatarResult.isSuccess) {
       updateProfile({
-        deviceId,
+        deviceId: route.params.id ? route.params.id : deviceId,
         body,
       });
     }
   }, [avatarResult]);
 
   const handleSubmit = () => {
-    if (!name || !breed || !age || !phoneNumber[0].value || !caution || !weight)
+    if (
+      !name ||
+      !breed ||
+      !age ||
+      !phoneNumber[0].value ||
+      !caution ||
+      !weight ||
+      loading
+    ) {
       return;
+    }
+
     if (typeof avatar !== "number") {
-      updateAvatar({ deviceId, avatar: handlePatchAvatar() as FormData });
+      updateAvatar({
+        deviceId: route.params.id ? route.params.id : deviceId,
+        avatar: handleFormData() as FormData,
+      });
       return;
     }
     updateProfile({
-      deviceId,
+      deviceId: route.params.id ? route.params.id : deviceId,
       body,
     });
   };

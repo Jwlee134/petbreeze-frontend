@@ -14,6 +14,11 @@ import palette from "~/styles/palette";
 import Button from "../common/Button";
 import { Status } from "~/hooks/useBleManager";
 import useDisableButton from "~/hooks/useDisableButton";
+import { useDispatch } from "react-redux";
+import { storageActions } from "~/store/storage";
+import { commonActions } from "~/store/common";
+import { useAppSelector } from "~/store";
+import { useNavigation } from "@react-navigation/native";
 
 const DownloadingView = styled.View`
   width: 100%;
@@ -30,18 +35,21 @@ const DownloadProgress = styled(Animated.View)`
 `;
 
 const Progress = ({
-  handleComplete,
   status,
   setStatus,
   progress,
 }: {
-  handleComplete: () => void;
   status: Status;
   setStatus: React.Dispatch<React.SetStateAction<Status>>;
   progress: number;
 }) => {
   const value = useRef(new Animated.Value(0)).current;
   const { disable, disabled } = useDisableButton();
+  const dispatch = useDispatch();
+  const isInitialized = useAppSelector(
+    state => state.storage.initialization.isInitialized,
+  );
+  const navigation = useNavigation();
 
   const widthInterpolate = value.interpolate({
     inputRange: [0, progress],
@@ -98,10 +106,31 @@ const Progress = ({
         )}
         {status.value.includes("completed") && (
           <Button
-            text="다음"
+            text={
+              status.value === "completedWith200" ||
+              status.value === "completedOtaUpdate"
+                ? "완료"
+                : "다음"
+            }
             onPress={() => {
               if (disabled) return;
-              handleComplete();
+              if (status.value === "completedWith200") {
+                if (!isInitialized) {
+                  dispatch(commonActions.setPage("init"));
+                  dispatch(storageActions.setInitialization("initialization"));
+                } else {
+                  dispatch(commonActions.setPage("init"));
+                  navigation.goBack();
+                }
+              }
+              if (status.value === "completedOtaUpdate") {
+                dispatch(commonActions.setPage("init"));
+                navigation.goBack();
+              }
+              if (status.value === "completed") {
+                dispatch(commonActions.setPage("next"));
+                dispatch(storageActions.setDeviceRegistrationStep("device"));
+              }
               disable();
             }}
           />
