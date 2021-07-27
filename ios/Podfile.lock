@@ -199,7 +199,7 @@ PODS:
   - hermes-engine (0.7.2)
   - JWT (3.0.0-beta.14):
     - Base64 (~> 1.1.2)
-  - kakao-login (3.3.2):
+  - kakao-login (3.3.3):
     - KakaoSDK (~> 2.4.0)
     - KakaoSDKAuth (~> 2.4.0)
     - KakaoSDKCommon (~> 2.4.0)
@@ -952,7 +952,7 @@ SPEC CHECKSUMS:
   GoogleUtilities: 45dbb24a7f351d69d0a601482b39ad6c32e30dab
   hermes-engine: 7d97ba46a1e29bacf3e3c61ecb2804a5ddd02d4f
   JWT: ef71dfb03e1f842081e64dc42eef0e164f35d251
-  kakao-login: f545fda326cdf9419645abb7c8f36ec97132c26b
+  kakao-login: 8569f9925c765b9cea5b27ded4629c298b4f85d0
   KakaoSDK: 1e80d6877c0eac6a310f93c73fb15ca56c05f2bd
   KakaoSDKAuth: fcba1c9ede431683f5bdd84c835a96981cb115a5
   KakaoSDKCommon: 0912aa0c7db051ae8dc07a35395cf644f7728f95
