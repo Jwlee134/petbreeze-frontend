@@ -31,13 +31,19 @@ const Home = ({ navigation }: { navigation: HomeScreenNavigationProp }) => {
   const { Map, mapRef, camera } = useMap();
   const { isTracking, startTracking, clearTracking } = useMyLocation();
 
-  useEffect(() => {
+  /* useEffect(() => {
     if (notification.includes("안심존")) {
       setTimeout(() => {
         navigation.navigate("Walk");
       }, 1);
     }
-  }, [notification]);
+  }, [notification]); */
+
+  const handleOpenUrl = ({ url }: { url: string }) => {
+    if (url === "petbreeze://walk/map") {
+      navigation.navigate("Walk");
+    }
+  };
 
   useEffect(() => {
     Linking.getInitialURL().then(url => {
@@ -45,6 +51,10 @@ const Home = ({ navigation }: { navigation: HomeScreenNavigationProp }) => {
         navigation.navigate("Walk");
       }
     });
+    Linking.addEventListener("url", handleOpenUrl);
+    return () => {
+      Linking.removeEventListener("url", handleOpenUrl);
+    };
   }, []);
 
   return (

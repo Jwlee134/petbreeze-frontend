@@ -1,4 +1,4 @@
-@import Firebase;
+#import <Firebase.h>
 #import "AppDelegate.h"
 #import <CodePush/CodePush.h>
 

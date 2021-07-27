@@ -4,6 +4,7 @@
   <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
   <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
   <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+  <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
   <uses-permission android:name="android.permission.VIBRATE"/>
   <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
   <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
@@ -21,6 +22,7 @@
     <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyCM7PBQwlx9zWG-za7IpCXrCLnDkHKT804"/>
     <meta-data android:name="com.dieam.reactnativepushnotification.notification_foreground" android:value="true"/>
     <meta-data android:name="com.dieam.reactnativepushnotification.notification_color" android:resource="@color/white"/>
+    <meta-data android:name="com.google.firebase.messaging.default_notification_channel_id" android:value="safety-zone" />
     <uses-library android:name="org.apache.http.legacy" android:required="false"/>
     <activity
       android:name=".MainActivity"

@@ -21,8 +21,9 @@ PushNotification.configure({
   },
   onNotification: notification => {
     if (!notification.userInteraction) return;
+    console.log(notification);
 
-    let title: string;
+    /* let title: string;
 
     if (notification.foreground) {
       title = notification.title;
@@ -30,7 +31,7 @@ PushNotification.configure({
       title = notification.data["gcm.n.analytics_data"]["google.c.a.c_l"];
     }
 
-    store.dispatch(commonActions.setNotification(title));
+    store.dispatch(commonActions.setNotification(title)); */
 
     notification.finish(PushNotificationIOS.FetchResult.NoData);
   },
