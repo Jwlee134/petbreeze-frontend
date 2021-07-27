@@ -111,7 +111,7 @@ const storage = createSlice({
       {
         payload,
       }: PayloadAction<
-        "device" | "safetyZone" | "profile" | "ota" | { id: number }
+        "device" | "safetyZone" | "profile" | "ota" | { id: string }
       >,
     ) => {
       switch (payload) {
@@ -153,6 +153,9 @@ const storage = createSlice({
       { payload }: PayloadAction<{ latitude: number; longitude: number }>,
     ) => {
       state.walk.coords.push([payload.latitude, payload.longitude]);
+    },
+    spliceCoords: state => {
+      state.walk.coords.splice(-1);
     },
     setIsWalking: (state, { payload }: PayloadAction<boolean>) => {
       state.walk.isWalking = payload;

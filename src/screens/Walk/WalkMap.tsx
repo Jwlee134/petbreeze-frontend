@@ -20,6 +20,7 @@ import { StyleSheet } from "react-native";
 import { useDispatch } from "react-redux";
 import { storageActions } from "~/store/storage";
 import { useRef } from "react";
+import { getDistanceBetween2Points } from "~/utils";
 
 const Controller = styled.View<{ bottom: number }>`
   position: absolute;
@@ -146,7 +147,18 @@ const WalkMap = ({
       dispatch(storageActions.setStartTime(new Date().toISOString()));
     }
     if (coords.length > 1) {
-      dispatch(storageActions.setMeter((coords.length - 1) * 10));
+      if (
+        getDistanceBetween2Points(
+          coords[coords.length - 1][0],
+          coords[coords.length - 1][1],
+          coords[coords.length - 2][0],
+          coords[coords.length - 2][1],
+        ) < 10
+      ) {
+        dispatch(storageActions.spliceCoords());
+      } else {
+        dispatch(storageActions.setMeter((coords.length - 1) * 10));
+      }
     }
   }, [mapRef, coords]);
 

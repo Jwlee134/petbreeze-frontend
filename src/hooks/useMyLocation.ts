@@ -1,39 +1,12 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Alert } from "react-native";
 import Geolocation from "react-native-geolocation-service";
 import { useDispatch } from "react-redux";
-import { useAppSelector } from "~/store";
 import { mapActions } from "~/store/map";
 import { storageActions } from "~/store/storage";
-import { getDistanceBetween2Points } from "~/utils";
 
 const useMyLocation = ({ isWalking = false }: { isWalking?: boolean } = {}) => {
-  const coords = useAppSelector(state => state.storage.walk.coords);
-  const [currentCoords, setCurrentCoords] = useState({
-    latitude: 0,
-    longitude: 0,
-  });
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    if (!currentCoords.latitude || !currentCoords.longitude) return;
-    if (coords.length > 0) {
-      if (
-        getDistanceBetween2Points(
-          coords[coords.length - 1][0],
-          coords[coords.length - 1][1],
-          currentCoords.latitude,
-          currentCoords.longitude,
-        ) < 10
-      ) {
-        return;
-      }
-      console.log(currentCoords);
-      dispatch(storageActions.setCoords(currentCoords));
-    } else {
-      dispatch(storageActions.setCoords(currentCoords));
-    }
-  }, [currentCoords]);
 
   const [isTracking, setIsTracking] = useState(false);
 
@@ -63,10 +36,8 @@ const useMyLocation = ({ isWalking = false }: { isWalking?: boolean } = {}) => {
             );
             resolve();
           } else {
-            setCurrentCoords({
-              latitude,
-              longitude,
-            });
+            console.log(latitude, longitude);
+            dispatch(storageActions.setCoords({ latitude, longitude }));
             resolve();
           }
         },
