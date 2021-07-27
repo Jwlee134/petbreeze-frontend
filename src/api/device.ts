@@ -50,7 +50,7 @@ interface IDeviceProfile extends IDeviceProfileBody {
   profile_image: string;
 }
 
-const device = api.injectEndpoints({
+const deviceApi = api.injectEndpoints({
   endpoints: builder => ({
     getDeviceList: builder.query<IDevice[], void>({
       query: () => "/device/",
@@ -105,7 +105,7 @@ const device = api.injectEndpoints({
       }),
       onQueryStarted: async (deviceId, { dispatch, queryFulfilled }) => {
         const deleteResult = dispatch(
-          device.util.updateQueryData("getDeviceList", undefined, draft => {
+          deviceApi.util.updateQueryData("getDeviceList", undefined, draft => {
             draft.splice(
               draft.findIndex(device => device.id === deviceId),
               1,
@@ -150,7 +150,7 @@ const device = api.injectEndpoints({
         { dispatch, queryFulfilled },
       ) => {
         const putResult = dispatch(
-          device.util.updateQueryData(
+          deviceApi.util.updateQueryData(
             "getLocationCollectionInterval",
             deviceId,
             draft => {
@@ -190,9 +190,13 @@ const device = api.injectEndpoints({
         { dispatch, queryFulfilled },
       ) => {
         const putResult = dispatch(
-          device.util.updateQueryData("getDeviceProfile", deviceId, draft => {
-            Object.assign(draft, body);
-          }),
+          deviceApi.util.updateQueryData(
+            "getDeviceProfile",
+            deviceId,
+            draft => {
+              Object.assign(draft, body);
+            },
+          ),
         );
         try {
           await queryFulfilled;
@@ -221,9 +225,13 @@ const device = api.injectEndpoints({
         { dispatch, queryFulfilled },
       ) => {
         const patchResult = dispatch(
-          device.util.updateQueryData("getDeviceProfile", deviceId, draft => {
-            Object.assign(draft, { profile_image: avatar });
-          }),
+          deviceApi.util.updateQueryData(
+            "getDeviceProfile",
+            deviceId,
+            draft => {
+              Object.assign(draft, { profile_image: avatar });
+            },
+          ),
         );
         try {
           await queryFulfilled;
@@ -254,7 +262,7 @@ const device = api.injectEndpoints({
         { dispatch, queryFulfilled },
       ) => {
         const putResult = dispatch(
-          device.util.updateQueryData("getSafetyZone", deviceId, draft => {
+          deviceApi.util.updateQueryData("getSafetyZone", deviceId, draft => {
             Object.assign(draft, body);
           }),
         );
@@ -268,18 +276,4 @@ const device = api.injectEndpoints({
   }),
 });
 
-export const {
-  useGetDeviceListQuery,
-  usePostDeviceMutation,
-  usePostDeviceSharingPermissionMutation,
-  useGetSharedDeviceListQuery,
-  usePostSharedDeviceMutation,
-  useDeleteDeviceMutation,
-  useGetLocationCollectionIntervalQuery,
-  useUpdateLocationCollectionIntervalMutation,
-  useGetDeviceProfileQuery,
-  useUpdateDeviceProfileMutation,
-  useUpdateDeviceProfileAvatarMutation,
-  useGetSafetyZoneQuery,
-  useUpdateSafetyZoneMutation,
-} = device;
+export default deviceApi;

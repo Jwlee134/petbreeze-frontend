@@ -17,9 +17,9 @@ import Input from "../common/Input";
 import { Camera, Circle } from "react-native-maps";
 import { Alert, Keyboard } from "react-native";
 import { useDispatch } from "react-redux";
-import { useUpdateSafetyZoneMutation } from "~/api/device";
 import { commonActions } from "~/store/common";
 import { storageActions } from "~/store/storage";
+import deviceApi from "~/api/device";
 
 const Container = styled.KeyboardAvoidingView`
   width: ${width}px;
@@ -97,7 +97,7 @@ const SafetyZoneMap = ({
   const [radius, setRadius] = useState("");
   const [currentCamera, setCurrentCamera] = useState<Camera | null>(null);
 
-  const [updateSafetyZone, result] = useUpdateSafetyZoneMutation();
+  const [updateSafetyZone, result] = deviceApi.useUpdateSafetyZoneMutation();
 
   const radiusValue =
     Number(radius.replace(/\D/g, "")) === 1

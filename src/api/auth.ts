@@ -6,7 +6,7 @@ interface User {
   nickname: string;
 }
 
-const auth = api.injectEndpoints({
+const authApi = api.injectEndpoints({
   endpoints: builder => ({
     facebookLogin: builder.query<User, { token: string; id: string }>({
       query: ({ token, id }) => ({
@@ -50,10 +50,4 @@ const auth = api.injectEndpoints({
   }),
 });
 
-export const {
-  useLazyFacebookLoginQuery,
-  useLazyKakaoLoginQuery,
-  useLogoutMutation,
-  useUpdateNicknameMutation,
-  useDeleteAccountMutation,
-} = auth;
+export default authApi;

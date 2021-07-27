@@ -13,13 +13,10 @@ import { BigText } from "../initialization/Styles";
 import ImagePicker from "react-native-image-crop-picker";
 import { useState } from "react";
 import { isIos } from "~/utils";
-import {
-  useUpdateDeviceProfileAvatarMutation,
-  useUpdateDeviceProfileMutation,
-} from "~/api/device";
 import { Alert } from "react-native";
 import { commonActions } from "~/store/common";
 import { storageActions } from "~/store/storage";
+import deviceApi from "~/api/device";
 
 const AvatarContainer = styled.TouchableOpacity`
   justify-content: center;
@@ -53,8 +50,10 @@ const DeviceProfileForm = ({
   const deviceId = useAppSelector(
     state => state.storage.device.deviceIdInProgress,
   );
-  const [updateProfile, profileResult] = useUpdateDeviceProfileMutation();
-  const [updateAvatar, avatarResult] = useUpdateDeviceProfileAvatarMutation();
+  const [updateProfile, profileResult] =
+    deviceApi.useUpdateDeviceProfileMutation();
+  const [updateAvatar, avatarResult] =
+    deviceApi.useUpdateDeviceProfileAvatarMutation();
 
   const [loading, setLoading] = useState(false);
 

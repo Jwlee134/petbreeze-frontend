@@ -2,7 +2,6 @@ import { KakaoOAuthToken, login } from "@react-native-seoul/kakao-login";
 import React, { useEffect } from "react";
 import styled from "styled-components/native";
 import { useDispatch } from "react-redux";
-import { useLazyFacebookLoginQuery, useLazyKakaoLoginQuery } from "~/api/auth";
 
 import KakaoIcon from "~/assets/svg/initialization/kakao.svg";
 import FacebookIcon from "~/assets/svg/initialization/facebook.svg";
@@ -13,6 +12,7 @@ import palette from "~/styles/palette";
 import { storageActions } from "~/store/storage";
 import { Container } from "./Styles";
 import { commonActions } from "~/store/common";
+import authApi from "~/api/auth";
 
 const HalfContainer = styled.View`
   flex: 1;
@@ -37,15 +37,15 @@ const BoldText = styled(SmallText)`
 `;
 
 const Auth = () => {
-  const [getFacebookUser, facebookUser] = useLazyFacebookLoginQuery();
-  const [getKakaoUser, kakaoUser] = useLazyKakaoLoginQuery();
+  const [getFacebookUser, facebookUser] = authApi.useLazyFacebookLoginQuery();
+  const [getKakaoUser, kakaoUser] = authApi.useLazyKakaoLoginQuery();
 
   const dispatch = useDispatch();
 
   const handleKakaoLogin = async () => {
     dispatch(
       storageActions.login({
-        token: "f8a328a8bff0c51a6e6f4423cc54001d3b4050f3",
+        token: "d797d59c9c925e05b17d7678faede53a974370e3",
         nickname: "이재원",
       }),
     );

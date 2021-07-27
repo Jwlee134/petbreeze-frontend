@@ -42,7 +42,7 @@ interface IWalkDetailGetResponse {
   user: number;
 }
 
-const walk = api.injectEndpoints({
+const walkApi = api.injectEndpoints({
   endpoints: builder => ({
     getWalk: builder.query<IWalkGetResponse, IWalkGetRequestForm>({
       query: ({ deviceId, month, year }) =>
@@ -95,9 +95,4 @@ const walk = api.injectEndpoints({
   }),
 });
 
-export const {
-  useGetWalkQuery,
-  usePostWalkMutation,
-  useLazyGetWalkDetailQuery,
-  usePatchWalkRecordImageMutation,
-} = walk;
+export default walkApi;
