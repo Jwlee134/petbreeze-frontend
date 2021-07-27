@@ -25,6 +25,7 @@ interface IStorage {
   };
   walk: {
     didMountInitially: boolean;
+    selectedDeviceId: string[];
     duration: number;
     coords: number[][];
     meter: number;
@@ -65,6 +66,7 @@ const initialState: IStorage = {
   },
   walk: {
     didMountInitially: true,
+    selectedDeviceId: [],
     duration: 0,
     coords: [],
     meter: 0,
@@ -144,6 +146,9 @@ const storage = createSlice({
     },
     setDidMountInitially: (state, { payload }: PayloadAction<boolean>) => {
       state.walk.didMountInitially = payload;
+    },
+    setSelectedDeviceId: (state, { payload }: PayloadAction<string[]>) => {
+      state.walk.selectedDeviceId = payload;
     },
     setDuration: (state, { payload }: PayloadAction<number>) => {
       state.walk.duration = payload;

@@ -24,7 +24,7 @@ import { useDispatch } from "react-redux";
 import { storageActions } from "~/store/storage";
 import { useRef } from "react";
 import { getDistanceBetween2Points } from "~/utils";
-import { usePostWalkMutation } from "~/api/walk";
+import walkApi from "~/api/walk";
 
 const Controller = styled.View<{ bottom: number }>`
   position: absolute;
@@ -102,7 +102,7 @@ const WalkMap = ({
     useAppSelector(state => state.storage.walk);
   const dispatch = useDispatch();
   const timer = useRef<NodeJS.Timeout>();
-  const [trigger] = usePostWalkMutation();
+  const [trigger] = walkApi.usePostWalkMutation();
 
   const stopwatch = async () => {
     for (let i = duration; BackgroundService.isRunning(); i++) {
@@ -151,6 +151,7 @@ const WalkMap = ({
         },
         zoom: 18,
       });
+      dispatch(storageActions.setSelectedDeviceId(route.params.deviceId));
       dispatch(storageActions.setStartTime(new Date().toISOString()));
     }
     if (coords.length > 1) {
