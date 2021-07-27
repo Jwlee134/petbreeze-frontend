@@ -1,6 +1,9 @@
 import React, { useEffect } from "react";
 import useMap from "~/hooks/useMap";
-import { WalkMapScreenNavigationProp } from "~/types/navigator";
+import {
+  WalkMapScreenNavigationProp,
+  WalkMapScreenRouteProp,
+} from "~/types/navigator";
 import styled, { css } from "styled-components/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import useMyLocation from "~/hooks/useMyLocation";
@@ -21,6 +24,7 @@ import { useDispatch } from "react-redux";
 import { storageActions } from "~/store/storage";
 import { useRef } from "react";
 import { getDistanceBetween2Points } from "~/utils";
+import { usePostWalkMutation } from "~/api/walk";
 
 const Controller = styled.View<{ bottom: number }>`
   position: absolute;
@@ -81,8 +85,10 @@ const options = {
 
 const WalkMap = ({
   navigation,
+  route,
 }: {
   navigation: WalkMapScreenNavigationProp;
+  route: WalkMapScreenRouteProp;
 }) => {
   const { bottom } = useSafeAreaInsets();
   const { Map, mapRef } = useMap();
@@ -96,6 +102,7 @@ const WalkMap = ({
     useAppSelector(state => state.storage.walk);
   const dispatch = useDispatch();
   const timer = useRef<NodeJS.Timeout>();
+  const [trigger] = usePostWalkMutation();
 
   const stopwatch = async () => {
     for (let i = duration; BackgroundService.isRunning(); i++) {
@@ -196,17 +203,19 @@ const WalkMap = ({
     }
     dispatch(storageActions.clearWalk());
     navigation.replace("Walk");
-    /*  const { data } = await api.post("/walk/2/", {
-      start_date_time: startTime as Date,
-      end_date_time: new Date((startTime as Date).getTime() + time * 1000),
-      distance: meter,
-      travel_path: {
-        type: "MultiPoint",
-        coordinates: path.map(coord => [coord.latitude, coord.longitude]),
-      },
-    });
-    const { data: data2 } = await api.patch(`/walk/2/?walk_id=${data.id}`);
-    console.log(data2); */
+    // const promise = route.params.deviceId.map(id =>
+    //   trigger({
+    //     deviceId: id,
+    //     start_date_time: new Date(startTime),
+    //     walking_time: duration,
+    //     distance: meter,
+    //     coordinates: coords,
+    //   }),
+    // );
+    // Promise.all(promise).then(() => {
+    //   dispatch(storageActions.clearWalk());
+    //   navigation.replace("Walk");
+    // });
   };
 
   return (

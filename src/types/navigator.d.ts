@@ -109,7 +109,9 @@ export type NotificationScreenNavigationProp = CompositeNavigationProp<
 
 type WalkStackNavParamList = {
   Walk: undefined;
-  WalkMap: undefined;
+  WalkMap: {
+    deviceId: string[];
+  };
 };
 export type WalkScreenNavigationProp = CompositeNavigationProp<
   StackNavigationProp<WalkStackNavParamList, "Walk">,
@@ -124,6 +126,10 @@ export type WalkMapScreenNavigationProp = CompositeNavigationProp<
     BottomTabNavigationProp<BottomTabParamList>,
     StackNavigationProp<LoggedInNavParamList>
   >
+>;
+export type WalkMapScreenRouteProp = RouteProp<
+  WalkStackNavParamList,
+  "WalkMap"
 >;
 
 type WalkTopTabParamList = {

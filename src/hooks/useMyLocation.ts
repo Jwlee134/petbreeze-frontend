@@ -37,7 +37,12 @@ const useMyLocation = ({ isWalking = false }: { isWalking?: boolean } = {}) => {
             resolve();
           } else {
             console.log(latitude, longitude);
-            dispatch(storageActions.setCoords({ latitude, longitude }));
+            dispatch(
+              storageActions.setCoords({
+                latitude: Number(latitude.toFixed(6)),
+                longitude: Number(longitude.toFixed(6)),
+              }),
+            );
             resolve();
           }
         },
