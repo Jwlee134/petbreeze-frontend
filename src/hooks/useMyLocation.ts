@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Alert } from "react-native";
 import Geolocation from "react-native-geolocation-service";
 import { useDispatch } from "react-redux";
@@ -6,11 +6,10 @@ import { mapActions } from "~/store/map";
 import { storageActions } from "~/store/storage";
 
 const useMyLocation = ({ isWalking = false }: { isWalking?: boolean } = {}) => {
+  const trackingId = useRef<number | null>(null);
   const dispatch = useDispatch();
 
   const [isTracking, setIsTracking] = useState(false);
-
-  let trackingId = 0;
 
   const startTracking = () => {
     setIsTracking(true);
@@ -19,12 +18,15 @@ const useMyLocation = ({ isWalking = false }: { isWalking?: boolean } = {}) => {
 
   const clearTracking = () => {
     setIsTracking(false);
-    Geolocation.clearWatch(trackingId);
+    if (trackingId.current !== null) {
+      Geolocation.clearWatch(trackingId.current);
+      trackingId.current = null;
+    }
   };
 
   const setCoords = () => {
     return new Promise<void>((resolve, reject) => {
-      trackingId = Geolocation.watchPosition(
+      trackingId.current = Geolocation.watchPosition(
         pos => {
           const { latitude, longitude } = pos.coords;
           if (!isWalking) {
