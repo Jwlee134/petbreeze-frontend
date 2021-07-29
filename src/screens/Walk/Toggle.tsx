@@ -48,7 +48,7 @@ const Toggle = ({
   mapRef,
   handleFinish,
 }: {
-  setCoords: () => Promise<void>;
+  setCoords: () => Promise<number>;
   clearTracking: () => void;
   mapRef: React.RefObject<MapView>;
   handleFinish: () => Promise<void>;
@@ -76,7 +76,8 @@ const Toggle = ({
   const backgroundTask = async () => {
     await new Promise<void>(() => {
       setCoords()
-        .then(() => {
+        .then(trackingId => {
+          dispatch(storageActions.setTrackingId(trackingId));
           stopwatch();
         })
         .catch(() => {
