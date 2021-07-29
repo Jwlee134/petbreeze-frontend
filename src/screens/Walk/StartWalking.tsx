@@ -37,13 +37,15 @@ const StartWalking = ({
 }) => {
   useFocusEvent({ isTab: true });
   const [selected, setSelected] = useState<string[]>([]);
-  const { data: devices } = deviceApi.useGetDeviceListQuery();
+  // const { data: devices } = deviceApi.useGetDeviceListQuery();
 
   const handleStart = () => {
-    if (!devices) return;
-    navigation.replace("WalkMap", {
+    // if (!devices) return;
+    navigation.replace(
+      "WalkMap" /* , {
       deviceId: selected,
-    });
+    } */,
+    );
   };
 
   const handleNavigate = () =>

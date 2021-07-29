@@ -1,30 +1,22 @@
-import React, { useEffect } from "react";
+import React from "react";
 import useMap from "~/hooks/useMap";
 import {
   WalkMapScreenNavigationProp,
   WalkMapScreenRouteProp,
 } from "~/types/navigator";
-import styled, { css } from "styled-components/native";
+import styled from "styled-components/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import useMyLocation from "~/hooks/useMyLocation";
-import { useAppSelector } from "~/store";
-import Marker from "~/components/map/Marker";
-import palette from "~/styles/palette";
-import { Polyline } from "react-native-maps";
-import useModal from "~/hooks/useModal";
-import Modal from "react-native-modal";
 import BackgroundService from "react-native-background-actions";
-
-import Camera from "~/assets/svg/camera.svg";
-import PauseCircle from "~/assets/svg/pause-circle.svg";
-import PlayCircle from "~/assets/svg/play-circle.svg";
-import SimpleToggleModal from "~/components/modal/SimpleToggleModal";
 import { StyleSheet } from "react-native";
+import Timer from "./Timer";
+import Distance from "./Distance";
+import Path from "./Path";
+import Toggle from "./Toggle";
 import { useDispatch } from "react-redux";
 import { storageActions } from "~/store/storage";
-import { useRef } from "react";
-import { getDistanceBetween2Points } from "~/utils";
+import useMyLocation from "~/hooks/useMyLocation";
 import walkApi from "~/api/walk";
+import { store } from "~/store";
 
 const Controller = styled.View<{ bottom: number }>`
   position: absolute;
@@ -41,47 +33,10 @@ const RowContainer = styled.View`
   justify-content: space-evenly;
 `;
 
-const Button = styled.TouchableOpacity<{ isTransparent?: boolean }>`
-  ${({ isTransparent }) =>
-    !isTransparent &&
-    css`
-      width: 46px;
-      height: 46px;
-      border-radius: 23px;
-      background-color: white;
-      justify-content: center;
-      align-items: center;
-    `}
-`;
-
 const TextContainer = styled.View`
   width: 50%;
   align-items: center;
 `;
-
-const Text = styled.Text`
-  color: white;
-  font-size: 24px;
-  font-weight: bold;
-`;
-
-const PauseSquare = styled.View`
-  width: 15px;
-  height: 15px;
-  background-color: ${palette.blue_6e};
-`;
-
-const options = {
-  taskName: "Example",
-  taskTitle: "어디개",
-  taskDesc: "산책 중입니다...",
-  taskIcon: {
-    name: "ic_launcher",
-    type: "mipmap",
-  },
-  color: "#ff00ff",
-  linkingURI: "petbreeze://walk/map",
-};
 
 const WalkMap = ({
   navigation,
@@ -92,119 +47,24 @@ const WalkMap = ({
 }) => {
   const { bottom } = useSafeAreaInsets();
   const { Map, mapRef } = useMap();
+  const dispatch = useDispatch();
   const { clearTracking, setCoords } = useMyLocation({
     isWalking: true,
   });
-  const { open, close, modalProps, CenterModalComponent } = useModal({
-    type: "center",
-  });
-  const { didMountInitially, duration, isWalking, startTime, meter, coords } =
-    useAppSelector(state => state.storage.walk);
-  const dispatch = useDispatch();
-  const timer = useRef<NodeJS.Timeout>();
   const [trigger] = walkApi.usePostWalkMutation();
 
-  const stopwatch = async () => {
-    for (let i = duration; BackgroundService.isRunning(); i++) {
-      console.log(i);
-      dispatch(storageActions.setDuration(i));
-      await new Promise<void>(resolve => {
-        timer.current = setTimeout(() => {
-          resolve();
-        }, 1000);
-      });
-    }
-  };
-
-  const backgroundTask = async () => {
-    await new Promise<void>(() => {
-      setCoords()
-        .then(stopwatch)
-        .catch(() => {
-          dispatch(storageActions.setIsWalking(false));
-          BackgroundService.stop();
-        });
-    });
-  };
-
-  useEffect(() => {
-    if (isWalking && !BackgroundService.isRunning()) {
-      BackgroundService.start(backgroundTask, options);
-    }
-    if (!isWalking && BackgroundService.isRunning()) {
-      BackgroundService.stop().then(() => {
-        clearTracking();
-        if (timer.current) {
-          clearTimeout(timer.current);
-        }
-      });
-    }
-  }, [isWalking]);
-
-  useEffect(() => {
-    if (!mapRef.current) return;
-    if (coords.length === 1 && !startTime) {
-      mapRef.current.animateCamera({
-        center: {
-          latitude: coords[0][0],
-          longitude: coords[0][1],
-        },
-        zoom: 18,
-      });
-      dispatch(storageActions.setSelectedDeviceId(route.params.deviceId));
-      dispatch(storageActions.setStartTime(new Date().toISOString()));
-    }
-    if (coords.length > 1) {
-      if (
-        getDistanceBetween2Points(
-          coords[coords.length - 1][0],
-          coords[coords.length - 1][1],
-          coords[coords.length - 2][0],
-          coords[coords.length - 2][1],
-        ) < 10
-      ) {
-        dispatch(storageActions.spliceCoords());
-      } else {
-        dispatch(storageActions.setMeter((coords.length - 1) * 10));
-      }
-    }
-  }, [mapRef, coords]);
-
-  useEffect(() => {
-    if (!mapRef.current) return;
-    if (coords.length !== 0) {
-      // map initialCamera 프로퍼티와 겹치지 않기 위해 setTimeout
-      setTimeout(() => {
-        mapRef.current?.animateCamera({
-          center: {
-            latitude: coords[coords.length - 1][0],
-            longitude: coords[coords.length - 1][1],
-          },
-          zoom: 18,
-        });
-      }, 500);
-      return;
-    }
-    if (!BackgroundService.isRunning() && didMountInitially) {
-      BackgroundService.start(backgroundTask, options).then(() => {
-        dispatch(storageActions.setDidMountInitially(false));
-        dispatch(storageActions.setIsWalking(true));
-      });
-    }
-  }, [mapRef]);
-
-  const hour = Math.floor(duration / 3600) % 60;
-  const min = Math.floor(duration / 60) % 60;
-  const sec = Math.floor(duration) % 60;
+  //  const { deviceId } = route.params;
 
   const handleFinish = async () => {
+    const { startTime, duration, meter, coords } =
+      store.getState().storage.walk;
     if (BackgroundService.isRunning()) {
       await BackgroundService.stop();
       clearTracking();
     }
     dispatch(storageActions.clearWalk());
     navigation.replace("Walk");
-    // const promise = route.params.deviceId.map(id =>
+    // const promise = deviceId.map(id =>
     //   trigger({
     //     deviceId: id,
     //     start_date_time: new Date(startTime),
@@ -222,60 +82,27 @@ const WalkMap = ({
   return (
     <>
       <Map style={StyleSheet.absoluteFill}>
-        {coords.length > 0 && (
-          <>
-            <Polyline
-              coordinates={coords.map(coord => ({
-                latitude: coord[0],
-                longitude: coord[1],
-              }))}
-              strokeWidth={7}
-              strokeColor={palette.blue_34}
-            />
-            <Marker
-              coordinate={{
-                latitude: coords[coords.length - 1][0],
-                longitude: coords[coords.length - 1][1],
-              }}
-              color="green"
-            />
-          </>
-        )}
+        <Path mapRef={mapRef} /* deviceId={deviceId} */ />
       </Map>
       <Controller bottom={bottom}>
         <RowContainer>
           <TextContainer>
-            <Text>
-              거리{" "}
-              {meter < 1000
-                ? `${meter}m`
-                : `${String(meter / 1000).substring(0, 4)}km`}
-            </Text>
+            <Distance />
           </TextContainer>
           <TextContainer>
-            <Text>
-              {hour < 10 ? `0${hour}` : hour}:{min < 10 ? `0${min}` : min}:
-              {sec < 10 ? `0${sec}` : sec}
-            </Text>
+            <Timer />
           </TextContainer>
         </RowContainer>
         <RowContainer>
-          <Button>
-            <Camera />
-          </Button>
-          <Button
-            isTransparent
-            onPress={() => {
-              dispatch(storageActions.setIsWalking(!isWalking));
-            }}>
-            {isWalking ? <PauseCircle /> : <PlayCircle />}
-          </Button>
-          <Button onPress={handleFinish}>
-            <PauseSquare />
-          </Button>
+          <Toggle
+            clearTracking={clearTracking}
+            setCoords={setCoords}
+            mapRef={mapRef}
+            handleFinish={handleFinish}
+          />
         </RowContainer>
       </Controller>
-      <Modal {...modalProps}>
+      {/* <Modal {...modalProps}>
         <CenterModalComponent>
           <SimpleToggleModal
             onConfirm={handleFinish}
@@ -284,7 +111,7 @@ const WalkMap = ({
             onAbort={close}
           />
         </CenterModalComponent>
-      </Modal>
+      </Modal> */}
     </>
   );
 };
