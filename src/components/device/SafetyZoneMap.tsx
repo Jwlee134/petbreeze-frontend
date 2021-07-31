@@ -7,19 +7,20 @@ import Button from "../common/Button";
 
 import MyLocation from "~/assets/svg/my-location.svg";
 import useMyLocation from "~/hooks/useMyLocation";
-import { useAppSelector } from "~/store";
+import { store, useAppSelector } from "~/store";
 import palette from "~/styles/palette";
 
 import ShadowContainer from "../common/ShadowContainer";
 import { useEffect } from "react";
 import { useActionSheet } from "@expo/react-native-action-sheet";
 import Input from "../common/Input";
-import { Camera, Circle } from "react-native-maps";
 import { Alert, Keyboard } from "react-native";
 import { useDispatch } from "react-redux";
 import { commonActions } from "~/store/common";
 import { storageActions } from "~/store/storage";
 import deviceApi from "~/api/device";
+import { Circle } from "react-native-nmap";
+import { delta } from "~/staticData";
 
 const Container = styled.KeyboardAvoidingView`
   width: ${width}px;
@@ -81,21 +82,28 @@ const SafetyZoneMap = ({
   navigation?: any;
   route?: any;
 }) => {
-  const { Map, mapRef, camera } = useMap();
+  const { Map, mapRef } = useMap();
   const { isTracking, startTracking, clearTracking } = useMyLocation();
   const { latitude, longitude } = useAppSelector(state => state.map.myCoords);
   const deviceId = useAppSelector(
     state => state.storage.device.deviceIdInProgress,
   );
+  const initialCoord = useAppSelector(state => state.storage.coord);
   const { showActionSheetWithOptions } = useActionSheet();
   const circleRef = useRef<Circle>(null);
   const dispatch = useDispatch();
 
-  const [bottomHeight, setBottomHeight] = useState(0);
+  const currentName = route?.params?.name;
+  const currentRadius = route?.params?.radius;
+  const currentCoord = route?.params?.coord;
+
   const [isCameraMoved, setIsCameraMoved] = useState(false);
-  const [name, setName] = useState("");
-  const [radius, setRadius] = useState("");
-  const [currentCamera, setCurrentCamera] = useState<Camera | null>(null);
+  const [name, setName] = useState(currentName || "");
+  const [radius, setRadius] = useState(currentRadius || "");
+  const [coord, setCoord] = useState<{ latitude: number; longitude: number }>({
+    latitude: currentCoord?.latitude || 0,
+    longitude: currentCoord?.longitude || 0,
+  });
 
   const [updateSafetyZone, result] = deviceApi.useUpdateSafetyZoneMutation();
 
@@ -107,10 +115,10 @@ const SafetyZoneMap = ({
   // 원의 top, bottom, left, right 좌표 추출
   // 반경 변경 시 원 크기에 맞게 fitToCoordinates 메소드 사용하기 위함
   const coordsArr = useMemo(() => {
-    if (currentCamera) {
+    if (coord.latitude && coord.longitude) {
       return get4PointsAroundCircumference(
-        currentCamera.center.latitude,
-        currentCamera.center.longitude,
+        coord.latitude,
+        coord.longitude,
         radiusValue,
       );
     }
@@ -120,28 +128,33 @@ const SafetyZoneMap = ({
   useEffect(() => {
     if (!mapRef.current) return;
     if (latitude && longitude && !isCameraMoved) {
-      mapRef.current.animateCamera({
-        center: { latitude, longitude },
-        ...(!radiusValue && { zoom: 17 }),
-      });
+      radiusValue
+        ? mapRef.current.animateToCoordinate({
+            latitude,
+            longitude,
+          })
+        : mapRef.current.animateToRegion({
+            latitude,
+            longitude,
+            latitudeDelta: delta,
+            longitudeDelta: delta,
+          });
       setIsCameraMoved(true);
     }
   }, [mapRef, latitude, longitude, isCameraMoved, radiusValue]);
 
   // 반경 변경 시 원 edgePadding 만큼 지도 줌 자동 조절
   useEffect(() => {
-    if (!mapRef.current || !radiusValue) return;
-    mapRef.current.fitToCoordinates(coordsArr, {
-      edgePadding: {
-        left: edgePadding,
-        right: edgePadding,
-        top: edgePadding,
-        bottom: edgePadding,
-      },
+    if (!mapRef.current || !radiusValue || !coordsArr) return;
+    mapRef.current.animateToCoordinates(coordsArr, {
+      left: edgePadding,
+      right: edgePadding,
+      top: edgePadding,
+      bottom: edgePadding,
     });
   }, [mapRef, radiusValue]);
 
-  // Circle 스타일 설정 (iOS 전용으로, iOS에서 스타일이 적용되지 않는 버그 때문)
+  /*   // Circle 스타일 설정 (iOS 전용으로, iOS에서 스타일이 적용되지 않는 버그 때문)
   useEffect(() => {
     if (!circleRef.current || isAndroid || !radiusValue) {
       return;
@@ -153,7 +166,7 @@ const SafetyZoneMap = ({
         strokeWidth: 2,
       });
     }, 10);
-  }, [circleRef, radiusValue]);
+  }, [circleRef, radiusValue]); */
 
   const [show, setShow] = useState(false);
 
@@ -197,10 +210,7 @@ const SafetyZoneMap = ({
     obj[`safety_zone_${id}_name`] = name;
     obj[`safety_zone_${id}_coordinate`] = {
       type: "point",
-      coordinates: [
-        currentCamera?.center.latitude,
-        currentCamera?.center.longitude,
-      ],
+      coordinates: [coord.latitude, coord.longitude],
     };
     obj[`safety_zone_${id}_radius`] = radiusValue;
     return obj;
@@ -211,8 +221,8 @@ const SafetyZoneMap = ({
       result.isLoading ||
       !name ||
       !radius ||
-      !currentCamera?.center.latitude ||
-      !currentCamera.center.longitude
+      !coord.latitude ||
+      !coord.longitude
     ) {
       return;
     }
@@ -227,34 +237,29 @@ const SafetyZoneMap = ({
     <Container behavior="height">
       <Map
         style={{ flex: 1, position: "relative" }}
-        initialCamera={currentCamera || camera}
-        onLayout={e => {
-          setBottomHeight(e.nativeEvent.layout.height);
+        center={{
+          ...(currentCoord ? currentCoord : initialCoord),
+          zoom: 16,
         }}
-        onRegionChangeComplete={async () => {
-          const lastCamera = await mapRef.current?.getCamera();
-          if (lastCamera) {
-            setCurrentCamera(lastCamera);
-          }
+        onCameraChange={e => {
+          setCoord({ latitude: e.latitude, longitude: e.longitude });
         }}>
-        {currentCamera && radiusValue && (
+        {coord.latitude && coord.longitude && radiusValue && (
           <Circle
             ref={circleRef}
-            center={{
-              latitude: currentCamera.center.latitude,
-              longitude: currentCamera.center.longitude,
+            coordinate={{
+              latitude: coord.latitude,
+              longitude: coord.longitude,
             }}
             radius={radiusValue}
-            fillColor="rgba(83, 135, 188, 0.2)"
-            strokeColor="rgba(83, 135, 188, 0.5)"
-            strokeWidth={2}
+            color="rgba(255,0,0,0.3)"
           />
         )}
       </Map>
       <ShadowContainer
         style={{
           position: "absolute",
-          top: bottomHeight / 2,
+          top: "50%",
           left: "50%",
           marginLeft: -11,
           marginTop: isAndroid ? -11 : 12,
@@ -308,7 +313,7 @@ const SafetyZoneMap = ({
       <ShadowContainer
         style={{
           position: "absolute",
-          top: bottomHeight - 72,
+          top: 72,
           right: 24,
         }}>
         <MyLocationCircle

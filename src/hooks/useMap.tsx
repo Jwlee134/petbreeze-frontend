@@ -1,32 +1,29 @@
 import React, { ReactNode, useCallback, useRef } from "react";
-import { StyleProp, ViewStyle } from "react-native";
-import MapView, { MapViewProps, PROVIDER_GOOGLE } from "react-native-maps";
-import { useAppSelector } from "~/store";
+import NaverMapView, { NaverMapViewProps } from "react-native-nmap";
+import { isAndroid } from "~/utils";
 
-export interface IMapProps extends MapViewProps {
+export interface IMapProps extends NaverMapViewProps {
   children?: ReactNode;
-  style?: StyleProp<ViewStyle>;
 }
 
 const useMap = () => {
-  const mapRef = useRef<MapView>(null);
-  const camera = useAppSelector(state => state.storage.camera);
+  const mapRef = useRef<NaverMapView>(null);
 
   const Map = useCallback(
-    ({ children, style, ...props }: IMapProps) => (
-      <MapView
+    ({ children, ...props }: IMapProps) => (
+      <NaverMapView
         ref={mapRef}
-        style={style}
-        provider={PROVIDER_GOOGLE}
-        initialCamera={camera}
+        zoomControl={false}
+        useTextureView={isAndroid ? true : undefined}
+        onCameraChange={e => console.log(e)}
         {...props}>
         {children ? children : null}
-      </MapView>
+      </NaverMapView>
     ),
     [],
   );
 
-  return { Map, mapRef, camera };
+  return { Map, mapRef };
 };
 
 export default useMap;

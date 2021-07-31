@@ -1,12 +1,14 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Camera } from "react-native-maps";
 import { isAndroid } from "~/utils";
 
 interface IStorage {
   notifications: {
     mySurrounding: boolean;
   };
-  camera: Camera;
+  coord: {
+    latitude: number;
+    longitude: number;
+  };
   user: {
     token: string;
     nickname: string;
@@ -39,15 +41,9 @@ const initialState: IStorage = {
   notifications: {
     mySurrounding: true,
   },
-  camera: {
-    center: {
-      latitude: 35.95,
-      longitude: 128.25,
-    },
-    altitude: 0,
-    heading: 0,
-    pitch: 0,
-    zoom: 6,
+  coord: {
+    latitude: 37.564362,
+    longitude: 126.977011,
   },
   user: {
     token: "",
@@ -84,8 +80,11 @@ const storage = createSlice({
     setMySurrounding: (state, { payload }: PayloadAction<boolean>) => {
       state.notifications.mySurrounding = payload;
     },
-    setCamera: (state, { payload }: PayloadAction<Camera>) => {
-      state.camera = payload;
+    setCoord: (
+      state,
+      { payload }: PayloadAction<{ latitude: number; longitude: number }>,
+    ) => {
+      state.coord = payload;
     },
     login: (
       state,

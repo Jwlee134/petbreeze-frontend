@@ -1,8 +1,8 @@
 import React from "react";
 import { useEffect } from "react";
-import MapView, { Polyline } from "react-native-maps";
+import NaverMapView, { Path as Polyline, Marker } from "react-native-nmap";
 import { useDispatch } from "react-redux";
-import Marker from "~/components/map/Marker";
+import { delta } from "~/staticData";
 import { store, useAppSelector } from "~/store";
 import { storageActions } from "~/store/storage";
 import palette from "~/styles/palette";
@@ -12,7 +12,7 @@ const Path = ({
   mapRef,
 }: //   deviceId,
 {
-  mapRef: React.RefObject<MapView>;
+  mapRef: React.RefObject<NaverMapView>;
   //   deviceId: string[];
 }) => {
   const coords = useAppSelector(state => state.storage.walk.coords);
@@ -24,12 +24,11 @@ const Path = ({
     if (coords.length !== 0) {
       // map initialCamera 프로퍼티와 겹치지 않기 위해 setTimeout
       setTimeout(() => {
-        mapRef.current?.animateCamera({
-          center: {
-            latitude: coords[coords.length - 1][0],
-            longitude: coords[coords.length - 1][1],
-          },
-          zoom: 18,
+        mapRef.current?.animateToRegion({
+          latitude: coords[coords.length - 1][0],
+          longitude: coords[coords.length - 1][1],
+          latitudeDelta: delta,
+          longitudeDelta: delta,
         });
       }, 500);
     }
@@ -39,12 +38,11 @@ const Path = ({
     if (!mapRef.current) return;
     // 시작 후 최초 좌표 받을 시 그 좌표로 화면 이동
     if (coords.length === 1 && !store.getState().storage.walk.startTime) {
-      mapRef.current.animateCamera({
-        center: {
-          latitude: coords[0][0],
-          longitude: coords[0][1],
-        },
-        zoom: 18,
+      mapRef.current.animateToRegion({
+        latitude: coords[0][0],
+        longitude: coords[0][1],
+        latitudeDelta: delta,
+        longitudeDelta: delta,
       });
       // dispatch(storageActions.setSelectedDeviceId(deviceId));
       dispatch(storageActions.setStartTime(new Date().toISOString()));
@@ -64,25 +62,34 @@ const Path = ({
     }
   }, [mapRef, coords]);
 
-  return coords.length > 0 ? (
-    <>
-      <Polyline
-        coordinates={coords.map(coord => ({
-          latitude: coord[0],
-          longitude: coord[1],
-        }))}
-        strokeWidth={7}
-        strokeColor={palette.blue_34}
-      />
-      <Marker
-        coordinate={{
-          latitude: coords[coords.length - 1][0],
-          longitude: coords[coords.length - 1][1],
-        }}
-        color="green"
-      />
-    </>
-  ) : null;
+  if (coords.length) {
+    return (
+      <>
+        <Marker
+          coordinate={{
+            latitude: coords[coords.length - 1][0],
+            longitude: coords[coords.length - 1][1],
+          }}
+          image={require("~/assets/image/marker.png")}
+          width={25}
+          height={45}
+        />
+        {coords.length > 1 && (
+          <Polyline
+            coordinates={coords.map(coord => ({
+              latitude: coord[0],
+              longitude: coord[1],
+            }))}
+            color={palette.blue_34}
+            outlineWidth={0}
+            width={7}
+          />
+        )}
+      </>
+    );
+  }
+
+  return null;
 };
 
 export default Path;

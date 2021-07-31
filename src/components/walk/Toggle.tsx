@@ -9,7 +9,7 @@ import PauseCircle from "~/assets/svg/pause-circle.svg";
 import PlayCircle from "~/assets/svg/play-circle.svg";
 import { store, useAppSelector } from "~/store";
 import BackgroundService from "react-native-background-actions";
-import MapView from "react-native-maps";
+import NaverMapView from "react-native-nmap";
 
 const Button = styled.TouchableOpacity<{ isTransparent?: boolean }>`
   ${({ isTransparent }) =>
@@ -50,7 +50,7 @@ const Toggle = ({
 }: {
   setCoords: () => Promise<number>;
   clearTracking: () => void;
-  mapRef: React.RefObject<MapView>;
+  mapRef: React.RefObject<NaverMapView>;
   handleFinish: () => Promise<void>;
 }) => {
   const isWalking = useAppSelector(state => state.storage.walk.isWalking);
