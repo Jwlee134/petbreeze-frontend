@@ -8,7 +8,7 @@ const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
 import RNFetchBlob from "rn-fetch-blob";
 import { bytesToString, stringToBytes } from "convert-string";
 import { useDispatch } from "react-redux";
-import { usePostDeviceMutation } from "~/api/device";
+import deviceApi from "~/api/device";
 import { storageActions } from "~/store/storage";
 
 type StatusValue =
@@ -52,7 +52,7 @@ const useBleMaganer = ({ isOtaUpdate = false } = {}) => {
   const [firmware, setFirmware] = useState<number[]>([]);
   const [notifStatus, setNotifStatus] = useState<number[]>([]);
 
-  const [registerDevice, devEUIResult] = usePostDeviceMutation();
+  const [registerDevice, devEUIResult] = deviceApi.usePostDeviceMutation();
   const dispatch = useDispatch();
 
   const disconnect = async () => {
