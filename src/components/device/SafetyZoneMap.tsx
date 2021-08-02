@@ -2,12 +2,12 @@ import React, { useMemo, useRef, useState } from "react";
 import styled from "styled-components/native";
 import useMap from "~/hooks/useMap";
 import { height, width } from "~/styles";
-import { get4PointsAroundCircumference, isAndroid, isIos } from "~/utils";
+import { getLeftRightPointsOfCircle, isAndroid, isIos } from "~/utils";
 import Button from "../common/Button";
 
 import MyLocation from "~/assets/svg/my-location.svg";
 import useMyLocation from "~/hooks/useMyLocation";
-import { store, useAppSelector } from "~/store";
+import { useAppSelector } from "~/store";
 import palette from "~/styles/palette";
 
 import ShadowContainer from "../common/ShadowContainer";
@@ -71,7 +71,6 @@ const InnerMarker = styled.View`
 const options = ["100m", "200m", "300m", "500m", "1km", "취소"];
 const destructiveButtonIndex = 0;
 const cancelButtonIndex = 5;
-const edgePadding = isIos ? 75 : 100;
 
 const safetyZoneNumber = 1;
 
@@ -116,7 +115,7 @@ const SafetyZoneMap = ({
   // 반경 변경 시 원 크기에 맞게 fitToCoordinates 메소드 사용하기 위함
   const coordsArr = useMemo(() => {
     if (coord.latitude && coord.longitude) {
-      return get4PointsAroundCircumference(
+      return getLeftRightPointsOfCircle(
         coord.latitude,
         coord.longitude,
         radiusValue,
@@ -146,12 +145,7 @@ const SafetyZoneMap = ({
   // 반경 변경 시 원 edgePadding 만큼 지도 줌 자동 조절
   useEffect(() => {
     if (!mapRef.current || !radiusValue || !coordsArr) return;
-    mapRef.current.animateToCoordinates(coordsArr, {
-      left: edgePadding,
-      right: edgePadding,
-      top: edgePadding,
-      bottom: edgePadding,
-    });
+    mapRef.current.animateToTwoCoordinates(coordsArr[0], coordsArr[1]);
   }, [mapRef, radiusValue]);
 
   /*   // Circle 스타일 설정 (iOS 전용으로, iOS에서 스타일이 적용되지 않는 버그 때문)
