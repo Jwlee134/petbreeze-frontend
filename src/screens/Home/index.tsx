@@ -5,8 +5,7 @@ import { HomeScreenNavigationProp } from "~/types/navigator";
 import { useAppSelector } from "~/store";
 import useMap from "~/hooks/useMap";
 import useMyLocation from "~/hooks/useMyLocation";
-
-import "~/NotificationHandler";
+import { useEffect } from "react";
 import { Linking, StyleSheet } from "react-native";
 
 const Container = styled.View`
@@ -18,13 +17,23 @@ const Home = ({ navigation }: { navigation: HomeScreenNavigationProp }) => {
   const { Map, mapRef } = useMap();
   const { isTracking, startTracking, clearTracking } = useMyLocation();
 
-  /* useEffect(() => {
-    if (notification.includes("안심존")) {
-      setTimeout(() => {
-        navigation.navigate("Walk");
-      }, 1);
+  const handleOpenUrl = ({ url }: { url: string }) => {
+    if (url === "petbreeze://walk/map") {
+      navigation.navigate("Walk");
     }
-  }, [notification]); */
+  };
+
+  useEffect(() => {
+    Linking.getInitialURL().then(url => {
+      if (url === "petbreeze://walk/map") {
+        navigation.navigate("Walk");
+      }
+    });
+    Linking.addEventListener("url", handleOpenUrl);
+    return () => {
+      Linking.removeEventListener("url", handleOpenUrl);
+    };
+  }, []);
 
   return (
     <Container>
