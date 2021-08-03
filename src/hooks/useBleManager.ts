@@ -159,7 +159,7 @@ const useBleMaganer = ({ isOtaUpdate = false } = {}) => {
     if (status.value === "downloading") {
       RNFetchBlob.fetch(
         "GET",
-        "https://next-bnb-jw.s3.ap-northeast-2.amazonaws.com/release_factory.bin",
+        "https://next-bnb-jw.s3.ap-northeast-2.amazonaws.com/Release.bin",
       )
         .progress({ interval: 1 }, (received, total) => {
           setProgress(Math.floor((received / total) * 100));
@@ -225,7 +225,8 @@ const useBleMaganer = ({ isOtaUpdate = false } = {}) => {
   useEffect(() => {
     console.log(devEUIResult);
     if (devEUIResult.data) {
-      if (devEUIResult.data.detail.includes("relation")) {
+      startNotification();
+      /* if (devEUIResult.data.detail.includes("relation")) {
         disconnect().finally(() => {
           setStatus({
             value: "completedWith200",
@@ -239,7 +240,7 @@ const useBleMaganer = ({ isOtaUpdate = false } = {}) => {
           }),
         );
         startNotification();
-      }
+      } */
     }
     if (devEUIResult.isError && devEUIResult.error.status === 400) {
       disconnect().finally(() => {
@@ -259,7 +260,7 @@ const useBleMaganer = ({ isOtaUpdate = false } = {}) => {
     )
       .then(devEUI => {
         console.log("Succeded to read devEUI: ", bytesToString(devEUI));
-        registerDevice("aaaa");
+        registerDevice(bytesToString(devEUI));
       })
       .catch(error => {
         disconnect().finally(() => {

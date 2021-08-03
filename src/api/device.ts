@@ -57,7 +57,7 @@ const deviceApi = api.injectEndpoints({
       providesTags: result => providesList(result, "Device"),
     }),
 
-    postDevice: builder.mutation<{ detail: string; device_id: number }, string>(
+    postDevice: builder.mutation<{ detail: string; device_id: string }, string>(
       {
         query: devEUI => ({
           url: "/device/",

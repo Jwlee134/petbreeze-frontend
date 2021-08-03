@@ -92,6 +92,7 @@ const SafetyZoneMap = ({
   const circleRef = useRef<Circle>(null);
   const dispatch = useDispatch();
 
+  const currentDeviceId = route?.params?.deviceId;
   const currentName = route?.params?.name;
   const currentRadius = route?.params?.radius;
   const currentCoord = route?.params?.coord;
@@ -222,7 +223,7 @@ const SafetyZoneMap = ({
     }
 
     updateSafetyZone({
-      deviceId: route.params.deviceId ? route.params.deviceId : deviceId,
+      deviceId: currentDeviceId ? currentDeviceId : deviceId,
       body: body(),
     });
   };

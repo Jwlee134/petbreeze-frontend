@@ -3,7 +3,6 @@ import { RouteProp } from "@react-navigation/core";
 import { MaterialTopTabNavigationProp } from "@react-navigation/material-top-tabs";
 import { CompositeNavigationProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { Camera } from "react-native-maps";
 
 /* type SharedStackParamList = {
   Home: undefined;
