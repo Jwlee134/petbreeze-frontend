@@ -14,6 +14,8 @@ import { Container } from "./Styles";
 import { commonActions } from "~/store/common";
 import authApi from "~/api/auth";
 
+import messaging from "@react-native-firebase/messaging";
+
 const HalfContainer = styled.View`
   flex: 1;
   width: 100%;
@@ -106,6 +108,12 @@ const Auth = () => {
       console.log("Failed to login");
     }
   }, [facebookUser]);
+
+  /*  useEffect(() => {
+    messaging()
+      .getToken()
+      .then(token => console.log("FCM Token: ", token));
+  }, []); */
 
   return (
     <Container>

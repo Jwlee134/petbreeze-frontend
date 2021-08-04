@@ -14,10 +14,37 @@ import { storageActions } from "~/store/storage";
 import { StatusBar, StatusBarStyle } from "react-native";
 
 import Blemanager from "react-native-ble-manager";
+import messaging from "@react-native-firebase/messaging";
 
 SplashScreen.preventAutoHideAsync();
 
 const RootNav = () => {
+  useEffect(() => {
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      console.log(remoteMessage);
+    });
+
+    messaging().onNotificationOpenedApp(remoteMessage => {
+      console.log(
+        "Notification caused app to open from background state:",
+        remoteMessage,
+      );
+    });
+
+    messaging()
+      .getInitialNotification()
+      .then(remoteMessage => {
+        if (remoteMessage) {
+          console.log(
+            "Notification caused app to open from quit state:",
+            remoteMessage,
+          );
+        }
+      });
+
+    return unsubscribe;
+  }, []);
+
   const isInitialized = useAppSelector(
     state => state.storage.initialization.isInitialized,
   );
