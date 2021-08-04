@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import palette from "~/styles/palette";
 import SharedStackNav from "./SharedStackNav";
@@ -14,26 +14,59 @@ import UserOutline from "~/assets/svg/tab/user-outline.svg";
 import WalkStackNav from "./WalkStackNav";
 import { isAndroid } from "~/utils";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useState } from "react";
+import { Linking } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 const Tab = createBottomTabNavigator();
 
 const BottomTabNav = () => {
   const { bottom } = useSafeAreaInsets();
+  const navigation = useNavigation();
+  const [initialRoute, setInitialRoute] = useState("HomeTab");
+  const [isLoading, setIsLoading] = useState(true);
+
+  const handleOpenUrl = ({ url }: { url: string }) => {
+    if (url === "petbreeze://walk/map") {
+      // @ts-ignore
+      navigation.navigate("WalkMap");
+    }
+  };
+
+  useEffect(() => {
+    Linking.getInitialURL()
+      .then(url => {
+        if (url === "petbreeze://walk/map") {
+          setInitialRoute("WalkTab");
+        }
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+    Linking.addEventListener("url", handleOpenUrl);
+    return () => {
+      Linking.removeEventListener("url", handleOpenUrl);
+    };
+  }, []);
+
+  if (isLoading) return null;
 
   return (
     <Tab.Navigator
-      tabBarOptions={{
-        activeTintColor: palette.blue_6e,
-        inactiveTintColor: "#808080",
-        labelStyle: {
+      initialRouteName={initialRoute}
+      screenOptions={{
+        tabBarActiveTintColor: palette.blue_6e,
+        tabBarInactiveTintColor: "#808080",
+        tabBarLabelStyle: {
           marginBottom: 6,
         },
-        style: {
+        tabBarStyle: {
           height: isAndroid ? 56 : 56 + bottom,
         },
+        headerShown: false,
       }}>
       <Tab.Screen
-        name="Home"
+        name="HomeTab"
         options={{
           tabBarIcon: ({ focused }) => (focused ? <Home /> : <HomeOutline />),
           tabBarLabel: "홈",
@@ -41,7 +74,7 @@ const BottomTabNav = () => {
         {() => <SharedStackNav screenName="Home" />}
       </Tab.Screen>
       <Tab.Screen
-        name="Walk"
+        name="WalkTab"
         component={WalkStackNav}
         options={{
           tabBarIcon: ({ focused }) =>
@@ -50,7 +83,7 @@ const BottomTabNav = () => {
         }}
       />
       <Tab.Screen
-        name="Notification"
+        name="NotificationTab"
         options={{
           tabBarIcon: ({ focused }) => (focused ? <Bell /> : <BellOutline />),
           tabBarLabel: "알림",
@@ -58,7 +91,7 @@ const BottomTabNav = () => {
         {() => <SharedStackNav screenName="Notification" />}
       </Tab.Screen>
       <Tab.Screen
-        name="MyPage"
+        name="MyPageTab"
         options={{
           tabBarIcon: ({ focused }) => (focused ? <User /> : <UserOutline />),
           tabBarLabel: "마이페이지",

@@ -81,10 +81,10 @@ export type AddDeviceScreenRouteProp = RouteProp<
 >;
 
 type BottomTabParamList = {
-  Home: undefined;
-  Walk: undefined;
-  Notification: undefined;
-  MyMenu: undefined;
+  HomeTab: undefined;
+  WalkTab: undefined;
+  NotificationTab: undefined;
+  MyMenuTab: undefined;
 };
 
 type SharedStackParamList = {
@@ -107,28 +107,15 @@ export type NotificationScreenNavigationProp = CompositeNavigationProp<
 >;
 
 type WalkStackNavParamList = {
-  Walk: undefined;
-  WalkMap: {
-    deviceId: string[];
-  };
+  WalkTopTab: undefined;
+  WalkMap: undefined;
 };
-export type WalkScreenNavigationProp = CompositeNavigationProp<
-  StackNavigationProp<WalkStackNavParamList, "Walk">,
-  CompositeNavigationProp<
-    BottomTabNavigationProp<BottomTabParamList>,
-    StackNavigationProp<LoggedInNavParamList>
-  >
->;
 export type WalkMapScreenNavigationProp = CompositeNavigationProp<
   StackNavigationProp<WalkStackNavParamList, "WalkMap">,
   CompositeNavigationProp<
     BottomTabNavigationProp<BottomTabParamList>,
     StackNavigationProp<LoggedInNavParamList>
   >
->;
-export type WalkMapScreenRouteProp = RouteProp<
-  WalkStackNavParamList,
-  "WalkMap"
 >;
 
 type WalkTopTabParamList = {

@@ -45,8 +45,8 @@ const RootNav = () => {
       case CodePush.SyncStatus.UPDATE_INSTALLED:
         dispatch(storageActions.setInitialization("codePush"));
         setTimeout(() => {
-          CodePush.restartApp();
           setBarStyle("light-content");
+          CodePush.restartApp();
         }, 300);
         break;
       default:

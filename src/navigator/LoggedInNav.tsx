@@ -1,24 +1,14 @@
 import React from "react";
-import {
-  createStackNavigator,
-  TransitionPresets,
-} from "@react-navigation/stack";
+import { createStackNavigator } from "@react-navigation/stack";
 
 import BottomTabNav from "./BottomTabNav";
 import AddDevice from "~/screens/AddDevice";
-import { headerStyle, mainTabHeaderStyle } from "~/styles/navigator";
 import HeaderBackButton from "~/components/common/button/HeaderBackButton";
 
 const Stack = createStackNavigator();
 
 const LoggedInNav = () => (
-  <Stack.Navigator
-    mode="modal"
-    screenOptions={{
-      headerBackImage: () => <HeaderBackButton />,
-      ...mainTabHeaderStyle,
-      ...TransitionPresets.SlideFromRightIOS,
-    }}>
+  <Stack.Navigator>
     <Stack.Screen
       name="BottomTabNav"
       component={BottomTabNav}
@@ -29,7 +19,6 @@ const LoggedInNav = () => (
       component={AddDevice}
       options={{
         title: "기기 등록",
-        ...headerStyle,
       }}
     />
   </Stack.Navigator>

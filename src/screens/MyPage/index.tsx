@@ -2,7 +2,6 @@ import React from "react";
 import { Linking, ScrollView } from "react-native";
 import CategoryTitle from "~/components/common/CategoryTitle";
 import ListItem from "~/components/common/ListItem";
-import { MyPageScreenNavigationProp } from "~/types/navigator";
 import useModal from "~/hooks/useModal";
 
 import Modal from "react-native-modal";
@@ -12,7 +11,7 @@ import { storageActions } from "~/store/storage";
 
 const size = 22;
 
-const MyPage = ({ navigation }: { navigation: MyPageScreenNavigationProp }) => {
+const MyPage = () => {
   const dispatch = useDispatch();
 
   const { open, close, modalProps, CenterModalComponent } = useModal({

@@ -2,12 +2,11 @@ import React from "react";
 import styled from "styled-components/native";
 import ConfirmButton from "~/components/common/button/ConfirmButton";
 import { StartWalkingScreenNavigationProp } from "~/types/navigator";
-import useFocusEvent from "~/hooks/useFocusEvent";
-import Device from "~/components/myPage/Device";
-import SidePaddingContainer from "~/components/common/container/SidePaddingContainer";
-import { ScrollView } from "react-native";
 import { useState } from "react";
 import deviceApi from "~/api/device";
+import { useDispatch } from "react-redux";
+import { storageActions } from "~/store/storage";
+import { permissionCheck } from "~/utils";
 
 const Container = styled.View`
   flex: 1;
@@ -35,17 +34,15 @@ const StartWalking = ({
 }: {
   navigation: StartWalkingScreenNavigationProp;
 }) => {
-  useFocusEvent({ isTab: true });
   const [selected, setSelected] = useState<string[]>([]);
+  const dispatch = useDispatch();
   // const { data: devices } = deviceApi.useGetDeviceListQuery();
 
   const handleStart = () => {
-    // if (!devices) return;
-    navigation.replace(
-      "WalkMap" /* , {
-      deviceId: selected,
-    } */,
-    );
+    permissionCheck("location").then(() => {
+      dispatch(storageActions.setSelectedDeviceId(selected));
+      navigation.replace("WalkMap");
+    });
   };
 
   const handleNavigate = () =>

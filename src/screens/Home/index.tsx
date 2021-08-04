@@ -5,7 +5,6 @@ import { HomeScreenNavigationProp } from "~/types/navigator";
 import { useAppSelector } from "~/store";
 import useMap from "~/hooks/useMap";
 import useMyLocation from "~/hooks/useMyLocation";
-import { useEffect } from "react";
 
 import "~/NotificationHandler";
 import { Linking, StyleSheet } from "react-native";
@@ -26,24 +25,6 @@ const Home = ({ navigation }: { navigation: HomeScreenNavigationProp }) => {
       }, 1);
     }
   }, [notification]); */
-
-  const handleOpenUrl = ({ url }: { url: string }) => {
-    if (url === "petbreeze://walk/map") {
-      navigation.navigate("Walk");
-    }
-  };
-
-  useEffect(() => {
-    Linking.getInitialURL().then(url => {
-      if (url === "petbreeze://walk/map") {
-        navigation.navigate("Walk");
-      }
-    });
-    Linking.addEventListener("url", handleOpenUrl);
-    return () => {
-      Linking.removeEventListener("url", handleOpenUrl);
-    };
-  }, []);
 
   return (
     <Container>

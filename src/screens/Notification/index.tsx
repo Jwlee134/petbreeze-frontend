@@ -17,18 +17,14 @@ const Notification = ({
     type: "center",
   });
 
-  useLayoutEffect(() => {
+  /*   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => <HeaderRightButton open={open} />,
     });
-  }, []);
+  }, []); */
 
   return (
     <>
-      <NothingToShowContainer style={{ fontSize: 20 }}>
-        수신된 알림이 없어요!{"\n"}관심있는 게시물을 저장하고{"\n"}
-        업데이트 알림을 받아보세요.
-      </NothingToShowContainer>
       <Modal {...modalProps}>
         <CenterModalComponent headerTitle="알림">
           <NotificationModal />

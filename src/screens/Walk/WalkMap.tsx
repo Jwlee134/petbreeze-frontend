@@ -1,9 +1,6 @@
 import React from "react";
 import useMap from "~/hooks/useMap";
-import {
-  WalkMapScreenNavigationProp,
-  WalkMapScreenRouteProp,
-} from "~/types/navigator";
+import { WalkMapScreenNavigationProp } from "~/types/navigator";
 import styled from "styled-components/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import BackgroundService from "react-native-background-actions";
@@ -40,10 +37,8 @@ const TextContainer = styled.View`
 
 const WalkMap = ({
   navigation,
-  route,
 }: {
   navigation: WalkMapScreenNavigationProp;
-  route: WalkMapScreenRouteProp;
 }) => {
   const { bottom } = useSafeAreaInsets();
   const { Map, mapRef } = useMap();
@@ -53,18 +48,16 @@ const WalkMap = ({
   });
   const [trigger] = walkApi.usePostWalkMutation();
 
-  //  const { deviceId } = route.params;
-
   const handleFinish = async () => {
-    const { startTime, duration, meter, coords } =
+    const { startTime, duration, meter, coords, selectedDeviceId } =
       store.getState().storage.walk;
     if (BackgroundService.isRunning()) {
       await BackgroundService.stop();
       clearTracking();
     }
     dispatch(storageActions.clearWalk());
-    navigation.replace("Walk");
-    // const promise = deviceId.map(id =>
+    navigation.replace("WalkTopTab");
+    // const promise = selectedDeviceId.map(id =>
     //   trigger({
     //     deviceId: id,
     //     start_date_time: new Date(startTime),

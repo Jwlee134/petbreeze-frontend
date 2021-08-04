@@ -1,10 +1,6 @@
 import React from "react";
-import {
-  createStackNavigator,
-  TransitionPresets,
-} from "@react-navigation/stack";
+import { createStackNavigator } from "@react-navigation/stack";
 import Notification from "~/screens/Notification";
-import { headerStyle, mainTabHeaderStyle } from "~/styles/navigator";
 import HeaderBackButton from "~/components/common/button/HeaderBackButton";
 import Home from "~/screens/Home";
 import MyPage from "~/screens/MyPage";
@@ -22,13 +18,7 @@ import SafetyZoneMap from "~/screens/MyPage/SafetyZoneMap";
 const Stack = createStackNavigator();
 
 const SharedStack = ({ screenName }: { screenName: string }) => (
-  <Stack.Navigator
-    mode="modal"
-    screenOptions={{
-      headerBackImage: () => <HeaderBackButton />,
-      ...mainTabHeaderStyle,
-      ...TransitionPresets.SlideFromRightIOS,
-    }}>
+  <Stack.Navigator>
     {screenName === "Home" && (
       <Stack.Screen
         name="Home"
