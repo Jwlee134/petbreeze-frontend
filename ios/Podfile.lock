@@ -467,7 +467,7 @@ PODS:
   - React-jsinspector (0.64.2)
   - react-native-background-actions (2.6.2):
     - React-Core
-  - react-native-ble-manager (7.5.0):
+  - react-native-ble-manager (7.6.0):
     - React-Core
   - react-native-fbsdk-next (4.3.0):
     - React-Core
@@ -980,7 +980,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 80c46bd381fd06e418e0d4f53672dc1d1945c4c3
   React-jsinspector: cc614ec18a9ca96fd275100c16d74d62ee11f0ae
   react-native-background-actions: 5acd5851ac2d3bb8b1c39fcc9332abe45977fd04
-  react-native-ble-manager: c51fe60663155712b17f35895eceffcd1343a818
+  react-native-ble-manager: fe313716f5edd2f406ec2a48a2c2ef5a0daeb5f3
   react-native-fbsdk-next: 19e974b071047b7ed1dad86a9dc3fe77dff76b8c
   react-native-flipper: a5b02e319fab599965d522d79aa34dc865a07d16
   react-native-geolocation-service: 4030de78cdeb93ebef1fdc1971668bea6c0bc59b

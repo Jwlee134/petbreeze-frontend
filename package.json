@@ -34,7 +34,7 @@
     "react": "17.0.1",
     "react-native": "^0.64.2",
     "react-native-background-actions": "^2.6.2",
-    "react-native-ble-manager": "^7.5.0",
+    "react-native-ble-manager": "^7.6.0",
     "react-native-calendars": "^1.1263.0",
     "react-native-code-push": "^7.0.1",
     "react-native-drop-shadow": "^0.0.2",
