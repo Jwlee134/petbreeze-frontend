@@ -15,6 +15,7 @@
 		8405B7922668C7C200BEE203 /* SwiftBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8405B7912668C7C200BEE203 /* SwiftBridge.swift */; };
 		8408C036BBEF720BBDB6E105 /* libPods-Petbreeze.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F50C09CE2B924FCC7A4B2FE2 /* libPods-Petbreeze.a */; };
 		84BE911B26980EB900287561 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 84BE911A26980EB900287561 /* GoogleService-Info.plist */; };
+		84E1A1C026BD102900C50525 /* Fonts in Resources */ = {isa = PBXBuildFile; fileRef = 84E1A1BF26BD102900C50525 /* Fonts */; };
 		8E5AB30024994C0696326D8E /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 19D0AFA487144E03891D8685 /* SplashScreen.storyboard */; };
 		F016418510F2E3103A3BCE48 /* libPods-Petbreeze-PetbreezeTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8EB3D11E76E5AA33B5CD828E /* libPods-Petbreeze-PetbreezeTests.a */; };
 /* End PBXBuildFile section */
@@ -49,6 +50,7 @@
 		8405B7902668C7C200BEE203 /* Petbreeze-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Petbreeze-Bridging-Header.h"; sourceTree = "<group>"; };
 		8405B7912668C7C200BEE203 /* SwiftBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftBridge.swift; sourceTree = "<group>"; };
 		84BE911A26980EB900287561 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		84E1A1BF26BD102900C50525 /* Fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Fonts; sourceTree = "<group>"; };
 		8EB3D11E76E5AA33B5CD828E /* libPods-Petbreeze-PetbreezeTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Petbreeze-PetbreezeTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E79577DFDC5E1FD49BDDFB89 /* Pods-Petbreeze.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Petbreeze.debug.xcconfig"; path = "Target Support Files/Pods-Petbreeze/Pods-Petbreeze.debug.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
@@ -129,6 +131,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				84E1A1BF26BD102900C50525 /* Fonts */,
 				13B07FAE1A68108700A75B9A /* Petbreeze */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* PetbreezeTests */,
@@ -258,6 +261,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				84E1A1C026BD102900C50525 /* Fonts in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				84BE911B26980EB900287561 /* GoogleService-Info.plist in Resources */,
