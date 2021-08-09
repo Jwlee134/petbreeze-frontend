@@ -1,9 +1,13 @@
 import React, { ReactNode, useEffect, useRef } from "react";
 import { useCallback } from "react";
-import { ScrollView } from "react-native";
+import { ScrollView, ScrollViewProps } from "react-native";
 import { useAppSelector } from "~/store";
 import { width } from "~/styles";
 import { isIos } from "~/utils";
+
+interface IProps extends ScrollViewProps {
+  children: ReactNode;
+}
 
 const usePagingScrollView = () => {
   const scrollViewRef = useRef<ScrollView>(null);
@@ -19,15 +23,14 @@ const usePagingScrollView = () => {
   }, [page]);
 
   const PagingScrollView = useCallback(
-    ({ children }: { children: ReactNode }) => (
+    ({ children, ...props }: IProps) => (
       <ScrollView
         ref={scrollViewRef}
         horizontal
         pagingEnabled
         bounces={false}
-        scrollEnabled={false}
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{ marginBottom: isIos ? 24 : 0 }}>
+        {...props}>
         {children}
       </ScrollView>
     ),

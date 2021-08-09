@@ -1,12 +1,12 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import Initialization from "~/screens/Initialization";
+import Init from "~/screens/Init";
 
 const Stack = createStackNavigator();
 
 const LoggedOutNav = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
-    <Stack.Screen name="Initialization" component={Initialization} />
+    <Stack.Screen name="Init" component={Init} />
   </Stack.Navigator>
 );
 

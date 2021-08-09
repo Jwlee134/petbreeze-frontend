@@ -5,9 +5,9 @@ import {
   BottomContainer,
   Container,
   TopContainer,
-} from "../initialization/Styles";
+} from "../init/Styles";
 
-import Bluetooth from "~/assets/svg/initialization/bluetooth.svg";
+import Bluetooth from "~/assets/svg/init/bluetooth.svg";
 import useDisableButton from "~/hooks/useDisableButton";
 import { commonActions } from "~/store/common";
 import { Status } from "~/hooks/useBleManager";

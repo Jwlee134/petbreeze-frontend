@@ -6,7 +6,7 @@ import LoggedOutNav from "./LoggedOutNav";
 import CodePush, { DownloadProgress } from "react-native-code-push";
 
 import * as SplashScreen from "expo-splash-screen";
-import FirmwareUpdate from "~/components/initialization/FirmwareUpdate";
+import FirmwareUpdate from "~/components/init/FirmwareUpdate";
 
 import { useState } from "react";
 import { useDispatch } from "react-redux";
@@ -46,13 +46,13 @@ const RootNav = () => {
   }, []);
 
   const isInitialized = useAppSelector(
-    state => state.storage.initialization.isInitialized,
+    state => state.storage.init.isInitialized,
   );
   const isPermissonAllowed = useAppSelector(
-    state => state.storage.initialization.isPermissionAllowed,
+    state => state.storage.init.isPermissionAllowed,
   );
   const isCodePushUpdated = useAppSelector(
-    state => state.storage.initialization.isCodePushUpdated,
+    state => state.storage.init.isCodePushUpdated,
   );
   const dispatch = useDispatch();
   const [showFirmwareUpdate, setShowFirmwareUpdate] = useState(
@@ -65,12 +65,12 @@ const RootNav = () => {
     switch (status) {
       case CodePush.SyncStatus.UP_TO_DATE:
         setProgress(100);
-        dispatch(storageActions.setInitialization("codePush"));
+        dispatch(storageActions.setInit("codePush"));
         setTimeout(() => {
           setShowFirmwareUpdate(false);
         }, 300);
       case CodePush.SyncStatus.UPDATE_INSTALLED:
-        dispatch(storageActions.setInitialization("codePush"));
+        dispatch(storageActions.setInit("codePush"));
         setTimeout(() => {
           setBarStyle("light-content");
           CodePush.restartApp();

@@ -1,13 +1,8 @@
 import React from "react";
 import Button from "../common/Button";
-import {
-  BigText,
-  BottomContainer,
-  Container,
-  TopContainer,
-} from "../initialization/Styles";
+import { BigText, BottomContainer, Container, TopContainer } from "./Styles";
 
-import Thumb from "~/assets/svg/initialization/thumb-star.svg";
+import Thumb from "~/assets/svg/init/thumb-star.svg";
 import { useDispatch } from "react-redux";
 import { storageActions } from "~/store/storage";
 import { commonActions } from "~/store/common";
@@ -25,7 +20,7 @@ const Completion = () => {
         <Button
           text="시작하기"
           onPress={() => {
-            dispatch(storageActions.setInitialization("initialization"));
+            dispatch(storageActions.setInit("init"));
             dispatch(storageActions.initDeviceRegistrationStep());
             dispatch(commonActions.setPage("init"));
           }}

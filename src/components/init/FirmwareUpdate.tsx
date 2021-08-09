@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { Animated, Easing, StatusBar } from "react-native";
+import { Animated, Easing } from "react-native";
 import styled from "styled-components/native";
 import palette from "~/styles/palette";
 

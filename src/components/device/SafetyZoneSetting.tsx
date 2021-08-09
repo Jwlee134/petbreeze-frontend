@@ -6,7 +6,7 @@ import {
   BottomContainer,
   Container,
   TopContainer,
-} from "../initialization/Styles";
+} from "../init/Styles";
 import styled from "styled-components/native";
 
 import CheckShield from "~/assets/svg/safetyZone/check-shield.svg";

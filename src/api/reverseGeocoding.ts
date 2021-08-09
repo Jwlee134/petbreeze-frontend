@@ -1,5 +1,5 @@
 import axios from "axios";
-import { IReverseGeocoding } from "~/types/api";
+import { IReverseGeocoding } from "~/types/geocoding";
 
 export const reverseGeocodingAPI = ({
   latitude,

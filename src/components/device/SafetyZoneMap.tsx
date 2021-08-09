@@ -10,7 +10,7 @@ import useMyLocation from "~/hooks/useMyLocation";
 import { useAppSelector } from "~/store";
 import palette from "~/styles/palette";
 
-import ShadowContainer from "../common/ShadowContainer";
+import ShadowContainer from "../common/container/ShadowContainer";
 import { useEffect } from "react";
 import { useActionSheet } from "@expo/react-native-action-sheet";
 import Input from "../common/Input";

@@ -13,8 +13,9 @@ interface IStorage {
     token: string;
     nickname: string;
   };
-  initialization: {
+  init: {
     isCodePushUpdated: boolean;
+    isIntroPassed: boolean;
     isPermissionAllowed: boolean;
     isInitialized: boolean;
   };
@@ -49,9 +50,10 @@ const initialState: IStorage = {
     token: "",
     nickname: "",
   },
-  initialization: {
+  init: {
     isCodePushUpdated: false,
     isPermissionAllowed: isAndroid ? true : false,
+    isIntroPassed: false,
     isInitialized: false,
   },
   device: {
@@ -93,29 +95,28 @@ const storage = createSlice({
       state.user.token = payload.token;
       state.user.nickname = payload.nickname;
     },
-    setInitialization: (
+    setInit: (
       state,
-      { payload }: PayloadAction<"permission" | "initialization" | "codePush">,
+      { payload }: PayloadAction<"permission" | "init" | "codePush" | "intro">,
     ) => {
       switch (payload) {
         case "permission":
-          state.initialization.isPermissionAllowed = true;
+          state.init.isPermissionAllowed = true;
           break;
-        case "initialization":
-          state.initialization.isInitialized = true;
+        case "init":
+          state.init.isInitialized = true;
           break;
         case "codePush":
-          state.initialization.isCodePushUpdated = true;
+          state.init.isCodePushUpdated = true;
+          break;
+        case "intro":
+          state.init.isIntroPassed = true;
           break;
       }
     },
     setDeviceRegistrationStep: (
       state,
-      {
-        payload,
-      }: PayloadAction<
-        "device" | "safetyZone" | "profile" | "ota" | { id: string }
-      >,
+      { payload }: PayloadAction<"device" | "safetyZone" | "profile" | "ota">,
     ) => {
       switch (payload) {
         case "device":
@@ -130,10 +131,10 @@ const storage = createSlice({
         case "ota":
           state.device.isOtaUpdateAvailable = true;
           break;
-        default:
-          state.device.deviceIdInProgress = payload.id;
-          break;
       }
+    },
+    setDeviceId: (state, { payload }: PayloadAction<string>) => {
+      state.device.deviceIdInProgress = payload;
     },
     initDeviceRegistrationStep: state => {
       state.device = initialState.device;
@@ -141,9 +142,6 @@ const storage = createSlice({
     logout: state => {
       state.user.token = "";
       state.user.nickname = "";
-    },
-    setIsOtaUpdateAvailable: (state, { payload }: PayloadAction<boolean>) => {
-      state.device.isOtaUpdateAvailable = payload;
     },
     setDidMountInitially: (state, { payload }: PayloadAction<boolean>) => {
       state.walk.didMountInitially = payload;

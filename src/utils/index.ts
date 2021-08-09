@@ -7,7 +7,7 @@ import {
   PERMISSIONS,
   request,
 } from "react-native-permissions";
-import { IReverseGeocoding } from "~/types/api";
+import { IReverseGeocoding } from "~/types/geocoding";
 
 export const isAndroid = Platform.OS === "android";
 

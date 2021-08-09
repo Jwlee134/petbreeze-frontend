@@ -1,12 +1,12 @@
 import React, { useRef } from "react";
 import styled from "styled-components/native";
-import { Animated, Easing } from "react-native";
+import { Alert, Animated, Easing } from "react-native";
 import {
   BigText,
   BottomContainer,
   Container,
   TopContainer,
-} from "../initialization/Styles";
+} from "../init/Styles";
 import Fail from "../lottie/Fail";
 import Loading from "../lottie/Loading";
 import Success from "../lottie/Success";
@@ -47,7 +47,7 @@ const Progress = ({
   const { disable, disabled } = useDisableButton();
   const dispatch = useDispatch();
   const isInitialized = useAppSelector(
-    state => state.storage.initialization.isInitialized,
+    state => state.storage.init.isInitialized,
   );
   const navigation = useNavigation();
 
@@ -117,7 +117,7 @@ const Progress = ({
               if (status.value === "completedWith200") {
                 if (!isInitialized) {
                   dispatch(commonActions.setPage("init"));
-                  dispatch(storageActions.setInitialization("initialization"));
+                  dispatch(storageActions.setInit("init"));
                 } else {
                   dispatch(commonActions.setPage("init"));
                   navigation.goBack();
@@ -128,8 +128,9 @@ const Progress = ({
                 navigation.goBack();
               }
               if (status.value === "completed") {
-                dispatch(commonActions.setPage("next"));
-                dispatch(storageActions.setDeviceRegistrationStep("device"));
+                Alert.alert("Do not press.");
+                /* dispatch(commonActions.setPage("next"));
+                dispatch(storageActions.setDeviceRegistrationStep("device")); */
               }
               disable();
             }}

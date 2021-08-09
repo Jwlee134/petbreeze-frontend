@@ -1,11 +1,11 @@
 import React from "react";
 import styled from "styled-components/native";
 
-import Permission from "~/assets/svg/initialization/permission.svg";
-import Bell from "~/assets/svg/initialization/bell.svg";
-import Location from "~/assets/svg/initialization/location.svg";
-import Bluetooth from "~/assets/svg/initialization/bluetooth-small.svg";
-import Gallery from "~/assets/svg/initialization/gallery.svg";
+import Permission from "~/assets/svg/init/permission.svg";
+import Bell from "~/assets/svg/init/bell.svg";
+import Location from "~/assets/svg/init/location.svg";
+import Bluetooth from "~/assets/svg/init/bluetooth-small.svg";
+import Gallery from "~/assets/svg/init/gallery.svg";
 import Button from "../common/Button";
 import { View } from "react-native";
 import {
@@ -55,7 +55,7 @@ const SmallText = styled.Text`
 
 const Permissions = () => {
   const isPermissionAllowed = useAppSelector(
-    state => state.storage.initialization.isPermissionAllowed,
+    state => state.storage.init.isPermissionAllowed,
   );
   const dispatch = useDispatch();
   const { appState } = useAppState();
@@ -69,7 +69,7 @@ const Permissions = () => {
       PERMISSIONS.IOS.PHOTO_LIBRARY,
     ]);
     dispatch(commonActions.setPage("next"));
-    dispatch(storageActions.setInitialization("permission"));
+    dispatch(storageActions.setInit("permission"));
   };
 
   const handleNotification = async () => {

@@ -3,8 +3,8 @@ import React, { useEffect } from "react";
 import styled from "styled-components/native";
 import { useDispatch } from "react-redux";
 
-import KakaoIcon from "~/assets/svg/initialization/kakao.svg";
-import FacebookIcon from "~/assets/svg/initialization/facebook.svg";
+import KakaoIcon from "~/assets/svg/init/kakao.svg";
+import FacebookIcon from "~/assets/svg/init/facebook.svg";
 import { View } from "react-native";
 import Button from "../common/Button";
 import { LoginManager, AccessToken } from "react-native-fbsdk-next";

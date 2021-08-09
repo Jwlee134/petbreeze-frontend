@@ -4,21 +4,21 @@ import DropShadow from "react-native-drop-shadow";
 
 const ShadowContainer = ({
   children,
-  shadowContainerStyle,
+  style,
 }: {
   children: ReactNode;
-  shadowContainerStyle?: StyleProp<ViewStyle>;
+  style?: StyleProp<ViewStyle>;
 }) => (
   <DropShadow
     style={{
-      shadowColor: "black",
+      shadowColor: "#000",
       shadowOffset: {
         width: 0,
-        height: 3,
+        height: 0,
       },
-      shadowOpacity: 0.1,
-      shadowRadius: 5,
-      ...(shadowContainerStyle as object),
+      shadowOpacity: 0.25,
+      shadowRadius: 3,
+      ...(style as object),
     }}>
     {children}
   </DropShadow>

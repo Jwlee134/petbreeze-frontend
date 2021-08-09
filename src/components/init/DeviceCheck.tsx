@@ -2,7 +2,7 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { BigText, BottomContainer, Container, TopContainer } from "./Styles";
 
-import Device from "~/assets/svg/initialization/device.svg";
+import Device from "~/assets/svg/init/device.svg";
 import Button from "../common/Button";
 import { storageActions } from "~/store/storage";
 import { commonActions } from "~/store/common";
@@ -26,7 +26,7 @@ const DeviceCheck = () => {
           background="transparent"
           text="건너뛰기"
           onPress={() => {
-            dispatch(storageActions.setInitialization("initialization"));
+            dispatch(storageActions.setInit("init"));
             dispatch(commonActions.setPage("init"));
           }}
         />
