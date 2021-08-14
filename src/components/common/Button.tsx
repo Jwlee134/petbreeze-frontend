@@ -1,89 +1,67 @@
 import React, { ReactNode } from "react";
 import { ActivityIndicator, TouchableOpacityProps } from "react-native";
 import styled, { css } from "styled-components/native";
+import { rpWidth } from "~/styles";
 import palette from "~/styles/palette";
+import MyText, { fontWeight } from "./MyText";
 
 interface IButton extends TouchableOpacityProps {
   children?: ReactNode;
-  text?: string;
-  textColor?: "black";
-  background?: "transparent";
-  Icon?: () => JSX.Element;
+  backgroundColor?: string;
+  RightIcon?: () => JSX.Element;
   disabled?: boolean;
   isLoading?: boolean;
+  fontWeight?: fontWeight;
+  fontColor?: string;
 }
 
 interface ITouchableOpacity {
-  background: "transparent" | undefined;
   disabled: boolean;
-}
-
-interface IText {
-  textColor: "black" | undefined;
-  background: "transparent" | undefined;
+  backgroundColor: string | undefined;
 }
 
 const StyledButton = styled.TouchableOpacity<ITouchableOpacity>`
   width: 100%;
-  height: 48px;
-  border-radius: 24px;
+  height: ${rpWidth(50)}px;
+  border-radius: ${rpWidth(25)}px;
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  background-color: ${palette.blue_6e};
-  ${({ background }) =>
-    background === "transparent" &&
-    css`
-      background-color: transparent;
-      border-width: 1px;
-    `};
+  background-color: ${({ backgroundColor }) =>
+    backgroundColor ? backgroundColor : palette.blue_7b};
   ${({ disabled }) =>
     disabled &&
     css`
-      background-color: ${palette.gray_b4};
+      background-color: rgba(0, 0, 0, 0.1);
     `}
-`;
-
-const IconContainer = styled.View`
-  margin-right: 8px;
-`;
-
-const Text = styled.Text<IText>`
-  font-size: 16px;
-  color: ${({ textColor, background }) =>
-    textColor ? textColor : background === "transparent" ? "black" : "white"};
 `;
 
 const Button = ({
   children,
-  text,
-  textColor,
-  Icon,
-  background,
+  backgroundColor,
+  RightIcon,
+  fontWeight,
+  fontColor,
   isLoading = false,
   disabled = false,
   ...props
 }: IButton) => (
   <StyledButton
+    backgroundColor={backgroundColor}
     disabled={disabled}
-    background={background}
-    activeOpacity={1}
     {...props}>
     {isLoading ? (
       <ActivityIndicator color="white" />
     ) : (
       <>
-        {Icon && (
-          <IconContainer>
-            <Icon />
-          </IconContainer>
-        )}
-        {text && (
-          <Text background={background} textColor={textColor}>
-            {text}
-          </Text>
-        )}
-        {children ? children : null}
+        {RightIcon && <RightIcon />}
+        <MyText
+          fontWeight={fontWeight ? fontWeight : "medium"}
+          color={
+            disabled ? "rgba(0, 0, 0, 0.5)" : fontColor ? fontColor : "white"
+          }>
+          {children}
+        </MyText>
       </>
     )}
   </StyledButton>

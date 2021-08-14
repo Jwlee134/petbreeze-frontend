@@ -12,8 +12,7 @@ import SecondIntro from "./SecondIntro";
 import ThirdIntro from "./ThirdIntro";
 
 const SkipButton = styled.TouchableOpacity<{ top: number }>`
-  margin: ${({ top }) =>
-    `${rpHeight(20) + top}px ${rpWidth(26)}px ${rpHeight(40)}px auto`};
+  margin: ${({ top }) => `${rpHeight(17) + top}px ${rpWidth(20)}px 0 auto`};
   position: absolute;
   right: 0;
   z-index: 1;
@@ -43,7 +42,7 @@ const Intro = () => {
         onPress={() => dispatch(storageActions.setInit("intro"))}>
         <MyText
           fontWeight="medium"
-          fontSize={17}
+          fontSize={14}
           style={{
             opacity: 0.5,
           }}>
@@ -52,7 +51,7 @@ const Intro = () => {
       </SkipButton>
       <PagingScrollView
         contentContainerStyle={{
-          paddingTop: rpHeight(84) + top,
+          paddingTop: rpHeight(80) + top,
         }}
         onScroll={e =>
           setCurrentPage(
@@ -66,7 +65,7 @@ const Intro = () => {
       </PagingScrollView>
       <PageIndicator
         style={{
-          marginBottom: rpHeight(60) + bottom,
+          marginBottom: rpHeight(54) + bottom,
         }}>
         <PageIndicatorCircle isFocused={currentPage === 1} />
         <PageIndicatorCircle isFocused={currentPage === 2} />

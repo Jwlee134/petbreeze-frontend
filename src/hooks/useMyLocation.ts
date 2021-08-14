@@ -56,6 +56,7 @@ const useMyLocation = ({ isWalking = false }: { isWalking?: boolean } = {}) => {
           }
         },
         error => {
+          console.log(error);
           Alert.alert("위치를 불러올 수 없습니다.");
           reject();
         },

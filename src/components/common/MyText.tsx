@@ -3,16 +3,19 @@ import { StyleProp, TextProps, TextStyle } from "react-native";
 import styled from "styled-components/native";
 import { rpWidth } from "~/styles";
 
+export type fontWeight = "light" | "medium" | "bold";
+
 interface IProps extends TextProps {
   children: ReactNode;
   style?: StyleProp<TextStyle>;
-  fontWeight?: "light" | "medium" | "bold";
-  fontSize: number | undefined;
+  fontWeight?: fontWeight;
+  fontSize?: number | undefined;
+  color?: string;
 }
 
 interface IText {
-  fontWeight: "light" | "medium" | "bold" | undefined;
-  fontSize: number | undefined;
+  fontWeight: fontWeight | undefined;
+  fontSize?: number | undefined;
 }
 
 const Text = styled.Text<IText>`
@@ -37,6 +40,7 @@ const MyText = ({
   style,
   fontWeight,
   fontSize,
+  color,
   ...props
 }: IProps) => (
   <Text
@@ -44,6 +48,7 @@ const MyText = ({
     fontSize={fontSize}
     style={{
       includeFontPadding: false,
+      color,
       ...(style as object),
     }}
     {...props}>

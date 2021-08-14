@@ -71,47 +71,64 @@ export type SafetyZoneMapScreenRouteProp = RouteProp<
 >;*/
 
 type LoggedInNavParamList = {
+  BottomTabNav: {
+    initialTab?: string;
+  };
   AddDevice: {
     isOtaUpdate: boolean;
   };
+  WalkMap: undefined;
 };
+export type BottomTabNavRouteProp = RouteProp<
+  LoggedInNavParamList,
+  "BottomTabNav"
+>;
 export type AddDeviceScreenRouteProp = RouteProp<
   LoggedInNavParamList,
   "AddDevice"
 >;
+export type WalkMapScreenNavigationProp = StackNavigationProp<
+  LoggedInNavParamList,
+  "WalkMap"
+>;
 
 type BottomTabParamList = {
   HomeTab: undefined;
-  WalkTab: undefined;
+  WalkStackNav: {
+    initialTab?: string;
+  };
   NotificationTab: undefined;
   MyMenuTab: undefined;
 };
+export type WalkStackNavRouteProp = RouteProp<
+  BottomTabParamList,
+  "WalkStackNav"
+>;
 
-type SharedStackParamList = {
+type WalkStackNavParamList = {
+  WalkTopTab: {
+    initialTab?: string;
+  };
+  WalkDetail: undefined;
+};
+export type WalkTopTabRouteProp = RouteProp<
+  WalkStackNavParamList,
+  "WalkTopTab"
+>;
+
+type SharedStackNavParamList = {
   Home: undefined;
   Notification: undefined;
 };
 export type HomeScreenNavigationProp = CompositeNavigationProp<
-  StackNavigationProp<SharedStackParamList, "Home">,
+  StackNavigationProp<SharedStackNavParamList, "Home">,
   CompositeNavigationProp<
     BottomTabNavigationProp<BottomTabParamList>,
     StackNavigationProp<LoggedInNavParamList>
   >
 >;
 export type NotificationScreenNavigationProp = CompositeNavigationProp<
-  StackNavigationProp<SharedStackParamList, "Notification">,
-  CompositeNavigationProp<
-    BottomTabNavigationProp<BottomTabParamList>,
-    StackNavigationProp<LoggedInNavParamList>
-  >
->;
-
-type WalkStackNavParamList = {
-  WalkTopTab: undefined;
-  WalkMap: undefined;
-};
-export type WalkMapScreenNavigationProp = CompositeNavigationProp<
-  StackNavigationProp<WalkStackNavParamList, "WalkMap">,
+  StackNavigationProp<SharedStackNavParamList, "Notification">,
   CompositeNavigationProp<
     BottomTabNavigationProp<BottomTabParamList>,
     StackNavigationProp<LoggedInNavParamList>

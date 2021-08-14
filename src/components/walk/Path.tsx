@@ -5,15 +5,16 @@ import { useDispatch } from "react-redux";
 import { delta } from "~/staticData";
 import { store, useAppSelector } from "~/store";
 import { storageActions } from "~/store/storage";
+import { rpWidth } from "~/styles";
 import palette from "~/styles/palette";
 import { getDistanceBetween2Points } from "~/utils";
 
 const Path = ({
   mapRef,
-}: //   deviceId,
+}: //   deviceIds,
 {
   mapRef: React.RefObject<NaverMapView>;
-  //   deviceId: string[];
+  //   deviceIds: string[];
 }) => {
   const coords = useAppSelector(state => state.storage.walk.coords);
   const dispatch = useDispatch();
@@ -44,7 +45,7 @@ const Path = ({
         latitudeDelta: delta,
         longitudeDelta: delta,
       });
-      // dispatch(storageActions.setSelectedDeviceId(deviceId));
+      // dispatch(storageActions.setSelectedDeviceId(deviceIds));
       dispatch(storageActions.setStartTime(new Date().toISOString()));
     }
     if (coords.length > 1) {
@@ -70,9 +71,13 @@ const Path = ({
             latitude: coords[coords.length - 1][0],
             longitude: coords[coords.length - 1][1],
           }}
-          image={require("~/assets/image/marker.png")}
-          width={25}
-          height={45}
+          image={require("~/assets/image/walk/my-location.png")}
+          width={rpWidth(38)}
+          height={rpWidth(38)}
+          anchor={{
+            x: 0.5,
+            y: 0.5,
+          }}
         />
         {coords.length > 1 && (
           <Polyline
@@ -80,9 +85,9 @@ const Path = ({
               latitude: coord[0],
               longitude: coord[1],
             }))}
-            color={palette.blue_34}
+            color={`${palette.blue_7b}B3`}
             outlineWidth={0}
-            width={7}
+            width={5}
           />
         )}
       </>

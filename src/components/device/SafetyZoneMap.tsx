@@ -5,14 +5,12 @@ import { height, width } from "~/styles";
 import { getLeftRightPointsOfCircle, isAndroid, isIos } from "~/utils";
 import Button from "../common/Button";
 
-import MyLocation from "~/assets/svg/my-location.svg";
 import useMyLocation from "~/hooks/useMyLocation";
 import { useAppSelector } from "~/store";
 import palette from "~/styles/palette";
 
 import ShadowContainer from "../common/container/ShadowContainer";
 import { useEffect } from "react";
-import { useActionSheet } from "@expo/react-native-action-sheet";
 import Input from "../common/Input";
 import { Alert, Keyboard } from "react-native";
 import { useDispatch } from "react-redux";
@@ -77,9 +75,11 @@ const safetyZoneNumber = 1;
 const SafetyZoneMap = ({
   navigation,
   route,
+  next,
 }: {
   navigation?: any;
   route?: any;
+  next?: () => void;
 }) => {
   const { Map, mapRef } = useMap();
   const { isTracking, startTracking, clearTracking } = useMyLocation();
@@ -88,7 +88,6 @@ const SafetyZoneMap = ({
     state => state.storage.device.deviceIdInProgress,
   );
   const initialCoord = useAppSelector(state => state.storage.coord);
-  const { showActionSheetWithOptions } = useActionSheet();
   const circleRef = useRef<Circle>(null);
   const dispatch = useDispatch();
 
@@ -149,20 +148,6 @@ const SafetyZoneMap = ({
     mapRef.current.animateToTwoCoordinates(coordsArr[0], coordsArr[1]);
   }, [mapRef, radiusValue]);
 
-  /*   // Circle 스타일 설정 (iOS 전용으로, iOS에서 스타일이 적용되지 않는 버그 때문)
-  useEffect(() => {
-    if (!circleRef.current || isAndroid || !radiusValue) {
-      return;
-    }
-    setTimeout(() => {
-      circleRef.current?.setNativeProps({
-        fillColor: "rgba(83, 135, 188, 0.2)",
-        strokeColor: "rgba(83, 135, 188, 0.5)",
-        strokeWidth: 2,
-      });
-    }, 10);
-  }, [circleRef, radiusValue]); */
-
   const [show, setShow] = useState(false);
 
   useEffect(() => {
@@ -212,6 +197,9 @@ const SafetyZoneMap = ({
   };
 
   const handleSubmit = () => {
+    if (next) {
+      return next();
+    }
     if (
       result.isLoading ||
       !name ||
@@ -278,7 +266,7 @@ const SafetyZoneMap = ({
                 isEditable={false}
                 value={radius}
                 onPress={() => {
-                  showActionSheetWithOptions(
+                  /* showActionSheetWithOptions(
                     {
                       options,
                       cancelButtonIndex,
@@ -290,19 +278,19 @@ const SafetyZoneMap = ({
                         setRadius(options[buttonIndex]);
                       }
                     },
-                  );
+                  ); */
                 }}
                 placeholder="안심존 반경"
               />
             </InputContainer>
           </InputWrapper>
           <Button
-            disabled={!name || !radiusValue}
+            /* disabled={!name || !radiusValue} */
             style={{ marginBottom: show ? 0 : isIos ? 24 : 48 }}
             isLoading={result.isLoading}
-            onPress={handleSubmit}
-            text={navigation ? "저장" : "다음"}
-          />
+            onPress={handleSubmit}>
+            {navigation ? "저장" : "다음"}
+          </Button>
         </BottomContainer>
       </ShadowContainer>
       <ShadowContainer
@@ -319,7 +307,7 @@ const SafetyZoneMap = ({
               startTracking();
             }
           }}>
-          <MyLocation />
+          {/* <MyLocation /> */}
         </MyLocationCircle>
       </ShadowContainer>
     </Container>

@@ -1,12 +1,17 @@
 import React from "react";
 import styled from "styled-components/native";
-import ConfirmButton from "~/components/common/button/ConfirmButton";
 import { StartWalkingScreenNavigationProp } from "~/types/navigator";
 import { useState } from "react";
 import deviceApi from "~/api/device";
 import { useDispatch } from "react-redux";
 import { storageActions } from "~/store/storage";
 import { permissionCheck } from "~/utils";
+import MyText from "~/components/common/MyText";
+import { rpWidth } from "~/styles";
+import Button from "~/components/common/Button";
+import { useAppSelector } from "~/store";
+import { ScrollView } from "react-native";
+import Device from "~/components/walk/Device";
 
 const Container = styled.View`
   flex: 1;
@@ -14,17 +19,16 @@ const Container = styled.View`
 `;
 
 const TextContainer = styled.View`
-  padding: 25px 15px;
+  height: ${rpWidth(88)}px;
+  max-height: 88px;
+  justify-content: center;
   align-items: center;
-`;
-
-const Text = styled.Text`
-  font-size: 18px;
+  background-color: transparent;
 `;
 
 const ButtonContainer = styled.View`
   align-items: center;
-  padding: 15px 0px;
+  padding: 20px 16px;
   width: 100%;
   background-color: white;
 `;
@@ -37,10 +41,12 @@ const StartWalking = ({
   const [selected, setSelected] = useState<string[]>([]);
   const dispatch = useDispatch();
   // const { data: devices } = deviceApi.useGetDeviceListQuery();
+  const devices = useAppSelector(state => state.device);
 
   const handleStart = () => {
     permissionCheck("location").then(() => {
       dispatch(storageActions.setSelectedDeviceId(selected));
+      dispatch(storageActions.setIsStopped(false));
       navigation.replace("WalkMap");
     });
   };
@@ -53,49 +59,40 @@ const StartWalking = ({
   return (
     <Container>
       <TextContainer>
-        {/* {device.length === 0 && (
-          <Text>산책을 시작할 반려동물을 선택해주세요.</Text>
-        )}
-        {device.length !== 0 && (
-          <>
-            <Text>산책할 반려동물을 등록해주세요.</Text>
-            <Text style={{ marginTop: 25 }}>기기등록을 시작하시겠습니까?</Text>
-          </>
-        )} */}
+        <MyText>산책을 시작할 반려견을 선택해주세요.</MyText>
       </TextContainer>
-      {/* {device.length && (
-        <SidePaddingContainer>
-          <ScrollView showsVerticalScrollIndicator={false}>
-            {device.map((item, index) => (
-              <Device
-                key={item.id}
-                data={item}
-                isWalk
-                isLast={index === device.length - 1}
-                onPress={() => {
-                  const selectedArr = [...selected];
-                  const isSelected = selectedArr.some(
-                    selectedItem => selectedItem === item.id,
+      {devices && devices.length && (
+        <ScrollView
+          contentContainerStyle={{ paddingHorizontal: rpWidth(16) }}
+          showsVerticalScrollIndicator={false}>
+          {devices.map(item => (
+            <Device
+              key={item.id}
+              data={item}
+              onPress={() => {
+                const selectedArr = [...selected];
+                const isSelected = selectedArr.some(
+                  selectedItem => selectedItem === item.id,
+                );
+                if (isSelected) {
+                  setSelected(
+                    selectedArr.filter(
+                      selectedItem => selectedItem !== item.id,
+                    ),
                   );
-                  if (isSelected) {
-                    setSelected(
-                      selectedArr.filter(
-                        selectedItem => selectedItem !== item.id,
-                      ),
-                    );
-                  } else {
-                    selectedArr.push(item.id);
-                    setSelected(selectedArr);
-                  }
-                }}
-                selected={selected.includes(item.id)}
-              />
-            ))}
-          </ScrollView>
-        </SidePaddingContainer>
-      )} */}
+                } else {
+                  setSelected([...selectedArr, item.id]);
+                }
+              }}
+              selected={selected.includes(item.id)}
+            />
+          ))}
+        </ScrollView>
+      )}
       <ButtonContainer>
-        <ConfirmButton onPress={handleStart}>시작</ConfirmButton>
+        <Button disabled={selected.length === 0} onPress={handleStart}>
+          선택 완료
+        </Button>
       </ButtonContainer>
     </Container>
   );

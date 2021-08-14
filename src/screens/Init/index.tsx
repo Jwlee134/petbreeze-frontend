@@ -5,55 +5,73 @@ import DeviceCheck from "~/components/init/DeviceCheck";
 import Permissions from "~/components/init/Permissions";
 import { useAppSelector } from "~/store";
 import { isIos } from "~/utils";
-import SafetyZoneSetting from "~/components/device/SafetyZoneSetting";
-import SafetyZoneMap from "~/components/device/SafetyZoneMap";
-import DeviceProfileForm from "~/components/device/DeviceProfileForm";
-import Completion from "~/components/init/Completion";
 import usePagingScrollView from "~/hooks/usePagingScrollView";
-import useBleMaganer from "~/hooks/useBleManager";
-import Progress from "~/components/device/Progress";
-import BluetoothCheck from "~/components/device/BluetoothCheck";
 import Intro from "~/components/Intro";
+import AddDevice from "../AddDevice";
+import styled from "styled-components/native";
+import { width } from "~/styles";
+import AddDeviceRoot from "~/components/device/AddDeviceRoot";
+
+const Container = styled.View``;
 
 const Init = () => {
   const token = useAppSelector(state => state.storage.user.token);
-  const step = useAppSelector(state => state.storage.init);
-  const deviceStatus = useAppSelector(state => state.storage.device);
+  const { isIntroPassed, isPermissionAllowed } = useAppSelector(
+    state => state.storage.init,
+  );
+  const isDeviceRegistered = useAppSelector(
+    state => state.storage.device.isDeviceRegistered,
+  );
 
-  const [renderPermission] = useState(!step.isPermissionAllowed && isIos);
   const [renderAuth] = useState(!token);
-  const [renderDevice] = useState(!deviceStatus.isDeviceRegistered);
-  const [renderSafetyZone] = useState(!deviceStatus.isSafetyZoneRegistered);
-  const [renderPetProfile] = useState(!deviceStatus.isProfileRegistered);
+  const [renderPermission, setRenderPermission] = useState(
+    isIos && (token && !isPermissionAllowed ? true : false),
+  );
+  const [renderDeviceCheck, setRenderDeviceCheck] = useState(
+    token && (isIos ? isPermissionAllowed : true) && !isDeviceRegistered
+      ? true
+      : false,
+  );
+  const [renderAddDevice, setRenderAddDevice] = useState(
+    token && (isIos ? isPermissionAllowed : true) && isDeviceRegistered,
+  );
 
-  const { PagingScrollView } = usePagingScrollView();
-  const { status: status, setStatus, progress } = useBleMaganer();
+  const { PagingScrollView, ScreenWidthContainer, next } =
+    usePagingScrollView();
 
-  if (!step.isIntroPassed) {
+  if (!isIntroPassed) {
     return <Intro />;
   }
 
   return (
-    <PagingScrollView
-      scrollEnabled={false}
-      contentContainerStyle={{ marginBottom: isIos ? 24 : 0 }}>
-      {renderPermission && <Permissions />}
-      {renderAuth && <Auth />}
-      {renderDevice && (
-        <>
-          <DeviceCheck />
-          <BluetoothCheck setStatus={setStatus} />
-          <Progress status={status} setStatus={setStatus} progress={progress} />
-        </>
+    <PagingScrollView scrollEnabled={false}>
+      {renderAuth && (
+        <ScreenWidthContainer>
+          <Auth
+            handlePreRender={() => {
+              isIos ? setRenderPermission(true) : setRenderDeviceCheck(true);
+            }}
+            next={next}
+          />
+        </ScreenWidthContainer>
       )}
-      {renderSafetyZone && (
-        <>
-          <SafetyZoneSetting />
-          <SafetyZoneMap />
-        </>
+      {renderPermission && (
+        <ScreenWidthContainer>
+          <Permissions
+            handlePreRender={() => setRenderDeviceCheck(true)}
+            next={next}
+          />
+        </ScreenWidthContainer>
       )}
-      {renderPetProfile && <DeviceProfileForm />}
-      <Completion />
+      {renderDeviceCheck && (
+        <ScreenWidthContainer>
+          <DeviceCheck
+            handlePreRender={() => setRenderAddDevice(true)}
+            next={next}
+          />
+        </ScreenWidthContainer>
+      )}
+      {renderAddDevice ? <AddDeviceRoot next={next} /> : null}
     </PagingScrollView>
   );
 };

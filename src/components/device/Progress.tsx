@@ -38,10 +38,12 @@ const Progress = ({
   status,
   setStatus,
   progress,
+  next,
 }: {
   status: Status;
   setStatus: React.Dispatch<React.SetStateAction<Status>>;
   progress: number;
+  next?: () => void;
 }) => {
   const value = useRef(new Animated.Value(0)).current;
   const { disable, disabled } = useDisableButton();
@@ -83,7 +85,7 @@ const Progress = ({
       <BottomContainer flexEnd>
         {status.value.includes("Fail") && (
           <Button
-            background="transparent"
+            backgroundColor="transparent"
             onPress={() => {
               if (
                 status.value === "connectFailed" ||
@@ -100,41 +102,35 @@ const Progress = ({
                   text: "펌웨어 다운로드 중...",
                 });
               }
-            }}
-            text="다시 시도"
-          />
+            }}>
+            다시 시도
+          </Button>
         )}
         {status.value.includes("completed") && (
           <Button
-            text={
-              status.value === "completedWith200" ||
-              status.value === "completedOtaUpdate"
-                ? "완료"
-                : "다음"
-            }
             onPress={() => {
               if (disabled) return;
               if (status.value === "completedWith200") {
                 if (!isInitialized) {
-                  dispatch(commonActions.setPage("init"));
                   dispatch(storageActions.setInit("init"));
                 } else {
-                  dispatch(commonActions.setPage("init"));
                   navigation.goBack();
                 }
               }
               if (status.value === "completedOtaUpdate") {
-                dispatch(commonActions.setPage("init"));
                 navigation.goBack();
               }
-              if (status.value === "completed") {
-                Alert.alert("Do not press.");
-                /* dispatch(commonActions.setPage("next"));
-                dispatch(storageActions.setDeviceRegistrationStep("device")); */
+              if (status.value === "completed" && next) {
+                next();
+                dispatch(storageActions.setDeviceRegistrationStep("device"));
               }
               disable();
-            }}
-          />
+            }}>
+            {status.value === "completedWith200" ||
+            status.value === "completedOtaUpdate"
+              ? "완료"
+              : "다음"}
+          </Button>
         )}
       </BottomContainer>
     </Container>

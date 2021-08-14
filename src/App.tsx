@@ -10,7 +10,6 @@ import { Provider } from "react-redux";
 
 import { Settings } from "react-native-fbsdk-next";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 
 import RootNav from "./navigator/RootNav";
 
@@ -21,9 +20,7 @@ const App = () => (
     <PersistGate persistor={persister}>
       <NavigationContainer theme={lightTheme}>
         <SafeAreaProvider>
-          <ActionSheetProvider useNativeDriver>
-            <RootNav />
-          </ActionSheetProvider>
+          <RootNav />
         </SafeAreaProvider>
       </NavigationContainer>
     </PersistGate>

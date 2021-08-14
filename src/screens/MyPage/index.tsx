@@ -1,27 +1,17 @@
 import React from "react";
-import { Linking, ScrollView } from "react-native";
-import CategoryTitle from "~/components/common/CategoryTitle";
-import ListItem from "~/components/common/ListItem";
-import useModal from "~/hooks/useModal";
-
-import Modal from "react-native-modal";
-import SimpleToggleModal from "~/components/modal/SimpleToggleModal";
+import { ScrollView, Text, TouchableOpacity } from "react-native";
 import { useDispatch } from "react-redux";
 import { storageActions } from "~/store/storage";
-
-const size = 22;
 
 const MyPage = () => {
   const dispatch = useDispatch();
 
-  const { open, close, modalProps, CenterModalComponent } = useModal({
-    type: "center",
-  });
-
   return (
-    <>
-      <ScrollView>
-        {/* <CategoryTitle>디바이스 관리</CategoryTitle>
+    <ScrollView>
+      <TouchableOpacity>
+        <Text onPress={() => dispatch(storageActions.logout())}>로그아웃</Text>
+      </TouchableOpacity>
+      {/* <CategoryTitle>디바이스 관리</CategoryTitle>
         <ListItem onPress={() => navigation.navigate("DeviceSetting")}>
           환경설정
         </ListItem>
@@ -55,24 +45,7 @@ const MyPage = () => {
         <ListItem onPress={() => navigation.navigate("SavedPost")}>
           저장한 게시물
         </ListItem> */}
-      </ScrollView>
-      {/* <Modal {...modalProps}>
-        <CenterModalComponent>
-          <SimpleToggleModal
-            onConfirmText="정말 로그아웃하시겠습니까?"
-            onConfirmButtonText="로그아웃"
-            onConfirm={() => {
-              close();
-              setTimeout(() => {
-                dispatch(storageActions.logout());
-                navigation.navigate("Home");
-              }, 400);
-            }}
-            onAbort={close}
-          />
-        </CenterModalComponent>
-      </Modal> */}
-    </>
+    </ScrollView>
   );
 };
 

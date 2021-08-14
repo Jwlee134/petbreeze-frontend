@@ -35,6 +35,7 @@ interface IStorage {
     meter: number;
     isWalking: boolean;
     startTime: string;
+    isStopped: boolean;
   };
 }
 
@@ -72,6 +73,7 @@ const initialState: IStorage = {
     meter: 0,
     isWalking: false,
     startTime: "",
+    isStopped: false,
   },
 };
 
@@ -140,8 +142,8 @@ const storage = createSlice({
       state.device = initialState.device;
     },
     logout: state => {
-      state.user.token = "";
-      state.user.nickname = "";
+      state.user = initialState.user;
+      state.init.isInitialized = false;
     },
     setDidMountInitially: (state, { payload }: PayloadAction<boolean>) => {
       state.walk.didMountInitially = payload;
@@ -173,8 +175,11 @@ const storage = createSlice({
     setStartTime: (state, { payload }: PayloadAction<string>) => {
       state.walk.startTime = payload;
     },
+    setIsStopped: (state, { payload }: PayloadAction<boolean>) => {
+      state.walk.isStopped = payload;
+    },
     clearWalk: state => {
-      state.walk = initialState.walk;
+      state.walk = { ...initialState.walk, isStopped: state.walk.isStopped };
     },
   },
 });

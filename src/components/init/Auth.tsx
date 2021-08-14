@@ -3,42 +3,46 @@ import React, { useEffect } from "react";
 import styled from "styled-components/native";
 import { useDispatch } from "react-redux";
 
-import KakaoIcon from "~/assets/svg/init/kakao.svg";
-import FacebookIcon from "~/assets/svg/init/facebook.svg";
-import { View } from "react-native";
+import KakaoIcon from "~/assets/svg/init/auth/kakao.svg";
+import FacebookIcon from "~/assets/svg/init/auth/facebook.svg";
+import { Linking, TouchableWithoutFeedback } from "react-native";
 import Button from "../common/Button";
 import { LoginManager, AccessToken } from "react-native-fbsdk-next";
 import palette from "~/styles/palette";
 import { storageActions } from "~/store/storage";
-import { Container } from "./Styles";
 import { commonActions } from "~/store/common";
 import authApi from "~/api/auth";
 
-import messaging from "@react-native-firebase/messaging";
+import MyText from "../common/MyText";
+import { rpHeight, rpWidth, width } from "~/styles";
+import SidePaddingContainer from "../common/container/SidePaddingContainer";
+import SafeAreaContainer from "../common/container/SafeAreaContainer";
+
+const Container = styled.View`
+  flex: 1;
+  width: ${width}px;
+`;
 
 const HalfContainer = styled.View`
   flex: 1;
-  width: 100%;
-  justify-content: center;
 `;
 
-const BigText = styled.Text`
-  font-size: 48px;
-  font-weight: bold;
-  color: black;
+const RowContainer = styled.View`
+  flex-direction: row;
 `;
 
-const SmallText = styled.Text`
-  font-size: 12px;
-  text-align: center;
-  color: black;
+const TextContainer = styled.View`
+  align-items: center;
+  padding: ${rpHeight(34)}px 0px;
 `;
 
-const BoldText = styled(SmallText)`
-  font-weight: bold;
-`;
-
-const Auth = () => {
+const Auth = ({
+  handlePreRender,
+  next,
+}: {
+  handlePreRender: () => void;
+  next: () => void;
+}) => {
   const [getFacebookUser, facebookUser] = authApi.useLazyFacebookLoginQuery();
   const [getKakaoUser, kakaoUser] = authApi.useLazyKakaoLoginQuery();
 
@@ -51,7 +55,7 @@ const Auth = () => {
         nickname: "이재원",
       }),
     );
-    dispatch(commonActions.setPage("next"));
+    next();
     // try {
     //   let token: KakaoOAuthToken | null = await login();
     //   console.log(token);
@@ -70,7 +74,7 @@ const Auth = () => {
           nickname: kakaoUser.data.nickname,
         }),
       );
-      dispatch(commonActions.setPage("next"));
+      next();
     }
     if (kakaoUser.error) {
       console.log("Failed to login");
@@ -102,53 +106,112 @@ const Auth = () => {
           nickname: facebookUser.data.nickname,
         }),
       );
-      dispatch(commonActions.setPage("next"));
+      next();
     }
     if (facebookUser.error) {
       console.log("Failed to login");
     }
   }, [facebookUser]);
 
-  /*  useEffect(() => {
-    messaging()
+  useEffect(() => {
+    handlePreRender();
+    /* messaging()
       .getToken()
-      .then(token => console.log("FCM Token: ", token));
-  }, []); */
+      .then(token => console.log("FCM Token: ", token)); */
+  }, []);
 
   return (
-    <Container>
-      <HalfContainer style={{ alignItems: "center" }}>
-        <BigText>어디개</BigText>
-      </HalfContainer>
-      <HalfContainer style={{ justifyContent: "space-between" }}>
-        <View />
-        <View>
+    <SafeAreaContainer>
+      <SidePaddingContainer>
+        <HalfContainer></HalfContainer>
+        <HalfContainer style={{ justifyContent: "flex-end" }}>
           <Button
-            text="카카오 계정으로 시작하기"
             style={{
-              backgroundColor: palette.kakao_yellow,
-              marginBottom: 12,
+              marginBottom: rpHeight(12),
             }}
-            textColor="black"
-            onPress={handleKakaoLogin}
-            Icon={() => <KakaoIcon />}
-          />
+            backgroundColor={palette.kakao_yellow}
+            fontColor="#3E2723"
+            RightIcon={() => (
+              <KakaoIcon
+                width={rpWidth(20)}
+                height={rpWidth(20)}
+                style={{ marginRight: rpWidth(10) }}
+              />
+            )}
+            onPress={handleKakaoLogin}>
+            카카오 계정으로 시작하기
+          </Button>
           <Button
-            text="페이스북 계정으로 시작하기"
-            style={{ backgroundColor: palette.facebook_blue }}
-            Icon={() => <FacebookIcon />}
-            onPress={handleFBLogin}
-          />
-        </View>
-        <SmallText>
-          시작하면 어디개의{" "}
-          <BoldText onPress={() => {}}>서비스 이용약관</BoldText>,{" "}
-          <BoldText onPress={() => {}}>개인정보 취급방침</BoldText>,{"\n"}
-          <BoldText onPress={() => {}}>위치정보 활용약관</BoldText>에 동의하시게
-          됩니다.
-        </SmallText>
-      </HalfContainer>
-    </Container>
+            backgroundColor={palette.facebook_blue}
+            RightIcon={() => (
+              <FacebookIcon
+                width={rpWidth(20)}
+                height={rpWidth(20)}
+                style={{ marginRight: rpWidth(10) }}
+              />
+            )}
+            onPress={handleFBLogin}>
+            페이스북 계정으로 시작하기
+          </Button>
+          <TextContainer>
+            <RowContainer>
+              <MyText fontSize={12} color="rgba(0, 0, 0, 0.5)">
+                시작하면 어디개의{" "}
+              </MyText>
+              <TouchableWithoutFeedback
+                onPress={() =>
+                  Linking.openURL("https://petbreeze.co/terms-and-conditions")
+                }>
+                <MyText
+                  fontSize={12}
+                  color="rgba(0, 0, 0, 0.5)"
+                  fontWeight="medium">
+                  서비스 이용약관,{" "}
+                </MyText>
+              </TouchableWithoutFeedback>
+              <TouchableWithoutFeedback
+                onPress={() =>
+                  Linking.openURL("https://petbreeze.co/privacy-policy")
+                }>
+                <MyText
+                  fontSize={12}
+                  color="rgba(0, 0, 0, 0.5)"
+                  fontWeight="medium">
+                  개인정보
+                </MyText>
+              </TouchableWithoutFeedback>
+            </RowContainer>
+            <RowContainer>
+              <TouchableWithoutFeedback
+                onPress={() =>
+                  Linking.openURL("https://petbreeze.co/privacy-policy")
+                }>
+                <MyText
+                  fontSize={12}
+                  color="rgba(0, 0, 0, 0.5)"
+                  fontWeight="medium">
+                  취급방침,{" "}
+                </MyText>
+              </TouchableWithoutFeedback>
+              <TouchableWithoutFeedback
+                onPress={() =>
+                  Linking.openURL("https://petbreeze.co/location-policy")
+                }>
+                <MyText
+                  fontSize={12}
+                  color="rgba(0, 0, 0, 0.5)"
+                  fontWeight="medium">
+                  위치정보 활용약관
+                </MyText>
+              </TouchableWithoutFeedback>
+              <MyText fontSize={12} color="rgba(0, 0, 0, 0.5)">
+                에 동의하시게 됩니다.
+              </MyText>
+            </RowContainer>
+          </TextContainer>
+        </HalfContainer>
+      </SidePaddingContainer>
+    </SafeAreaContainer>
   );
 };
 

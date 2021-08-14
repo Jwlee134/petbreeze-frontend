@@ -16,7 +16,7 @@ const WalkRecord = ({
   const { data: devices } = deviceApi.useGetDeviceListQuery();
   const [getWalkRecord] = walkApi.useLazyGetWalkDetailQuery();
 
-  const [selected, setSelected] = useState("");
+  const [selectedDeviceId, setSelectedDeviceId] = useState("");
   const [loading, setLoading] = useState(false);
 
   /*   const MarkingDots = useMemo(() => {

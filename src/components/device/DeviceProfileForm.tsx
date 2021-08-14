@@ -40,9 +40,11 @@ const SmallText = styled.Text`
 const DeviceProfileForm = ({
   navigation,
   route,
+  next,
 }: {
   navigation?: any;
   route?: any;
+  next?: () => void;
 }) => {
   const { avatar, name, breed, age, weight, phoneNumber, caution } =
     useAppSelector(state => state.form);
@@ -137,6 +139,7 @@ const DeviceProfileForm = ({
   }, [avatarResult]);
 
   const handleSubmit = () => {
+    dispatch(storageActions.setInit("init"));
     if (
       !name ||
       !breed ||
@@ -214,9 +217,9 @@ const DeviceProfileForm = ({
         <Button
           style={{ marginBottom: 24 }}
           isLoading={loading}
-          text="완료"
-          onPress={handleSubmit}
-        />
+          onPress={handleSubmit}>
+          완료
+        </Button>
       </KeyboardAwareScrollContainer>
     </SafeAreaContainer>
   );

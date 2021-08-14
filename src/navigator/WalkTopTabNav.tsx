@@ -1,27 +1,36 @@
 import React from "react";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import palette from "~/styles/palette";
 import StartWalking from "~/screens/Walk/StartWalking";
 import WalkRecord from "~/screens/Walk/WalkRecord";
-import SafeAreaContainer from "~/components/common/container/SafeAreaContainer";
+import { rpWidth } from "~/styles";
+import { WalkTopTabRouteProp } from "~/types/navigator";
 
 const Tab = createMaterialTopTabNavigator();
 
-const WalkTopTabNav = () => (
-  <SafeAreaContainer>
-    <Tab.Navigator>
-      <Tab.Screen
-        name="StartWalking"
-        component={StartWalking}
-        options={{ tabBarLabel: "산책하기" }}
-      />
-      <Tab.Screen
-        name="WalkRecord"
-        component={WalkRecord}
-        options={{ tabBarLabel: "산책 기록" }}
-      />
-    </Tab.Navigator>
-  </SafeAreaContainer>
+const WalkTopTabNav = ({ route }: { route: WalkTopTabRouteProp }) => (
+  <Tab.Navigator
+    initialRouteName={route?.params?.initialTab || "StartWalking"}
+    tabBarOptions={{
+      labelStyle: {
+        fontSize: rpWidth(14),
+        fontFamily: "NotoSansKR-Regular",
+        includeFontPadding: false,
+      },
+      style: {
+        shadowColor: "transparent",
+      },
+    }}>
+    <Tab.Screen
+      name="StartWalking"
+      component={StartWalking}
+      options={{ tabBarLabel: "산책하기" }}
+    />
+    <Tab.Screen
+      name="WalkRecord"
+      component={WalkRecord}
+      options={{ tabBarLabel: "산책기록" }}
+    />
+  </Tab.Navigator>
 );
 
 export default WalkTopTabNav;

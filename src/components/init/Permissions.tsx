@@ -1,13 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components/native";
 
-import Permission from "~/assets/svg/init/permission.svg";
-import Bell from "~/assets/svg/init/bell.svg";
-import Location from "~/assets/svg/init/location.svg";
-import Bluetooth from "~/assets/svg/init/bluetooth-small.svg";
-import Gallery from "~/assets/svg/init/gallery.svg";
-import Button from "../common/Button";
-import { View } from "react-native";
+import Shield from "~/assets/svg/init/permission/shield.svg";
+import Bell from "~/assets/svg/init/permission/bell.svg";
+import Location from "~/assets/svg/init/permission/location.svg";
+import Bluetooth from "~/assets/svg/init/permission/bluetooth.svg";
+import Gallery from "~/assets/svg/init/permission/gallery.svg";
 import {
   checkNotifications,
   openSettings,
@@ -16,49 +14,64 @@ import {
   requestNotifications,
 } from "react-native-permissions";
 import { useDispatch } from "react-redux";
-import { BigText, BottomContainer, Container, TopContainer } from "./Styles";
-import { width } from "~/styles";
+import { rpHeight, rpWidth, width } from "~/styles";
 import { storageActions } from "~/store/storage";
-import { commonActions } from "~/store/common";
 import { Alert } from "react-native";
-import { useState } from "react";
 import useAppState from "~/hooks/useAppState";
-import { useEffect } from "react";
 import { useAppSelector } from "~/store";
+import MyText from "../common/MyText";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import palette from "~/styles/palette";
+import SafeAreaContainer from "../common/container/SafeAreaContainer";
+
+const TopContainer = styled.View`
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+`;
+
+const BottomContainer = styled.View<{ width: number }>`
+  flex: 1;
+  width: ${({ width }) => `${width}px`};
+  margin: 0 auto;
+`;
 
 const PermissionContainer = styled.View<{ isTop?: boolean }>`
   flex-direction: row;
-  justify-content: space-between;
   align-items: center;
-  width: ${width - 48}px;
-  margin-top: ${({ isTop }) => (isTop ? "0px" : "14px")};
+  margin-top: ${({ isTop }) => (isTop ? "0px" : `${rpHeight(18)}px`)};
 `;
 
-const LeftContainer = styled.View`
-  flex-direction: row;
+const SvgContainer = styled.View`
+  width: ${rpWidth(32)}px;
   align-items: center;
 `;
 
 const TextContainer = styled.View`
-  justify-content: space-between;
-  margin-left: 16px;
+  margin-left: ${rpWidth(20)}px;
+  justify-content: center;
 `;
 
-const Text = styled.Text`
-  font-size: 16px;
-  margin-bottom: 3px;
+const Button = styled.TouchableOpacity`
+  background-color: ${palette.blue_7b};
+  width: 100%;
+  align-items: center;
 `;
 
-const SmallText = styled.Text`
-  opacity: 0.5;
-`;
-
-const Permissions = () => {
+const Permissions = ({
+  handlePreRender,
+  next,
+}: {
+  handlePreRender: () => void;
+  next: () => void;
+}) => {
   const isPermissionAllowed = useAppSelector(
     state => state.storage.init.isPermissionAllowed,
   );
   const dispatch = useDispatch();
   const { appState } = useAppState();
+  const { bottom } = useSafeAreaInsets();
+  const [textWidth, setTextWidth] = useState(0);
 
   const [settingOpened, setSettingOpened] = useState(false);
 
@@ -67,9 +80,10 @@ const Permissions = () => {
       PERMISSIONS.IOS.LOCATION_ALWAYS,
       PERMISSIONS.IOS.BLUETOOTH_PERIPHERAL,
       PERMISSIONS.IOS.PHOTO_LIBRARY,
-    ]);
-    dispatch(commonActions.setPage("next"));
-    dispatch(storageActions.setInit("permission"));
+    ]).finally(() => {
+      next();
+      dispatch(storageActions.setInit("permission"));
+    });
   };
 
   const handleNotification = async () => {
@@ -107,54 +121,104 @@ const Permissions = () => {
     }
   }, [settingOpened, appState, isPermissionAllowed]);
 
+  useEffect(() => {
+    handlePreRender();
+  }, []);
+
   return (
-    <Container>
-      <TopContainer>
-        <Permission />
-        <BigText>아래의 권한들을{"\n"}허용해주세요.</BigText>
-      </TopContainer>
-      <BottomContainer>
-        <View>
+    <>
+      <SafeAreaContainer>
+        <TopContainer>
+          <Shield width={rpWidth(114)} height={rpHeight(114)} />
+          <MyText
+            fontSize={20}
+            onLayout={e => setTextWidth(e.nativeEvent.layout.width)}
+            style={{ textAlign: "center", marginTop: rpHeight(25) }}>
+            어디개 앱 이용을 위해{"\n"}다음 권한의 허용이 필요합니다.
+          </MyText>
+        </TopContainer>
+        <BottomContainer width={textWidth}>
           <PermissionContainer isTop>
-            <LeftContainer>
-              <Bell />
-              <TextContainer>
-                <Text>알림</Text>
-                <SmallText>안심존 이탈 시 푸시알림</SmallText>
-              </TextContainer>
-            </LeftContainer>
+            <SvgContainer>
+              <Bell width={rpWidth(24)} height={rpWidth(27)} />
+            </SvgContainer>
+            <TextContainer>
+              <MyText fontWeight="medium" fontSize={16}>
+                알림
+              </MyText>
+              <MyText
+                fontWeight="light"
+                fontSize={14}
+                color="rgba(0, 0, 0, 0.5)">
+                안심존 이탈 시 푸시알림
+              </MyText>
+            </TextContainer>
           </PermissionContainer>
           <PermissionContainer>
-            <LeftContainer>
-              <Location />
-              <TextContainer>
-                <Text>위치</Text>
-                <SmallText>지도에 내 위치 표시 및 산책 기록</SmallText>
-              </TextContainer>
-            </LeftContainer>
+            <SvgContainer>
+              <Location width={rpWidth(21)} height={rpWidth(30)} />
+            </SvgContainer>
+            <TextContainer>
+              <MyText fontWeight="medium" fontSize={16}>
+                위치
+              </MyText>
+              <MyText
+                fontWeight="light"
+                fontSize={14}
+                color="rgba(0, 0, 0, 0.5)">
+                지도에 내 위치 표시
+              </MyText>
+            </TextContainer>
           </PermissionContainer>
           <PermissionContainer>
-            <LeftContainer>
-              <Bluetooth />
-              <TextContainer>
-                <Text>블루투스</Text>
-                <SmallText>디바이스 등록 및 펌웨어 업데이트에 사용</SmallText>
-              </TextContainer>
-            </LeftContainer>
+            <SvgContainer>
+              <Bluetooth width={rpWidth(22)} height={rpWidth(29)} />
+            </SvgContainer>
+            <TextContainer>
+              <MyText fontWeight="medium" fontSize={16}>
+                블루투스
+              </MyText>
+              <MyText
+                fontWeight="light"
+                fontSize={14}
+                color="rgba(0, 0, 0, 0.5)">
+                디바이스와 상호작용
+              </MyText>
+            </TextContainer>
           </PermissionContainer>
           <PermissionContainer>
-            <LeftContainer>
-              <Gallery />
-              <TextContainer>
-                <Text>사진</Text>
-                <SmallText>반려동물 프로필 사진 설정</SmallText>
-              </TextContainer>
-            </LeftContainer>
+            <SvgContainer>
+              <Gallery width={rpWidth(23)} height={rpWidth(23)} />
+            </SvgContainer>
+            <TextContainer>
+              <MyText fontWeight="medium" fontSize={16}>
+                갤러리
+              </MyText>
+              <MyText
+                fontWeight="light"
+                fontSize={14}
+                color="rgba(0, 0, 0, 0.5)">
+                반려동물 프로필 사진 설정
+              </MyText>
+            </TextContainer>
           </PermissionContainer>
-        </View>
-        <Button onPress={handleNotification} text="허용" />
-      </BottomContainer>
-    </Container>
+        </BottomContainer>
+      </SafeAreaContainer>
+      <Button
+        style={{
+          height: rpWidth(66) + bottom,
+        }}
+        onPress={handleNotification}>
+        <MyText
+          color="white"
+          fontWeight="medium"
+          style={{
+            marginTop: rpWidth(19),
+          }}>
+          확인
+        </MyText>
+      </Button>
+    </>
   );
 };
 

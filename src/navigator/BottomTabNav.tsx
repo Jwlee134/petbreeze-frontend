@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import palette from "~/styles/palette";
 import SharedStackNav from "./SharedStackNav";
@@ -11,95 +11,57 @@ import Bell from "~/assets/svg/tab/bell.svg";
 import BellOutline from "~/assets/svg/tab/bell-outline.svg";
 import User from "~/assets/svg/tab/user.svg";
 import UserOutline from "~/assets/svg/tab/user-outline.svg";
+import CustomHeader from "~/components/common/CustomHeader";
+import { BottomTabNavRouteProp } from "~/types/navigator";
 import WalkStackNav from "./WalkStackNav";
-import { isAndroid } from "~/utils";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useState } from "react";
-import { Linking } from "react-native";
-import { useNavigation } from "@react-navigation/native";
 
 const Tab = createBottomTabNavigator();
 
-const BottomTabNav = () => {
-  const { bottom } = useSafeAreaInsets();
-  const navigation = useNavigation();
-  const [initialRoute, setInitialRoute] = useState("HomeTab");
-  const [isLoading, setIsLoading] = useState(true);
-
-  const handleOpenUrl = ({ url }: { url: string }) => {
-    if (url === "petbreeze://walk/map") {
-      // @ts-ignore
-      navigation.navigate("WalkMap");
+const BottomTabNav = ({ route }: { route: BottomTabNavRouteProp }) => (
+  <Tab.Navigator
+    initialRouteName={
+      route?.params?.initialTab === "WalkRecord" ? "WalkStackNav" : "HomeTab"
     }
-  };
-
-  useEffect(() => {
-    Linking.getInitialURL()
-      .then(url => {
-        if (url === "petbreeze://walk/map") {
-          setInitialRoute("WalkTab");
-        }
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-    Linking.addEventListener("url", handleOpenUrl);
-    return () => {
-      Linking.removeEventListener("url", handleOpenUrl);
-    };
-  }, []);
-
-  if (isLoading) return null;
-
-  return (
-    <Tab.Navigator
-      initialRouteName={initialRoute}
-      screenOptions={{
-        tabBarActiveTintColor: palette.blue_6e,
-        tabBarInactiveTintColor: "#808080",
-        tabBarLabelStyle: {
-          marginBottom: 6,
-        },
-        tabBarStyle: {
-          height: isAndroid ? 56 : 56 + bottom,
-        },
+    screenOptions={{
+      tabBarShowLabel: false,
+      tabBarActiveTintColor: palette.blue_7b,
+      tabBarInactiveTintColor: "rgba(0, 0, 0, 0.3)",
+    }}>
+    <Tab.Screen
+      name="HomeTab"
+      options={{
         headerShown: false,
+        tabBarIcon: ({ focused }) => (focused ? <Home /> : <HomeOutline />),
       }}>
-      <Tab.Screen
-        name="HomeTab"
-        options={{
-          tabBarIcon: ({ focused }) => (focused ? <Home /> : <HomeOutline />),
-          tabBarLabel: "홈",
-        }}>
-        {() => <SharedStackNav screenName="Home" />}
-      </Tab.Screen>
-      <Tab.Screen
-        name="WalkTab"
-        component={WalkStackNav}
-        options={{
-          tabBarIcon: ({ focused }) =>
-            focused ? <Footprint /> : <FootprintOutline />,
-          tabBarLabel: "산책",
-        }}
-      />
-      <Tab.Screen
-        name="NotificationTab"
-        options={{
-          tabBarIcon: ({ focused }) => (focused ? <Bell /> : <BellOutline />),
-          tabBarLabel: "알림",
-        }}>
-        {() => <SharedStackNav screenName="Notification" />}
-      </Tab.Screen>
-      <Tab.Screen
-        name="MyPageTab"
-        options={{
-          tabBarIcon: ({ focused }) => (focused ? <User /> : <UserOutline />),
-          tabBarLabel: "마이페이지",
-        }}>
-        {() => <SharedStackNav screenName="MyPage" />}
-      </Tab.Screen>
-    </Tab.Navigator>
-  );
-};
+      {() => <SharedStackNav screenName="Home" />}
+    </Tab.Screen>
+    <Tab.Screen
+      name="WalkStackNav"
+      component={WalkStackNav}
+      initialParams={{
+        initialTab: route?.params?.initialTab,
+      }}
+      options={{
+        header: () => <CustomHeader>산책</CustomHeader>,
+        tabBarIcon: ({ focused }) =>
+          focused ? <Footprint /> : <FootprintOutline />,
+      }}
+    />
+    <Tab.Screen
+      name="NotificationTab"
+      options={{
+        tabBarIcon: ({ focused }) => (focused ? <Bell /> : <BellOutline />),
+      }}>
+      {() => <SharedStackNav screenName="Notification" />}
+    </Tab.Screen>
+    <Tab.Screen
+      name="MyPageTab"
+      options={{
+        tabBarIcon: ({ focused }) => (focused ? <User /> : <UserOutline />),
+      }}>
+      {() => <SharedStackNav screenName="MyPage" />}
+    </Tab.Screen>
+  </Tab.Navigator>
+);
 
 export default BottomTabNav;

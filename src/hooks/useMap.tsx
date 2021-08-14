@@ -15,7 +15,6 @@ const useMap = () => {
         ref={mapRef}
         zoomControl={false}
         useTextureView={isAndroid ? true : undefined}
-        onCameraChange={e => console.log(e)}
         {...props}>
         {children ? children : null}
       </NaverMapView>

@@ -9,17 +9,18 @@ import PhoneVibrate from "~/assets/svg/intro/phone-vibrate.svg";
 
 const Container = styled.View`
   width: ${width}px;
-  padding: 0px ${rpWidth(26)}px;
+  padding: 0px ${rpWidth(22)}px;
 `;
 
 const IconContainer = styled.View<{ isLast?: boolean }>`
   flex-direction: row;
-  margin-left: ${rpWidth(21)}px;
-  margin-bottom: ${({ isLast }) => (!isLast ? rpHeight(70) : 0)}px;
+  margin-left: ${rpWidth(13)}px;
+  margin-bottom: ${({ isLast }) => (!isLast ? rpHeight(52) : 0)}px;
+  align-items: center;
 `;
 
 const SvgContainer = styled.View`
-  width: ${rpWidth(120)}px;
+  width: ${rpWidth(110)}px;
 `;
 
 const TextContainer = styled.View`
@@ -28,58 +29,58 @@ const TextContainer = styled.View`
 
 const SecondIntro = () => (
   <Container>
-    <MyText fontSize={30}>펫브리즈</MyText>
+    <MyText fontSize={24}>펫브리즈</MyText>
     <MyText
       fontWeight="bold"
-      fontSize={30}
-      style={{ marginBottom: rpHeight(116) }}>
+      fontSize={24}
+      style={{ marginBottom: rpHeight(91) }}>
       트래커와 함께라면?
     </MyText>
     <IconContainer>
       <SvgContainer>
-        <SharePeople width={rpWidth(67.21)} height={rpHeight(76.1)} />
+        <SharePeople width={rpWidth(55)} height={rpHeight(63)} />
       </SvgContainer>
       <TextContainer>
         <MyText
           fontWeight="medium"
           fontSize={18}
-          style={{ marginBottom: rpHeight(10) }}>
+          style={{ marginBottom: rpHeight(7) }}>
           간편한 공유
         </MyText>
         <MyText fontSize={14} style={{ opacity: 0.7 }}>
-          가족 구성원끼리 앱을 공유할 수 있어요
+          가족 구성원끼리 앱을 공유하고{"\n"}함께 관리할 수 있어요.
         </MyText>
       </TextContainer>
     </IconContainer>
     <IconContainer>
       <SvgContainer>
-        <FootpringPath width={rpWidth(74.54)} height={rpHeight(74.7)} />
+        <FootpringPath width={rpWidth(62)} height={rpHeight(62)} />
       </SvgContainer>
       <TextContainer>
         <MyText
           fontWeight="medium"
           fontSize={18}
-          style={{ marginBottom: rpHeight(10) }}>
+          style={{ marginBottom: rpHeight(7) }}>
           위치 확인
         </MyText>
         <MyText fontSize={14} style={{ opacity: 0.7 }}>
-          펫시팅 중 지정된 장소에 안전하게{"\n"}있는지 확인하세요
+          반려견이 펫시팅 중 지정된 장소에{"\n"}안전하게 있는지 확인하세요.
         </MyText>
       </TextContainer>
     </IconContainer>
     <IconContainer isLast>
       <SvgContainer>
-        <PhoneVibrate width={rpWidth(67.22)} height={rpHeight(72.71)} />
+        <PhoneVibrate width={rpWidth(56)} height={rpHeight(60.43)} />
       </SvgContainer>
       <TextContainer>
         <MyText
           fontWeight="medium"
           fontSize={18}
-          style={{ marginBottom: rpHeight(10) }}>
+          style={{ marginBottom: rpHeight(7) }}>
           안심존 이탈 알림
         </MyText>
         <MyText fontSize={14} style={{ opacity: 0.7 }}>
-          안심구역을 보호자 없이 이탈하면{"\n"}알림이 전송됩니다
+          반려견이 안심구역을 보호자 없이{"\n"}이탈하면 알림이 전송됩니다.
         </MyText>
       </TextContainer>
     </IconContainer>

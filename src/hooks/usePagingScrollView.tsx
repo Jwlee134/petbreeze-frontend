@@ -1,9 +1,8 @@
 import React, { ReactNode, useEffect, useRef } from "react";
+import { useState } from "react";
 import { useCallback } from "react";
-import { ScrollView, ScrollViewProps } from "react-native";
-import { useAppSelector } from "~/store";
+import { ScrollView, ScrollViewProps, View } from "react-native";
 import { width } from "~/styles";
-import { isIos } from "~/utils";
 
 interface IProps extends ScrollViewProps {
   children: ReactNode;
@@ -11,7 +10,11 @@ interface IProps extends ScrollViewProps {
 
 const usePagingScrollView = () => {
   const scrollViewRef = useRef<ScrollView>(null);
-  const page = useAppSelector(state => state.common.page);
+  const [page, setPage] = useState(0);
+
+  const next = () => setPage(prev => prev + 1);
+
+  const prev = () => setPage(prev => prev - 1);
 
   useEffect(() => {
     if (scrollViewRef.current && page) {
@@ -37,7 +40,14 @@ const usePagingScrollView = () => {
     [],
   );
 
-  return { PagingScrollView };
+  const ScreenWidthContainer = useCallback(
+    ({ children }: { children: ReactNode }) => (
+      <View style={{ width }}>{children}</View>
+    ),
+    [],
+  );
+
+  return { PagingScrollView, ScreenWidthContainer, next, prev };
 };
 
 export default usePagingScrollView;

@@ -1,138 +1,90 @@
 import React, { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
-import styled, { css } from "styled-components/native";
+import styled from "styled-components/native";
 import { storageActions } from "~/store/storage";
 import palette from "~/styles/palette";
 
-import Camera from "~/assets/svg/camera.svg";
-import PauseCircle from "~/assets/svg/pause-circle.svg";
-import PlayCircle from "~/assets/svg/play-circle.svg";
-import { store, useAppSelector } from "~/store";
-import BackgroundService from "react-native-background-actions";
-import NaverMapView from "react-native-nmap";
+import { useAppSelector } from "~/store";
+import { rpHeight } from "~/styles";
 
-const Button = styled.TouchableOpacity<{ isTransparent?: boolean }>`
-  ${({ isTransparent }) =>
-    !isTransparent &&
-    css`
-      width: 46px;
-      height: 46px;
-      border-radius: 23px;
-      background-color: white;
-      justify-content: center;
-      align-items: center;
-    `}
+import Camera from "~/assets/svg/walk/camera.svg";
+import Play from "~/assets/svg/walk/play.svg";
+import Pause from "~/assets/svg/walk/pause.svg";
+import Stop from "~/assets/svg/walk/stop.svg";
+import StopFill from "~/assets/svg/walk/stop-fill.svg";
+import ShadowContainer from "../common/container/ShadowContainer";
+
+const RowContainer = styled.View`
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: space-evenly;
+  margin-top: ${rpHeight(30)}px;
 `;
 
-const PauseSquare = styled.View`
-  width: 15px;
-  height: 15px;
-  background-color: ${palette.blue_6e};
+const SmallButton = styled.TouchableOpacity`
+  width: ${rpHeight(71)}px;
+  height: ${rpHeight(71)}px;
+  border-radius: ${rpHeight(35.5)}px;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
 `;
 
-const options = {
-  taskName: "Example",
-  taskTitle: "어디개",
-  taskDesc: "산책 중입니다...",
-  taskIcon: {
-    name: "ic_launcher",
-    type: "mipmap",
-  },
-  color: "#ff00ff",
-  linkingURI: "petbreeze://walk/map",
-};
+const Button = styled.TouchableOpacity`
+  width: ${rpHeight(89)}px;
+  height: ${rpHeight(89)}px;
+  border-radius: ${rpHeight(44.5)}px;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  border-width: 2px;
+  border-color: ${palette.blue_7b};
+`;
 
-const Toggle = ({
-  setCoords,
-  clearTracking,
-  mapRef,
-  handleFinish,
-}: {
-  setCoords: () => Promise<number>;
-  clearTracking: () => void;
-  mapRef: React.RefObject<NaverMapView>;
-  handleFinish: () => Promise<void>;
-}) => {
+const Toggle = ({ handleStop }: { handleStop: () => void }) => {
   const isWalking = useAppSelector(state => state.storage.walk.isWalking);
-
   const dispatch = useDispatch();
-  const timer = useRef<NodeJS.Timeout>();
-
-  const stopwatch = async () => {
-    for (
-      let i = store.getState().storage.walk.duration;
-      BackgroundService.isRunning();
-      i++
-    ) {
-      dispatch(storageActions.setDuration(i));
-      await new Promise<void>(resolve => {
-        timer.current = setTimeout(() => {
-          resolve();
-        }, 1000);
-      });
-    }
-  };
-
-  const backgroundTask = async () => {
-    await new Promise<void>(() => {
-      setCoords()
-        .then(trackingId => {
-          dispatch(storageActions.setTrackingId(trackingId));
-          stopwatch();
-        })
-        .catch(() => {
-          dispatch(storageActions.setIsWalking(false));
-          BackgroundService.stop();
-        });
-    });
-  };
-
-  useEffect(() => {
-    // 다시 시작
-    if (isWalking && !BackgroundService.isRunning()) {
-      BackgroundService.start(backgroundTask, options);
-    }
-    // 일시 정지
-    if (!isWalking && BackgroundService.isRunning()) {
-      BackgroundService.stop().then(() => {
-        clearTracking();
-        if (timer.current) {
-          clearTimeout(timer.current);
-        }
-      });
-    }
-  }, [isWalking]);
-
-  useEffect(() => {
-    if (!mapRef.current) return;
-    // 최초 접속 시 자동 시작
-    if (
-      !BackgroundService.isRunning() &&
-      store.getState().storage.walk.didMountInitially
-    ) {
-      BackgroundService.start(backgroundTask, options).then(() => {
-        dispatch(storageActions.setDidMountInitially(false));
-        dispatch(storageActions.setIsWalking(true));
-      });
-    }
-  }, [mapRef]);
 
   return (
-    <>
-      <Button>
-        <Camera />
-      </Button>
-      <Button
-        isTransparent
-        onPress={() => {
-          dispatch(storageActions.setIsWalking(!isWalking));
-        }}>
-        {isWalking ? <PauseCircle /> : <PlayCircle />}
-      </Button>
-      <Button onPress={handleFinish}>
-        <PauseSquare />
-      </Button>
-    </>
+    <RowContainer>
+      <ShadowContainer shadowOpacity={0.1} shadowRadius={10}>
+        <SmallButton
+          onPress={() => {
+            isWalking
+              ? dispatch(storageActions.setIsWalking(false))
+              : handleStop();
+          }}>
+          {isWalking ? (
+            <Pause width={rpHeight(17)} height={rpHeight(21)} />
+          ) : (
+            <Stop width={rpHeight(24)} height={rpHeight(24)} />
+          )}
+        </SmallButton>
+      </ShadowContainer>
+      <ShadowContainer shadowOpacity={0.1} shadowRadius={10}>
+        <Button
+          onPress={() => {
+            isWalking
+              ? handleStop()
+              : dispatch(storageActions.setIsWalking(true));
+          }}>
+          {!isWalking ? (
+            <Play
+              width={rpHeight(32)}
+              height={rpHeight(40)}
+              style={{ marginLeft: rpHeight(4) }}
+            />
+          ) : (
+            <StopFill width={rpHeight(35)} height={rpHeight(35)} />
+          )}
+        </Button>
+      </ShadowContainer>
+      <ShadowContainer shadowOpacity={0.1} shadowRadius={10}>
+        <SmallButton>
+          <Camera width={rpHeight(30)} height={rpHeight(30)} />
+        </SmallButton>
+      </ShadowContainer>
+    </RowContainer>
   );
 };
 
