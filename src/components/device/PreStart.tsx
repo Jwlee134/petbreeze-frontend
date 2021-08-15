@@ -11,6 +11,7 @@ import SafeAreaContainer from "../common/container/SafeAreaContainer";
 import SidePaddingContainer from "../common/container/SidePaddingContainer";
 import { rpHeight, rpWidth } from "~/styles";
 import { useEffect } from "react";
+import { useAppSelector } from "~/store";
 
 const TopContainer = styled.View`
   flex: 1;
@@ -23,13 +24,16 @@ const BottomContainer = styled.View`
   justify-content: flex-end;
 `;
 
-const DeviceCheck = ({
+const PreStart = ({
   handlePreRender,
-  next,
+  handleNext,
 }: {
   handlePreRender: () => void;
-  next: () => void;
+  handleNext: () => void;
 }) => {
+  const isInitialized = useAppSelector(
+    state => state.storage.init.isInitialized,
+  );
   const dispatch = useDispatch();
   const { disabled, disable } = useDisableButton();
 
@@ -58,7 +62,7 @@ const DeviceCheck = ({
             }}
             onPress={() => {
               if (disabled) return;
-              next();
+              handleNext();
               disable();
             }}>
             네, 있습니다.
@@ -80,4 +84,4 @@ const DeviceCheck = ({
   );
 };
 
-export default DeviceCheck;
+export default PreStart;

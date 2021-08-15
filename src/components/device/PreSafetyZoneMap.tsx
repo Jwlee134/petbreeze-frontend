@@ -1,5 +1,4 @@
 import React from "react";
-import { useDispatch } from "react-redux";
 import Button from "../common/Button";
 import {
   BigText,
@@ -11,7 +10,6 @@ import styled from "styled-components/native";
 
 import CheckShield from "~/assets/svg/safetyZone/check-shield.svg";
 import CheckCircle from "~/assets/svg/safetyZone/check-circle.svg";
-import { commonActions } from "~/store/common";
 import useDisableButton from "~/hooks/useDisableButton";
 
 const DescriptionContainer = styled.View`
@@ -30,8 +28,7 @@ const DescriptionText = styled.Text`
   flex-shrink: 1;
 `;
 
-const SafetyZoneSetting = () => {
-  const dispatch = useDispatch();
+const PreSafetyZoneMap = ({ next }: { next: () => void }) => {
   const { disable, disabled } = useDisableButton();
 
   return (
@@ -63,16 +60,16 @@ const SafetyZoneSetting = () => {
           </Description>
         </DescriptionContainer>
         <Button
-          text="설정"
           onPress={() => {
             if (disabled) return;
-            dispatch(commonActions.setPage("next"));
+            next();
             disable();
-          }}
-        />
+          }}>
+          다음
+        </Button>
       </BottomContainer>
     </Container>
   );
 };
 
-export default SafetyZoneSetting;
+export default PreSafetyZoneMap;

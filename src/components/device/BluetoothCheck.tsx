@@ -1,50 +1,63 @@
 import React from "react";
 import Button from "../common/Button";
-import {
-  BigText,
-  BottomContainer,
-  Container,
-  TopContainer,
-} from "../init/Styles";
 
 import Bluetooth from "~/assets/svg/deviceRegistration/bluetooth.svg";
 import useDisableButton from "~/hooks/useDisableButton";
-import { commonActions } from "~/store/common";
-import { Status } from "~/hooks/useBleManager";
-import { useDispatch } from "react-redux";
-import { rpHeight, rpWidth } from "~/styles";
+import { rpHeight, rpWidth, width } from "~/styles";
+import styled from "styled-components/native";
+import SidePaddingContainer from "../common/container/SidePaddingContainer";
+import MyText from "../common/MyText";
+import { View } from "react-native";
+import SafeAreaContainer from "../common/container/SafeAreaContainer";
+import { useEffect } from "react";
+
+const TopContainer = styled.View`
+  flex: 1;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const BottomContainer = styled.View`
+  flex: 1;
+  justify-content: flex-end;
+`;
 
 const BluetoothCheck = ({
-  setStatus,
-  next,
+  handleNext,
+  handlePreRender,
 }: {
-  setStatus: React.Dispatch<React.SetStateAction<Status>>;
-  next: () => void;
+  handleNext: () => void;
+  handlePreRender: () => void;
 }) => {
   const { disable, disabled } = useDisableButton();
-  const dispatch = useDispatch();
+
+  useEffect(() => {
+    handlePreRender();
+  }, []);
 
   return (
-    <Container>
-      <TopContainer>
-        <Bluetooth width={rpWidth(88)} height={rpHeight(116)} />
-        <BigText>블루투스가{"\n"}켜져있나요?</BigText>
-      </TopContainer>
-      <BottomContainer flexEnd>
-        <Button
-          onPress={() => {
-            if (disabled) return;
-            next();
-            setStatus({
-              value: "searching",
-              text: "디바이스 검색 중...",
-            });
-            disable();
-          }}>
-          네, 켜져 있습니다.
-        </Button>
-      </BottomContainer>
-    </Container>
+    <SafeAreaContainer>
+      <SidePaddingContainer>
+        <TopContainer>
+          <View />
+          <Bluetooth width={rpWidth(88)} height={rpHeight(116)} />
+          <MyText style={{ textAlign: "center" }} fontSize={24}>
+            블루투스가{"\n"}켜져있나요?
+          </MyText>
+        </TopContainer>
+        <BottomContainer>
+          <Button
+            style={{ marginBottom: rpHeight(32) }}
+            onPress={() => {
+              if (disabled) return;
+              handleNext();
+              disable();
+            }}>
+            네, 켜져 있습니다.
+          </Button>
+        </BottomContainer>
+      </SidePaddingContainer>
+    </SafeAreaContainer>
   );
 };
 

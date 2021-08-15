@@ -7,22 +7,20 @@ const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
 
 import RNFetchBlob from "rn-fetch-blob";
 import { bytesToString, stringToBytes } from "convert-string";
-import { useDispatch } from "react-redux";
 import deviceApi from "~/api/device";
-import { storageActions } from "~/store/storage";
 
 type StatusValue =
   | "before"
-  | "searching"
-  | "connected"
-  | "downloading"
-  | "installing"
-  | "completed"
-  | "completedWith200"
-  | "completedOtaUpdate"
-  | "connectFailed"
-  | "downloadFailed"
-  | "notifFailed";
+  | "scanning"
+  | "scanningSuccess"
+  | "firmwareDownloading"
+  | "firmwareInstalling"
+  | "allSuccess"
+  | "200Success"
+  | "otaUpdateSuccess"
+  | "scanningFail"
+  | "downloadingFail"
+  | "notificationFail";
 
 export interface Status {
   value: StatusValue;
@@ -49,11 +47,11 @@ const useBleMaganer = ({ isOtaUpdate = false } = {}) => {
     text: "",
   });
   const [progress, setProgress] = useState(0);
+  const [installingProgress, setInstallingProgress] = useState(0);
   const [firmware, setFirmware] = useState<number[]>([]);
   const [notifStatus, setNotifStatus] = useState<number[]>([]);
 
   const [registerDevice, devEUIResult] = deviceApi.usePostDeviceMutation();
-  const dispatch = useDispatch();
 
   const disconnect = async () => {
     if (peripheral) {
@@ -77,7 +75,7 @@ const useBleMaganer = ({ isOtaUpdate = false } = {}) => {
     ).finally(() => {
       disconnect().finally(() => {
         setStatus({
-          value: isOtaUpdate ? "completedOtaUpdate" : "completed",
+          value: isOtaUpdate ? "otaUpdateSuccess" : "allSuccess",
           text: isOtaUpdate
             ? "업데이트가 완료되었어요."
             : "디바이스 등록이\n완료되었어요.",
@@ -108,17 +106,14 @@ const useBleMaganer = ({ isOtaUpdate = false } = {}) => {
           OTAControlPoint.CharacteristicB,
           firmware.slice(-(firmware.length % interval)),
           512,
-        )
-          .then(() => {
-            stopNotification();
-          })
-          .catch(err => console.log(err));
+        );
       }
+      stopNotification();
     } catch (error) {
       disconnect().finally(() => {
         console.log("Failed to send firmware: ", error);
         setStatus({
-          value: "connectFailed",
+          value: "scanningFail",
           text: "펌웨어 설치에\n실패했어요.",
         });
       });
@@ -130,38 +125,32 @@ const useBleMaganer = ({ isOtaUpdate = false } = {}) => {
       firmware.length !== 0 &&
       notifStatus[0] === 79 &&
       notifStatus[1] === 75 &&
-      status.value === "installing"
+      status.value === "firmwareInstalling"
     ) {
       sendFirmwareToDevice();
     }
   }, [firmware, status, notifStatus]);
 
   useEffect(() => {
-    console.log(progress);
-    if (progress === 100 && status.value !== "downloadFailed") {
+    if (firmware.length !== 0) {
+      console.log("Firmware download has completed.");
+      setProgress(100);
       setTimeout(() => {
         setStatus({
-          value: "installing",
+          value: "firmwareInstalling",
           text: "펌웨어 설치 중...",
         });
       }, 3000);
     }
-  }, [progress]);
-
-  useEffect(() => {
-    if (firmware.length !== 0) {
-      console.log("Firmware download has completed.");
-      setProgress(100);
-    }
   }, [firmware]);
 
   useEffect(() => {
-    if (status.value === "downloading") {
+    if (status.value === "firmwareDownloading") {
       RNFetchBlob.fetch(
         "GET",
         "https://next-bnb-jw.s3.ap-northeast-2.amazonaws.com/Release.bin",
       )
-        .progress({ interval: 1 }, (received, total) => {
+        .progress({ count: 1 }, (received, total) => {
           setProgress(Math.floor((received / total) * 100));
         })
         .then(res => {
@@ -174,7 +163,7 @@ const useBleMaganer = ({ isOtaUpdate = false } = {}) => {
         .catch(error => {
           console.log("Failed to download: ", error);
           setStatus({
-            value: "downloadFailed",
+            value: "downloadingFail",
             text: `펌웨어 다운로드에\n실패했어요.`,
           });
         });
@@ -186,7 +175,7 @@ const useBleMaganer = ({ isOtaUpdate = false } = {}) => {
       console.log("yes");
       setTimeout(() => {
         setStatus({
-          value: "downloading",
+          value: "firmwareDownloading",
           text: "펌웨어 다운로드 중...",
         });
       }, 2000);
@@ -195,7 +184,7 @@ const useBleMaganer = ({ isOtaUpdate = false } = {}) => {
       disconnect().finally(() => {
         console.log("no");
         setStatus({
-          value: "notifFailed",
+          value: "notificationFail",
           text: "디바이스를 리셋하고\n다시 시도해 주세요.",
         });
       });
@@ -215,7 +204,7 @@ const useBleMaganer = ({ isOtaUpdate = false } = {}) => {
         disconnect().finally(() => {
           console.log("Failed to start notification: ", error);
           setStatus({
-            value: "connectFailed",
+            value: "scanningFail",
             text: "연결이 끊어졌어요.",
           });
         });
@@ -229,7 +218,7 @@ const useBleMaganer = ({ isOtaUpdate = false } = {}) => {
       /* if (devEUIResult.data.detail.includes("relation")) {
         disconnect().finally(() => {
           setStatus({
-            value: "completedWith200",
+            value: "200Success",
             text: "등록이 완료되었어요.",
           });
         });
@@ -245,7 +234,7 @@ const useBleMaganer = ({ isOtaUpdate = false } = {}) => {
     if (devEUIResult.isError && devEUIResult.error.status === 400) {
       disconnect().finally(() => {
         setStatus({
-          value: "connectFailed",
+          value: "scanningFail",
           text: "유효하지 않은 DevEUI.",
         });
       });
@@ -266,7 +255,7 @@ const useBleMaganer = ({ isOtaUpdate = false } = {}) => {
         disconnect().finally(() => {
           console.log("Failed to read devEUI", error);
           setStatus({
-            value: "connectFailed",
+            value: "scanningFail",
             text: "디바이스의 데이터를\n가져오지 못했어요.",
           });
         });
@@ -287,7 +276,7 @@ const useBleMaganer = ({ isOtaUpdate = false } = {}) => {
         disconnect().finally(() => {
           console.log("Failed to retrieve data: ", error);
           setStatus({
-            value: "connectFailed",
+            value: "scanningFail",
             text: "디바이스의 데이터를\n가져오지 못했어요.",
           });
         });
@@ -306,7 +295,7 @@ const useBleMaganer = ({ isOtaUpdate = false } = {}) => {
         console.log("Failed to connect: ", error);
         BleManager.stopScan().then(() => {
           setStatus({
-            value: "connectFailed",
+            value: "scanningFail",
             text: "연결에 실패했어요.",
           });
         });
@@ -337,7 +326,7 @@ const useBleMaganer = ({ isOtaUpdate = false } = {}) => {
 
   useEffect(() => {
     let timeout: NodeJS.Timeout;
-    if (status.value === "searching") {
+    if (status.value === "scanning") {
       BleManager.scan([], 10, false).then(() => {
         console.log("Scanning...");
       });
@@ -345,7 +334,7 @@ const useBleMaganer = ({ isOtaUpdate = false } = {}) => {
         if (!peripheral) {
           BleManager.stopScan().then(() => {
             setStatus({
-              value: "connectFailed",
+              value: "scanningFail",
               text: "연결에 실패했어요.",
             });
           });

@@ -76,10 +76,12 @@ const SafetyZoneMap = ({
   navigation,
   route,
   next,
+  handlePreRender,
 }: {
   navigation?: any;
   route?: any;
   next?: () => void;
+  handlePreRender?: () => void;
 }) => {
   const { Map, mapRef } = useMap();
   const { isTracking, startTracking, clearTracking } = useMyLocation();
@@ -151,6 +153,9 @@ const SafetyZoneMap = ({
   const [show, setShow] = useState(false);
 
   useEffect(() => {
+    if (handlePreRender) {
+      handlePreRender();
+    }
     const showing = Keyboard.addListener("keyboardDidShow", () => {
       setShow(true);
     });

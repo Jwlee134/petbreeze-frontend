@@ -1,18 +1,13 @@
 import React from "react";
 import { useState } from "react";
 import Auth from "~/components/init/Auth";
-import DeviceCheck from "~/components/init/DeviceCheck";
+import DeviceCheck from "~/components/device/PreStart";
 import Permissions from "~/components/init/Permissions";
 import { useAppSelector } from "~/store";
 import { isIos } from "~/utils";
 import usePagingScrollView from "~/hooks/usePagingScrollView";
 import Intro from "~/components/Intro";
-import AddDevice from "../AddDevice";
-import styled from "styled-components/native";
-import { width } from "~/styles";
 import AddDeviceRoot from "~/components/device/AddDeviceRoot";
-
-const Container = styled.View``;
 
 const Init = () => {
   const token = useAppSelector(state => state.storage.user.token);
@@ -27,13 +22,8 @@ const Init = () => {
   const [renderPermission, setRenderPermission] = useState(
     isIos && (token && !isPermissionAllowed ? true : false),
   );
-  const [renderDeviceCheck, setRenderDeviceCheck] = useState(
-    token && (isIos ? isPermissionAllowed : true) && !isDeviceRegistered
-      ? true
-      : false,
-  );
   const [renderAddDevice, setRenderAddDevice] = useState(
-    token && (isIos ? isPermissionAllowed : true) && isDeviceRegistered,
+    !!token && (isIos ? isPermissionAllowed : true),
   );
 
   const { PagingScrollView, ScreenWidthContainer, next } =
@@ -49,7 +39,7 @@ const Init = () => {
         <ScreenWidthContainer>
           <Auth
             handlePreRender={() => {
-              isIos ? setRenderPermission(true) : setRenderDeviceCheck(true);
+              isIos ? setRenderPermission(true) : setRenderAddDevice(true);
             }}
             next={next}
           />
@@ -58,20 +48,17 @@ const Init = () => {
       {renderPermission && (
         <ScreenWidthContainer>
           <Permissions
-            handlePreRender={() => setRenderDeviceCheck(true)}
-            next={next}
-          />
-        </ScreenWidthContainer>
-      )}
-      {renderDeviceCheck && (
-        <ScreenWidthContainer>
-          <DeviceCheck
             handlePreRender={() => setRenderAddDevice(true)}
             next={next}
           />
         </ScreenWidthContainer>
       )}
-      {renderAddDevice ? <AddDeviceRoot next={next} /> : null}
+      {renderAddDevice && (
+        <AddDeviceRoot
+          ScreenWidthContainer={ScreenWidthContainer}
+          next={next}
+        />
+      )}
     </PagingScrollView>
   );
 };
