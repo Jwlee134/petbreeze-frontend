@@ -56,12 +56,12 @@ const WalkMap = ({
     // });
   };
 
-  // index 0은 원래 높이 89 - 핸들 높이 36, 1은 ios: 원래 높이 238 - 핸들 높이 36
-  // android: 원래 높이 238 - 핸들 높이 36 - ios 하단 바 높이 34
   const snapPoints = useMemo(() => {
     if (isStopped) {
       return [rpHeight(isIos ? 296 : 262), rpHeight(isIos ? 296 : 262)];
     } else {
+      // index 0은 원래 높이 89 - 핸들 높이 36, 1은 ios: 원래 높이 238 - 핸들 높이 36
+      // android: 원래 높이 238 - 핸들 높이 36 - ios 하단 바 높이 34
       return [rpHeight(54), rpHeight(isIos ? 202 : 168)];
     }
   }, [isStopped]);

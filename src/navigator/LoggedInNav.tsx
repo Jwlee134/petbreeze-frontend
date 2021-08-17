@@ -4,7 +4,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import BottomTabNav from "./BottomTabNav";
 import AddDevice from "~/screens/AddDevice";
 import WalkMap from "~/screens/WalkMap";
-import CustomHeader from "~/components/common/CustomHeader";
+import CustomHeader from "~/components/navigator/CustomHeader";
 import { store } from "~/store";
 import { Linking } from "react-native";
 import { isIos } from "~/utils";

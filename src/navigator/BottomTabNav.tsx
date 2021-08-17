@@ -11,7 +11,7 @@ import Bell from "~/assets/svg/tab/bell.svg";
 import BellOutline from "~/assets/svg/tab/bell-outline.svg";
 import User from "~/assets/svg/tab/user.svg";
 import UserOutline from "~/assets/svg/tab/user-outline.svg";
-import CustomHeader from "~/components/common/CustomHeader";
+import CustomHeader from "~/components/navigator/CustomHeader";
 import { BottomTabNavRouteProp } from "~/types/navigator";
 import WalkStackNav from "./WalkStackNav";
 

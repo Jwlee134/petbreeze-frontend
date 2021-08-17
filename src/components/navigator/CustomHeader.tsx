@@ -2,7 +2,7 @@ import React, { ReactNode } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import styled from "styled-components/native";
 import { rpWidth } from "~/styles";
-import MyText from "./MyText";
+import MyText from "../common/MyText";
 
 const Container = styled.View`
   height: ${rpWidth(44)}px;

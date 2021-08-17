@@ -1,25 +1,19 @@
 import React from "react";
-import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+import {
+  createMaterialTopTabNavigator,
+  MaterialTopTabBarProps,
+} from "@react-navigation/material-top-tabs";
 import StartWalking from "~/screens/Walk/StartWalking";
 import WalkRecord from "~/screens/Walk/WalkRecord";
-import { rpWidth } from "~/styles";
 import { WalkTopTabRouteProp } from "~/types/navigator";
+import CustomTopTabBar from "~/components/navigator/CustomTopTabBar";
 
 const Tab = createMaterialTopTabNavigator();
 
 const WalkTopTabNav = ({ route }: { route: WalkTopTabRouteProp }) => (
   <Tab.Navigator
     initialRouteName={route?.params?.initialTab || "StartWalking"}
-    tabBarOptions={{
-      labelStyle: {
-        fontSize: rpWidth(14),
-        fontFamily: "NotoSansKR-Regular",
-        includeFontPadding: false,
-      },
-      style: {
-        shadowColor: "transparent",
-      },
-    }}>
+    tabBar={(props: MaterialTopTabBarProps) => <CustomTopTabBar {...props} />}>
     <Tab.Screen
       name="StartWalking"
       component={StartWalking}
