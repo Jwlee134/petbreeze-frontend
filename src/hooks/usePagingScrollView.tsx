@@ -12,9 +12,9 @@ const usePagingScrollView = () => {
   const scrollViewRef = useRef<ScrollView>(null);
   const [page, setPage] = useState(0);
 
-  const next = () => setPage(prev => prev + 1);
+  const next = useCallback(() => setPage(prev => prev + 1), []);
 
-  const prev = () => setPage(prev => prev - 1);
+  const prev = useCallback(() => setPage(prev => prev - 1), []);
 
   useEffect(() => {
     if (scrollViewRef.current && page) {

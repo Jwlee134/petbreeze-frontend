@@ -1,11 +1,11 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { useState } from "react";
 import useBleMaganer from "~/hooks/useBleManager";
 import { useAppSelector } from "~/store";
 import BluetoothCheck from "./BluetoothCheck";
 import DeviceProfileForm from "./DeviceProfileForm";
 import Fail from "./Fail";
-import FirmwareDownloading from "./FirmwareDownloading";
+import FirmwareProgress from "./FirmwareProgress";
 import PreSafetyZoneMap from "./PreSafetyZoneMap";
 import PreStart from "./PreStart";
 import SafetyZoneMap from "./SafetyZoneMap";
@@ -36,7 +36,10 @@ const AddDeviceRoot = ({
   const isProfileRegistered = useAppSelector(
     state => state.storage.device.isProfileRegistered,
   );
-  const { status, setStatus, progress } = useBleMaganer({ isOtaUpdate });
+  const { status, setStatus, downloadingProgress, installingProgress } =
+    useBleMaganer({
+      isOtaUpdate,
+    });
 
   const [renderPreStart] = useState(!isDeviceRegistered);
   const [renderBluetoothCheck, setRenderBluetoothCheck] = useState(false);
@@ -48,62 +51,89 @@ const AddDeviceRoot = ({
     isDeviceRegistered && isSafetyZoneRegistered && !isProfileRegistered,
   );
 
+  const handlePreRenderBluetoothCheck = useCallback(
+    () => setRenderBluetoothCheck(true),
+    [],
+  );
+  const handlePreRenderProgress = useCallback(
+    () => setRenderProgress(true),
+    [],
+  );
+  const handleBluetoothCheckNext = useCallback(() => {
+    next();
+    setStatus({
+      value: "scanning",
+      text: "디바이스 검색중",
+    });
+  }, []);
+  const handleRetry = useCallback(() => {
+    switch (status.value) {
+      case "scanningFail":
+        setStatus({
+          value: "scanning",
+          text: "디바이스 검색중",
+        });
+        break;
+      case "downloadingFail":
+        setStatus({
+          value: "firmwareDownloading",
+          text: "펌웨어 다운로드중",
+        });
+    }
+  }, [status.value]);
+  const handlePreRenderSafetyZone = useCallback(
+    () => setRenderSafetyZoneMap(true),
+    [],
+  );
+  const handlePreRenderProfileForm = useCallback(
+    () => setRenderProfileForm(true),
+    [],
+  );
+
   return (
     <>
       {renderPreStart && (
         <ScreenWidthContainer>
           <PreStart
             handleNext={next}
-            handlePreRender={() => setRenderBluetoothCheck(true)}
+            handlePreRender={handlePreRenderBluetoothCheck}
           />
         </ScreenWidthContainer>
       )}
       {renderBluetoothCheck && (
         <ScreenWidthContainer>
           <BluetoothCheck
-            handlePreRender={() => setRenderProgress(true)}
-            handleNext={() => {
-              next();
-              setStatus({
-                value: "firmwareDownloading",
-                text: "디바이스 검색중",
-              });
-            }}
+            handlePreRender={handlePreRenderProgress}
+            handleNext={handleBluetoothCheckNext}
           />
         </ScreenWidthContainer>
       )}
       {renderProgress && (
         <ScreenWidthContainer>
           {status.value === "scanning" && <Scanning />}
-          {status.value === "firmwareDownloading" && (
-            <FirmwareDownloading progress={progress} />
+          {status.value.includes("firmware") && (
+            <FirmwareProgress
+              title={
+                status.value === "firmwareDownloading"
+                  ? "펌웨어 다운로드중"
+                  : "펌웨어 설치중"
+              }
+              progress={
+                status.value === "firmwareDownloading"
+                  ? downloadingProgress
+                  : installingProgress
+              }
+            />
           )}
-          {status.value.includes("success") && (
+          {status.value.includes("Success") && (
             <Success
               status={status}
               handleNext={next}
-              handlePreRender={() => setRenderSafetyZoneMap(true)}
+              handlePreRender={handlePreRenderSafetyZone}
             />
           )}
           {status.value.includes("Fail") && (
-            <Fail
-              status={status}
-              handleRetry={() => {
-                switch (status.value) {
-                  case "scanningFail":
-                    setStatus({
-                      value: "scanning",
-                      text: "디바이스 검색중",
-                    });
-                    break;
-                  case "downloadingFail":
-                    setStatus({
-                      value: "firmwareDownloading",
-                      text: "펌웨어 다운로드중",
-                    });
-                }
-              }}
-            />
+            <Fail status={status} handleRetry={handleRetry} />
           )}
         </ScreenWidthContainer>
       )}
@@ -114,9 +144,7 @@ const AddDeviceRoot = ({
               <PreSafetyZoneMap next={next} />
               <SafetyZoneMap
                 next={next}
-                handlePreRender={() => {
-                  setRenderProfileForm(true);
-                }}
+                handlePreRender={handlePreRenderProfileForm}
               />
             </>
           )}

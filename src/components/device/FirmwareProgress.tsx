@@ -1,10 +1,11 @@
-import React, { useRef } from "react";
-import { Animated, Easing } from "react-native";
+import React from "react";
 import styled from "styled-components/native";
 import { rpHeight, rpWidth, width } from "~/styles";
 import palette from "~/styles/palette";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import Footprint from "~/assets/svg/common/footprint-outline.svg";
+import MyText from "../common/MyText";
+import Points from "./Points";
 
 const Container = styled.View`
   flex: 1;
@@ -13,7 +14,17 @@ const Container = styled.View`
   align-items: center;
 `;
 
-const FirmwareDownloading = ({ progress }: { progress: number }) => {
+const RowContainer = styled.View`
+  flex-direction: row;
+`;
+
+const FirmwareProgress = ({
+  progress,
+  title,
+}: {
+  progress: number;
+  title: string;
+}) => {
   return (
     <Container>
       <AnimatedCircularProgress
@@ -25,8 +36,14 @@ const FirmwareDownloading = ({ progress }: { progress: number }) => {
         tintColor={palette.blue_7b}>
         {() => <Footprint width={rpWidth(73)} height={rpHeight(70)} />}
       </AnimatedCircularProgress>
+      <RowContainer>
+        <MyText fontSize={24} fontWeight="medium">
+          {title}
+        </MyText>
+        <Points />
+      </RowContainer>
     </Container>
   );
 };
 
-export default FirmwareDownloading;
+export default React.memo(FirmwareProgress);

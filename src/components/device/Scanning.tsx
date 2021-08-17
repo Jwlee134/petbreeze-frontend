@@ -1,17 +1,22 @@
 import React from "react";
 import styled from "styled-components/native";
 import MyText from "../common/MyText";
+import Points from "./Points";
 
 const Container = styled.View`
   flex: 1;
-  justify-content: center;
   align-items: center;
+  flex-direction: row;
+  margin: 0 auto;
 `;
 
 const Scanning = () => (
   <Container>
-    <MyText>디바이스 검색중</MyText>
+    <MyText fontSize={24} fontWeight="medium">
+      디바이스 검색중
+    </MyText>
+    <Points />
   </Container>
 );
 
-export default Scanning;
+export default React.memo(Scanning);

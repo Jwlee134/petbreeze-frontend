@@ -61,4 +61,4 @@ const BluetoothCheck = ({
   );
 };
 
-export default BluetoothCheck;
+export default React.memo(BluetoothCheck);

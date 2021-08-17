@@ -46,7 +46,7 @@ const useBleMaganer = ({ isOtaUpdate = false } = {}) => {
     value: "before",
     text: "",
   });
-  const [progress, setProgress] = useState(0);
+  const [downloadingProgress, setDownloadingProgress] = useState(0);
   const [installingProgress, setInstallingProgress] = useState(0);
   const [firmware, setFirmware] = useState<number[]>([]);
   const [notifStatus, setNotifStatus] = useState<number[]>([]);
@@ -74,6 +74,7 @@ const useBleMaganer = ({ isOtaUpdate = false } = {}) => {
       OTAControlPoint.CharacteristicA,
     ).finally(() => {
       disconnect().finally(() => {
+        setInstallingProgress(0);
         setStatus({
           value: isOtaUpdate ? "otaUpdateSuccess" : "allSuccess",
           text: isOtaUpdate
@@ -89,7 +90,10 @@ const useBleMaganer = ({ isOtaUpdate = false } = {}) => {
     try {
       for (let i = 0; i < Math.floor(firmware.length / interval); i++) {
         const data = firmware.slice(i * interval, (i + 1) * interval);
-        console.log(`count: ${i}`, data);
+        setInstallingProgress(
+          Math.round(((interval * i) / firmware.length) * 100),
+        );
+        console.log(`count: ${i}`, data, data.length);
         await BleManager.write(
           (peripheral as Peripheral).id,
           OTAControlPoint.UUID,
@@ -134,7 +138,7 @@ const useBleMaganer = ({ isOtaUpdate = false } = {}) => {
   useEffect(() => {
     if (firmware.length !== 0) {
       console.log("Firmware download has completed.");
-      setProgress(100);
+      setDownloadingProgress(100);
       setTimeout(() => {
         setStatus({
           value: "firmwareInstalling",
@@ -151,7 +155,8 @@ const useBleMaganer = ({ isOtaUpdate = false } = {}) => {
         "https://next-bnb-jw.s3.ap-northeast-2.amazonaws.com/Release.bin",
       )
         .progress({ count: 1 }, (received, total) => {
-          setProgress(Math.floor((received / total) * 100));
+          console.log(Math.floor((received / total) * 100));
+          setDownloadingProgress(Math.floor((received / total) * 100));
         })
         .then(res => {
           const status = res.info().status;
@@ -288,6 +293,10 @@ const useBleMaganer = ({ isOtaUpdate = false } = {}) => {
     BleManager.connect(peripheral.id)
       .then(async () => {
         console.log("Connected to: ", peripheral.id);
+        setStatus({
+          value: "scanningSuccess",
+          text: "연결에 성공했어요.",
+        });
         await BleManager.requestMTU(peripheral.id, 515);
         getPeripheralData(peripheral);
       })
@@ -305,10 +314,6 @@ const useBleMaganer = ({ isOtaUpdate = false } = {}) => {
   useEffect(() => {
     if (!peripheral) return;
     BleManager.stopScan().then(() => {
-      setStatus({
-        value: "connected",
-        text: "연결에 성공했어요.",
-      });
       handleConnect(peripheral);
     });
   }, [peripheral]);
@@ -367,7 +372,8 @@ const useBleMaganer = ({ isOtaUpdate = false } = {}) => {
   return {
     status,
     setStatus,
-    progress,
+    downloadingProgress,
+    installingProgress,
   };
 };
 

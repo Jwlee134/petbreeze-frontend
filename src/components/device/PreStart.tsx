@@ -84,4 +84,4 @@ const PreStart = ({
   );
 };
 
-export default PreStart;
+export default React.memo(PreStart);

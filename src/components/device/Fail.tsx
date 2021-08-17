@@ -25,4 +25,4 @@ const Fail = ({
   );
 };
 
-export default Fail;
+export default React.memo(Fail);
