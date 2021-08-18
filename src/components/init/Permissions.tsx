@@ -222,4 +222,4 @@ const Permissions = ({
   );
 };
 
-export default Permissions;
+export default React.memo(Permissions);
