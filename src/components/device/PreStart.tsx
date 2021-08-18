@@ -70,9 +70,7 @@ const PreStart = ({
           <Button
             backgroundColor="transparent"
             fontColor="rgba(0, 0, 0, 0.5)"
-            style={{
-              marginBottom: rpHeight(32),
-            }}
+            useCommonMarginBottom
             onPress={() => {
               dispatch(storageActions.setInit("init"));
             }}>

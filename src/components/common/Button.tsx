@@ -1,5 +1,6 @@
 import React, { ReactNode } from "react";
 import { ActivityIndicator, TouchableOpacityProps } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import styled, { css } from "styled-components/native";
 import { rpWidth } from "~/styles";
 import palette from "~/styles/palette";
@@ -13,6 +14,8 @@ interface IButton extends TouchableOpacityProps {
   isLoading?: boolean;
   fontWeight?: fontWeight;
   fontColor?: string;
+  useCommonMarginBottom?: boolean;
+  useBottomInset?: boolean;
 }
 
 interface ITouchableOpacity {
@@ -44,27 +47,38 @@ const Button = ({
   fontColor,
   isLoading = false,
   disabled = false,
+  useCommonMarginBottom = false,
+  useBottomInset = false,
   ...props
-}: IButton) => (
-  <StyledButton
-    backgroundColor={backgroundColor}
-    disabled={disabled}
-    {...props}>
-    {isLoading ? (
-      <ActivityIndicator color="white" />
-    ) : (
-      <>
-        {RightIcon && <RightIcon />}
-        <MyText
-          fontWeight={fontWeight ? fontWeight : "medium"}
-          color={
-            disabled ? "rgba(0, 0, 0, 0.5)" : fontColor ? fontColor : "white"
-          }>
-          {children}
-        </MyText>
-      </>
-    )}
-  </StyledButton>
-);
+}: IButton) => {
+  const { bottom } = useSafeAreaInsets();
+
+  return (
+    <StyledButton
+      backgroundColor={backgroundColor}
+      disabled={disabled}
+      style={{
+        ...(useCommonMarginBottom && {
+          marginBottom: useBottomInset ? rpWidth(32) + bottom : rpWidth(32),
+        }),
+      }}
+      {...props}>
+      {isLoading ? (
+        <ActivityIndicator color="white" />
+      ) : (
+        <>
+          {RightIcon && <RightIcon />}
+          <MyText
+            fontWeight={fontWeight ? fontWeight : "medium"}
+            color={
+              disabled ? "rgba(0, 0, 0, 0.5)" : fontColor ? fontColor : "white"
+            }>
+            {children}
+          </MyText>
+        </>
+      )}
+    </StyledButton>
+  );
+};
 
 export default Button;
