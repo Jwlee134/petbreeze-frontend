@@ -9,8 +9,21 @@ import { store, useAppSelector } from "~/store";
 import useMyLocation from "~/hooks/useMyLocation";
 import Button from "../common/Button";
 import BackgroundService from "react-native-background-actions";
-import { Text } from "react-native";
+import { Alert, View } from "react-native";
 import useBottomSheet from "~/hooks/useBottomSheet";
+import { WalkMapScreenNavigationProp } from "~/types/navigator";
+import { format } from "date-fns";
+import MyText from "../common/MyText";
+import { rpHeight, rpWidth } from "~/styles";
+import SidePaddingContainer from "../common/container/SidePaddingContainer";
+import DeviceAvatarCircle from "../common/DeviceAvatarCircle";
+
+interface IProps {
+  handleFinish: () => Promise<void>;
+  handleChange: (index: number) => void;
+  snapPoints: number[];
+  navigation: WalkMapScreenNavigationProp;
+}
 
 const RowContainer = styled.View`
   flex-direction: row;
@@ -33,24 +46,54 @@ const WalkBottomSheet = ({
   handleFinish,
   handleChange,
   snapPoints,
-}: {
-  handleFinish: () => Promise<void>;
-  handleChange: (index: number) => void;
-  snapPoints: number[];
-}) => {
+  navigation,
+}: IProps) => {
   const isStopped = useAppSelector(state => state.storage.walk.isStopped);
   const isWalking = useAppSelector(state => state.storage.walk.isWalking);
   const dispatch = useDispatch();
+  const devices = useAppSelector(state => state.device);
 
   const timer = useRef<NodeJS.Timeout>();
 
   const { BottomSheetComponent, sheetRef } = useBottomSheet();
   const { clearTracking, setCoords } = useMyLocation({ isWalking: true });
 
+  const start = async () => {
+    await BackgroundService.start(backgroundTask, options);
+  };
+
+  const stop = async () => {
+    await BackgroundService.stop();
+    clearTracking();
+    if (timer.current) {
+      clearTimeout(timer.current);
+    }
+  };
+
   const handleStop = async () => {
-    if (BackgroundService.isRunning()) {
-      await BackgroundService.stop();
-      clearTracking();
+    const startTime = store.getState().storage.walk.startTime;
+    dispatch(storageActions.setIsWalking(false));
+    if (!startTime || Date.now() - new Date(startTime).getTime() < 1000) {
+      Alert.alert(
+        "경고",
+        "1분 미만의 산책은 기록되지 않습니다. 중단하시겠습니까?",
+        [
+          {
+            text: "네",
+            onPress: () => {
+              dispatch(storageActions.clearWalk());
+              navigation.replace("BottomTabNav", {
+                initialTab: "StartWalking",
+              });
+            },
+          },
+          {
+            text: "아니오",
+            onPress: () => dispatch(storageActions.setIsWalking(true)),
+          },
+        ],
+      );
+      return;
     }
     dispatch(storageActions.setIsStopped(true));
     sheetRef.current?.snapTo(0);
@@ -87,18 +130,9 @@ const WalkBottomSheet = ({
 
   useEffect(() => {
     // 다시 시작
-    if (isWalking && !BackgroundService.isRunning()) {
-      BackgroundService.start(backgroundTask, options);
-    }
+    if (isWalking && !BackgroundService.isRunning()) start();
     // 일시 정지
-    if (!isWalking && BackgroundService.isRunning()) {
-      BackgroundService.stop().then(() => {
-        clearTracking();
-        if (timer.current) {
-          clearTimeout(timer.current);
-        }
-      });
-    }
+    if (!isWalking && BackgroundService.isRunning()) stop();
   }, [isWalking]);
 
   useEffect(() => {
@@ -107,7 +141,7 @@ const WalkBottomSheet = ({
       !BackgroundService.isRunning() &&
       store.getState().storage.walk.didMountInitially
     ) {
-      BackgroundService.start(backgroundTask, options).then(() => {
+      start().then(() => {
         dispatch(storageActions.setDidMountInitially(false));
         dispatch(storageActions.setIsWalking(true));
       });
@@ -119,20 +153,34 @@ const WalkBottomSheet = ({
       onChange={handleChange}
       index={1}
       snapPoints={snapPoints}>
-      {isStopped && (
-        <Text>
-          {/*     {format(
-        new Date(store.getState().storage.walk.startTime),
-        "yyyy년 M월 d일의 산책 h,m",
-      )} */}
-        </Text>
-      )}
-      <RowContainer>
-        <Timer />
-        <Distance />
-      </RowContainer>
-      {!isStopped && <Toggle handleStop={handleStop} />}
-      {isStopped && <Button onPress={handleFinish}>산책 종료</Button>}
+      <SidePaddingContainer>
+        {isStopped && (
+          <MyText
+            fontSize={18}
+            fontWeight="medium"
+            style={{ textAlign: "center" }}>
+            {format(
+              new Date(store.getState().storage.walk.startTime),
+              "yyyy년 M월 d일의 산책",
+            )}
+          </MyText>
+        )}
+        {isStopped && (
+          <View style={{ marginVertical: rpWidth(19) }}>
+            <DeviceAvatarCircle isWalk battery={devices[0].battery} />
+          </View>
+        )}
+        <RowContainer>
+          <Timer />
+          <Distance />
+        </RowContainer>
+        {!isStopped && <Toggle handleStop={handleStop} />}
+        {isStopped && (
+          <Button style={{ marginTop: rpWidth(19) }} onPress={handleFinish}>
+            산책 종료
+          </Button>
+        )}
+      </SidePaddingContainer>
     </BottomSheetComponent>
   );
 };

@@ -122,7 +122,7 @@ const Auth = ({
 
   return (
     <SafeAreaContainer>
-      <SidePaddingContainer>
+      <SidePaddingContainer style={{ flex: 1 }}>
         <HalfContainer></HalfContainer>
         <HalfContainer style={{ justifyContent: "flex-end" }}>
           <Button

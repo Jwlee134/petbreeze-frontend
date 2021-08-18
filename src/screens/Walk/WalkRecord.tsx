@@ -5,6 +5,9 @@ import { MultiDotMarking } from "react-native-calendars";
 import deviceApi from "~/api/device";
 import walkApi from "~/api/walk";
 import Calendar from "~/components/common/Calendar";
+import Device from "~/components/walk/Device";
+import { useAppSelector } from "~/store";
+import { rpHeight, rpWidth } from "~/styles";
 import palette from "~/styles/palette";
 import { WalkRecordScreenNavigationProp } from "~/types/navigator";
 
@@ -13,8 +16,9 @@ const WalkRecord = ({
 }: {
   navigation: WalkRecordScreenNavigationProp;
 }) => {
-  const { data: devices } = deviceApi.useGetDeviceListQuery();
-  const [getWalkRecord] = walkApi.useLazyGetWalkDetailQuery();
+  const devices = useAppSelector(state => state.device);
+  /* const { data: devices } = deviceApi.useGetDeviceListQuery();
+  const [getWalkRecord] = walkApi.useLazyGetWalkDetailQuery(); */
 
   const [selectedDeviceId, setSelectedDeviceId] = useState("");
   const [loading, setLoading] = useState(false);
@@ -51,7 +55,20 @@ const WalkRecord = ({
   }, [currentTabName, data]); */
 
   return (
-    <ScrollView>
+    <ScrollView
+      contentContainerStyle={{
+        paddingHorizontal: rpWidth(16),
+        paddingTop: rpHeight(31),
+      }}
+      showsVerticalScrollIndicator={false}>
+      {devices.map(item => (
+        <Device
+          key={item.id}
+          data={item}
+          onPress={() => {}}
+          isStartWalking={false}
+        />
+      ))}
       {/* <Calendar
         onDayPress={day => {
           if (selected && day.dateString === selected) {

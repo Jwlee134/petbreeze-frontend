@@ -2,15 +2,20 @@ import React from "react";
 import { TouchableOpacityProps } from "react-native";
 import styled, { css } from "styled-components/native";
 import { IDevice } from "~/store/device";
-import { rpHeight, rpWidth } from "~/styles";
+import { rpWidth } from "~/styles";
 import palette from "~/styles/palette";
 import ShadowContainer from "../common/container/ShadowContainer";
 import DeviceAvatarCircle from "../common/DeviceAvatarCircle";
 import MyText from "../common/MyText";
 
+import CheckFill from "~/assets/svg/walk/check-circle-fill.svg";
+import Check from "~/assets/svg/walk/check-circle.svg";
+import RightArrow from "~/assets/svg/walk/arrow-right.svg";
+
 interface IProps extends TouchableOpacityProps {
   data: IDevice;
-  selected: boolean;
+  selected?: boolean;
+  isStartWalking?: boolean;
 }
 
 interface IContainerProps {
@@ -26,6 +31,7 @@ const Container = styled.TouchableOpacity<IContainerProps>`
   padding: 0px ${rpWidth(18)}px;
   flex-direction: row;
   align-items: center;
+  justify-content: space-between;
   ${({ selected }) =>
     selected &&
     css`
@@ -35,6 +41,11 @@ const Container = styled.TouchableOpacity<IContainerProps>`
     `}
 `;
 
+const LeftContainer = styled.View`
+  flex-direction: row;
+  align-items: center;
+`;
+
 const TextContainer = styled.View`
   margin-left: ${rpWidth(26)}px;
 `;
@@ -42,32 +53,43 @@ const TextContainer = styled.View`
 const RowContainer = styled.View`
   flex-direction: row;
   align-items: center;
+  margin-bottom: ${rpWidth(5)}px;
 `;
 
-const Device = ({ data, selected, ...props }: IProps) => (
+const Device = ({
+  data,
+  selected = false,
+  isStartWalking = true,
+  ...props
+}: IProps) => (
   <ShadowContainer shadowOpacity={0.1} shadowRadius={10}>
     <Container selected={selected} {...props}>
-      <DeviceAvatarCircle isWalk battery={data.battery} />
-      <TextContainer>
-        <RowContainer>
-          <MyText fontWeight="medium">{data.name}</MyText>
-          <MyText
-            fontSize={12}
-            color={palette.blue_7b}
-            style={{ marginLeft: rpWidth(12) }}>
-            {data.battery}%
+      <LeftContainer>
+        <DeviceAvatarCircle isWalk battery={data.battery} />
+        <TextContainer>
+          <RowContainer>
+            <MyText fontWeight="medium">{data.name}</MyText>
+            <MyText
+              fontSize={12}
+              color={palette.blue_7b}
+              style={{ marginLeft: rpWidth(12) }}>
+              {data.battery}%
+            </MyText>
+          </RowContainer>
+          <MyText fontSize={12} color="rgba(0, 0, 0, 0.5)">
+            마지막 산책
           </MyText>
-        </RowContainer>
-        <MyText
-          style={{ marginBottom: rpHeight(8) }}
-          fontSize={12}
-          color="rgba(0, 0, 0, 0.3)">
-          {data.breed} | {data.age}세
-        </MyText>
-        <MyText fontSize={12} color="rgba(0, 0, 0, 0.7)">
-          마지막 산책
-        </MyText>
-      </TextContainer>
+        </TextContainer>
+      </LeftContainer>
+      {isStartWalking ? (
+        selected ? (
+          <CheckFill width={rpWidth(25)} height={rpWidth(25)} />
+        ) : (
+          <Check width={rpWidth(25)} height={rpWidth(25)} />
+        )
+      ) : (
+        <RightArrow width={rpWidth(9)} height={rpWidth(15)} />
+      )}
     </Container>
   </ShadowContainer>
 );

@@ -12,7 +12,6 @@ interface IProps {
 const SidePaddingContainer = ({ children, width, style }: IProps) => (
   <View
     style={{
-      flex: 1,
       paddingHorizontal: width ? rpWidth(36) : rpWidth(16),
       ...(style as object),
     }}>

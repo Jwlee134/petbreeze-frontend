@@ -37,7 +37,7 @@ const BluetoothCheck = ({
 
   return (
     <SafeAreaContainer>
-      <SidePaddingContainer>
+      <SidePaddingContainer style={{ flex: 1 }}>
         <TopContainer>
           <View />
           <Bluetooth width={rpWidth(88)} height={rpHeight(116)} />

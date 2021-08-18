@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useAppSelector } from "~/store";
+import { store, useAppSelector } from "~/store";
 import LoggedInNav from "./LoggedInNav";
 import LoggedOutNav from "./LoggedOutNav";
 
@@ -15,8 +15,106 @@ import { StatusBar, StatusBarStyle } from "react-native";
 
 import Blemanager from "react-native-ble-manager";
 import messaging from "@react-native-firebase/messaging";
+import BLEAdvertiser from "react-native-ble-advertiser";
+
+import Geolocation from "react-native-geolocation-service";
+import BackgroundService from "react-native-background-actions";
 
 SplashScreen.preventAutoHideAsync();
+
+/* const options = {
+  taskName: "Example",
+  taskTitle: "어디개",
+  taskDesc: "산책 중입니다...",
+  taskIcon: {
+    name: "ic_launcher",
+    type: "mipmap",
+  },
+  color: "#ff00ff",
+  linkingURI: "petbreeze://walk/map",
+};
+
+const setCoords = () => {
+  return new Promise<number>((resolve, reject) => {
+    const id = Geolocation.watchPosition(
+      pos => {
+        const { latitude, longitude } = pos.coords;
+        console.log(latitude, longitude);
+        store.dispatch(
+          storageActions.setCoords({
+            latitude: Number(latitude.toFixed(6)),
+            longitude: Number(longitude.toFixed(6)),
+          }),
+        );
+        resolve(id);
+      },
+      error => {
+        console.log("Geolocation error: ", error);
+        reject();
+      },
+      {
+        enableHighAccuracy: false,
+        distanceFilter: 10,
+      },
+    );
+  });
+};
+
+const stopwatch = async () => {
+  for (
+    let i = store.getState().storage.walk.duration;
+    BackgroundService.isRunning();
+    i++
+  ) {
+    store.dispatch(storageActions.setDuration(i));
+    await new Promise<void>(resolve => {
+      setTimeout(() => {
+        resolve();
+      }, 1000);
+    });
+  }
+};
+
+const backgroundTask = async () => {
+  await new Promise<void>(() => {
+    setCoords()
+      .then(trackingId => {
+        store.dispatch(storageActions.setStartTime(new Date().toISOString()));
+        store.dispatch(storageActions.setTrackingId(trackingId));
+        stopwatch();
+      })
+      .catch(() => {
+        store.dispatch(storageActions.setIsWalking(false));
+        BackgroundService.stop();
+      });
+  });
+};
+
+messaging().setBackgroundMessageHandler(async remoteMessage => {
+  console.log("Message handled in the background!");
+  BLEAdvertiser.setCompanyId(0x02); // Your Company's Code
+  BLEAdvertiser.broadcast(
+    "e7111937-f9c1-4fb6-b6ee-ae9f255a7f46",
+    [255, 255, 255, 255],
+    {
+      txPowerLevel: BLEAdvertiser.ADVERTISE_TX_POWER_HIGH,
+    },
+  ) // The service UUID and additional manufacturer data.
+    .then(success => {
+      console.log("Broadcasting Sucessful", success);
+      store.dispatch(storageActions.setIsStopped(false));
+      if (
+        !BackgroundService.isRunning() &&
+        store.getState().storage.walk.didMountInitially
+      ) {
+        BackgroundService.start(backgroundTask, options).then(() => {
+          store.dispatch(storageActions.setDidMountInitially(false));
+          store.dispatch(storageActions.setIsWalking(true));
+        });
+      }
+    })
+    .catch(error => console.log("Broadcasting Error", error));
+}); */
 
 const RootNav = () => {
   useEffect(() => {

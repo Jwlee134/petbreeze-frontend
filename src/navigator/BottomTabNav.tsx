@@ -20,7 +20,7 @@ const Tab = createBottomTabNavigator();
 const BottomTabNav = ({ route }: { route: BottomTabNavRouteProp }) => (
   <Tab.Navigator
     initialRouteName={
-      route?.params?.initialTab === "WalkRecord" ? "WalkStackNav" : "HomeTab"
+      route?.params?.initialTab?.includes("Walk") ? "WalkStackNav" : "HomeTab"
     }
     screenOptions={{
       tabBarShowLabel: false,

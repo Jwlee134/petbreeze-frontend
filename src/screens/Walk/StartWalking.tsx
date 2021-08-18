@@ -6,8 +6,7 @@ import deviceApi from "~/api/device";
 import { useDispatch } from "react-redux";
 import { storageActions } from "~/store/storage";
 import { permissionCheck } from "~/utils";
-import MyText from "~/components/common/MyText";
-import { rpWidth } from "~/styles";
+import { rpHeight, rpWidth } from "~/styles";
 import Button from "~/components/common/Button";
 import { useAppSelector } from "~/store";
 import { ScrollView } from "react-native";
@@ -16,14 +15,6 @@ import Device from "~/components/walk/Device";
 const Container = styled.View`
   flex: 1;
   justify-content: space-between;
-`;
-
-const TextContainer = styled.View`
-  height: ${rpWidth(88)}px;
-  max-height: 88px;
-  justify-content: center;
-  align-items: center;
-  background-color: transparent;
 `;
 
 const ButtonContainer = styled.View`
@@ -58,12 +49,12 @@ const StartWalking = ({
 
   return (
     <Container>
-      <TextContainer>
-        <MyText>산책을 시작할 반려견을 선택해주세요.</MyText>
-      </TextContainer>
       {devices && devices.length && (
         <ScrollView
-          contentContainerStyle={{ paddingHorizontal: rpWidth(16) }}
+          contentContainerStyle={{
+            paddingHorizontal: rpWidth(16),
+            paddingTop: rpHeight(31),
+          }}
           showsVerticalScrollIndicator={false}>
           {devices.map(item => (
             <Device
@@ -90,8 +81,8 @@ const StartWalking = ({
         </ScrollView>
       )}
       <ButtonContainer>
-        <Button disabled={selected.length === 0} onPress={handleStart}>
-          선택 완료
+        <Button disabled={!selected.length} onPress={handleStart}>
+          {!selected.length ? "반려동물을 선택해주세요." : "선택 완료"}
         </Button>
       </ButtonContainer>
     </Container>

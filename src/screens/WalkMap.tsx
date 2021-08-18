@@ -6,12 +6,12 @@ import Path from "~/components/walk/Path";
 import { store, useAppSelector } from "~/store";
 import WalkBottomSheet from "~/components/walk/WalkBottomSheet";
 import MapFloatingCircle from "~/components/common/MapFloatingCircle";
-import { rpHeight, rpWidth } from "~/styles";
+import { rpWidth } from "~/styles";
 import walkApi from "~/api/walk";
 import { storageActions } from "~/store/storage";
 import { useDispatch } from "react-redux";
-import { isIos } from "~/utils";
 import { useState } from "react";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const WalkMap = ({
   navigation,
@@ -22,6 +22,7 @@ const WalkMap = ({
   const [trigger] = walkApi.usePostWalkMutation();
   const dispatch = useDispatch();
   const isStopped = useAppSelector(state => state.storage.walk.isStopped);
+  const { bottom } = useSafeAreaInsets();
 
   const animateToMyLocation = () => {
     const coords = store.getState().storage.walk.coords;
@@ -58,11 +59,10 @@ const WalkMap = ({
 
   const snapPoints = useMemo(() => {
     if (isStopped) {
-      return [rpHeight(isIos ? 296 : 262), rpHeight(isIos ? 296 : 262)];
+      return [rpWidth(262 + bottom), rpWidth(262 + bottom)];
     } else {
-      // index 0은 원래 높이 89 - 핸들 높이 36, 1은 ios: 원래 높이 238 - 핸들 높이 36
-      // android: 원래 높이 238 - 핸들 높이 36 - ios 하단 바 높이 34
-      return [rpHeight(54), rpHeight(isIos ? 202 : 168)];
+      // index 0은 원래 높이 89 - 핸들 높이 36, 1은 원래 높이 238 - 핸들 높이 36
+      return [rpWidth(54), rpWidth(202)];
     }
   }, [isStopped]);
 
@@ -75,7 +75,7 @@ const WalkMap = ({
       <Map
         style={StyleSheet.absoluteFill}
         mapPadding={{
-          bottom: isIos ? snapPoints[index] : snapPoints[index] + rpHeight(34),
+          bottom: snapPoints[index] + (!bottom ? rpWidth(34) : 0),
         }}>
         <Path mapRef={mapRef} /* deviceIds={deviceId} */ />
       </Map>
@@ -84,16 +84,16 @@ const WalkMap = ({
           <MapFloatingCircle
             style={{
               position: "absolute",
-              top: rpHeight(33),
-              right: rpWidth(17),
+              top: rpWidth(26),
+              right: rpWidth(16),
             }}
             icon="footprint"
           />
           <MapFloatingCircle
             style={{
               position: "absolute",
-              top: rpHeight(93),
-              right: rpWidth(17),
+              top: rpWidth(86),
+              right: rpWidth(16),
             }}
             icon="myLocation"
             onPress={animateToMyLocation}
@@ -104,6 +104,7 @@ const WalkMap = ({
         snapPoints={snapPoints}
         handleChange={handleBottomSheetChange}
         handleFinish={handleFinish}
+        navigation={navigation}
       />
     </>
   );

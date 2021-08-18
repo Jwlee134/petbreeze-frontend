@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { useEffect } from "react";
+import { TouchableOpacityProps } from "react-native";
 import styled from "styled-components/native";
 import { rpWidth } from "~/styles";
 import MyText from "../common/MyText";
 
-interface IProps {
+interface IProps extends TouchableOpacityProps {
   isFocused: boolean;
   onPress: () => void;
   label: string;
@@ -18,21 +19,22 @@ const TabButton = styled.TouchableOpacity`
   padding: 0px ${rpWidth(20)}px;
 `;
 
-const Tab = ({ isFocused, onPress, label, setToValue }: IProps) => {
-  const [layout, setLayout] = useState(0);
+const Tab = ({ isFocused, onPress, label, setToValue, ...props }: IProps) => {
+  const [layout, setLayout] = useState<number | null>(null);
 
   useEffect(() => {
-    if (isFocused) {
+    if (isFocused && layout !== null) {
       setToValue(layout);
     }
-  }, [isFocused]);
+  }, [isFocused, layout]);
 
   return (
     <TabButton
       onLayout={e => {
         setLayout(e.nativeEvent.layout.x);
       }}
-      onPress={onPress}>
+      onPress={onPress}
+      {...props}>
       <MyText fontSize={14} color="rgba(0, 0, 0, 0.5)">
         {label}
       </MyText>

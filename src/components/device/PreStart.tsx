@@ -43,7 +43,7 @@ const PreStart = ({
 
   return (
     <SafeAreaContainer>
-      <SidePaddingContainer>
+      <SidePaddingContainer style={{ flex: 1 }}>
         <TopContainer>
           <Device width={rpWidth(100)} height={rpHeight(156)} />
           <MyText
