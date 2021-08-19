@@ -8,6 +8,7 @@ import CustomHeader from "~/components/navigator/CustomHeader";
 import { store } from "~/store";
 import { Linking } from "react-native";
 import { isIos } from "~/utils";
+import DeleteAccount from "~/screens/DeleteAccount";
 
 const Stack = createStackNavigator();
 
@@ -55,7 +56,18 @@ const LoggedInNav = () => {
         name="WalkMap"
         component={WalkMap}
         options={{
-          header: () => <CustomHeader>산책하기</CustomHeader>,
+          header: props => <CustomHeader {...props}>산책하기</CustomHeader>,
+        }}
+      />
+      <Stack.Screen
+        name="DeleteAccount"
+        component={DeleteAccount}
+        options={{
+          header: props => (
+            <CustomHeader useBackButton {...props}>
+              탈퇴하기
+            </CustomHeader>
+          ),
         }}
       />
     </Stack.Navigator>
