@@ -46,6 +46,17 @@ const initialState: IDevice[] = [
     age: 10,
     gender: "남",
   },
+  {
+    id: "dddd",
+    profile_image: require("~/assets/image/test.jpg"),
+    name: "막둥이4",
+    battery: 15,
+    location_info_collection_period: 3,
+    firmware_version: "1.0.2",
+    breed: "말티즈",
+    age: 10,
+    gender: "남",
+  },
 ];
 
 const device = createSlice({

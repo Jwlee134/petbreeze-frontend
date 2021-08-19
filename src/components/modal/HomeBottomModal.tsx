@@ -11,6 +11,13 @@ interface IProps {
   device: IDevice;
 }
 
+const AvatarContainer = styled.View`
+  width: ${rpWidth(90)}px;
+  border-radius: ${rpWidth(45)}px;
+  position: absolute;
+  top: -${rpWidth(112)}px;
+`;
+
 const Container = styled.View`
   align-items: center;
 `;
@@ -19,7 +26,6 @@ const ButtonContainer = styled.View`
   background-color: ${palette.gray_f3};
   border-radius: 17px;
   width: 100%;
-  margin-top: ${rpWidth(22)}px;
 `;
 
 const Divider = styled.View`
@@ -43,7 +49,13 @@ const Button = styled.TouchableOpacity`
 const HomeBottomModal = ({ device }: IProps) => {
   return (
     <Container>
-      <DeviceAvatarCircle battery={device.battery} />
+      <AvatarContainer>
+        <DeviceAvatarCircle
+          circleWidth={90}
+          lineWidth={7}
+          battery={device.battery}
+        />
+      </AvatarContainer>
       <ButtonContainer>
         <NameContainer>
           <MyText fontSize={14} color="rgba(0, 0, 0, 0.3)">

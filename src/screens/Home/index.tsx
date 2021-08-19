@@ -6,37 +6,21 @@ import { useAppSelector } from "~/store";
 import useMap from "~/hooks/useMap";
 import useMyLocation from "~/hooks/useMyLocation";
 
-import { Pressable, StyleSheet, View } from "react-native";
-import DeviceAvatarCircle from "~/components/common/DeviceAvatarCircle";
-import Modal from "react-native-modal";
-import useModal from "~/hooks/useModal";
-import { useState } from "react";
-import { useMemo } from "react";
-import { useEffect } from "react";
+import { StyleSheet } from "react-native";
 
 import BLEAdvertiser from "react-native-ble-advertiser";
-import { rpHeight, rpWidth, width } from "~/styles";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import IosStyleBottomModal from "~/components/modal/IosStyleBottomModal";
-import HomeBottomModal from "~/components/modal/HomeBottomModal";
+import DeviceList from "~/components/home/DeviceList";
 
 const Container = styled.View`
   flex: 1;
+  justify-content: flex-end;
 `;
 
 const Home = ({ navigation }: { navigation: HomeScreenNavigationProp }) => {
   const { notification } = useAppSelector(state => state.common);
-  const deviceList = useAppSelector(state => state.device);
+
   const { Map, mapRef } = useMap();
   const { isTracking, startTracking, clearTracking } = useMyLocation();
-  const { open, close, modalProps } = useModal();
-  const [clickedId, setClickedId] = useState("");
-
-  const device = useMemo(() => {
-    return deviceList[deviceList.findIndex(device => device.id === clickedId)];
-  }, [clickedId]);
-
-  const { bottom } = useSafeAreaInsets();
 
   /*   useEffect(() => {
     BLEAdvertiser.setCompanyId(0x02); // Your Company's Code
@@ -55,26 +39,8 @@ const Home = ({ navigation }: { navigation: HomeScreenNavigationProp }) => {
     <>
       <Container>
         <Map style={StyleSheet.absoluteFill} />
-        {deviceList.map(device => (
-          <Pressable
-            key={device.id}
-            onLongPress={() => {
-              setClickedId(device.id);
-              open();
-            }}>
-            <DeviceAvatarCircle
-              circleWidth={90}
-              lineWidth={7}
-              battery={device.battery}
-            />
-          </Pressable>
-        ))}
+        <DeviceList />
       </Container>
-      <Modal {...modalProps({ type: "bottom" })}>
-        <IosStyleBottomModal close={close}>
-          <HomeBottomModal device={device} />
-        </IosStyleBottomModal>
-      </Modal>
     </>
   );
 };
