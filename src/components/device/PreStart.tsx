@@ -38,7 +38,9 @@ const PreStart = ({
   const { disabled, disable } = useDisableButton();
 
   useEffect(() => {
-    handlePreRender();
+    setTimeout(() => {
+      handlePreRender();
+    }, 500);
   }, []);
 
   return (

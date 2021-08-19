@@ -44,9 +44,10 @@ const AddDeviceRoot = ({
   const [renderPreStart] = useState(!isDeviceRegistered);
   const [renderBluetoothCheck, setRenderBluetoothCheck] = useState(false);
   const [renderProgress, setRenderProgress] = useState(false);
-  const [renderSafetyZoneMap, setRenderSafetyZoneMap] = useState(
+  const [renderPreSafetyZoneMap, setRenderPreSafetyZoneMap] = useState(
     isDeviceRegistered && !isSafetyZoneRegistered,
   );
+  const [renderSafetyZoneMap, setRenderSafetyZoneMap] = useState(false);
   const [renderProfleForm, setRenderProfileForm] = useState(
     isDeviceRegistered && isSafetyZoneRegistered && !isProfileRegistered,
   );
@@ -79,9 +80,20 @@ const AddDeviceRoot = ({
           value: "firmwareDownloading",
           text: "펌웨어 다운로드중",
         });
+        break;
+      case "notificationFail":
+        setStatus({
+          value: "scanning",
+          text: "디바이스 검색중",
+        });
+        break;
     }
   }, [status.value]);
-  const handlePreRenderSafetyZone = useCallback(
+  const handlePreRenderPreSafetyZoneMap = useCallback(
+    () => setRenderPreSafetyZoneMap(true),
+    [],
+  );
+  const handlePreRenderSafetyZoneMap = useCallback(
     () => setRenderSafetyZoneMap(true),
     [],
   );
@@ -129,7 +141,7 @@ const AddDeviceRoot = ({
             <Success
               status={status}
               handleNext={next}
-              handlePreRender={handlePreRenderSafetyZone}
+              handlePreRender={handlePreRenderPreSafetyZoneMap}
             />
           )}
           {status.value.includes("Fail") && (
@@ -139,14 +151,21 @@ const AddDeviceRoot = ({
       )}
       {!isOtaUpdate && (
         <>
+          {renderPreSafetyZoneMap && (
+            <ScreenWidthContainer>
+              <PreSafetyZoneMap
+                next={next}
+                handlePreRender={handlePreRenderSafetyZoneMap}
+              />
+            </ScreenWidthContainer>
+          )}
           {renderSafetyZoneMap && (
-            <>
-              <PreSafetyZoneMap next={next} />
+            <ScreenWidthContainer>
               <SafetyZoneMap
                 next={next}
                 handlePreRender={handlePreRenderProfileForm}
               />
-            </>
+            </ScreenWidthContainer>
           )}
           {renderProfleForm && <DeviceProfileForm next={next} />}
         </>

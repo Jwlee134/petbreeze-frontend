@@ -29,7 +29,7 @@ const Home = ({ navigation }: { navigation: HomeScreenNavigationProp }) => {
   const deviceList = useAppSelector(state => state.device);
   const { Map, mapRef } = useMap();
   const { isTracking, startTracking, clearTracking } = useMyLocation();
-  const { open, close, modalProps } = useModal({ type: "bottom" });
+  const { open, close, modalProps } = useModal();
   const [clickedId, setClickedId] = useState("");
 
   const device = useMemo(() => {
@@ -63,13 +63,14 @@ const Home = ({ navigation }: { navigation: HomeScreenNavigationProp }) => {
               open();
             }}>
             <DeviceAvatarCircle
+              circleWidth={90}
+              lineWidth={7}
               battery={device.battery}
-              avatar={device.avatarUrl}
             />
           </Pressable>
         ))}
       </Container>
-      <Modal {...modalProps}>
+      <Modal {...modalProps({ type: "bottom" })}>
         <IosStyleBottomModal close={close}>
           <HomeBottomModal device={device} />
         </IosStyleBottomModal>

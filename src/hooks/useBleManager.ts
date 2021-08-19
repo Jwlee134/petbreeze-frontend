@@ -8,6 +8,7 @@ const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
 import RNFetchBlob from "rn-fetch-blob";
 import { bytesToString, stringToBytes } from "convert-string";
 import deviceApi from "~/api/device";
+import { isAndroid } from "~/utils";
 
 type StatusValue =
   | "before"
@@ -203,7 +204,7 @@ const useBleMaganer = ({ isOtaUpdate = false } = {}) => {
       OTAControlPoint.CharacteristicA,
     )
       .then(() => {
-        console.log("Succeded to start notification");
+        console.log("Succeded to start notification: ", peripheral?.id);
       })
       .catch(error => {
         disconnect().finally(() => {
@@ -297,7 +298,7 @@ const useBleMaganer = ({ isOtaUpdate = false } = {}) => {
           value: "scanningSuccess",
           text: "연결에 성공했어요.",
         });
-        await BleManager.requestMTU(peripheral.id, 515);
+        if (isAndroid) await BleManager.requestMTU(peripheral.id, 515);
         getPeripheralData(peripheral);
       })
       .catch(error => {

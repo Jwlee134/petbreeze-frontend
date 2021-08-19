@@ -2,12 +2,11 @@ import React from "react";
 import styled from "styled-components/native";
 import { rpWidth } from "~/styles";
 import MyText from "../common/MyText";
-import Shield from "~/assets/svg/myPage/shield.svg";
+import Location from "~/assets/svg/myPage/location.svg";
 
 const RowContainer = styled.View`
   flex-direction: row;
   align-items: center;
-  margin: ${rpWidth(29)}px 0px;
 `;
 
 const SvgContainer = styled.View`
@@ -15,19 +14,21 @@ const SvgContainer = styled.View`
   align-items: center;
 `;
 
-const Container = styled.View``;
+const Container = styled(RowContainer)`
+  height: ${rpWidth(88)}px;
+`;
 
-const SafetyZone = () => {
+const LocationInfoCollectionPeriod = () => {
   return (
     <Container>
       <RowContainer>
         <SvgContainer>
-          <Shield width={rpWidth(19)} height={rpWidth(20)} />
+          <Location width={rpWidth(16)} height={rpWidth(20)} />
         </SvgContainer>
-        <MyText>안심존</MyText>
+        <MyText>위치정보 수신 주기</MyText>
       </RowContainer>
     </Container>
   );
 };
 
-export default SafetyZone;
+export default LocationInfoCollectionPeriod;

@@ -11,11 +11,10 @@ import Bell from "~/assets/svg/tab/bell.svg";
 import BellOutline from "~/assets/svg/tab/bell-outline.svg";
 import User from "~/assets/svg/tab/user.svg";
 import UserOutline from "~/assets/svg/tab/user-outline.svg";
-import CustomHeader from "~/components/navigator/CustomHeader";
 import { BottomTabNavRouteProp } from "~/types/navigator";
-import WalkStackNav from "./WalkStackNav";
 import { rpWidth } from "~/styles";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import MyPageStackNav from "./MyPageStackNav";
 
 const Tab = createBottomTabNavigator();
 
@@ -25,9 +24,10 @@ const BottomTabNav = ({ route }: { route: BottomTabNavRouteProp }) => {
   return (
     <Tab.Navigator
       initialRouteName={
-        route?.params?.initialTab?.includes("Walk") ? "WalkStackNav" : "HomeTab"
+        route?.params?.initialTab?.includes("Walk") ? "WalkTab" : "HomeTab"
       }
       screenOptions={{
+        headerShown: false,
         tabBarShowLabel: false,
         tabBarActiveTintColor: palette.blue_7b,
         tabBarInactiveTintColor: "rgba(0, 0, 0, 0.3)",
@@ -49,21 +49,22 @@ const BottomTabNav = ({ route }: { route: BottomTabNavRouteProp }) => {
         {() => <SharedStackNav screenName="Home" />}
       </Tab.Screen>
       <Tab.Screen
-        name="WalkStackNav"
-        component={WalkStackNav}
-        initialParams={{
-          initialTab: route?.params?.initialTab,
-        }}
+        name="WalkTab"
         options={{
-          header: () => <CustomHeader>산책</CustomHeader>,
           tabBarIcon: ({ focused }) =>
             focused ? (
               <Footprint width={rpWidth(25)} height={rpWidth(24)} />
             ) : (
               <FootprintOutline width={rpWidth(25)} height={rpWidth(24)} />
             ),
-        }}
-      />
+        }}>
+        {() => (
+          <SharedStackNav
+            initialWalkTab={route?.params?.initialTab}
+            screenName="Walk"
+          />
+        )}
+      </Tab.Screen>
       <Tab.Screen
         name="NotificationTab"
         options={{
@@ -77,17 +78,18 @@ const BottomTabNav = ({ route }: { route: BottomTabNavRouteProp }) => {
         {() => <SharedStackNav screenName="Notification" />}
       </Tab.Screen>
       <Tab.Screen
-        name="MyPageTab"
+        name="MyPageStackNav"
         options={{
+          headerShown: false,
           tabBarIcon: ({ focused }) =>
             focused ? (
               <User width={rpWidth(22)} height={rpWidth(23)} />
             ) : (
               <UserOutline width={rpWidth(22)} height={rpWidth(23)} />
             ),
-        }}>
-        {() => <SharedStackNav screenName="MyPage" />}
-      </Tab.Screen>
+        }}
+        component={MyPageStackNav}
+      />
     </Tab.Navigator>
   );
 };

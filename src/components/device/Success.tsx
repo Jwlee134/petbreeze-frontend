@@ -3,15 +3,15 @@ import { useEffect } from "react";
 import styled from "styled-components/native";
 import { Status } from "~/hooks/useBleManager";
 import MyText from "../common/MyText";
+import Success from "../lottie/Success";
 
 const Container = styled.View`
   flex: 1;
+  justify-content: center;
   align-items: center;
-  flex-direction: row;
-  margin: 0 auto;
 `;
 
-const Success = ({
+const Successs = ({
   status,
   handleNext,
   handlePreRender,
@@ -22,7 +22,12 @@ const Success = ({
 }) => {
   useEffect(() => {
     if (status.value === "allSuccess") {
-      handlePreRender();
+      setTimeout(() => {
+        handlePreRender();
+      }, 2000);
+      setTimeout(() => {
+        handleNext();
+      }, 5000);
     }
   }, [status]);
 
@@ -32,10 +37,11 @@ const Success = ({
         {status.value === "scanningSuccess" && "연결에 성공했어요."}
         {status.value === "otaUpdateSuccess" &&
           "펌웨어 업데이트가\n완료되었습니다."}
+        {status.value === "allSuccess" && <Success />}
         {status.value === "allSuccess" && "디바이스 등록이\n완료되었습니다."}
       </MyText>
     </Container>
   );
 };
 
-export default React.memo(Success);
+export default React.memo(Successs);

@@ -1,44 +1,80 @@
 import React from "react";
 import styled from "styled-components/native";
-import ListItem from "~/components/common/ListItem";
-import { DeviceSettingScreenNavigationProp } from "~/types/navigator";
-import { ScrollView } from "react-native";
+import { ScrollView, StyleSheet, TouchableOpacity } from "react-native";
+import { rpHeight, rpWidth } from "~/styles";
+import DeviceAvatarCircle from "~/components/common/DeviceAvatarCircle";
+import MyText from "~/components/common/MyText";
+import Pencil from "~/assets/svg/myPage/pencil.svg";
 
-const Text = styled.Text`
-  font-size: 16px;
+import SidePaddingContainer from "~/components/common/container/SidePaddingContainer";
+import LocationInfoCollectionPeriod from "~/components/myPage/LocationInfoCollectionPeriod";
+import SafetyZone from "~/components/myPage/SafetyZone";
+
+const TopContainer = styled.View`
+  justify-content: center;
+  align-items: center;
+  padding: ${rpWidth(11)}px 0px;
 `;
 
-const DeviceSetting = ({
-  navigation,
-}: {
-  navigation: DeviceSettingScreenNavigationProp;
-}) => {
+const TextDivider = styled.View`
+  width: ${StyleSheet.hairlineWidth}px;
+  height: ${rpWidth(8)}px;
+  background-color: rgba(0, 0, 0, 0.3);
+`;
+
+const ThickDivider = styled.View`
+  width: 100%;
+  height: ${rpWidth(4)}px;
+  background-color: rgba(0, 0, 0, 0.03);
+`;
+
+const ThinDivider = styled.View`
+  width: 100%;
+  height: ${StyleSheet.hairlineWidth}px;
+  background-color: rgba(0, 0, 0, 0.3);
+`;
+
+const DeviceSetting = ({ navigation, route }) => {
+  const data = route.params.data;
+
   return (
-    <ScrollView>
-      <ListItem
-        onPress={() => navigation.navigate("DeviceList")}
-        RightIcon={() => (
-          <Text style={{ textDecorationLine: "underline" }}>관리</Text>
-        )}>
-        기기 목록
-      </ListItem>
-      <ListItem
-        onPress={() => navigation.navigate("LocationCollectInterval")}
-        RightIcon={() => (
-          <Text style={{ textDecorationLine: "underline" }}>설정</Text>
-        )}>
-        위치정보 수집주기
-      </ListItem>
-      <ListItem
-        onPress={() => navigation.navigate("SafetyZoneSetting")}
-        RightIcon={() => (
-          <Text style={{ textDecorationLine: "underline" }}>등록</Text>
-        )}>
-        안심존 설정
-      </ListItem>
-      <ListItem>배터리 잔량</ListItem>
-      <ListItem RightIcon={() => <Text>1.0.0.</Text>}>앱 버전</ListItem>
-      <ListItem>펌웨어 버전</ListItem>
+    <ScrollView
+      contentContainerStyle={{
+        flexGrow: 1,
+      }}>
+      <TopContainer>
+        <TouchableOpacity onPress={() => navigation.navigate("UpdateProfile")}>
+          <DeviceAvatarCircle />
+          <Pencil
+            width={rpWidth(28)}
+            height={rpWidth(28)}
+            style={{
+              position: "absolute",
+              bottom: 0,
+              right: -10,
+            }}
+          />
+        </TouchableOpacity>
+        <MyText style={{ marginTop: rpHeight(7) }} fontWeight="medium">
+          {data.name}
+        </MyText>
+        <MyText fontSize={12} color="rgba(0, 0, 0, 0.3)">
+          {data.breed}
+          {"  "}
+          <TextDivider />
+          {"  "}
+          {data.age}세{"  "}
+          <TextDivider />
+          {"  "}
+          {data.gender}
+        </MyText>
+      </TopContainer>
+      <ThickDivider />
+      <SidePaddingContainer>
+        <LocationInfoCollectionPeriod />
+        <ThinDivider />
+        <SafetyZone />
+      </SidePaddingContainer>
     </ScrollView>
   );
 };

@@ -32,7 +32,9 @@ const BluetoothCheck = ({
   const { disable, disabled } = useDisableButton();
 
   useEffect(() => {
-    handlePreRender();
+    setTimeout(() => {
+      handlePreRender();
+    }, 500);
   }, []);
 
   return (

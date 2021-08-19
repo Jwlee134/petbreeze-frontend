@@ -1,4 +1,5 @@
 import React from "react";
+import { StyleSheet } from "react-native";
 import styled from "styled-components/native";
 import { IDevice } from "~/store/device";
 import { rpWidth } from "~/styles";
@@ -23,8 +24,8 @@ const ButtonContainer = styled.View`
 
 const Divider = styled.View`
   width: 100%;
-  height: 0.3px;
   background-color: rgba(0, 0, 0, 0.3);
+  height: ${StyleSheet.hairlineWidth}px;
 `;
 
 const NameContainer = styled.View`

@@ -114,7 +114,9 @@ const Auth = ({
   }, [facebookUser]);
 
   useEffect(() => {
-    handlePreRender();
+    setTimeout(() => {
+      handlePreRender();
+    }, 500);
     /* messaging()
       .getToken()
       .then(token => console.log("FCM Token: ", token)); */

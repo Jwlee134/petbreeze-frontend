@@ -122,7 +122,9 @@ const Permissions = ({
   }, [settingOpened, appState, isPermissionAllowed]);
 
   useEffect(() => {
-    handlePreRender();
+    setTimeout(() => {
+      handlePreRender();
+    }, 500);
   }, []);
 
   return (

@@ -154,7 +154,9 @@ const SafetyZoneMap = ({
 
   useEffect(() => {
     if (handlePreRender) {
-      handlePreRender();
+      setTimeout(() => {
+        handlePreRender();
+      }, 500);
     }
     const showing = Keyboard.addListener("keyboardDidShow", () => {
       setShow(true);

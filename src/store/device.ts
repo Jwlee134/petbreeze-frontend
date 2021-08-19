@@ -7,6 +7,9 @@ export interface IDevice {
   location_info_collection_period: number;
   battery: number;
   firmware_version: string;
+  breed: string;
+  age: number;
+  gender: string;
 }
 
 const initialState: IDevice[] = [
@@ -17,6 +20,9 @@ const initialState: IDevice[] = [
     battery: 80,
     location_info_collection_period: 1,
     firmware_version: "1.0.0",
+    breed: "말티즈",
+    age: 10,
+    gender: "남",
   },
   {
     id: "bbbb",
@@ -25,6 +31,9 @@ const initialState: IDevice[] = [
     battery: 50,
     location_info_collection_period: 2,
     firmware_version: "1.0.1",
+    breed: "말티즈",
+    age: 10,
+    gender: "남",
   },
   {
     id: "cccc",
@@ -33,6 +42,9 @@ const initialState: IDevice[] = [
     battery: 25,
     location_info_collection_period: 3,
     firmware_version: "1.0.2",
+    breed: "말티즈",
+    age: 10,
+    gender: "남",
   },
 ];
 

@@ -5,7 +5,7 @@ import { MultiDotMarking } from "react-native-calendars";
 import deviceApi from "~/api/device";
 import walkApi from "~/api/walk";
 import Calendar from "~/components/common/Calendar";
-import Device from "~/components/walk/Device";
+import Device from "~/components/common/Device";
 import { useAppSelector } from "~/store";
 import { rpHeight, rpWidth } from "~/styles";
 import palette from "~/styles/palette";
@@ -66,7 +66,10 @@ const WalkRecord = ({
           key={item.id}
           data={item}
           onPress={() => {}}
-          isStartWalking={false}
+          isWalk
+          isIconArrow
+          lineWidth={2}
+          circleWidth={70}
         />
       ))}
       {/* <Calendar

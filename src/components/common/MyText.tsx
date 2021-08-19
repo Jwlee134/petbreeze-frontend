@@ -49,6 +49,7 @@ const MyText = ({
     style={{
       includeFontPadding: false,
       color,
+      flexShrink: 1,
       ...(style as object),
     }}
     {...props}>

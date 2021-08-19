@@ -12,12 +12,12 @@ import styled from "styled-components/native";
 import { rpHeight, width } from "~/styles";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-/* const PageBar = styled.View<{ top: number }>`
+const PageBar = styled.View<{ top: number }>`
   width: ${width}px;
   height: ${rpHeight(53)}px;
   background-color: burlywood;
   border-bottom-width: 3px;
-`; */
+`;
 
 const Init = () => {
   const token = useAppSelector(state => state.storage.user.token);
@@ -41,7 +41,9 @@ const Init = () => {
     usePagingScrollView();
 
   const handlePreRenderAuth = useCallback(() => {
-    isIos ? setRenderPermission(true) : setRenderAddDevice(true);
+    isIos && !isPermissionAllowed
+      ? setRenderPermission(true)
+      : setRenderAddDevice(true);
   }, []);
   const handlePreRenderAddDevice = useCallback(
     () => setRenderAddDevice(true),
@@ -54,7 +56,7 @@ const Init = () => {
 
   return (
     <>
-      {/* <PageBar top={top} /> */}
+      <PageBar top={top} />
       <PagingScrollView scrollEnabled={false}>
         {renderAuth && (
           <ScreenWidthContainer>

@@ -1,0 +1,14 @@
+{
+  "safety_zone_1_name": "우리집",
+  "safety_zone_1_coordinate": {
+    "type": "Point",
+    "coordinates": [37.564362, 126.977011]
+  },
+  "safety_zone_1_radius": 50,
+  "safety_zone_2_name": null,
+  "safety_zone_2_coordinate": null,
+  "safety_zone_2_radius": null,
+  "safety_zone_3_name": null,
+  "safety_zone_3_coordinate": null,
+  "safety_zone_3_radius": null
+}

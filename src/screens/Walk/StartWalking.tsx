@@ -10,7 +10,7 @@ import { rpHeight, rpWidth } from "~/styles";
 import Button from "~/components/common/Button";
 import { useAppSelector } from "~/store";
 import { ScrollView } from "react-native";
-import Device from "~/components/walk/Device";
+import Device from "~/components/common/Device";
 
 const Container = styled.View`
   flex: 1;
@@ -54,12 +54,16 @@ const StartWalking = ({
           contentContainerStyle={{
             paddingHorizontal: rpWidth(16),
             paddingTop: rpHeight(31),
+            flexGrow: 1,
           }}
           showsVerticalScrollIndicator={false}>
           {devices.map(item => (
             <Device
+              isWalk
               key={item.id}
               data={item}
+              lineWidth={2}
+              circleWidth={70}
               onPress={() => {
                 const selectedArr = [...selected];
                 const isSelected = selectedArr.some(

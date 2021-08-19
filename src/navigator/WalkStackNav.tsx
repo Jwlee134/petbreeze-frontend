@@ -20,11 +20,6 @@ const WalkStackNav = ({ route }: { route: WalkStackNavRouteProp }) => (
         headerShown: false,
       }}
     />
-    <Stack.Screen
-      name="WalkDetail"
-      component={WalkDetail}
-      options={{ title: "산책 기록" }}
-    />
   </Stack.Navigator>
 );
 

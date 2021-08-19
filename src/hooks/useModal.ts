@@ -1,18 +1,11 @@
-import { ReactNode, useState } from "react";
+import { useState } from "react";
 import { Dimensions, Keyboard } from "react-native";
 import { ModalProps } from "react-native-modal";
-import styled from "styled-components/native";
+import { rpWidth } from "~/styles";
 
 const { width, height } = Dimensions.get("screen");
 
-const CenterContainer = styled.View`
-  border-radius: 25px;
-  background-color: white;
-  position: relative;
-  width: 100%;
-`;
-
-const useModal = ({ type }: { type: "bottom" | "center" }) => {
+const useModal = () => {
   const [isModalVisible, setModalVisible] = useState(false);
 
   const open = () => {
@@ -24,7 +17,11 @@ const useModal = ({ type }: { type: "bottom" | "center" }) => {
     setModalVisible(false);
   };
 
-  const modalProps: Partial<ModalProps> = {
+  const modalProps = ({
+    type,
+  }: {
+    type: "bottom" | "center";
+  }): Partial<ModalProps> => ({
     isVisible: isModalVisible,
     backdropTransitionOutTiming: 0,
     onBackdropPress: close,
@@ -41,9 +38,9 @@ const useModal = ({ type }: { type: "bottom" | "center" }) => {
       margin: 0,
       ...(type === "bottom"
         ? { justifyContent: "flex-end" }
-        : { alignItems: "center" }),
+        : { alignItems: "center", marginHorizontal: rpWidth(16) }),
     },
-  };
+  });
 
   return {
     open,
