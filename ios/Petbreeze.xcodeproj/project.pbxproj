@@ -14,9 +14,9 @@
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		8405B7922668C7C200BEE203 /* SwiftBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8405B7912668C7C200BEE203 /* SwiftBridge.swift */; };
 		8408C036BBEF720BBDB6E105 /* libPods-Petbreeze.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F50C09CE2B924FCC7A4B2FE2 /* libPods-Petbreeze.a */; };
-		84BE911B26980EB900287561 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 84BE911A26980EB900287561 /* GoogleService-Info.plist */; };
 		84E1A1C026BD102900C50525 /* Fonts in Resources */ = {isa = PBXBuildFile; fileRef = 84E1A1BF26BD102900C50525 /* Fonts */; };
 		8E5AB30024994C0696326D8E /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 19D0AFA487144E03891D8685 /* SplashScreen.storyboard */; };
+		E8A9CFA726CE0C7800526CD4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E8A9CFA626CE0C7800526CD4 /* GoogleService-Info.plist */; };
 		F016418510F2E3103A3BCE48 /* libPods-Petbreeze-PetbreezeTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8EB3D11E76E5AA33B5CD828E /* libPods-Petbreeze-PetbreezeTests.a */; };
 /* End PBXBuildFile section */
 
@@ -49,10 +49,11 @@
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = Petbreeze/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8405B7902668C7C200BEE203 /* Petbreeze-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Petbreeze-Bridging-Header.h"; sourceTree = "<group>"; };
 		8405B7912668C7C200BEE203 /* SwiftBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftBridge.swift; sourceTree = "<group>"; };
-		84BE911A26980EB900287561 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		84E1A1BF26BD102900C50525 /* Fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Fonts; sourceTree = "<group>"; };
 		8EB3D11E76E5AA33B5CD828E /* libPods-Petbreeze-PetbreezeTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Petbreeze-PetbreezeTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E79577DFDC5E1FD49BDDFB89 /* Pods-Petbreeze.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Petbreeze.debug.xcconfig"; path = "Target Support Files/Pods-Petbreeze/Pods-Petbreeze.debug.xcconfig"; sourceTree = "<group>"; };
+		E8A9CFA526CE006700526CD4 /* Petbreeze.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Petbreeze.entitlements; path = Petbreeze/Petbreeze.entitlements; sourceTree = "<group>"; };
+		E8A9CFA626CE0C7800526CD4 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F50C09CE2B924FCC7A4B2FE2 /* libPods-Petbreeze.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Petbreeze.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -97,6 +98,7 @@
 		13B07FAE1A68108700A75B9A /* Petbreeze */ = {
 			isa = PBXGroup;
 			children = (
+				E8A9CFA526CE006700526CD4 /* Petbreeze.entitlements */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
@@ -105,7 +107,6 @@
 				13B07FB71A68108700A75B9A /* main.m */,
 				8405B7912668C7C200BEE203 /* SwiftBridge.swift */,
 				8405B7902668C7C200BEE203 /* Petbreeze-Bridging-Header.h */,
-				84BE911A26980EB900287561 /* GoogleService-Info.plist */,
 				19D0AFA487144E03891D8685 /* SplashScreen.storyboard */,
 			);
 			name = Petbreeze;
@@ -131,6 +132,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				E8A9CFA626CE0C7800526CD4 /* GoogleService-Info.plist */,
 				84E1A1BF26BD102900C50525 /* Fonts */,
 				13B07FAE1A68108700A75B9A /* Petbreeze */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
@@ -263,8 +265,8 @@
 			files = (
 				84E1A1C026BD102900C50525 /* Fonts in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
+				E8A9CFA726CE0C7800526CD4 /* GoogleService-Info.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
-				84BE911B26980EB900287561 /* GoogleService-Info.plist in Resources */,
 				8E5AB30024994C0696326D8E /* SplashScreen.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -468,7 +470,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				DEVELOPMENT_TEAM = VLG42YNXVJ;
+				DEVELOPMENT_TEAM = 7AS4P2AF79;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -498,7 +500,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
-				DEVELOPMENT_TEAM = VLG42YNXVJ;
+				DEVELOPMENT_TEAM = 7AS4P2AF79;
 				INFOPLIST_FILE = PetbreezeTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -524,8 +526,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODEPUSH_KEY = N04dY4yvPDzdyLCP7CQKjJZEOzA5qVtnEerOZ;
+				CODE_SIGN_ENTITLEMENTS = Petbreeze/Petbreeze.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = VLG42YNXVJ;
+				DEVELOPMENT_TEAM = 7AS4P2AF79;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Petbreeze/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -537,7 +540,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.petbreeze;
+				PRODUCT_BUNDLE_IDENTIFIER = com.petbreeze.eodigae;
 				PRODUCT_NAME = Petbreeze;
 				SWIFT_OBJC_BRIDGING_HEADER = "Petbreeze-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -552,8 +555,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Petbreeze/Petbreeze.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = VLG42YNXVJ;
+				DEVELOPMENT_TEAM = 7AS4P2AF79;
 				INFOPLIST_FILE = Petbreeze/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -564,7 +568,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.petbreeze;
+				PRODUCT_BUNDLE_IDENTIFIER = com.petbreeze.eodigae;
 				PRODUCT_NAME = Petbreeze;
 				SWIFT_OBJC_BRIDGING_HEADER = "Petbreeze-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
@@ -762,8 +766,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Petbreeze/Petbreeze.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = VLG42YNXVJ;
+				DEVELOPMENT_TEAM = 7AS4P2AF79;
 				INFOPLIST_FILE = Petbreeze/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -774,7 +779,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.petbreeze;
+				PRODUCT_BUNDLE_IDENTIFIER = com.petbreeze.eodigae;
 				PRODUCT_NAME = Petbreeze;
 				SWIFT_OBJC_BRIDGING_HEADER = "Petbreeze-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
@@ -789,7 +794,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
-				DEVELOPMENT_TEAM = VLG42YNXVJ;
+				DEVELOPMENT_TEAM = 7AS4P2AF79;
 				INFOPLIST_FILE = PetbreezeTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (

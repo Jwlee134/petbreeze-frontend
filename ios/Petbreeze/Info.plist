@@ -2,13 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>UIAppFonts</key>
-	<array>
-		<string>Fonts/NotoSansKR-Bold.otf</string>
-		<string>Fonts/NotoSansKR-Light.otf</string>
-		<string>Fonts/NotoSansKR-Medium.otf</string>
-		<string>Fonts/NotoSansKR-Regular.otf</string>
-	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
@@ -49,8 +42,6 @@
 	<string>어디개</string>
 	<key>KAKAO_APP_KEY</key>
 	<string>5155b1706489fb195c173509a87bb95c</string>
-	<key>NMFClientId</key>
-	<string>vhu5sjamw3</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>kakaokompassauth</string>
@@ -62,6 +53,8 @@
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NMFClientId</key>
+	<string>vhu5sjamw3</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSExceptionDomains</key>
@@ -87,6 +80,13 @@
 	<string></string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string></string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Fonts/NotoSansKR-Bold.otf</string>
+		<string>Fonts/NotoSansKR-Light.otf</string>
+		<string>Fonts/NotoSansKR-Medium.otf</string>
+		<string>Fonts/NotoSansKR-Regular.otf</string>
+	</array>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>bluetooth-central</string>
@@ -103,13 +103,13 @@
 		<string>armv7</string>
 		<string>bluetooth-le</string>
 	</array>
+	<key>UIStatusBarStyle</key>
+	<string>UIStatusBarStyleLightContent</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>UIStatusBarStyle</key>
-	<string>UIStatusBarStyleLightContent</string>
 </dict>
 </plist>
