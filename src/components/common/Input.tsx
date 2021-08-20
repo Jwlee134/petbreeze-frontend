@@ -1,72 +1,50 @@
 import React from "react";
 import { useState } from "react";
-import { TextInputProps } from "react-native";
-import styled, { css } from "styled-components/native";
-import { isAndroid } from "~/utils";
+import { TextInputProps, View } from "react-native";
+import styled from "styled-components/native";
+import { rpWidth } from "~/styles";
+import palette from "~/styles/palette";
 
 interface IProps extends TextInputProps {
-  placeholder: string;
-  isEditable?: boolean;
-  isMultiline?: boolean;
-  onPress?: () => void;
+  title?: string;
+  isRow?: boolean;
 }
 
-interface ITextInputProps {
-  focused: boolean;
-  multiline: boolean;
+interface ITextInput {
+  isFocused: boolean;
+  isRow: boolean;
 }
 
-const Button = styled.TouchableOpacity``;
-
-const Container = styled.View``;
-
-const Placeholder = styled.Text`
-  color: rgba(0, 0, 0, 0.5);
-  font-size: 14px;
-`;
-
-const TextInput = styled.TextInput<ITextInputProps>`
-  padding: 0;
+const TextInput = styled.TextInput<ITextInput>`
   margin: 0;
-  color: black;
-  height: 36px;
-  margin-bottom: 24px;
-  width: 100%;
-  font-size: 16px;
+  margin-bottom: ${rpWidth(14)}px;
+  padding: 0px ${rpWidth(9)}px;
+  width: ${({ isRow }) => (isRow ? "auto" : "100%")};
+  height: ${rpWidth(37)}px;
+  font-size: ${rpWidth(16)}px;
   border-bottom-width: 1px;
-  border-bottom-color: ${({ focused }) =>
-    focused ? "black" : "rgba(0, 0, 0, 0.2)"};
-  ${({ multiline }) =>
-    multiline &&
-    css`
-      height: auto;
-      padding: ${isAndroid ? "3.5px 0px" : "8px 0px"};
-    `}
+  border-color: ${({ isFocused }) =>
+    !isFocused ? "rgba(0, 0, 0, 0.1)" : palette.blue_7b};
 `;
 
-const Input = ({
-  placeholder,
-  isEditable = true,
-  isMultiline = false,
-  onPress,
-  ...props
-}: IProps) => {
-  const [focused, setFocused] = useState(false);
+const Input = ({ title, isRow = false, ...props }: IProps) => {
+  const [isFocused, setIsFocused] = useState(!!props.value || false);
+
+  const handleFocus = () => setIsFocused(true);
+  const handleBlur = () => {
+    if (!props.value) {
+      setIsFocused(false);
+    }
+  };
 
   return (
-    <Button onPress={onPress} activeOpacity={1}>
-      <Container pointerEvents={isEditable ? undefined : "none"}>
-        <Placeholder>{placeholder}</Placeholder>
-        <TextInput
-          onFocus={() => setFocused(true)}
-          onBlur={() => setFocused(false)}
-          selectionColor="rgba(0, 0, 0, 0.5)"
-          focused={focused}
-          multiline={isMultiline}
-          {...props}
-        />
-      </Container>
-    </Button>
+    <TextInput
+      isRow={isRow}
+      onFocus={handleFocus}
+      onBlur={handleBlur}
+      isFocused={isFocused}
+      {...props}
+    />
   );
 };
 

@@ -16,15 +16,22 @@ interface IButton extends TouchableOpacityProps {
   fontColor?: string;
   useCommonMarginBottom?: boolean;
   useBottomInset?: boolean;
+  useInputStyle?: boolean;
+  selected?: boolean;
+  isRow?: boolean;
+  flexGrow?: number;
 }
 
 interface ITouchableOpacity {
   disabled: boolean;
   backgroundColor: string | undefined;
+  useInputStyle: boolean;
+  selected: boolean;
+  isRow: boolean;
 }
 
 const StyledButton = styled.TouchableOpacity<ITouchableOpacity>`
-  width: 100%;
+  width: ${({ isRow }) => (isRow ? "auto" : "100%")};
   height: ${rpWidth(50)}px;
   border-radius: ${rpWidth(25)}px;
   flex-direction: row;
@@ -36,6 +43,20 @@ const StyledButton = styled.TouchableOpacity<ITouchableOpacity>`
     disabled &&
     css`
       background-color: rgba(0, 0, 0, 0.1);
+    `}
+  ${({ useInputStyle, selected }) =>
+    useInputStyle &&
+    css`
+      background-color: white;
+      border-width: 1px;
+      height: ${rpWidth(39)}px;
+      ${selected
+        ? {
+            borderColor: palette.blue_7b,
+          }
+        : {
+            borderColor: "rgba(0, 0, 0, 0.1)",
+          }}
     `}
 `;
 
@@ -49,6 +70,10 @@ const Button = ({
   disabled = false,
   useCommonMarginBottom = false,
   useBottomInset = false,
+  useInputStyle = false,
+  selected = false,
+  isRow = false,
+  flexGrow,
   ...props
 }: IButton) => {
   const { bottom } = useSafeAreaInsets();
@@ -56,6 +81,9 @@ const Button = ({
   return (
     <StyledButton
       backgroundColor={backgroundColor}
+      useInputStyle={useInputStyle}
+      isRow={isRow}
+      selected={selected}
       disabled={disabled}
       style={{
         ...(useCommonMarginBottom && {
@@ -71,7 +99,15 @@ const Button = ({
           <MyText
             fontWeight={fontWeight ? fontWeight : "medium"}
             color={
-              disabled ? "rgba(0, 0, 0, 0.5)" : fontColor ? fontColor : "white"
+              useInputStyle
+                ? selected
+                  ? palette.blue_7b
+                  : "rgba(0, 0, 0, 0.1)"
+                : disabled
+                ? "rgba(0, 0, 0, 0.5)"
+                : fontColor
+                ? fontColor
+                : "white"
             }>
             {children}
           </MyText>

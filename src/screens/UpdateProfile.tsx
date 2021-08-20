@@ -1,8 +1,11 @@
 import React from "react";
 import { useState } from "react";
-import { ScrollView } from "react-native";
 import styled from "styled-components/native";
+import Button from "~/components/common/Button";
+import KeyboardAwareScrollContainer from "~/components/common/container/KeyboardAwareScrollContainer";
+import SidePaddingContainer from "~/components/common/container/SidePaddingContainer";
 import Input from "~/components/common/Input";
+import InputTitle from "~/components/common/InputTitle";
 import { rpWidth } from "~/styles";
 import {
   UpdateProfileRouteProp,
@@ -15,11 +18,21 @@ const AvatarButton = styled.TouchableOpacity`
   border-radius: ${rpWidth(54)}px;
   overflow: hidden;
   align-self: center;
+  margin-top: ${rpWidth(34)}px;
+  margin-bottom: ${rpWidth(28)}px;
 `;
 
 const Image = styled.Image`
   width: 100%;
   height: 100%;
+`;
+
+const InputContainer = styled.View`
+  padding: 0px ${rpWidth(36)}px;
+`;
+
+const RowContainer = styled.View`
+  flex-direction: row;
 `;
 
 const UpdateProfile = ({
@@ -31,27 +44,105 @@ const UpdateProfile = ({
 }) => {
   const device = route.params.data;
   const [name, setName] = useState(device.name);
-  const [birthYear, setBirthYear] = useState(1997);
-  const [birtyMonth, setBirthMonth] = useState(11);
-  const [birthDay, setBirthDay] = useState(19);
+  const [birthYear, setBirthYear] = useState("1997");
+  const [birtyMonth, setBirthMonth] = useState("11");
+  const [birthDay, setBirthDay] = useState("19");
   const [gender, setGender] = useState(device.gender);
   const [breed, setBreed] = useState(device.breed);
-  const [weight, setWeight] = useState(device.weight);
+  const [weight, setWeight] = useState(String(device.weight));
   const [phoneNumber, setPhoneNumber] = useState(device.phoneNumber);
   const [etc, setEtc] = useState(device.etc);
 
   const openGallery = () => {};
 
   return (
-    <ScrollView
-      contentContainerStyle={{
-        marginTop: rpWidth(34),
-      }}>
+    <KeyboardAwareScrollContainer>
       <AvatarButton>
         <Image source={require("~/assets/image/test.jpg")} />
       </AvatarButton>
-      <Input />
-    </ScrollView>
+      <InputContainer>
+        <InputTitle>이름</InputTitle>
+        <Input value={name} onChangeText={text => setName(text)} />
+        <InputTitle>생년월일</InputTitle>
+        <RowContainer>
+          <Input
+            value={birthYear}
+            onChangeText={text => setBirthYear(text)}
+            keyboardType="number-pad"
+            isRow
+            style={{
+              flexGrow: 1.2,
+              marginRight: rpWidth(20),
+            }}
+          />
+          <Input
+            value={birtyMonth}
+            onChangeText={text => setBirthMonth(text)}
+            keyboardType="number-pad"
+            isRow
+            style={{
+              flexGrow: 1,
+              marginRight: rpWidth(20),
+            }}
+          />
+          <Input
+            value={birthDay}
+            onChangeText={text => setBirthDay(text)}
+            keyboardType="number-pad"
+            isRow
+            style={{
+              flexGrow: 1,
+            }}
+          />
+        </RowContainer>
+        <InputTitle>성별</InputTitle>
+        <RowContainer style={{ marginBottom: rpWidth(14) }}>
+          <Button
+            style={{ flexGrow: 1, marginRight: rpWidth(20) }}
+            onPress={() => setGender("남")}
+            selected={gender === "남"}
+            isRow
+            useInputStyle>
+            남
+          </Button>
+          <Button
+            style={{ flexGrow: 1 }}
+            onPress={() => setGender("여")}
+            selected={gender === "여"}
+            isRow
+            useInputStyle>
+            여
+          </Button>
+        </RowContainer>
+        <InputTitle>품종</InputTitle>
+        <Input value={breed} onChangeText={text => setBreed(text)} />
+        <InputTitle>체중</InputTitle>
+        <Input
+          value={weight}
+          onChangeText={text => setWeight(text)}
+          keyboardType="number-pad"
+        />
+        <InputTitle>보호자 연락처</InputTitle>
+        <Input
+          value={phoneNumber}
+          onChangeText={text => setPhoneNumber(text)}
+          keyboardType="number-pad"
+        />
+        <InputTitle>기타사항</InputTitle>
+        <Input
+          value={etc}
+          onChangeText={text => setEtc(text)}
+          style={{
+            marginBottom: rpWidth(110),
+          }}
+        />
+      </InputContainer>
+      <SidePaddingContainer>
+        <Button useCommonMarginBottom useBottomInset>
+          확인
+        </Button>
+      </SidePaddingContainer>
+    </KeyboardAwareScrollContainer>
   );
 };
 
