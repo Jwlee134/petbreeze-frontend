@@ -3,72 +3,7 @@ import { RouteProp } from "@react-navigation/core";
 import { MaterialTopTabNavigationProp } from "@react-navigation/material-top-tabs";
 import { CompositeNavigationProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
-
-/* type SharedStackParamList = {
-  Home: undefined;
-  Walk: undefined;
-  Community: undefined;
-  Notification: undefined;
-  AddDevice:
-    | {
-        execute: boolean;
-      }
-    | undefined;
-  MyPage: undefined;
-  PetProfile: undefined;
-  PassManagement: undefined;
-  ServiceCenter: undefined;
-  NotificationSetting: undefined;
-  DeleteAccount: undefined;
-  DeviceSetting: undefined;
-  DeviceList: undefined;
-  LocationCollectInterval: undefined;
-  SafetyZoneSetting: undefined;
-  SafetyZoneMap:
-    | {
-        id: number;
-        name: string;
-        camera: Camera;
-        range: {
-          label: string;
-          value: number;
-        };
-      }
-    | undefined;
-};
-
-export type CommunityScreenNavigationProp = StackNavigationProp<
-  SharedStackParamList,
-  "Community"
->;
-export type NotificationScreenNavigationProp = StackNavigationProp<
-  SharedStackParamList,
-  "Notification"
->;
-export type MyPageScreenNavigationProp = StackNavigationProp<
-  SharedStackParamList,
-  "MyPage"
->;
-export type DeviceSettingScreenNavigationProp = StackNavigationProp<
-  SharedStackParamList,
-  "DeviceSetting"
->;
-export type DeviceListScreenNavigationProp = StackNavigationProp<
-  SharedStackParamList,
-  "DeviceList"
->;
-export type SafetyZoneScreenNavigationProp = StackNavigationProp<
-  SharedStackParamList,
-  "SafetyZoneSetting"
->;
-export type SafetyZoneMapScreenNavigationProp = StackNavigationProp<
-  SharedStackParamList,
-  "SafetyZoneMap"
->;
-export type SafetyZoneMapScreenRouteProp = RouteProp<
-  SharedStackParamList,
-  "SafetyZoneMap"
->;*/
+import { IDevice } from "~/store/device";
 
 type LoggedInNavParamList = {
   BottomTabNav: {
@@ -78,6 +13,10 @@ type LoggedInNavParamList = {
     isOtaUpdate: boolean;
   };
   WalkMap: undefined;
+  DeleteAccount: undefined;
+  UpdateProfile: {
+    data: IDevice;
+  };
 };
 export type BottomTabNavRouteProp = RouteProp<
   LoggedInNavParamList,
@@ -91,19 +30,25 @@ export type WalkMapScreenNavigationProp = StackNavigationProp<
   LoggedInNavParamList,
   "WalkMap"
 >;
+export type DeleteAccountScreenNavigationProp = StackNavigationProp<
+  LoggedInNavParamList,
+  "DeleteAccount"
+>;
+export type UpdateProfileScreenNavigationProp = StackNavigationProp<
+  LoggedInNavParamList,
+  "UpdateProfile"
+>;
+export type UpdateProfileRouteProp = RouteProp<
+  LoggedInNavParamList,
+  "UpdateProfile"
+>;
 
 type BottomTabParamList = {
   HomeTab: undefined;
-  WalkStackNav: {
-    initialTab?: string;
-  };
+  WalkTab: undefined;
   NotificationTab: undefined;
-  MyMenuTab: undefined;
+  MyPageTab: undefined;
 };
-export type WalkStackNavRouteProp = RouteProp<
-  BottomTabParamList,
-  "WalkStackNav"
->;
 
 type WalkStackNavParamList = {
   WalkTopTab: {
@@ -118,7 +63,17 @@ export type WalkTopTabRouteProp = RouteProp<
 
 type SharedStackNavParamList = {
   Home: undefined;
+  WalkTopTabNav: {
+    initialTab?: string;
+  };
   Notification: undefined;
+  MyPageStackNav: undefined;
+  WalkDetail: {
+    id: string;
+  };
+  DeviceSetting: {
+    data: IDevice;
+  };
 };
 export type HomeScreenNavigationProp = CompositeNavigationProp<
   StackNavigationProp<SharedStackNavParamList, "Home">,
@@ -133,6 +88,21 @@ export type NotificationScreenNavigationProp = CompositeNavigationProp<
     BottomTabNavigationProp<BottomTabParamList>,
     StackNavigationProp<LoggedInNavParamList>
   >
+>;
+export type WalkDetailRouteProp = RouteProp<
+  SharedStackNavParamList,
+  "WalkDetail"
+>;
+export type DeviceSettingScreenNavigationProp = CompositeNavigationProp<
+  StackNavigationProp<SharedStackNavParamList, "DeviceSetting">,
+  CompositeNavigationProp<
+    BottomTabNavigationProp<BottomTabParamList>,
+    StackNavigationProp<LoggedInNavParamList>
+  >
+>;
+export type DeviceSettingRouteProp = RouteProp<
+  SharedStackNavParamList,
+  "DeviceSetting"
 >;
 
 type WalkTopTabParamList = {
@@ -158,4 +128,35 @@ export type WalkRecordScreenNavigationProp = CompositeNavigationProp<
       StackNavigationProp<LoggedInNavParamList>
     >
   >
+>;
+
+type MyPageStackNavParamList = {
+  MyPage: undefined;
+  DeviceSettingList: {
+    data: IDevice[];
+  };
+};
+export type MyPageScreenNavigationProp = CompositeNavigationProp<
+  StackNavigationProp<MyPageStackNavParamList, "MyPage">,
+  CompositeNavigationProp<
+    StackNavigationProp<SharedStackNavParamList>,
+    CompositeNavigationProp<
+      BottomTabNavigationProp<BottomTabParamList>,
+      StackNavigationProp<LoggedInNavParamList>
+    >
+  >
+>;
+export type DeviceSettingListScreenNavigationProp = CompositeNavigationProp<
+  StackNavigationProp<MyPageStackNavParamList, "DeviceSettingList">,
+  CompositeNavigationProp<
+    StackNavigationProp<SharedStackNavParamList>,
+    CompositeNavigationProp<
+      BottomTabNavigationProp<BottomTabParamList>,
+      StackNavigationProp<LoggedInNavParamList>
+    >
+  >
+>;
+export type DeviceSettingListRouteProp = RouteProp<
+  MyPageStackNavParamList,
+  "DeviceSettingList"
 >;

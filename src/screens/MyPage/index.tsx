@@ -16,6 +16,7 @@ import DeviceAvatarCircle from "~/components/common/DeviceAvatarCircle";
 import useModal from "~/hooks/useModal";
 import Modal from "react-native-modal";
 import LogoutModal from "~/components/modal/LogoutModal";
+import { MyPageScreenNavigationProp } from "~/types/navigator";
 
 const Button = styled.TouchableOpacity<{ isLast?: boolean }>`
   flex-direction: row;
@@ -43,7 +44,7 @@ const Divider = styled.View`
   background-color: rgba(0, 0, 0, 0.3);
 `;
 
-const MyPage = ({ navigation }) => {
+const MyPage = ({ navigation }: { navigation: MyPageScreenNavigationProp }) => {
   const dispatch = useDispatch();
   const devices = useAppSelector(state => state.device);
   const { open, close, modalProps } = useModal();

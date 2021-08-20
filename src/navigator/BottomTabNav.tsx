@@ -14,7 +14,6 @@ import UserOutline from "~/assets/svg/tab/user-outline.svg";
 import { BottomTabNavRouteProp } from "~/types/navigator";
 import { rpWidth } from "~/styles";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import MyPageStackNav from "./MyPageStackNav";
 
 const Tab = createBottomTabNavigator();
 
@@ -78,7 +77,7 @@ const BottomTabNav = ({ route }: { route: BottomTabNavRouteProp }) => {
         {() => <SharedStackNav screenName="Notification" />}
       </Tab.Screen>
       <Tab.Screen
-        name="MyPageStackNav"
+        name="MyPageTab"
         options={{
           headerShown: false,
           tabBarIcon: ({ focused }) =>
@@ -87,9 +86,9 @@ const BottomTabNav = ({ route }: { route: BottomTabNavRouteProp }) => {
             ) : (
               <UserOutline width={rpWidth(22)} height={rpWidth(23)} />
             ),
-        }}
-        component={MyPageStackNav}
-      />
+        }}>
+        {() => <SharedStackNav screenName="MyPage" />}
+      </Tab.Screen>
     </Tab.Navigator>
   );
 };

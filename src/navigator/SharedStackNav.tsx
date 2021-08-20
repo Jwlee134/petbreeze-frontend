@@ -3,8 +3,10 @@ import { createStackNavigator } from "@react-navigation/stack";
 import Notification from "~/screens/Notification";
 import Home from "~/screens/Home";
 import WalkTopTabNav from "./WalkTopTabNav";
-import WalkDetail from "~/screens/Walk/WalkDetail";
+import WalkDetail from "~/screens/Shared/WalkDetail";
 import CustomHeader from "~/components/navigator/CustomHeader";
+import MyPageStackNav from "./MyPageStackNav";
+import DeviceSetting from "~/screens/Shared/DeviceSetting";
 
 const Stack = createStackNavigator();
 
@@ -46,10 +48,37 @@ const SharedStack = ({
         }}
       />
     )}
+    {screenName === "MyPage" && (
+      <Stack.Screen
+        name="MyPageStackNav"
+        component={MyPageStackNav}
+        options={{
+          headerShown: false,
+        }}
+      />
+    )}
+
     <Stack.Screen
       name="WalkDetail"
       component={WalkDetail}
-      options={{ title: "산책기록" }}
+      options={{
+        header: props => (
+          <CustomHeader useBackButton {...props}>
+            산책기록
+          </CustomHeader>
+        ),
+      }}
+    />
+    <Stack.Screen
+      name="DeviceSetting"
+      component={DeviceSetting}
+      options={{
+        header: props => (
+          <CustomHeader useBackButton {...props}>
+            기기설정
+          </CustomHeader>
+        ),
+      }}
     />
   </Stack.Navigator>
 );

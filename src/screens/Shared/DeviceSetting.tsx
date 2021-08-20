@@ -9,6 +9,10 @@ import Pencil from "~/assets/svg/myPage/pencil.svg";
 import SidePaddingContainer from "~/components/common/container/SidePaddingContainer";
 import LocationInfoCollectionPeriod from "~/components/myPage/LocationInfoCollectionPeriod";
 import SafetyZone from "~/components/myPage/SafetyZone";
+import {
+  DeviceSettingRouteProp,
+  DeviceSettingScreenNavigationProp,
+} from "~/types/navigator";
 
 const TopContainer = styled.View`
   justify-content: center;
@@ -34,7 +38,13 @@ const ThinDivider = styled.View`
   background-color: rgba(0, 0, 0, 0.3);
 `;
 
-const DeviceSetting = ({ navigation, route }) => {
+const DeviceSetting = ({
+  navigation,
+  route,
+}: {
+  navigation: DeviceSettingScreenNavigationProp;
+  route: DeviceSettingRouteProp;
+}) => {
   const data = route.params.data;
 
   return (
@@ -43,7 +53,12 @@ const DeviceSetting = ({ navigation, route }) => {
         flexGrow: 1,
       }}>
       <TopContainer>
-        <TouchableOpacity onPress={() => navigation.navigate("UpdateProfile")}>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate("UpdateProfile", {
+              data,
+            })
+          }>
           <DeviceAvatarCircle />
           <Pencil
             width={rpWidth(28)}

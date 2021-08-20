@@ -3,10 +3,20 @@ import styled from "styled-components/native";
 import SidePaddingContainer from "~/components/common/container/SidePaddingContainer";
 import Device from "~/components/common/Device";
 import { rpWidth } from "~/styles";
+import {
+  DeviceSettingListRouteProp,
+  DeviceSettingScreenNavigationProp,
+} from "~/types/navigator";
 
 const Container = styled.ScrollView``;
 
-const DeviceSettingList = ({ navigation, route }) => {
+const DeviceSettingList = ({
+  navigation,
+  route,
+}: {
+  navigation: DeviceSettingScreenNavigationProp;
+  route: DeviceSettingListRouteProp;
+}) => {
   const devices = route?.params?.data;
 
   return (

@@ -17,12 +17,12 @@ import MyText from "../common/MyText";
 import { rpHeight, rpWidth } from "~/styles";
 import SidePaddingContainer from "../common/container/SidePaddingContainer";
 import DeviceAvatarCircle from "../common/DeviceAvatarCircle";
+import { useNavigation } from "@react-navigation/native";
 
 interface IProps {
   handleFinish: () => Promise<void>;
   handleChange: (index: number) => void;
   snapPoints: number[];
-  navigation: WalkMapScreenNavigationProp;
 }
 
 const RowContainer = styled.View`
@@ -46,12 +46,12 @@ const WalkBottomSheet = ({
   handleFinish,
   handleChange,
   snapPoints,
-  navigation,
 }: IProps) => {
   const isStopped = useAppSelector(state => state.storage.walk.isStopped);
   const isWalking = useAppSelector(state => state.storage.walk.isWalking);
   const dispatch = useDispatch();
   const devices = useAppSelector(state => state.device);
+  const navigation = useNavigation<WalkMapScreenNavigationProp>();
 
   const timer = useRef<NodeJS.Timeout>();
 

@@ -104,7 +104,6 @@ const WalkMap = ({
         snapPoints={snapPoints}
         handleChange={handleBottomSheetChange}
         handleFinish={handleFinish}
-        navigation={navigation}
       />
     </>
   );

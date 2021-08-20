@@ -9,6 +9,7 @@ import { store } from "~/store";
 import { Linking } from "react-native";
 import { isIos } from "~/utils";
 import DeleteAccount from "~/screens/DeleteAccount";
+import UpdateProfile from "~/screens/UpdateProfile";
 
 const Stack = createStackNavigator();
 
@@ -66,6 +67,17 @@ const LoggedInNav = () => {
           header: props => (
             <CustomHeader useBackButton {...props}>
               탈퇴하기
+            </CustomHeader>
+          ),
+        }}
+      />
+      <Stack.Screen
+        name="UpdateProfile"
+        component={UpdateProfile}
+        options={{
+          header: props => (
+            <CustomHeader useBackButton {...props}>
+              프로필 수정
             </CustomHeader>
           ),
         }}

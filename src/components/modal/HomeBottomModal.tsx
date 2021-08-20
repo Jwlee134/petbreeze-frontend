@@ -1,14 +1,17 @@
+import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { StyleSheet } from "react-native";
 import styled from "styled-components/native";
 import { IDevice } from "~/store/device";
 import { rpWidth } from "~/styles";
 import palette from "~/styles/palette";
+import { HomeScreenNavigationProp } from "~/types/navigator";
 import DeviceAvatarCircle from "../common/DeviceAvatarCircle";
 import MyText from "../common/MyText";
 
 interface IProps {
   device: IDevice;
+  close: () => void;
 }
 
 const AvatarContainer = styled.View`
@@ -46,7 +49,9 @@ const Button = styled.TouchableOpacity`
   height: ${rpWidth(55)}px;
 `;
 
-const HomeBottomModal = ({ device }: IProps) => {
+const HomeBottomModal = ({ device, close }: IProps) => {
+  const navigation = useNavigation<HomeScreenNavigationProp>();
+
   return (
     <Container>
       <AvatarContainer>
@@ -67,7 +72,13 @@ const HomeBottomModal = ({ device }: IProps) => {
           <MyText color={palette.blue_7b}>이동경로</MyText>
         </Button>
         <Divider />
-        <Button>
+        <Button
+          onPress={() => {
+            close();
+            navigation.navigate("DeviceSetting", {
+              data: device,
+            });
+          }}>
           <MyText color={palette.blue_7b}>기기설정</MyText>
         </Button>
         <Divider />

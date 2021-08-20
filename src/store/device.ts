@@ -10,6 +10,9 @@ export interface IDevice {
   breed: string;
   age: number;
   gender: string;
+  weight: number;
+  phoneNumber: string;
+  etc: string;
 }
 
 const initialState: IDevice[] = [
@@ -23,6 +26,9 @@ const initialState: IDevice[] = [
     breed: "말티즈",
     age: 10,
     gender: "남",
+    weight: 5,
+    phoneNumber: "01040318103",
+    etc: "하하",
   },
   {
     id: "bbbb",
@@ -34,6 +40,9 @@ const initialState: IDevice[] = [
     breed: "말티즈",
     age: 10,
     gender: "남",
+    weight: 5,
+    phoneNumber: "01040318103",
+    etc: "하하",
   },
   {
     id: "cccc",
@@ -45,6 +54,9 @@ const initialState: IDevice[] = [
     breed: "말티즈",
     age: 10,
     gender: "남",
+    weight: 5,
+    phoneNumber: "01040318103",
+    etc: "하하",
   },
   {
     id: "dddd",
@@ -56,6 +68,9 @@ const initialState: IDevice[] = [
     breed: "말티즈",
     age: 10,
     gender: "남",
+    weight: 5,
+    phoneNumber: "01040318103",
+    etc: "하하",
   },
 ];
 

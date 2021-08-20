@@ -113,7 +113,7 @@ const DeviceList = () => {
       )}
       <Modal {...modalProps({ type: "bottom" })}>
         <IosStyleBottomModal close={close}>
-          <HomeBottomModal device={device} />
+          <HomeBottomModal close={close} device={device} />
         </IosStyleBottomModal>
       </Modal>
     </>
