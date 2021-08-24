@@ -13,6 +13,8 @@ import Pause from "~/assets/svg/walk/pause.svg";
 import Stop from "~/assets/svg/walk/stop.svg";
 import StopFill from "~/assets/svg/walk/stop-fill.svg";
 import ShadowContainer from "../common/container/ShadowContainer";
+import ImageCropPicker from "react-native-image-crop-picker";
+import CameraRoll from "@react-native-community/cameraroll";
 
 const RowContainer = styled.View`
   flex-direction: row;
@@ -80,7 +82,14 @@ const Toggle = ({ handleStop }: { handleStop: () => void }) => {
         </Button>
       </ShadowContainer>
       <ShadowContainer shadowOpacity={0.1} shadowRadius={10}>
-        <SmallButton>
+        <SmallButton
+          onPress={() => {
+            ImageCropPicker.openCamera({}).then(image => {
+              CameraRoll.save(image.path, { album: "어디개" }).then(() => {
+                ImageCropPicker.cleanSingle(image.path);
+              });
+            });
+          }}>
           <Camera width={rpWidth(30)} height={rpWidth(30)} />
         </SmallButton>
       </ShadowContainer>
