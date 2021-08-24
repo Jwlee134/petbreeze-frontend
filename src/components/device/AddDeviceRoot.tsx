@@ -63,7 +63,7 @@ const AddDeviceRoot = ({
   const handleBluetoothCheckNext = useCallback(() => {
     next();
     setStatus({
-      value: "scanning",
+      value: "firmwareDownloading",
       text: "디바이스 검색중",
     });
   }, []);
