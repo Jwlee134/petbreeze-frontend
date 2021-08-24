@@ -12,7 +12,6 @@ import BackgroundService from "react-native-background-actions";
 import { Alert, View } from "react-native";
 import useBottomSheet from "~/hooks/useBottomSheet";
 import { WalkMapScreenNavigationProp } from "~/types/navigator";
-import { format } from "date-fns";
 import MyText from "../common/MyText";
 import { rpHeight, rpWidth } from "~/styles";
 import SidePaddingContainer from "../common/container/SidePaddingContainer";
@@ -159,10 +158,10 @@ const WalkBottomSheet = ({
             fontSize={18}
             fontWeight="medium"
             style={{ textAlign: "center" }}>
-            {format(
+            {/* {format(
               new Date(store.getState().storage.walk.startTime),
               "yyyy년 M월 d일의 산책",
-            )}
+            )} */}
           </MyText>
         )}
         {isStopped && (

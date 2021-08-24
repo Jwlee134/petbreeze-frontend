@@ -1,5 +1,3 @@
-import { addHours, format } from "date-fns";
-import { ko } from "date-fns/locale";
 import { Alert, Platform } from "react-native";
 import {
   check,
@@ -12,11 +10,6 @@ import { IReverseGeocoding } from "~/types/geocoding";
 export const isAndroid = Platform.OS === "android";
 
 export const isIos = Platform.OS === "ios";
-
-export const localToISOString = (date: Date) => addHours(date, 9).toISOString();
-
-export const ISOStringToLocal = (date: string) =>
-  format(addHours(new Date(date), -9), "M월 d일 a h시", { locale: ko });
 
 export const insertPointToString = (text: string) =>
   text.replace(/(\d{4})(\d{2})(\d{2})/, "$1. $2. $3");
