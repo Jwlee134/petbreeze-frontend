@@ -62,33 +62,21 @@ const AddDeviceRoot = ({
   );
   const handleBluetoothCheckNext = useCallback(() => {
     next();
-    setStatus({
-      value: "firmwareDownloading",
-      text: "디바이스 검색중",
-    });
+    setStatus("scanning");
   }, []);
   const handleRetry = useCallback(() => {
-    switch (status.value) {
+    switch (status) {
       case "scanningFail":
-        setStatus({
-          value: "scanning",
-          text: "디바이스 검색중",
-        });
+        setStatus("scanning");
         break;
       case "downloadingFail":
-        setStatus({
-          value: "firmwareDownloading",
-          text: "펌웨어 다운로드중",
-        });
+        setStatus("firmwareDownloading");
         break;
       case "notificationFail":
-        setStatus({
-          value: "scanning",
-          text: "디바이스 검색중",
-        });
+        setStatus("scanning");
         break;
     }
-  }, [status.value]);
+  }, [status]);
   const handlePreRenderPreSafetyZoneMap = useCallback(
     () => setRenderPreSafetyZoneMap(true),
     [],
@@ -122,29 +110,29 @@ const AddDeviceRoot = ({
       )}
       {renderProgress && (
         <ScreenWidthContainer>
-          {status.value === "scanning" && <Scanning />}
-          {status.value.includes("firmware") && (
+          {status === "scanning" && <Scanning />}
+          {status.includes("firmware") && (
             <FirmwareProgress
               title={
-                status.value === "firmwareDownloading"
+                status === "firmwareDownloading"
                   ? "펌웨어 다운로드중"
                   : "펌웨어 설치중"
               }
               progress={
-                status.value === "firmwareDownloading"
+                status === "firmwareDownloading"
                   ? downloadingProgress
                   : installingProgress
               }
             />
           )}
-          {status.value.includes("Success") && (
+          {status.includes("Success") && (
             <Success
               status={status}
               handleNext={next}
               handlePreRender={handlePreRenderPreSafetyZoneMap}
             />
           )}
-          {status.value.includes("Fail") && (
+          {status.includes("Fail") && (
             <Fail status={status} handleRetry={handleRetry} />
           )}
         </ScreenWidthContainer>

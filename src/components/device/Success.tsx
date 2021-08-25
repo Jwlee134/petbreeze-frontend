@@ -21,7 +21,7 @@ const Successs = ({
   handlePreRender: () => void;
 }) => {
   useEffect(() => {
-    if (status.value === "allSuccess") {
+    if (status === "allSuccess") {
       setTimeout(() => {
         handlePreRender();
       }, 2000);
@@ -34,11 +34,10 @@ const Successs = ({
   return (
     <Container>
       <MyText fontSize={24} fontWeight="medium">
-        {status.value === "scanningSuccess" && "연결에 성공했어요."}
-        {status.value === "otaUpdateSuccess" &&
-          "펌웨어 업데이트가\n완료되었습니다."}
-        {status.value === "allSuccess" && <Success />}
-        {status.value === "allSuccess" && "디바이스 등록이\n완료되었습니다."}
+        {status === "scanningSuccess" && "연결에 성공했어요."}
+        {status === "otaUpdateSuccess" && "펌웨어 업데이트가\n완료되었습니다."}
+        {status === "allSuccess" && <Success />}
+        {status === "allSuccess" && "디바이스 등록이\n완료되었습니다."}
       </MyText>
     </Container>
   );
