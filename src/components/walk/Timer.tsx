@@ -5,6 +5,11 @@ import TimerGraySVG from "~/assets/svg/walk/timer-gray.svg";
 import MyText from "../common/MyText";
 import { rpHeight, rpWidth } from "~/styles";
 import styled from "styled-components/native";
+import { useState } from "react";
+import { useEffect } from "react";
+import { useRef } from "react";
+import { useDispatch } from "react-redux";
+import { storageActions } from "~/store/storage";
 
 const RowContainer = styled.View`
   flex-direction: row;
@@ -14,12 +19,71 @@ const RowContainer = styled.View`
 `;
 
 const Timer = () => {
-  const duration = useAppSelector(state => state.storage.walk.duration);
+  const isWalking = useAppSelector(state => state.storage.walk.isWalking);
   const isStopped = useAppSelector(state => state.storage.walk.isStopped);
+  const startTime = useAppSelector(state => state.storage.walk.startTime);
+  const currentPauseTime = useAppSelector(
+    state => state.storage.walk.currentPauseTime,
+  );
+  const totalPauseDuration = useAppSelector(
+    state => state.storage.walk.totalPauseDuration,
+  );
+  const dispatch = useDispatch();
+  const timeout = useRef<NodeJS.Timeout>();
+
+  const getDuration = () => {
+    if (!isWalking && currentPauseTime) {
+      return Math.floor(
+        (new Date(currentPauseTime).getTime() -
+          new Date(startTime).getTime() -
+          totalPauseDuration * 1000) /
+          1000,
+      );
+    }
+    if (isWalking) {
+      return Math.floor(
+        (Date.now() -
+          new Date(startTime).getTime() -
+          totalPauseDuration * 1000) /
+          1000,
+      );
+    }
+    return 0;
+  };
+
+  const [duration, setDuration] = useState(!startTime ? 0 : getDuration());
 
   const hour = Math.floor(duration / 3600) % 60;
   const min = Math.floor(duration / 60) % 60;
   const sec = Math.floor(duration) % 60;
+
+  const runTimer = async () => {
+    await new Promise<void>(resolve => {
+      timeout.current = setTimeout(resolve, 1000);
+    });
+    setDuration(prev => prev + 1);
+  };
+
+  const clearTimer = () => {
+    if (timeout.current) {
+      clearTimeout(timeout.current);
+    }
+  };
+
+  useEffect(() => {
+    if (isWalking) {
+      runTimer();
+    } else {
+      clearTimer();
+    }
+    return () => clearTimer();
+  }, [isWalking, duration]);
+
+  useEffect(() => {
+    if (isStopped) {
+      dispatch(storageActions.setDuration(duration));
+    }
+  }, [isStopped]);
 
   return (
     <RowContainer>

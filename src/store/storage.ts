@@ -27,7 +27,6 @@ interface IStorage {
     deviceIdInProgress: string;
   };
   walk: {
-    didMountInitially: boolean;
     selectedDeviceId: string[];
     trackingId: number | null;
     duration: number;
@@ -36,6 +35,8 @@ interface IStorage {
     isWalking: boolean;
     startTime: string;
     isStopped: boolean;
+    currentPauseTime: string;
+    totalPauseDuration: number;
   };
 }
 
@@ -65,7 +66,6 @@ const initialState: IStorage = {
     deviceIdInProgress: "1",
   },
   walk: {
-    didMountInitially: true,
     selectedDeviceId: [],
     trackingId: null,
     duration: 0,
@@ -74,6 +74,8 @@ const initialState: IStorage = {
     isWalking: false,
     startTime: "",
     isStopped: false,
+    currentPauseTime: "",
+    totalPauseDuration: 0,
   },
 };
 
@@ -144,9 +146,7 @@ const storage = createSlice({
     logout: state => {
       state.user = initialState.user;
       state.init.isInitialized = false;
-    },
-    setDidMountInitially: (state, { payload }: PayloadAction<boolean>) => {
-      state.walk.didMountInitially = payload;
+      state.init.isPermissionAllowed = false;
     },
     setSelectedDeviceId: (state, { payload }: PayloadAction<string[]>) => {
       state.walk.selectedDeviceId = payload;
@@ -177,6 +177,12 @@ const storage = createSlice({
     },
     setIsStopped: (state, { payload }: PayloadAction<boolean>) => {
       state.walk.isStopped = payload;
+    },
+    setCurrentPauseTime: (state, { payload }: PayloadAction<string>) => {
+      state.walk.currentPauseTime = payload;
+    },
+    setTotalPauseDuration: (state, { payload }: PayloadAction<number>) => {
+      state.walk.totalPauseDuration = state.walk.totalPauseDuration + payload;
     },
     clearWalk: state => {
       state.walk = { ...initialState.walk, isStopped: state.walk.isStopped };

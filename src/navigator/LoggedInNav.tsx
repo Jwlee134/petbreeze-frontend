@@ -6,10 +6,10 @@ import AddDevice from "~/screens/AddDevice";
 import WalkMap from "~/screens/WalkMap";
 import CustomHeader from "~/components/navigator/CustomHeader";
 import { store } from "~/store";
-import { Linking } from "react-native";
-import { isIos } from "~/utils";
 import DeleteAccount from "~/screens/DeleteAccount";
 import UpdateProfile from "~/screens/UpdateProfile";
+
+import messaging from "@react-native-firebase/messaging";
 
 const Stack = createStackNavigator();
 
@@ -19,22 +19,40 @@ const LoggedInNav = () => {
 
   useEffect(() => {
     const { coords } = store.getState().storage.walk;
-    if (coords.length !== 0) {
+    if (coords.length) {
       setInitialRoute("WalkMap");
     }
     setIsLoading(false);
+  }, []);
 
-    if (isIos) return;
+  useEffect(() => {
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      console.log(remoteMessage);
+    });
 
-    Linking.getInitialURL()
-      .then(url => {
-        if (url === "petbreeze://walk/map") {
-          setInitialRoute("WalkMap");
+    messaging().onNotificationOpenedApp(remoteMessage => {
+      console.log(
+        "Notification caused app to open from background state:",
+        remoteMessage,
+      );
+    });
+
+    messaging()
+      .getInitialNotification()
+      .then(remoteMessage => {
+        if (remoteMessage) {
+          console.log(
+            "Notification caused app to open from quit state:",
+            remoteMessage,
+          );
         }
-      })
-      .finally(() => {
-        setIsLoading(false);
       });
+
+    messaging()
+      .getToken()
+      .then(value => console.log("Token: ", value));
+
+    return unsubscribe;
   }, []);
 
   if (isLoading) return null;

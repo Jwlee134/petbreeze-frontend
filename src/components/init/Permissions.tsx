@@ -80,6 +80,8 @@ const Permissions = ({
       PERMISSIONS.IOS.LOCATION_ALWAYS,
       PERMISSIONS.IOS.BLUETOOTH_PERIPHERAL,
       PERMISSIONS.IOS.PHOTO_LIBRARY,
+      PERMISSIONS.IOS.MOTION,
+      PERMISSIONS.IOS.CAMERA,
     ]).finally(() => {
       next();
       dispatch(storageActions.setInit("permission"));

@@ -2,8 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSCameraUsageDescription</key>
-	<string></string>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>com.transistorsoft.fetch</string>
+	</array>
+	<key>NSMotionUsageDescription</key>
+	<string>디바이스와 함께 안심존 밖을 벗어나면 앱이 백그라운드 상태일때도 산책을 자동으로 감지하고 기록합니다. 안심존 내로 들어오면 산책을 자동으로 종료하고 저장합니다.</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>ko</string>
 	<key>CFBundleDisplayName</key>
@@ -69,19 +73,21 @@
 		</dict>
 	</dict>
 	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string></string>
+	<string>디바이스 등록 및 펌웨어 업데이트에 사용합니다.</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
-	<string></string>
+	<string>디바이스 등록 및 펌웨어 업데이트에 사용합니다.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>산책 중 사진을 촬영합니다.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string></string>
+	<string>산책 중 위치를 추적하여 기록합니다.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string></string>
+	<string>산책 중 위치를 추적하여 기록합니다.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>산책 중 위치를 추적하여 기록합니다.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string></string>
+	<string>산책 중 찍은 사진을 앨범에 저장합니다.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string></string>
+	<string>반려동물 프로필 사진을 앨범에서 선택합니다.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Fonts/NotoSansKR-Bold.otf</string>
@@ -91,7 +97,6 @@
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>
-		<string>bluetooth-central</string>
 		<string>fetch</string>
 		<string>location</string>
 		<string>processing</string>
@@ -102,7 +107,6 @@
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>
-		<string>bluetooth-le</string>
 	</array>
 	<key>UIStatusBarStyle</key>
 	<string>UIStatusBarStyleLightContent</string>

@@ -33,7 +33,9 @@ const Distance = () => {
         />
       )}
       <MyText fontSize={18} color="rgba(0, 0, 0, 0.5)">
-        {!meter ? "0.0" : String(meter / 1000).substring(0, 3)}km
+        {meter < 1000
+          ? `${meter}m`
+          : `${String(meter / 1000).substring(0, 4)}km`}
       </MyText>
     </RowContainer>
   );

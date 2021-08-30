@@ -11,7 +11,7 @@ import palette from "~/styles/palette";
 
 import ShadowContainer from "../common/container/ShadowContainer";
 import { useEffect } from "react";
-import Input from "../common/Input";
+import Input from "../common/InputLegacy";
 import { Alert, Keyboard } from "react-native";
 import { useDispatch } from "react-redux";
 import { commonActions } from "~/store/common";

@@ -7,7 +7,7 @@ import { width } from "~/styles";
 import Button from "../common/Button";
 import KeyboardAwareScrollContainer from "../common/container/KeyboardAwareScrollContainer";
 import SafeAreaContainer from "../common/container/SafeAreaContainer";
-import Input from "../common/Input";
+import Input from "../common/InputLegacy";
 import { BigText } from "../init/Styles";
 
 import ImagePicker from "react-native-image-crop-picker";

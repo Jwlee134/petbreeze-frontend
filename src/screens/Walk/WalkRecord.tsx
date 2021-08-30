@@ -1,7 +1,5 @@
-import { format } from "date-fns";
 import React, { useState, useMemo, useEffect } from "react";
 import { ScrollView } from "react-native";
-import { MultiDotMarking } from "react-native-calendars";
 import deviceApi from "~/api/device";
 import walkApi from "~/api/walk";
 import Calendar from "~/components/common/Calendar";

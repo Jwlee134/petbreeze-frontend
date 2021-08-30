@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import { useDispatch } from "react-redux";
 import styled from "styled-components/native";
 import { storageActions } from "~/store/storage";
@@ -44,6 +44,9 @@ const Button = styled.TouchableOpacity`
 `;
 
 const Toggle = ({ handleStop }: { handleStop: () => void }) => {
+  const currentPauseTime = useAppSelector(
+    state => state.storage.walk.currentPauseTime,
+  );
   const isWalking = useAppSelector(state => state.storage.walk.isWalking);
   const dispatch = useDispatch();
 
@@ -52,9 +55,14 @@ const Toggle = ({ handleStop }: { handleStop: () => void }) => {
       <ShadowContainer shadowOpacity={0.1} shadowRadius={10}>
         <SmallButton
           onPress={() => {
-            isWalking
-              ? dispatch(storageActions.setIsWalking(false))
-              : handleStop();
+            if (isWalking) {
+              dispatch(storageActions.setIsWalking(false));
+              dispatch(
+                storageActions.setCurrentPauseTime(new Date().toISOString()),
+              );
+            } else {
+              handleStop();
+            }
           }}>
           {isWalking ? (
             <Pause width={rpWidth(17)} height={rpWidth(21)} />
@@ -66,9 +74,18 @@ const Toggle = ({ handleStop }: { handleStop: () => void }) => {
       <ShadowContainer shadowOpacity={0.1} shadowRadius={10}>
         <Button
           onPress={() => {
-            isWalking
-              ? handleStop()
-              : dispatch(storageActions.setIsWalking(true));
+            if (isWalking) {
+              handleStop();
+            } else {
+              dispatch(storageActions.setIsWalking(true));
+              dispatch(
+                storageActions.setTotalPauseDuration(
+                  Math.floor(
+                    (Date.now() - new Date(currentPauseTime).getTime()) / 1000,
+                  ),
+                ),
+              );
+            }
           }}>
           {isWalking ? (
             <StopFill width={rpWidth(35)} height={rpWidth(35)} />

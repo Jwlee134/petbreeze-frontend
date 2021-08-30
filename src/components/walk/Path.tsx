@@ -38,7 +38,7 @@ const Path = ({
   useEffect(() => {
     if (!mapRef.current) return;
     // 시작 후 최초 좌표 받을 시 그 좌표로 화면 이동
-    if (coords.length === 1 && !store.getState().storage.walk.startTime) {
+    if (coords.length === 1) {
       mapRef.current.animateToRegion({
         latitude: coords[0][0],
         longitude: coords[0][1],
@@ -46,20 +46,6 @@ const Path = ({
         longitudeDelta: delta,
       });
       // dispatch(storageActions.setSelectedDeviceId(deviceIds));
-      dispatch(storageActions.setStartTime(new Date().toISOString()));
-    }
-    if (coords.length > 1) {
-      const distanceBetweenCoords = getDistanceBetween2Points(
-        coords[coords.length - 1][0],
-        coords[coords.length - 1][1],
-        coords[coords.length - 2][0],
-        coords[coords.length - 2][1],
-      );
-      if (distanceBetweenCoords < 10) {
-        dispatch(storageActions.spliceCoords());
-      } else {
-        dispatch(storageActions.setMeter(Math.round(distanceBetweenCoords)));
-      }
     }
   }, [mapRef, coords]);
 

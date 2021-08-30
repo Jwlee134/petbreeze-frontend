@@ -1,4 +1,5 @@
 #import <Firebase.h>
+#import "RNFBMessagingModule.h"
 #import "AppDelegate.h"
 #import <CodePush/CodePush.h>
 
@@ -11,6 +12,8 @@
 #import <React/RCTBridge.h>
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
+
+#import <TSBackgroundFetch/TSBackgroundFetch.h>
 
 #import <UMCore/UMModuleRegistry.h>
 #import <UMReactNativeAdapter/UMNativeModulesProxy.h>
@@ -63,9 +66,11 @@ self.moduleRegistryAdapter = [[UMModuleRegistryAdapter alloc] initWithModuleRegi
    [bridge moduleForClass:[RCTDevLoadingView class]];
   #endif
 
+  NSDictionary *appProperties = [RNFBMessagingModule addCustomPropsToUserProps:nil withLaunchOptions:launchOptions];
+
   RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
                                                    moduleName:@"Petbreeze"
-                                            initialProperties:nil];
+                                            initialProperties:appProperties];
 
   if (@available(iOS 13.0, *)) {
       rootView.backgroundColor = [UIColor systemBackgroundColor];
@@ -79,6 +84,7 @@ self.moduleRegistryAdapter = [[UMModuleRegistryAdapter alloc] initWithModuleRegi
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
   [super application:application didFinishLaunchingWithOptions:launchOptions];
+  [[TSBackgroundFetch sharedInstance] didFinishLaunching];
   return YES;
 }
 

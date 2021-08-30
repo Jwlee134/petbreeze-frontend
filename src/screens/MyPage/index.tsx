@@ -17,6 +17,7 @@ import useModal from "~/hooks/useModal";
 import Modal from "react-native-modal";
 import LogoutModal from "~/components/modal/LogoutModal";
 import { MyPageScreenNavigationProp } from "~/types/navigator";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Button = styled.TouchableOpacity<{ isLast?: boolean }>`
   flex-direction: row;
@@ -118,8 +119,11 @@ const MyPage = ({ navigation }: { navigation: MyPageScreenNavigationProp }) => {
           <Button onPress={open}>
             <MyText>로그아웃</MyText>
           </Button>
-          <Button isLast onPress={() => navigation.navigate("DeleteAccount")}>
+          <Button onPress={() => navigation.navigate("DeleteAccount")}>
             <MyText color="rgba(0, 0, 0, 0.3)">탈퇴하기</MyText>
+          </Button>
+          <Button isLast onPress={() => AsyncStorage.clear()}>
+            <MyText color="rgba(0, 0, 0, 0.3)">데이터 삭제</MyText>
           </Button>
         </Section>
       </ScrollView>
