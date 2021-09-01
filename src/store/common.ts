@@ -1,10 +1,30 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+export type BleStatus =
+  | "before"
+  | "scanning"
+  | "scanningSuccess"
+  | "firmwareDownloading"
+  | "firmwareInstalling"
+  | "allSuccess"
+  | "200Success"
+  | "otaUpdateSuccess"
+  | "scanningFail"
+  | "connectingFail"
+  | "retrieveFail"
+  | "devEUIFail"
+  | "downloadingFail"
+  | "installingFail"
+  | "startNotificationFail"
+  | "notificationFail";
+
 interface IState {
   currentRouteName: string;
   currentTabName: string;
   notification: string;
   page: number;
+  totalPage: number;
+  bleStatus: BleStatus;
 }
 
 const initialState: IState = {
@@ -12,6 +32,8 @@ const initialState: IState = {
   currentTabName: "",
   notification: "",
   page: 0,
+  totalPage: 0,
+  bleStatus: "before",
 };
 
 const common = createSlice({
@@ -33,8 +55,14 @@ const common = createSlice({
       } else if (payload === "prev") {
         state.page--;
       } else {
-        state.page = 0;
+        state.page = 1;
       }
+    },
+    setTotalPage: (state, { payload }: PayloadAction<number>) => {
+      state.totalPage = payload;
+    },
+    setBleStatus: (state, { payload }: PayloadAction<BleStatus>) => {
+      state.bleStatus = payload;
     },
   },
 });

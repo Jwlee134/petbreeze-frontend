@@ -76,12 +76,10 @@ const SafetyZoneMap = ({
   navigation,
   route,
   next,
-  handlePreRender,
 }: {
   navigation?: any;
   route?: any;
   next?: () => void;
-  handlePreRender?: () => void;
 }) => {
   const { Map, mapRef } = useMap();
   const { isTracking, startTracking, clearTracking } = useMyLocation();
@@ -153,11 +151,6 @@ const SafetyZoneMap = ({
   const [show, setShow] = useState(false);
 
   useEffect(() => {
-    if (handlePreRender) {
-      setTimeout(() => {
-        handlePreRender();
-      }, 500);
-    }
     const showing = Keyboard.addListener("keyboardDidShow", () => {
       setShow(true);
     });
@@ -173,8 +166,8 @@ const SafetyZoneMap = ({
   useEffect(() => {
     if (result.isSuccess) {
       if (isTracking) clearTracking();
-      if (!navigation) {
-        dispatch(commonActions.setPage("next"));
+      if (!navigation && next) {
+        next();
         dispatch(storageActions.setDeviceRegistrationStep("safetyZone"));
       } else {
         // navigation goBack
@@ -188,7 +181,7 @@ const SafetyZoneMap = ({
       }
     }
   }, [result]);
-
+  console.log("safetyzonemap");
   const body = () => {
     const obj: { [key: string]: any } = {};
     const id = route.params.safetyZoneNumber
@@ -321,4 +314,4 @@ const SafetyZoneMap = ({
   );
 };
 
-export default SafetyZoneMap;
+export default React.memo(SafetyZoneMap);

@@ -3,23 +3,23 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useDispatch } from "react-redux";
 import styled from "styled-components/native";
 import MyText from "~/components/common/MyText";
-import usePagingScrollView from "~/hooks/usePagingScrollView";
+import usePagingFlatList from "~/hooks/usePagingFlatList";
 import { storageActions } from "~/store/storage";
-import { width, rpWidth, rpHeight } from "~/styles";
+import { width, rpWidth } from "~/styles";
 import FirstIntro from "./FirstIntro";
 import PageIndicatorCircle from "./PageIndicatorCircle";
 import SecondIntro from "./SecondIntro";
 import ThirdIntro from "./ThirdIntro";
 
 const SkipButton = styled.TouchableOpacity<{ top: number }>`
-  margin: ${({ top }) => `${rpHeight(17) + top}px ${rpWidth(20)}px 0 auto`};
+  margin: ${({ top }) => `${rpWidth(18) + top}px ${rpWidth(20)}px 0 auto`};
   position: absolute;
   right: 0;
   z-index: 1;
 `;
 
 const PageIndicator = styled.View`
-  width: ${width}px;
+  width: 100%;
   flex-direction: row;
   justify-content: center;
   position: absolute;
@@ -28,8 +28,10 @@ const PageIndicator = styled.View`
   z-index: -1;
 `;
 
+const data = [<FirstIntro />, <SecondIntro />, <ThirdIntro />];
+
 const Intro = () => {
-  const { PagingScrollView } = usePagingScrollView();
+  const { PagingFlatList } = usePagingFlatList();
   const { top, bottom } = useSafeAreaInsets();
   const dispatch = useDispatch();
 
@@ -49,23 +51,19 @@ const Intro = () => {
           건너뛰기
         </MyText>
       </SkipButton>
-      <PagingScrollView
-        contentContainerStyle={{
-          paddingTop: rpHeight(80) + top,
-        }}
+      <PagingFlatList
         onScroll={e =>
           setCurrentPage(
             Math.round((e.nativeEvent.contentOffset.x + width) / width),
           )
         }
-        scrollEventThrottle={16}>
-        <FirstIntro />
-        <SecondIntro />
-        <ThirdIntro />
-      </PagingScrollView>
+        scrollEventThrottle={16}
+        scrollEnabled
+        data={data}
+      />
       <PageIndicator
         style={{
-          marginBottom: rpHeight(54) + bottom,
+          marginBottom: rpWidth(54) + bottom,
         }}>
         <PageIndicatorCircle isFocused={currentPage === 1} />
         <PageIndicatorCircle isFocused={currentPage === 2} />

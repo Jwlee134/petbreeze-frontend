@@ -7,14 +7,14 @@ import Location from "~/assets/svg/init/permission/location.svg";
 import Bluetooth from "~/assets/svg/init/permission/bluetooth.svg";
 import Gallery from "~/assets/svg/init/permission/gallery.svg";
 import {
-  checkNotifications,
   openSettings,
   PERMISSIONS,
+  request,
   requestMultiple,
   requestNotifications,
 } from "react-native-permissions";
 import { useDispatch } from "react-redux";
-import { rpHeight, rpWidth, width } from "~/styles";
+import { rpWidth } from "~/styles";
 import { storageActions } from "~/store/storage";
 import { Alert } from "react-native";
 import useAppState from "~/hooks/useAppState";
@@ -39,7 +39,7 @@ const BottomContainer = styled.View<{ width: number }>`
 const PermissionContainer = styled.View<{ isTop?: boolean }>`
   flex-direction: row;
   align-items: center;
-  margin-top: ${({ isTop }) => (isTop ? "0px" : `${rpHeight(18)}px`)};
+  margin-top: ${({ isTop }) => (isTop ? "0px" : `${rpWidth(18)}px`)};
 `;
 
 const SvgContainer = styled.View`
@@ -58,13 +58,7 @@ const Button = styled.TouchableOpacity`
   align-items: center;
 `;
 
-const Permissions = ({
-  handlePreRender,
-  next,
-}: {
-  handlePreRender: () => void;
-  next: () => void;
-}) => {
+const Permissions = ({ next }: { next: () => void }) => {
   const isPermissionAllowed = useAppSelector(
     state => state.storage.init.isPermissionAllowed,
   );
@@ -74,70 +68,81 @@ const Permissions = ({
   const [textWidth, setTextWidth] = useState(0);
 
   const [settingOpened, setSettingOpened] = useState(false);
+  const [isNotificationStep, setIsNotificationStep] = useState(true);
 
-  const handleAllowRest = async () => {
-    await requestMultiple([
-      PERMISSIONS.IOS.LOCATION_ALWAYS,
+  const handleAllowRest = () => {
+    requestMultiple([
       PERMISSIONS.IOS.BLUETOOTH_PERIPHERAL,
       PERMISSIONS.IOS.PHOTO_LIBRARY,
       PERMISSIONS.IOS.MOTION,
       PERMISSIONS.IOS.CAMERA,
-    ]).finally(() => {
-      next();
+    ]).then(() => {
       dispatch(storageActions.setInit("permission"));
+      next();
     });
   };
 
-  const handleNotification = async () => {
-    await requestNotifications(["alert", "badge"]);
-    const { status } = await checkNotifications();
-    if (status === "granted") {
-      await handleAllowRest();
-    }
-    if (status === "blocked") {
+  const openSetting = () => {
+    openSettings().then(() => {
+      setTimeout(() => {
+        setSettingOpened(true);
+      }, 500);
+    });
+  };
+
+  const handleLocation = () => {
+    setIsNotificationStep(false);
+    request(PERMISSIONS.IOS.LOCATION_ALWAYS).then(() => {
       Alert.alert(
-        "경고",
-        "내 반려동물이 안심존을 벗어나도 알림을 받지 못하게 됩니다.",
+        "알림",
+        "백그라운드에서 원활한 위치 기록을 위해 위치 접근 허용을 항상으로 설정해주세요.",
         [
-          {
-            text: "괜찮습니다",
-            onPress: handleAllowRest,
-          },
-          {
-            text: "권한 허용",
-            onPress: async () => {
-              await openSettings();
-              setTimeout(() => {
-                setSettingOpened(true);
-              }, 500);
-            },
-          },
+          { text: "안할래요", onPress: handleAllowRest },
+          { text: "설정으로 이동", onPress: openSetting },
         ],
       );
-    }
+    });
+  };
+
+  const handleNotification = () => {
+    requestNotifications(["alert", "badge"]).then(({ status }) => {
+      if (status === "granted") {
+        handleLocation();
+      }
+      if (status === "blocked") {
+        Alert.alert(
+          "경고",
+          "내 반려동물이 안심존을 벗어나도 알림을 받지 못하게 됩니다.",
+          [
+            { text: "괜찮습니다", onPress: handleLocation },
+            { text: "권한 허용하기", onPress: openSetting },
+          ],
+        );
+      }
+    });
   };
 
   useEffect(() => {
     if (settingOpened && appState === "active" && !isPermissionAllowed) {
-      handleAllowRest();
+      if (isNotificationStep) {
+        handleLocation();
+      } else {
+        handleAllowRest();
+      }
+      setSettingOpened(false);
     }
-  }, [settingOpened, appState, isPermissionAllowed]);
+  }, [settingOpened, appState, isPermissionAllowed, isNotificationStep]);
 
-  useEffect(() => {
-    setTimeout(() => {
-      handlePreRender();
-    }, 500);
-  }, []);
-
+  console.log("permissions is rendering");
   return (
     <>
       <SafeAreaContainer>
         <TopContainer>
-          <Shield width={rpWidth(114)} height={rpHeight(114)} />
+          <Shield width={rpWidth(114)} height={rpWidth(114)} />
           <MyText
             fontSize={20}
             onLayout={e => setTextWidth(e.nativeEvent.layout.width)}
-            style={{ textAlign: "center", marginTop: rpHeight(25) }}>
+            style={{ textAlign: "center", marginTop: rpWidth(25) }}>
             어디개 앱 이용을 위해{"\n"}다음 권한의 허용이 필요합니다.
           </MyText>
         </TopContainer>

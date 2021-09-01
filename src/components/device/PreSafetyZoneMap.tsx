@@ -10,7 +10,6 @@ import MyText from "../common/MyText";
 import SidePaddingContainer from "../common/container/SidePaddingContainer";
 import ShadowContainer from "../common/container/ShadowContainer";
 import SafeAreaContainer from "../common/container/SafeAreaContainer";
-import { useEffect } from "react";
 
 const DescriptionContainer = styled.View`
   width: 100%;
@@ -37,21 +36,10 @@ const Description = styled.View`
   margin-bottom: ${rpWidth(9)}px;
 `;
 
-const PreSafetyZoneMap = ({
-  next,
-  handlePreRender,
-}: {
-  next: () => void;
-  handlePreRender: () => void;
-}) => {
+const PreSafetyZoneMap = ({ next }: { next: () => void }) => {
   const { disable, disabled } = useDisableButton();
 
-  useEffect(() => {
-    setTimeout(() => {
-      handlePreRender();
-    }, 500);
-  }, []);
-
+  console.log("presafetyzonemap");
   return (
     <SafeAreaContainer>
       <SidePaddingContainer style={{ flex: 1 }}>
@@ -118,4 +106,4 @@ const PreSafetyZoneMap = ({
   );
 };
 
-export default PreSafetyZoneMap;
+export default React.memo(PreSafetyZoneMap);

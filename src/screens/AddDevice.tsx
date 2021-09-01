@@ -1,17 +1,23 @@
 import React from "react";
-import AddDeviceRoot from "~/components/device/AddDeviceRoot";
-import usePagingScrollView from "~/hooks/usePagingScrollView";
+import BluetoothCheck from "~/components/device/BluetoothCheck";
+import DeviceRegistrationProgress from "~/components/device/DeviceRegistrationProgress";
+import PreStart from "~/components/device/PreStart";
+import usePagingFlatList from "~/hooks/usePagingFlatList";
 import { AddDeviceScreenRouteProp } from "~/types/navigator";
 
 const AddDevice = ({ route }: { route: AddDeviceScreenRouteProp }) => {
-  const { PagingScrollView, ScreenWidthContainer, next } =
-    usePagingScrollView();
+  const { PagingFlatList, next } = usePagingFlatList();
 
-  return (
-    <PagingScrollView scrollEnabled={false}>
-      <AddDeviceRoot isOtaUpdate={route?.params?.isOtaUpdate} next={next} />
-    </PagingScrollView>
-  );
+  const data = [
+    <PreStart next={next} />,
+    <BluetoothCheck next={next} />,
+    <DeviceRegistrationProgress
+      isOtaUpdate={route?.params?.isOtaUpdate}
+      next={next}
+    />,
+  ];
+
+  return <PagingFlatList data={data} />;
 };
 
 export default AddDevice;

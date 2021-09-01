@@ -18,11 +18,6 @@ import { rpHeight, rpWidth, width } from "~/styles";
 import SidePaddingContainer from "../common/container/SidePaddingContainer";
 import SafeAreaContainer from "../common/container/SafeAreaContainer";
 
-const Container = styled.View`
-  flex: 1;
-  width: ${width}px;
-`;
-
 const HalfContainer = styled.View`
   flex: 1;
 `;
@@ -36,13 +31,7 @@ const TextContainer = styled.View`
   padding: ${rpHeight(34)}px 0px;
 `;
 
-const Auth = ({
-  handlePreRender,
-  next,
-}: {
-  handlePreRender: () => void;
-  next: () => void;
-}) => {
+const Auth = ({ next }: { next: () => void }) => {
   const [getFacebookUser, facebookUser] = authApi.useLazyFacebookLoginQuery();
   const [getKakaoUser, kakaoUser] = authApi.useLazyKakaoLoginQuery();
 
@@ -66,7 +55,7 @@ const Auth = ({
   };
 
   useEffect(() => {
-    console.log(kakaoUser);
+    // console.log(kakaoUser);
     if (kakaoUser.data) {
       dispatch(
         storageActions.login({
@@ -98,7 +87,7 @@ const Auth = ({
   };
 
   useEffect(() => {
-    console.log(facebookUser);
+    // console.log(facebookUser);
     if (facebookUser.data) {
       dispatch(
         storageActions.login({
@@ -114,14 +103,11 @@ const Auth = ({
   }, [facebookUser]);
 
   useEffect(() => {
-    setTimeout(() => {
-      handlePreRender();
-    }, 500);
     /* messaging()
       .getToken()
       .then(token => console.log("FCM Token: ", token)); */
   }, []);
-
+  console.log("auth is rendering");
   return (
     <SafeAreaContainer>
       <SidePaddingContainer style={{ flex: 1 }}>

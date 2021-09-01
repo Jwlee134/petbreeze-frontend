@@ -9,7 +9,8 @@ import SidePaddingContainer from "../common/container/SidePaddingContainer";
 import MyText from "../common/MyText";
 import { View } from "react-native";
 import SafeAreaContainer from "../common/container/SafeAreaContainer";
-import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { commonActions } from "~/store/common";
 
 const TopContainer = styled.View`
   flex: 1;
@@ -22,21 +23,11 @@ const BottomContainer = styled.View`
   justify-content: flex-end;
 `;
 
-const BluetoothCheck = ({
-  handleNext,
-  handlePreRender,
-}: {
-  handleNext: () => void;
-  handlePreRender: () => void;
-}) => {
+const BluetoothCheck = ({ next }: { next: () => void }) => {
   const { disable, disabled } = useDisableButton();
+  const dispatch = useDispatch();
 
-  useEffect(() => {
-    setTimeout(() => {
-      handlePreRender();
-    }, 500);
-  }, []);
-
+  console.log("bluetoothcheck");
   return (
     <SafeAreaContainer>
       <SidePaddingContainer style={{ flex: 1 }}>
@@ -52,7 +43,8 @@ const BluetoothCheck = ({
             useCommonMarginBottom
             onPress={() => {
               if (disabled) return;
-              handleNext();
+              next();
+              dispatch(commonActions.setBleStatus("allSuccess"));
               disable();
             }}>
             네, 켜져 있습니다.

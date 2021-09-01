@@ -11,7 +11,6 @@ import SafeAreaContainer from "../common/container/SafeAreaContainer";
 import SidePaddingContainer from "../common/container/SidePaddingContainer";
 import { rpHeight, rpWidth } from "~/styles";
 import { useEffect } from "react";
-import { useAppSelector } from "~/store";
 
 const TopContainer = styled.View`
   flex: 1;
@@ -24,23 +23,12 @@ const BottomContainer = styled.View`
   justify-content: flex-end;
 `;
 
-const PreStart = ({
-  handlePreRender,
-  handleNext,
-}: {
-  handlePreRender: () => void;
-  handleNext: () => void;
-}) => {
-  const isInitialized = useAppSelector(
-    state => state.storage.init.isInitialized,
-  );
+const PreStart = ({ next }: { next: () => void }) => {
   const dispatch = useDispatch();
   const { disabled, disable } = useDisableButton();
 
   useEffect(() => {
-    setTimeout(() => {
-      handlePreRender();
-    }, 500);
+    console.log("prestart");
   }, []);
 
   return (
@@ -64,7 +52,7 @@ const PreStart = ({
             }}
             onPress={() => {
               if (disabled) return;
-              handleNext();
+              next();
               disable();
             }}>
             네, 있습니다.

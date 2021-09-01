@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components/native";
-import MyText from "../common/MyText";
-import Points from "./Points";
+import MyText from "~/components/common/MyText";
+import Points from "../Points";
 
 const Container = styled.View`
   flex: 1;

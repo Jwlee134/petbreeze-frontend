@@ -4,8 +4,8 @@ import { rpHeight, rpWidth, width } from "~/styles";
 import palette from "~/styles/palette";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import Footprint from "~/assets/svg/common/footprint-outline.svg";
-import MyText from "../common/MyText";
-import Points from "./Points";
+import Points from "../Points";
+import MyText from "~/components/common/MyText";
 
 const Container = styled.View`
   flex: 1;

@@ -1,9 +1,9 @@
 import React from "react";
 import { useEffect } from "react";
 import styled from "styled-components/native";
-import { Status } from "~/hooks/useBleManager";
-import MyText from "../common/MyText";
-import Success from "../lottie/Success";
+import MyText from "~/components/common/MyText";
+import Success from "~/components/lottie/Success";
+import { BleStatus } from "~/store/common";
 
 const Container = styled.View`
   flex: 1;
@@ -13,21 +13,16 @@ const Container = styled.View`
 
 const Successs = ({
   status,
-  handleNext,
-  handlePreRender,
+  next,
 }: {
-  status: Status;
-  handleNext: () => void;
-  handlePreRender: () => void;
+  status: BleStatus;
+  next: () => void;
 }) => {
   useEffect(() => {
     if (status === "allSuccess") {
       setTimeout(() => {
-        handlePreRender();
+        next();
       }, 2000);
-      setTimeout(() => {
-        handleNext();
-      }, 5000);
     }
   }, [status]);
 

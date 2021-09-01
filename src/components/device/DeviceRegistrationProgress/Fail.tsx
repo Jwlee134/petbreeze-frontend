@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components/native";
+import Button from "~/components/common/Button";
+import MyText from "~/components/common/MyText";
 import { Status } from "~/hooks/useBleManager";
-import Button from "../common/Button";
-import MyText from "../common/MyText";
 
 const Container = styled.View`
   flex: 1;
@@ -10,13 +10,7 @@ const Container = styled.View`
   align-items: center;
 `;
 
-const Fail = ({
-  status,
-  handleRetry,
-}: {
-  status: Status;
-  handleRetry: () => void;
-}) => {
+const Fail = ({ status, retry }: { status: Status; retry: () => void }) => {
   return (
     <Container>
       <MyText>
@@ -36,7 +30,7 @@ const Fail = ({
           ? "다운로드에 실패했어요."
           : "설치에 실패했어요."}
       </MyText>
-      <Button onPress={handleRetry}>다시 시도</Button>
+      <Button onPress={retry}>다시 시도</Button>
     </Container>
   );
 };
