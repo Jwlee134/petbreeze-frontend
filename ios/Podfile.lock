@@ -568,10 +568,10 @@ PODS:
     - React-Core
   - RNCAsyncStorage (1.15.7):
     - React-Core
-  - RNFBApp (12.7.2):
+  - RNFBApp (12.7.3):
     - Firebase/CoreOnly (= 8.6.0)
     - React-Core
-  - RNFBMessaging (12.7.2):
+  - RNFBMessaging (12.7.3):
     - Firebase/Messaging (= 8.6.0)
     - React-Core
     - RNFBApp
@@ -1004,8 +1004,8 @@ SPEC CHECKSUMS:
   RNBackgroundFetch: 182d0ff90747bacbb3d4e168ecc2194442d0a2d3
   RNBackgroundGeolocation: 58924e233bf7e22c35292a8a8dd83220bd633a52
   RNCAsyncStorage: 7102fe8985f889579a3ae148d957bbb3f308122b
-  RNFBApp: 9c4eb84da8418346829c0d0220c4794d1de7b1f6
-  RNFBMessaging: b0d11e7d62d7d13f93dbc965b2e6da4fba38c67e
+  RNFBApp: 348de8df1e2e281c05bd6cf69ff99cc85c74da63
+  RNFBMessaging: 3fc0aa060e9af42e76b80a20632ea3b29fcf09f7
   RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211
   RNImageCropPicker: 35a3ceb837446fa11547704709bb22b5fac6d584
   RNPermissions: 7043bacbf928eae25808275cfe73799b8f618911

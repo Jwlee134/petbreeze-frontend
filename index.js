@@ -13,9 +13,14 @@ import { storageActions } from "~/store/storage";
 import { isAndroid } from "~/utils";
 import iosBackgroundTracking from "~/utils/iosBackgroundTracking";
 import androidBackgroundTracking from "~/utils/androidBackgroundTracking";
+import axios from "axios";
 
 messaging().setBackgroundMessageHandler(async remoteMessage => {
   console.log("Message handled in the background!", remoteMessage);
+
+  await axios.post("http://172.30.1.19:3000/", {
+    data: remoteMessage,
+  });
 
   if (!isAndroid) {
     await iosBackgroundTracking.init();
