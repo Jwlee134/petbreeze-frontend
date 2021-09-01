@@ -82,7 +82,13 @@ const HomeBottomModal = ({ device, close }: IProps) => {
           <MyText color={palette.blue_7b}>기기설정</MyText>
         </Button>
         <Divider />
-        <Button>
+        <Button
+          onPress={() => {
+            close();
+            navigation.navigate("EmergencyMissing", {
+              data: device,
+            });
+          }}>
           <MyText color={palette.red_f0}>긴급실종</MyText>
         </Button>
       </ButtonContainer>

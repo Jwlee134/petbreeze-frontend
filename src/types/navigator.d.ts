@@ -17,6 +17,9 @@ type LoggedInNavParamList = {
   UpdateProfile: {
     data: IDevice;
   };
+  EmergencyMissing: {
+    data: IDevice;
+  };
 };
 export type BottomTabNavRouteProp = RouteProp<
   LoggedInNavParamList,
@@ -41,6 +44,14 @@ export type UpdateProfileScreenNavigationProp = StackNavigationProp<
 export type UpdateProfileRouteProp = RouteProp<
   LoggedInNavParamList,
   "UpdateProfile"
+>;
+export type EmergencyMissingScreenNavigationProp = StackNavigationProp<
+  LoggedInNavParamList,
+  "EmergencyMissing"
+>;
+export type EmergencyMissingRouteProp = RouteProp<
+  LoggedInNavParamList,
+  "EmergencyMissing"
 >;
 
 type BottomTabParamList = {

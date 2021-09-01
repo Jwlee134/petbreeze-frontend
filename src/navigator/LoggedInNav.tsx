@@ -10,6 +10,7 @@ import DeleteAccount from "~/screens/DeleteAccount";
 import UpdateProfile from "~/screens/UpdateProfile";
 
 import messaging from "@react-native-firebase/messaging";
+import EmergencyMissing from "~/screens/EmergencyMissing";
 
 const Stack = createStackNavigator();
 
@@ -96,6 +97,17 @@ const LoggedInNav = () => {
           header: props => (
             <CustomHeader useBackButton {...props}>
               프로필 수정
+            </CustomHeader>
+          ),
+        }}
+      />
+      <Stack.Screen
+        name="EmergencyMissing"
+        component={EmergencyMissing}
+        options={{
+          header: props => (
+            <CustomHeader useBackButton usePageIndicator {...props}>
+              긴급실종
             </CustomHeader>
           ),
         }}
