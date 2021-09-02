@@ -2,7 +2,7 @@ import React, { ReactNode } from "react";
 import { ActivityIndicator, TouchableOpacityProps } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import styled, { css } from "styled-components/native";
-import { rpWidth } from "~/styles";
+import { rpWidth, width } from "~/styles";
 import palette from "~/styles/palette";
 import MyText, { fontWeight } from "./MyText";
 
@@ -19,7 +19,6 @@ interface IButton extends TouchableOpacityProps {
   useInputStyle?: boolean;
   selected?: boolean;
   isRow?: boolean;
-  flexGrow?: number;
 }
 
 interface ITouchableOpacity {
@@ -31,7 +30,15 @@ interface ITouchableOpacity {
 }
 
 const StyledButton = styled.TouchableOpacity<ITouchableOpacity>`
-  width: ${({ isRow }) => (isRow ? "auto" : "100%")};
+  ${({ isRow }) =>
+    isRow
+      ? css`
+          width: auto;
+        `
+      : css`
+          width: ${width - rpWidth(32)}px;
+          margin: 0 auto;
+        `};
   height: ${rpWidth(50)}px;
   border-radius: ${rpWidth(25)}px;
   flex-direction: row;
@@ -50,6 +57,7 @@ const StyledButton = styled.TouchableOpacity<ITouchableOpacity>`
       background-color: white;
       border-width: 1px;
       height: ${rpWidth(39)}px;
+      margin-bottom: ${rpWidth(15)}px;
       ${selected
         ? {
             borderColor: palette.blue_7b,
@@ -73,7 +81,6 @@ const Button = ({
   useInputStyle = false,
   selected = false,
   isRow = false,
-  flexGrow,
   ...props
 }: IButton) => {
   const { bottom } = useSafeAreaInsets();
@@ -92,7 +99,7 @@ const Button = ({
       }}
       {...props}>
       {isLoading ? (
-        <ActivityIndicator color="white" />
+        <ActivityIndicator color="white" size={rpWidth(25)} />
       ) : (
         <>
           {RightIcon && <RightIcon />}

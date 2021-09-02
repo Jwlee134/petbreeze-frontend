@@ -69,30 +69,31 @@ const UpdateProfile = ({
             value={birthYear}
             onChangeText={text => setBirthYear(text)}
             keyboardType="number-pad"
-            isRow
-            style={{
-              flexGrow: 1.2,
-              marginRight: rpWidth(20),
+            containerStyle={{
+              width: "34.48%",
+              marginRight: "6.9%",
             }}
+            solidPlaceholderTitle="년"
           />
           <Input
             value={birtyMonth}
             onChangeText={text => setBirthMonth(text)}
             keyboardType="number-pad"
-            isRow
-            style={{
-              flexGrow: 1,
-              marginRight: rpWidth(20),
+            containerStyle={{
+              width: "25.86%",
+              marginRight: "6.9%",
             }}
+            solidPlaceholderTitle="월"
           />
           <Input
             value={birthDay}
             onChangeText={text => setBirthDay(text)}
             keyboardType="number-pad"
-            isRow
-            style={{
-              flexGrow: 1,
+            containerStyle={{
+              width: "25.86%",
+              marginRight: "6.9%",
             }}
+            solidPlaceholderTitle="일"
           />
         </RowContainer>
         <InputTitle>성별</InputTitle>
@@ -121,6 +122,8 @@ const UpdateProfile = ({
           value={weight}
           onChangeText={text => setWeight(text)}
           keyboardType="number-pad"
+          solidPlaceholderTitle="kg"
+          alignLeftSolidPlaceholderWhenFocus
         />
         <InputTitle>보호자 연락처</InputTitle>
         <Input
