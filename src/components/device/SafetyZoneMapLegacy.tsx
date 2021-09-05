@@ -49,23 +49,6 @@ const InputContainer = styled.View`
   width: ${width / 2 - 30}px;
 `;
 
-const OuterMarker = styled.View`
-  width: 22px;
-  height: 22px;
-  border-radius: 11px;
-  background-color: white;
-  flex: 1;
-  justify-content: center;
-  align-items: center;
-`;
-
-const InnerMarker = styled.View`
-  width: 16px;
-  height: 16px;
-  border-radius: 8px;
-  background-color: ${palette.blue_6e};
-`;
-
 const options = ["100m", "200m", "300m", "500m", "1km", "취소"];
 const destructiveButtonIndex = 0;
 const cancelButtonIndex = 5;
@@ -251,7 +234,7 @@ const SafetyZoneMap = ({
           <InnerMarker />
         </OuterMarker>
       </ShadowContainer>
-      <ShadowContainer>
+      {/* <ShadowContainer>
         <BottomContainer>
           <InputWrapper>
             <InputContainer>
@@ -266,7 +249,7 @@ const SafetyZoneMap = ({
                 isEditable={false}
                 value={radius}
                 onPress={() => {
-                  /* showActionSheetWithOptions(
+                  showActionSheetWithOptions(
                     {
                       options,
                       cancelButtonIndex,
@@ -278,38 +261,21 @@ const SafetyZoneMap = ({
                         setRadius(options[buttonIndex]);
                       }
                     },
-                  ); */
+                  );
                 }}
                 placeholder="안심존 반경"
               />
             </InputContainer>
           </InputWrapper>
           <Button
-            /* disabled={!name || !radiusValue} */
+             disabled={!name || !radiusValue}
             style={{ marginBottom: show ? 0 : isIos ? 24 : 48 }}
             isLoading={result.isLoading}
             onPress={handleSubmit}>
             {navigation ? "저장" : "다음"}
           </Button>
         </BottomContainer>
-      </ShadowContainer>
-      <ShadowContainer
-        style={{
-          position: "absolute",
-          top: 72,
-          right: 24,
-        }}>
-        <MyLocationCircle
-          onPress={() => {
-            if (isTracking) {
-              setIsCameraMoved(false);
-            } else {
-              startTracking();
-            }
-          }}>
-          {/* <MyLocation /> */}
-        </MyLocationCircle>
-      </ShadowContainer>
+      </ShadowContainer> */}
     </Container>
   );
 };

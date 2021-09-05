@@ -1,54 +1,70 @@
 import React from "react";
-import { useState } from "react";
 import Auth from "~/components/init/Auth";
 import Permissions from "~/components/init/Permissions";
-import { useAppSelector } from "~/store";
-import { isIos } from "~/utils";
-import usePagingScrollView from "~/hooks/usePagingScrollView";
+import { store, useAppSelector } from "~/store";
 import Intro from "~/components/Intro";
-import AddDeviceRoot from "~/components/device/AddDeviceRoot";
+import usePagingFlatList from "~/hooks/usePagingFlatList";
+import PreStart from "~/components/device/PreStart";
+import BluetoothCheck from "~/components/device/BluetoothCheck";
+import DeviceRegistrationProgress from "~/components/device/DeviceRegistrationProgress";
+import PreSafetyZoneMap from "~/components/device/PreSafetyZoneMap";
+import SafetyZone from "~/components/device/SafetyZone";
+import { isIos } from "~/utils";
+import { useMemo } from "react";
+import RegisterProfileFirst from "~/components/device/registerProfile/RegisterProfileFirst";
+import RegisterProfileSecond from "~/components/device/registerProfile/RegisterProfileSecond";
+import RegisterProfileThird from "~/components/device/registerProfile/RegisterProfileThird";
+import Completion from "~/components/init/Completion";
 import { useCallback } from "react";
-import styled from "styled-components/native";
-import { rpHeight, width } from "~/styles";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-
-const PageBar = styled.View<{ top: number }>`
-  width: ${width}px;
-  height: ${rpHeight(53)}px;
-  background-color: burlywood;
-  border-bottom-width: 3px;
-`;
+import { useDispatch } from "react-redux";
+import { storageActions } from "~/store/storage";
 
 const Init = () => {
-  const token = useAppSelector(state => state.storage.user.token);
-  const { isIntroPassed, isPermissionAllowed } = useAppSelector(
-    state => state.storage.init,
+  const isIntroPassed = useAppSelector(
+    state => state.storage.init.isIntroPassed,
   );
-  const isDeviceRegistered = useAppSelector(
-    state => state.storage.device.isDeviceRegistered,
+  const isProfileRegistered = useAppSelector(
+    state => state.storage.device.isProfileRegistered,
   );
-  const { top } = useSafeAreaInsets();
+  const dispatch = useDispatch();
 
-  const [renderAuth] = useState(!token);
-  const [renderPermission, setRenderPermission] = useState(
-    isIos && (token && !isPermissionAllowed ? true : false),
-  );
-  const [renderAddDevice, setRenderAddDevice] = useState(
-    !!token && (isIos ? isPermissionAllowed : true),
-  );
+  const initialIndex = useMemo(() => {
+    const {
+      user: { token },
+      init: { isPermissionAllowed },
+      device: { isDeviceRegistered, isSafetyZoneRegistered },
+    } = store.getState().storage;
 
-  const { PagingScrollView, ScreenWidthContainer, next } =
-    usePagingScrollView();
-
-  const handlePreRenderAuth = useCallback(() => {
-    isIos && !isPermissionAllowed
-      ? setRenderPermission(true)
-      : setRenderAddDevice(true);
+    if (isSafetyZoneRegistered) {
+      if (isIos) return 7;
+      else 6;
+    }
+    if (isDeviceRegistered) {
+      if (isIos) return 5;
+      else 4;
+    }
+    if (isIos && isPermissionAllowed) return 2;
+    if (token) return 1;
   }, []);
-  const handlePreRenderAddDevice = useCallback(
-    () => setRenderAddDevice(true),
-    [],
-  );
+
+  const { PagingFlatList, next } = usePagingFlatList({ initialIndex });
+
+  const showCompletion = useCallback(() => {
+    dispatch(storageActions.setDeviceRegistrationStep("profile"));
+  }, []);
+
+  const data = [
+    <Auth next={next} />,
+    ...(isIos ? [<Permissions next={next} />] : []),
+    <SafetyZone next={next} />,
+    <PreStart next={next} />,
+    <BluetoothCheck next={next} />,
+    <DeviceRegistrationProgress next={next} />,
+    <PreSafetyZoneMap next={next} />,
+    <RegisterProfileFirst next={next} />,
+    <RegisterProfileSecond next={next} />,
+    <RegisterProfileThird next={showCompletion} />,
+  ];
 
   if (!isIntroPassed) {
     return <Intro />;
@@ -56,28 +72,7 @@ const Init = () => {
 
   return (
     <>
-      <PageBar top={top} />
-      <PagingScrollView scrollEnabled={false}>
-        {renderAuth && (
-          <ScreenWidthContainer>
-            <Auth handlePreRender={handlePreRenderAuth} next={next} />
-          </ScreenWidthContainer>
-        )}
-        {renderPermission && (
-          <ScreenWidthContainer>
-            <Permissions
-              handlePreRender={handlePreRenderAddDevice}
-              next={next}
-            />
-          </ScreenWidthContainer>
-        )}
-        {renderAddDevice && (
-          <AddDeviceRoot
-            ScreenWidthContainer={ScreenWidthContainer}
-            next={next}
-          />
-        )}
-      </PagingScrollView>
+      {!isProfileRegistered ? <PagingFlatList data={data} /> : <Completion />}
     </>
   );
 };

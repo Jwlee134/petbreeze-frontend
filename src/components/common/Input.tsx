@@ -1,6 +1,6 @@
-import React from "react";
+import React, { ForwardedRef, forwardRef } from "react";
 import { useState } from "react";
-import { StyleProp, TextInputProps, ViewStyle } from "react-native";
+import { StyleProp, TextInput, TextInputProps, ViewStyle } from "react-native";
 import styled, { css } from "styled-components/native";
 import { rpWidth } from "~/styles";
 import palette from "~/styles/palette";
@@ -17,8 +17,6 @@ interface IContainer {
   isFocused: boolean;
 }
 
-interface ITextInput {}
-
 const Container = styled.View<IContainer>`
   width: 100%;
   height: ${rpWidth(37)}px;
@@ -31,49 +29,64 @@ const Container = styled.View<IContainer>`
     !isFocused ? "rgba(0, 0, 0, 0.1)" : palette.blue_7b};
 `;
 
-const TextInput = styled.TextInput<ITextInput>`
+const TextInputComponent = styled.TextInput`
   margin: 0;
   padding: 0;
   height: 100%;
   font-size: ${rpWidth(16)}px;
+  font-family: "NotoSansKR-Regular";
   flex-grow: 1;
+  color: black;
 `;
 
-const Input = ({
-  title,
-  solidPlaceholderTitle,
-  alignLeftSolidPlaceholderWhenFocus = false,
-  containerStyle,
-  ...props
-}: IProps) => {
-  const [isFocused, setIsFocused] = useState(!!props.value || false);
+const Input = forwardRef(
+  (
+    {
+      title,
+      solidPlaceholderTitle,
+      alignLeftSolidPlaceholderWhenFocus = false,
+      containerStyle,
+      ...props
+    }: IProps,
+    ref: ForwardedRef<TextInput>,
+  ) => {
+    const [isFocused, setIsFocused] = useState(!!props.value || false);
 
-  const handleFocus = () => setIsFocused(true);
-  const handleBlur = () => {
-    if (!props.value) {
-      setIsFocused(false);
-    }
-  };
+    const handleFocus = () => setIsFocused(true);
+    const handleBlur = () => {
+      if (!props.value) {
+        setIsFocused(false);
+      }
+    };
 
-  return (
-    <Container style={containerStyle} isFocused={isFocused}>
-      <TextInput onFocus={handleFocus} onBlur={handleBlur} {...props} />
-      {solidPlaceholderTitle && (
-        <MyText
+    return (
+      <Container style={containerStyle} isFocused={isFocused}>
+        <TextInputComponent
+          ref={ref}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
           style={{
-            ...(alignLeftSolidPlaceholderWhenFocus &&
-              isFocused && {
-                position: "absolute",
-                left: rpWidth(35),
-              }),
+            includeFontPadding: false,
           }}
-          fontSize={14}
-          color="rgba(0, 0, 0, 0.3)">
-          {solidPlaceholderTitle}
-        </MyText>
-      )}
-    </Container>
-  );
-};
+          {...props}
+        />
+        {solidPlaceholderTitle && (
+          <MyText
+            style={{
+              ...(alignLeftSolidPlaceholderWhenFocus &&
+                isFocused && {
+                  position: "absolute",
+                  left: rpWidth(35),
+                }),
+            }}
+            fontSize={14}
+            color="rgba(0, 0, 0, 0.3)">
+            {solidPlaceholderTitle}
+          </MyText>
+        )}
+      </Container>
+    );
+  },
+);
 
 export default Input;

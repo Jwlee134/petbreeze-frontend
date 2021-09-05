@@ -18,6 +18,7 @@ import {
 
 import common from "./common";
 import form from "./form";
+import safetyZone from "./safetyZone";
 import storage from "./storage";
 import map from "./map";
 import device from "./device";
@@ -27,6 +28,7 @@ import api from "~/api";
 const rootReducer = combineReducers({
   common,
   form,
+  safetyZone,
   storage,
   map,
   device,

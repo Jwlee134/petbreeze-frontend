@@ -92,11 +92,11 @@ export const getLeftRightPointsOfCircle = (
   return [
     {
       latitude: latitude,
-      longitude: lng0,
+      longitude: lng0 - radius / 100000,
     }, //left
     {
       latitude: latitude,
-      longitude: lng1,
+      longitude: lng1 + radius / 100000,
     }, //right
   ];
 };

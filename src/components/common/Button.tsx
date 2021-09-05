@@ -39,7 +39,7 @@ const StyledButton = styled.TouchableOpacity<ITouchableOpacity>`
           width: ${width - rpWidth(32)}px;
           margin: 0 auto;
         `};
-  height: ${rpWidth(50)}px;
+  height: ${rpWidth(50.5)}px;
   border-radius: ${rpWidth(25)}px;
   flex-direction: row;
   justify-content: center;
@@ -94,7 +94,7 @@ const Button = ({
       disabled={disabled}
       style={{
         ...(useCommonMarginBottom && {
-          marginBottom: useBottomInset ? rpWidth(32) + bottom : rpWidth(32),
+          marginBottom: useBottomInset ? rpWidth(31.5) + bottom : rpWidth(31.5),
         }),
       }}
       {...props}>

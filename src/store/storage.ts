@@ -25,6 +25,7 @@ interface IStorage {
     isSafetyZoneRegistered: boolean;
     isProfileRegistered: boolean;
     deviceIdInProgress: string;
+    safetyZoneMapSearchHistory: string[];
   };
   walk: {
     selectedDeviceId: string[];
@@ -37,6 +38,9 @@ interface IStorage {
     isStopped: boolean;
     currentPauseTime: string;
     totalPauseDuration: number;
+  };
+  history: {
+    safetyZoneSearch: { addr: string; latitude: number; longitude: number }[];
   };
 }
 
@@ -64,6 +68,7 @@ const initialState: IStorage = {
     isSafetyZoneRegistered: false,
     isProfileRegistered: false,
     deviceIdInProgress: "1",
+    safetyZoneMapSearchHistory: [],
   },
   walk: {
     selectedDeviceId: [],
@@ -76,6 +81,9 @@ const initialState: IStorage = {
     isStopped: false,
     currentPauseTime: "",
     totalPauseDuration: 0,
+  },
+  history: {
+    safetyZoneSearch: [],
   },
 };
 
@@ -186,6 +194,14 @@ const storage = createSlice({
     },
     clearWalk: state => {
       state.walk = { ...initialState.walk, isStopped: state.walk.isStopped };
+    },
+    setSafetyZoneSearchHistory: (
+      state,
+      {
+        payload,
+      }: PayloadAction<{ addr: string; latitude: number; longitude: number }[]>,
+    ) => {
+      state.history.safetyZoneSearch = payload;
     },
   },
 });

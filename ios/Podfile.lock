@@ -497,6 +497,8 @@ PODS:
     - React
   - react-native-safe-area-context (3.3.0):
     - React-Core
+  - react-native-view-shot (3.1.2):
+    - React
   - React-perflogger (0.64.2)
   - React-RCTActionSheet (0.64.2):
     - React-Core/RCTActionSheetHeaders (= 0.64.2)
@@ -701,6 +703,7 @@ DEPENDENCIES:
   - react-native-geolocation-service (from `../node_modules/react-native-geolocation-service`)
   - react-native-nmap (from `../node_modules/react-native-nmap`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
+  - react-native-view-shot (from `../node_modules/react-native-view-shot`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
   - React-RCTAnimation (from `../node_modules/react-native/Libraries/NativeAnimation`)
@@ -853,6 +856,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-nmap"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
+  react-native-view-shot:
+    :path: "../node_modules/react-native-view-shot"
   React-perflogger:
     :path: "../node_modules/react-native/ReactCommon/reactperflogger"
   React-RCTActionSheet:
@@ -989,6 +994,7 @@ SPEC CHECKSUMS:
   react-native-geolocation-service: 4030de78cdeb93ebef1fdc1971668bea6c0bc59b
   react-native-nmap: cfcc5402746040494c544ea90a6062f49505acdf
   react-native-safe-area-context: 61c8c484a3a9e7d1fda19f7b1794b35bbfd2262a
+  react-native-view-shot: 4475fde003fe8a210053d1f98fb9e06c1d834e1c
   React-perflogger: 25373e382fed75ce768a443822f07098a15ab737
   React-RCTActionSheet: af7796ba49ffe4ca92e7277a5d992d37203f7da5
   React-RCTAnimation: 6a2e76ab50c6f25b428d81b76a5a45351c4d77aa
