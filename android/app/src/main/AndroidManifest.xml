@@ -29,7 +29,6 @@
       android:launchMode="singleTask"
       android:windowSoftInputMode="adjustResize"
       android:screenOrientation="portrait"
-      android:theme="@style/Theme.App.SplashScreen"
     >
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>

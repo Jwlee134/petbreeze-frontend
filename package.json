@@ -25,7 +25,6 @@
     "@reduxjs/toolkit": "^1.6.1",
     "axios": "^0.21.1",
     "base64-arraybuffer": "^1.0.1",
-    "expo-splash-screen": "^0.11.2",
     "lottie-ios": "^3.2.3",
     "lottie-react-native": "^4.0.3",
     "react": "17.0.1",
