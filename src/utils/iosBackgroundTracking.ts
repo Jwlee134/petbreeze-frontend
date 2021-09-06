@@ -1,4 +1,4 @@
-import BackgroundGeolocation from "react-native-background-geolocation";
+/* import BackgroundGeolocation from "react-native-background-geolocation";
 import { store } from "~/store";
 import { storageActions } from "~/store/storage";
 import { getDistanceBetween2Points } from ".";
@@ -72,3 +72,4 @@ export default {
   isRunning: () =>
     BackgroundGeolocation.getState().then(state => state.enabled),
 };
+ */

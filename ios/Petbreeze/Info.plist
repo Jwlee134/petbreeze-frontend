@@ -2,12 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>BGTaskSchedulerPermittedIdentifiers</key>
-	<array>
-		<string>com.transistorsoft.fetch</string>
-	</array>
-	<key>NSMotionUsageDescription</key>
-	<string>디바이스와 함께 안심존 밖을 벗어나면 앱이 백그라운드 상태일때도 산책을 자동으로 감지하고 기록합니다. 안심존 내로 들어오면 산책을 자동으로 종료하고 저장합니다.</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>ko</string>
 	<key>CFBundleDisplayName</key>

@@ -8,6 +8,7 @@ target 'Petbreeze' do
   use_unimodules!
   pod 'Firebase/Analytics'
   pod 'NMapsMap'
+  pod 'MQTTClient'
   config = use_native_modules!
 
   use_react_native!(
