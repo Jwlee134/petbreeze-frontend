@@ -2,6 +2,8 @@ PODS:
   - Alamofire (5.4.3)
   - Base64 (1.1.2)
   - boost-for-react-native (1.63.0)
+  - BVLinearGradient (2.5.6):
+    - React
   - CocoaAsyncSocket (7.6.5)
   - CodePush (7.0.1):
     - Base64 (~> 1.1)
@@ -254,8 +256,6 @@ PODS:
   - Permission-Camera (3.0.5):
     - RNPermissions
   - Permission-LocationAlways (3.0.5):
-    - RNPermissions
-  - Permission-Motion (3.0.5):
     - RNPermissions
   - Permission-Notifications (3.0.5):
     - RNPermissions
@@ -638,6 +638,7 @@ PODS:
     - Yoga (~> 1.14)
 
 DEPENDENCIES:
+  - BVLinearGradient (from `../node_modules/react-native-linear-gradient`)
   - CodePush (from `../node_modules/react-native-code-push`)
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - EXConstants (from `../node_modules/expo-constants/ios`)
@@ -677,7 +678,6 @@ DEPENDENCIES:
   - Permission-BluetoothPeripheral (from `../node_modules/react-native-permissions/ios/BluetoothPeripheral`)
   - Permission-Camera (from `../node_modules/react-native-permissions/ios/Camera`)
   - Permission-LocationAlways (from `../node_modules/react-native-permissions/ios/LocationAlways`)
-  - Permission-Motion (from `../node_modules/react-native-permissions/ios/Motion`)
   - Permission-Notifications (from `../node_modules/react-native-permissions/ios/Notifications`)
   - Permission-PhotoLibrary (from `../node_modules/react-native-permissions/ios/PhotoLibrary`)
   - RCT-Folly (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
@@ -778,6 +778,8 @@ SPEC REPOS:
     - YogaKit
 
 EXTERNAL SOURCES:
+  BVLinearGradient:
+    :path: "../node_modules/react-native-linear-gradient"
   CodePush:
     :path: "../node_modules/react-native-code-push"
   DoubleConversion:
@@ -808,8 +810,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-permissions/ios/Camera"
   Permission-LocationAlways:
     :path: "../node_modules/react-native-permissions/ios/LocationAlways"
-  Permission-Motion:
-    :path: "../node_modules/react-native-permissions/ios/Motion"
   Permission-Notifications:
     :path: "../node_modules/react-native-permissions/ios/Notifications"
   Permission-PhotoLibrary:
@@ -913,6 +913,7 @@ SPEC CHECKSUMS:
   Alamofire: e447a2774a40c996748296fa2c55112fdbbc42f9
   Base64: cecfb41a004124895a7bcee567a89bae5a89d49b
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
+  BVLinearGradient: e3aad03778a456d77928f594a649e96995f1c872
   CocoaAsyncSocket: 065fd1e645c7abab64f7a6a2007a48038fdc6a99
   CodePush: 9bb93f52a44ee80b72739d89dead9c7e86c3bd3a
   DoubleConversion: cf9b38bf0b2d048436d9a82ad2abe1404f11e7de
@@ -964,7 +965,6 @@ SPEC CHECKSUMS:
   Permission-BluetoothPeripheral: deb3e2052364da825f8516d200c40f066b5ff421
   Permission-Camera: ac603073e4128e51e6ca3c39129778f05b4082fa
   Permission-LocationAlways: 0704c3bcce11f98f8d6ddf34c49c65893ec64b09
-  Permission-Motion: ea8c247adbe0aaf0d82027014d6d67b629000512
   Permission-Notifications: 16ccd862111103378a7bab9fb1c5c71addffc348
   Permission-PhotoLibrary: 0748c1a490fad126dfe36dbea8234dedfe59cc27
   PromisesObjC: 68159ce6952d93e17b2dfe273b8c40907db5ba58
@@ -1019,6 +1019,6 @@ SPEC CHECKSUMS:
   Yoga: 575c581c63e0d35c9a83f4b46d01d63abc1100ac
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: cc434204bb6e7427006963206d313c5090ddd5fd
+PODFILE CHECKSUM: 6510cce481e6eb15678cc68e61fec155a1039078
 
 COCOAPODS: 1.10.2

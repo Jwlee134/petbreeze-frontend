@@ -23,7 +23,6 @@ target 'Petbreeze' do
   pod 'Permission-LocationAlways', :path => "#{permissions_path}/LocationAlways"
   pod 'Permission-Notifications', :path => "#{permissions_path}/Notifications"
   pod 'Permission-PhotoLibrary', :path => "#{permissions_path}/PhotoLibrary"
-  pod 'Permission-Motion', :path => "#{permissions_path}/Motion"
   pod 'Permission-Camera', :path => "#{permissions_path}/Camera"
 
 

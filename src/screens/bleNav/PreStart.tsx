@@ -3,14 +3,13 @@ import { useDispatch } from "react-redux";
 import styled from "styled-components/native";
 
 import Device from "~/assets/svg/init/device/device.svg";
-import Button from "../common/Button";
+import Button from "~/components/common/Button";
 import { storageActions } from "~/store/storage";
-import useDisableButton from "~/hooks/useDisableButton";
-import MyText from "../common/MyText";
-import SafeAreaContainer from "../common/container/SafeAreaContainer";
-import SidePaddingContainer from "../common/container/SidePaddingContainer";
+import MyText from "~/components/common/MyText";
+import SafeAreaContainer from "~/components/common/container/SafeAreaContainer";
+import SidePaddingContainer from "~/components/common/container/SidePaddingContainer";
 import { rpHeight, rpWidth } from "~/styles";
-import { useEffect } from "react";
+import { PreStartScreenNavigationProp } from "~/types/navigator";
 
 const TopContainer = styled.View`
   flex: 1;
@@ -23,13 +22,12 @@ const BottomContainer = styled.View`
   justify-content: flex-end;
 `;
 
-const PreStart = ({ next }: { next: () => void }) => {
+const PreStart = ({
+  navigation,
+}: {
+  navigation: PreStartScreenNavigationProp;
+}) => {
   const dispatch = useDispatch();
-  const { disabled, disable } = useDisableButton();
-
-  useEffect(() => {
-    console.log("prestart");
-  }, []);
 
   return (
     <SafeAreaContainer>
@@ -51,9 +49,7 @@ const PreStart = ({ next }: { next: () => void }) => {
               marginBottom: 12,
             }}
             onPress={() => {
-              if (disabled) return;
-              next();
-              disable();
+              navigation.navigate("BluetoothCheck");
             }}>
             네, 있습니다.
           </Button>
@@ -63,6 +59,7 @@ const PreStart = ({ next }: { next: () => void }) => {
             useCommonMarginBottom
             onPress={() => {
               dispatch(storageActions.setInit("init"));
+              navigation.replace("LoggedInNav");
             }}>
             건너뛰기
           </Button>
@@ -72,4 +69,4 @@ const PreStart = ({ next }: { next: () => void }) => {
   );
 };
 
-export default React.memo(PreStart);
+export default PreStart;

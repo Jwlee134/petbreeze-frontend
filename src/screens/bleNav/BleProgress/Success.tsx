@@ -1,9 +1,13 @@
+import { useNavigation } from "@react-navigation/core";
 import React from "react";
 import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import styled from "styled-components/native";
 import MyText from "~/components/common/MyText";
-import Success from "~/components/lottie/Success";
+import SuccessLottie from "~/components/lottie/Success";
 import { BleStatus } from "~/store/common";
+import { storageActions } from "~/store/storage";
+import { BleProgressScreenNavigationProp } from "~/types/navigator";
 
 const Container = styled.View`
   flex: 1;
@@ -11,17 +15,15 @@ const Container = styled.View`
   align-items: center;
 `;
 
-const Successs = ({
-  status,
-  next,
-}: {
-  status: BleStatus;
-  next: () => void;
-}) => {
+const Success = ({ status }: { status: BleStatus }) => {
+  const navigation = useNavigation<BleProgressScreenNavigationProp>();
+  const dispatch = useDispatch();
+
   useEffect(() => {
     if (status === "allSuccess") {
       setTimeout(() => {
-        next();
+        dispatch(storageActions.setDeviceRegistrationStep("device"));
+        navigation.replace("PreSafetyZone");
       }, 2000);
     }
   }, [status]);
@@ -31,11 +33,11 @@ const Successs = ({
       <MyText fontSize={24} fontWeight="medium">
         {status === "scanningSuccess" && "연결에 성공했어요."}
         {status === "otaUpdateSuccess" && "펌웨어 업데이트가\n완료되었습니다."}
-        {status === "allSuccess" && <Success />}
+        {status === "allSuccess" && <SuccessLottie />}
         {status === "allSuccess" && "디바이스 등록이\n완료되었습니다."}
       </MyText>
     </Container>
   );
 };
 
-export default React.memo(Successs);
+export default Success;

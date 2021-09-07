@@ -1,17 +1,4 @@
 export default {
-  blue_00: "#007AFF",
-  blue_6e: "#6E41E2",
-  blue_2e: "#2E3A59",
-  blue_53: "#5387BC",
-  blue_34: "#3430EF",
-  red_e7: "#E71010",
-  red_ff: "#FF7D96",
-  red_de: "#DE2222",
-  gray_f2: "#F2F2F2",
-  gray_d5: "#D5D8DE",
-  gray_e5: "#E5E5E5",
-  gray_b4: "#B4B4B4",
-
   kakao_yellow: "#F7E600",
   facebook_blue: "#1877F2",
   blue_7b: "#7B13FF",

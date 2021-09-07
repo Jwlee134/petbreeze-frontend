@@ -16,6 +16,7 @@ import { useDispatch } from "react-redux";
 import { safetyZoneActions } from "~/store/safetyZone";
 import Geolocation from "react-native-geolocation-service";
 import MapFloatingCircle from "~/components/common/MapFloatingCircle";
+import { SafetyZoneScreenNavigationProp } from "~/types/navigator";
 
 const Container = styled.View`
   flex: 1;
@@ -31,7 +32,11 @@ const BackButton = styled.TouchableOpacity`
   align-items: center;
 `;
 
-const SafetyZone = ({ next }: { next: () => void }) => {
+const SafetyZone = ({
+  navigation,
+}: {
+  navigation: SafetyZoneScreenNavigationProp;
+}) => {
   const { top, bottom } = useSafeAreaInsets();
   const { keyboardHeight } = useKeyboard();
 
@@ -109,4 +114,4 @@ const SafetyZone = ({ next }: { next: () => void }) => {
   );
 };
 
-export default React.memo(SafetyZone);
+export default SafetyZone;

@@ -25,7 +25,6 @@ interface IStorage {
     isSafetyZoneRegistered: boolean;
     isProfileRegistered: boolean;
     deviceIdInProgress: string;
-    safetyZoneMapSearchHistory: string[];
   };
   walk: {
     selectedDeviceId: string[];
@@ -68,7 +67,6 @@ const initialState: IStorage = {
     isSafetyZoneRegistered: false,
     isProfileRegistered: false,
     deviceIdInProgress: "1",
-    safetyZoneMapSearchHistory: [],
   },
   walk: {
     selectedDeviceId: [],

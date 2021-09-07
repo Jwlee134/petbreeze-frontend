@@ -11,6 +11,7 @@ import CustomHeader from "~/components/navigator/CustomHeader";
 import { useAppSelector } from "~/store";
 import { formActions } from "~/store/form";
 import { rpWidth } from "~/styles";
+import { RegisterProfileFirstScreenNavigationProp } from "~/types/navigator";
 import AvatarCircle from "./AvatarCircle";
 
 const InputContainer = styled.View`
@@ -27,7 +28,11 @@ const RowContainer = styled.View`
   flex-direction: row;
 `;
 
-const RegisterProfileFirst = ({ next }: { next: () => void }) => {
+const RegisterProfileFirst = ({
+  navigation,
+}: {
+  navigation: RegisterProfileFirstScreenNavigationProp;
+}) => {
   const name = useAppSelector(state => state.form.name);
   const birthYear = useAppSelector(state => state.form.birthYear);
   const birthMonth = useAppSelector(state => state.form.birthMonth);
@@ -104,8 +109,8 @@ const RegisterProfileFirst = ({ next }: { next: () => void }) => {
           disabled={!name || !birthYear}
           useCommonMarginBottom
           onPress={() => {
-            next();
             Keyboard.dismiss();
+            navigation.navigate("RegisterProfileSecond");
           }}>
           다음
         </Button>

@@ -4,7 +4,7 @@ import { rpHeight, rpWidth, width } from "~/styles";
 import palette from "~/styles/palette";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import Footprint from "~/assets/svg/common/footprint-outline.svg";
-import Points from "../Points";
+import Points from "~/components/common/Points";
 import MyText from "~/components/common/MyText";
 
 const Container = styled.View`
@@ -46,4 +46,4 @@ const FirmwareProgress = ({
   );
 };
 
-export default React.memo(FirmwareProgress);
+export default FirmwareProgress;

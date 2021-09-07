@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components/native";
 import MyText from "~/components/common/MyText";
-import Points from "../Points";
+import Points from "~/components/common/Points";
 
 const Container = styled.View`
   flex: 1;
@@ -19,4 +19,4 @@ const Scanning = () => (
   </Container>
 );
 
-export default React.memo(Scanning);
+export default Scanning;

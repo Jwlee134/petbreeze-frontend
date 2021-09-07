@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { createStackNavigator } from "@react-navigation/stack";
+import {
+  createStackNavigator,
+  StackCardInterpolationProps,
+} from "@react-navigation/stack";
 
 import BottomTabNav from "./BottomTabNav";
-import AddDevice from "~/screens/AddDevice";
 import WalkMap from "~/screens/WalkMap";
 import CustomHeader from "~/components/navigator/CustomHeader";
 import { store } from "~/store";
@@ -11,11 +13,20 @@ import UpdateProfile from "~/screens/UpdateProfile";
 
 import messaging from "@react-native-firebase/messaging";
 import EmergencyMissing from "~/screens/EmergencyMissing";
+import BleStackNav from "./BleStackNav";
+import Permissions from "~/screens/Permissions";
+import { LoggedInNavRouteProp } from "~/types/navigator";
 
 const Stack = createStackNavigator();
 
-const LoggedInNav = () => {
-  const [isLoading, setIsLoading] = useState(true);
+const forFade = ({ current }: StackCardInterpolationProps) => ({
+  cardStyle: {
+    opacity: current.progress,
+  },
+});
+
+const LoggedInNav = ({ route }: { route: LoggedInNavRouteProp }) => {
+  /* const [isLoading, setIsLoading] = useState(true);
   const [initialRoute, setInitialRoute] = useState("BottomTabNav");
 
   useEffect(() => {
@@ -56,21 +67,31 @@ const LoggedInNav = () => {
     return unsubscribe;
   }, []);
 
-  if (isLoading) return null;
+  if (isLoading) return null; */
 
   return (
-    <Stack.Navigator initialRouteName={initialRoute}>
+    <Stack.Navigator
+      initialRouteName={route.params?.initialRouteName || "BottomTabNav"}
+      screenOptions={{ cardStyleInterpolator: forFade }}>
+      <Stack.Screen
+        name="Permissions"
+        component={Permissions}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="BleStackNav"
+        component={BleStackNav}
+        initialParams={
+          route.params?.initialRouteName2
+            ? { initialRouteName: route.params.initialRouteName2 }
+            : undefined
+        }
+        options={{ headerShown: false }}
+      />
       <Stack.Screen
         name="BottomTabNav"
         component={BottomTabNav}
         options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="AddDevice"
-        component={AddDevice}
-        options={{
-          title: "기기 등록",
-        }}
       />
       <Stack.Screen
         name="WalkMap"

@@ -35,4 +35,4 @@ const Fail = ({ status, retry }: { status: Status; retry: () => void }) => {
   );
 };
 
-export default React.memo(Fail);
+export default Fail;

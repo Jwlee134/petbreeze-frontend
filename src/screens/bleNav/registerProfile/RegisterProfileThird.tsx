@@ -10,6 +10,7 @@ import InputTitle from "~/components/common/InputTitle";
 import { store, useAppSelector } from "~/store";
 import { formActions } from "~/store/form";
 import { rpWidth } from "~/styles";
+import { RegisterProfileThirdScreenNavigationProp } from "~/types/navigator";
 import { isIos } from "~/utils";
 import AvatarCircle from "./AvatarCircle";
 import PreviousValueBlock from "./PreviousValueBlock";
@@ -30,7 +31,11 @@ const AvatarContainer = styled(RowContainer)`
   margin-top: ${rpWidth(51)}px;
 `;
 
-const RegisterProfileThird = ({ next }: { next: () => void }) => {
+const RegisterProfileThird = ({
+  navigation,
+}: {
+  navigation: RegisterProfileThirdScreenNavigationProp;
+}) => {
   const avatar = useAppSelector(state => state.form.avatar);
   const phoneNumber = useAppSelector(state => state.form.phoneNumber);
   const etc = useAppSelector(state => state.form.etc);
@@ -55,8 +60,6 @@ const RegisterProfileThird = ({ next }: { next: () => void }) => {
   };
 
   const registerProfile = () => {
-    next();
-    return;
     const {
       form: { name, birthYear, birthMonth, birthDay, gender, breed, weight },
       storage: {

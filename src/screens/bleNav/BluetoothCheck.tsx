@@ -1,16 +1,16 @@
 import React from "react";
-import Button from "../common/Button";
+import Button from "../../components/common/Button";
 
 import Bluetooth from "~/assets/svg/deviceRegistration/bluetooth.svg";
-import useDisableButton from "~/hooks/useDisableButton";
 import { rpWidth } from "~/styles";
 import styled from "styled-components/native";
-import SidePaddingContainer from "../common/container/SidePaddingContainer";
-import MyText from "../common/MyText";
+import SidePaddingContainer from "../../components/common/container/SidePaddingContainer";
+import MyText from "../../components/common/MyText";
 import { View } from "react-native";
-import SafeAreaContainer from "../common/container/SafeAreaContainer";
+import SafeAreaContainer from "../../components/common/container/SafeAreaContainer";
 import { useDispatch } from "react-redux";
 import { commonActions } from "~/store/common";
+import { BluetoothCheckScreenNavigationProp } from "~/types/navigator";
 
 const TopContainer = styled.View`
   flex: 1;
@@ -23,11 +23,13 @@ const BottomContainer = styled.View`
   justify-content: flex-end;
 `;
 
-const BluetoothCheck = ({ next }: { next: () => void }) => {
-  const { disable, disabled } = useDisableButton();
+const BluetoothCheck = ({
+  navigation,
+}: {
+  navigation: BluetoothCheckScreenNavigationProp;
+}) => {
   const dispatch = useDispatch();
 
-  console.log("bluetoothcheck");
   return (
     <SafeAreaContainer>
       <SidePaddingContainer style={{ flex: 1 }}>
@@ -42,10 +44,8 @@ const BluetoothCheck = ({ next }: { next: () => void }) => {
           <Button
             useCommonMarginBottom
             onPress={() => {
-              if (disabled) return;
-              next();
+              navigation.replace("BleProgress");
               dispatch(commonActions.setBleStatus("allSuccess"));
-              disable();
             }}>
             네, 켜져 있습니다.
           </Button>
@@ -55,4 +55,4 @@ const BluetoothCheck = ({ next }: { next: () => void }) => {
   );
 };
 
-export default React.memo(BluetoothCheck);
+export default BluetoothCheck;

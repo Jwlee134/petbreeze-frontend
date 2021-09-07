@@ -2,62 +2,70 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Image } from "react-native-image-crop-picker";
 
 interface IForm {
-  avatar: Image | number;
+  avatar: Image | null;
   name: string;
+  birthYear: string;
+  birthMonth: string;
+  birthDay: string;
+  gender: string;
   breed: string;
-  age: string;
-  phoneNumber: { id: number; value: string }[];
-  caution: string;
   weight: string;
-  [key: string]: any;
+  phoneNumber: string;
+  etc: string;
 }
 
 const initialState: IForm = {
-  avatar: require("~/assets/image/petbreeze-logo.jpg"),
+  avatar: null,
   name: "",
+  birthYear: "",
+  birthMonth: "",
+  birthDay: "",
+  gender: "",
   breed: "",
-  age: "",
-  phoneNumber: [
-    { id: 0, value: "" },
-    { id: 1, value: "" },
-  ],
-  caution: "",
   weight: "",
+  phoneNumber: "",
+  etc: "",
 };
 
 const form = createSlice({
   name: "form",
   initialState,
   reducers: {
-    setAvatar: (state, action: PayloadAction<Image>) => {
-      state.avatar = action.payload;
+    setDefaultValue: (state, { payload }: PayloadAction<IForm>) => {
+      state = payload;
     },
-    setName: (state, action: PayloadAction<string>) => {
-      state.name = action.payload;
+    setAvatar: (state, { payload }: PayloadAction<Image>) => {
+      state.avatar = payload;
     },
-    setBreed: (state, action: PayloadAction<string>) => {
-      state.breed = action.payload;
+    setName: (state, { payload }: PayloadAction<string>) => {
+      state.name = payload;
     },
-    setAge: (state, action: PayloadAction<string>) => {
-      state.age = action.payload;
+    setBirthYear: (state, { payload }: PayloadAction<string>) => {
+      state.birthYear = payload;
     },
-    setPhoneNumber: (
-      state,
-      action: PayloadAction<{ id: number; text: string }>,
-    ) => {
-      const { id, text } = action.payload;
-      const index = state.phoneNumber.findIndex(field => field.id === id);
-      state.phoneNumber[index].value = text;
+    setBirthMonth: (state, { payload }: PayloadAction<string>) => {
+      state.birthMonth = payload;
     },
-    setWeight: (state, action: PayloadAction<string>) => {
-      state.weight = action.payload;
+    setBirthDay: (state, { payload }: PayloadAction<string>) => {
+      state.birthDay = payload;
     },
-    setCaution: (state, action: PayloadAction<string>) => {
-      state.caution = action.payload;
+    setGender: (state, { payload }: PayloadAction<string>) => {
+      state.gender = payload;
+    },
+    setBreed: (state, { payload }: PayloadAction<string>) => {
+      state.breed = payload;
+    },
+    setWeight: (state, { payload }: PayloadAction<string>) => {
+      state.weight = payload;
+    },
+    setPhoneNumber: (state, { payload }: PayloadAction<string>) => {
+      state.phoneNumber = payload;
+    },
+    setEtc: (state, { payload }: PayloadAction<string>) => {
+      state.etc = payload;
     },
     initState: state => {
       state = initialState;
-      return state;
     },
   },
 });

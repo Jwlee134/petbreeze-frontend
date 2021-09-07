@@ -11,6 +11,9 @@ import { safetyZoneActions } from "~/store/safetyZone";
 
 import ViewShot from "react-native-view-shot";
 import CameraRoll from "@react-native-community/cameraroll";
+import { storageActions } from "~/store/storage";
+import { useNavigation } from "@react-navigation/core";
+import { SafetyZoneScreenNavigationProp } from "~/types/navigator";
 
 interface IProps {
   snapPoints: number[];
@@ -21,6 +24,7 @@ interface IProps {
 }
 
 const SafetyZoneMap = ({ snapPoints, mapPadding }: IProps) => {
+  const navigation = useNavigation<SafetyZoneScreenNavigationProp>();
   const circleRef = useRef<Circle>(null);
   const { Map, mapRef } = useMap();
   const value = useRef(new Animated.Value(0)).current;
@@ -74,8 +78,12 @@ const SafetyZoneMap = ({ snapPoints, mapPadding }: IProps) => {
   }, []);
 
   useEffect(() => {
-    if (isSubmitting && viewShotRef.current) {
+    /* if (isSubmitting && viewShotRef.current) {
       viewShotRef.current?.capture().then(uri => {});
+    } */
+    if (isSubmitting) {
+      dispatch(storageActions.setDeviceRegistrationStep("safetyZone"));
+      navigation.navigate("RegisterProfileFirst");
     }
   }, [isSubmitting, viewShotRef.current]);
 

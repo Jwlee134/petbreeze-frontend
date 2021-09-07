@@ -19,10 +19,11 @@ import { storageActions } from "~/store/storage";
 import { Alert } from "react-native";
 import useAppState from "~/hooks/useAppState";
 import { useAppSelector } from "~/store";
-import MyText from "../common/MyText";
+import MyText from "../components/common/MyText";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import palette from "~/styles/palette";
-import SafeAreaContainer from "../common/container/SafeAreaContainer";
+import SafeAreaContainer from "../components/common/container/SafeAreaContainer";
+import { PermissionsScreenNavigationProp } from "~/types/navigator";
 
 const TopContainer = styled.View`
   flex: 1;
@@ -58,7 +59,11 @@ const Button = styled.TouchableOpacity`
   align-items: center;
 `;
 
-const Permissions = ({ next }: { next: () => void }) => {
+const Permissions = ({
+  navigation,
+}: {
+  navigation: PermissionsScreenNavigationProp;
+}) => {
   const isPermissionAllowed = useAppSelector(
     state => state.storage.init.isPermissionAllowed,
   );
@@ -74,11 +79,10 @@ const Permissions = ({ next }: { next: () => void }) => {
     requestMultiple([
       PERMISSIONS.IOS.BLUETOOTH_PERIPHERAL,
       PERMISSIONS.IOS.PHOTO_LIBRARY,
-      PERMISSIONS.IOS.MOTION,
       PERMISSIONS.IOS.CAMERA,
     ]).then(() => {
       dispatch(storageActions.setInit("permission"));
-      next();
+      navigation.replace("BleNav");
     });
   };
 
@@ -133,7 +137,6 @@ const Permissions = ({ next }: { next: () => void }) => {
     }
   }, [settingOpened, appState, isPermissionAllowed, isNotificationStep]);
 
-  console.log("permissions is rendering");
   return (
     <>
       <SafeAreaContainer>
@@ -231,4 +234,4 @@ const Permissions = ({ next }: { next: () => void }) => {
   );
 };
 
-export default React.memo(Permissions);
+export default Permissions;

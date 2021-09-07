@@ -9,6 +9,7 @@ import InputTitle from "~/components/common/InputTitle";
 import { useAppSelector } from "~/store";
 import { formActions } from "~/store/form";
 import { rpWidth } from "~/styles";
+import { RegisterProfileSecondScreenNavigationProp } from "~/types/navigator";
 import AvatarCircle from "./AvatarCircle";
 import PreviousValueBlock from "./PreviousValueBlock";
 
@@ -28,7 +29,11 @@ const AvatarContainer = styled(RowContainer)`
   margin-top: ${rpWidth(51)}px;
 `;
 
-const RegisterProfileSecond = ({ next }: { next: () => void }) => {
+const RegisterProfileSecond = ({
+  navigation,
+}: {
+  navigation: RegisterProfileSecondScreenNavigationProp;
+}) => {
   const gender = useAppSelector(state => state.form.gender);
   const breed = useAppSelector(state => state.form.breed);
   const weight = useAppSelector(state => state.form.weight);
@@ -86,8 +91,8 @@ const RegisterProfileSecond = ({ next }: { next: () => void }) => {
           disabled={!gender || !breed || !weight}
           useCommonMarginBottom
           onPress={() => {
-            next();
             Keyboard.dismiss();
+            navigation.navigate("RegisterProfileThird");
           }}>
           다음
         </Button>

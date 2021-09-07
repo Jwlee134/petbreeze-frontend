@@ -1,7 +1,7 @@
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
-import MyText from "../common/MyText";
+import MyText from "./MyText";
 import styled from "styled-components/native";
 import { rpWidth } from "~/styles";
 
@@ -24,7 +24,7 @@ const Points = () => {
       } else {
         setIndex(prev => prev - 1);
       }
-    }, 1000);
+    }, 500);
 
     return () => clearTimeout(timeout);
   }, [index, isIncreasing]);

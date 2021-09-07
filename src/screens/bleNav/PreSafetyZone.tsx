@@ -1,15 +1,15 @@
 import React from "react";
-import Button from "../common/Button";
+import Button from "~/components/common/Button";
 import styled from "styled-components/native";
 
 import Shield from "~/assets/svg/safetyZone/footprint-shield.svg";
 import CheckCircle from "~/assets/svg/safetyZone/check-circle.svg";
-import useDisableButton from "~/hooks/useDisableButton";
 import { rpHeight, rpWidth } from "~/styles";
-import MyText from "../common/MyText";
-import SidePaddingContainer from "../common/container/SidePaddingContainer";
-import ShadowContainer from "../common/container/ShadowContainer";
-import SafeAreaContainer from "../common/container/SafeAreaContainer";
+import MyText from "~/components/common/MyText";
+import SidePaddingContainer from "~/components/common/container/SidePaddingContainer";
+import ShadowContainer from "~/components/common/container/ShadowContainer";
+import SafeAreaContainer from "~/components/common/container/SafeAreaContainer";
+import { PreSafetyZoneScreenNavigationProp } from "~/types/navigator";
 
 const DescriptionContainer = styled.View`
   width: 100%;
@@ -36,10 +36,11 @@ const Description = styled.View`
   margin-bottom: ${rpWidth(9)}px;
 `;
 
-const PreSafetyZoneMap = ({ next }: { next: () => void }) => {
-  const { disable, disabled } = useDisableButton();
-
-  console.log("presafetyzonemap");
+const PreSafetyZone = ({
+  navigation,
+}: {
+  navigation: PreSafetyZoneScreenNavigationProp;
+}) => {
   return (
     <SafeAreaContainer>
       <SidePaddingContainer style={{ flex: 1 }}>
@@ -94,9 +95,7 @@ const PreSafetyZoneMap = ({ next }: { next: () => void }) => {
           <Button
             useCommonMarginBottom
             onPress={() => {
-              if (disabled) return;
-              next();
-              disable();
+              navigation.navigate("SafetyZone");
             }}>
             다음
           </Button>
@@ -106,4 +105,4 @@ const PreSafetyZoneMap = ({ next }: { next: () => void }) => {
   );
 };
 
-export default React.memo(PreSafetyZoneMap);
+export default PreSafetyZone;

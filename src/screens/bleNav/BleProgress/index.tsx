@@ -8,17 +8,11 @@ import FirmwareProgress from "./FirmwareProgress";
 import Scanning from "./Scanning";
 import Success from "./Success";
 
-const DeviceRegistrationProgress = ({
-  isOtaUpdate,
-  next,
-}: {
-  isOtaUpdate?: boolean;
-  next: () => void;
-}) => {
+const BleProgress = ({ navigation, route }) => {
   const bleStatus = useAppSelector(state => state.common.bleStatus);
   const dispatch = useDispatch();
   const { downloadingProgress, installingProgress } = useBleMaganer({
-    isOtaUpdate,
+    /* isOtaUpdate, */
   });
 
   const retry = useCallback(() => {
@@ -52,12 +46,10 @@ const DeviceRegistrationProgress = ({
           }
         />
       )}
-      {bleStatus.includes("Success") && (
-        <Success status={bleStatus} next={next} />
-      )}
+      {bleStatus.includes("Success") && <Success status={bleStatus} />}
       {bleStatus.includes("Fail") && <Fail status={bleStatus} retry={retry} />}
     </>
   );
 };
 
-export default DeviceRegistrationProgress;
+export default BleProgress;
