@@ -24,7 +24,7 @@ interface IContainer {
 }
 
 const Container = styled.View`
-  margin-bottom: ${rpWidth(14)}px;
+  margin-bottom: ${rpWidth(20)}px;
 `;
 
 const InputContainer = styled.View<IContainer>`
@@ -37,10 +37,10 @@ const InputContainer = styled.View<IContainer>`
 const TextInputComponent = styled.TextInput`
   margin: 0;
   padding: 0px ${rpWidth(9)}px;
+  width: 100%;
   height: 100%;
   font-size: ${rpWidth(16)}px;
   font-family: "NotoSansKR-Regular";
-  flex-grow: 1;
   color: black;
 `;
 

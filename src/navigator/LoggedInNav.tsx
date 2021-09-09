@@ -17,6 +17,7 @@ import UpdateProfile from "~/screens/loggedInNav/UpdateProfile";
 import EmergencyMissing from "~/screens/loggedInNav/EmergencyMissing";
 import BleStackNav from "./BleStackNav";
 import DeleteAccountStackNav from "./DeleteAccountStackNav";
+import EmergencyMissingStackNav from "./EmergencyMissingStackNav";
 
 const Stack = createStackNavigator();
 
@@ -124,10 +125,10 @@ const LoggedInNav = ({ route }: { route: LoggedInNavRouteProp }) => {
         }}
       />
       <Stack.Screen
-        name="EmergencyMissing"
-        component={EmergencyMissing}
+        name="EmergencyMissingStackNav"
+        component={EmergencyMissingStackNav}
         options={{
-          header: props => <CustomHeader {...props}>긴급실종</CustomHeader>,
+          headerShown: false,
         }}
       />
     </Stack.Navigator>

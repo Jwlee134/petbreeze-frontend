@@ -3,7 +3,7 @@ import styled from "styled-components/native";
 import { useAppSelector } from "~/store";
 import FootprintOutline from "~/assets/svg/tab/footprint-outline.svg";
 import { rpHeight, rpWidth } from "~/styles";
-import PlusCircle from "~/assets/svg/common/plus-circle-fill.svg";
+import PlusCircle from "~/assets/svg/plus-circle-blue.svg";
 import ImagePicker from "react-native-image-crop-picker";
 import { useDispatch } from "react-redux";
 import { formActions } from "~/store/form";

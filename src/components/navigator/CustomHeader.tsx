@@ -1,5 +1,5 @@
 import { StackHeaderProps } from "@react-navigation/stack";
-import React, { ReactNode, useEffect } from "react";
+import React, { ReactNode, useEffect, useMemo } from "react";
 import styled from "styled-components/native";
 import { rpWidth } from "~/styles";
 import MyText from "../common/MyText";
@@ -67,6 +67,27 @@ const CustomHeader = ({
   const { top } = useSafeAreaInsets();
   const dispatch = useDispatch();
 
+  const value = useRef(new Animated.Value(currentPage)).current;
+
+  const widthInterpolate = useMemo(() => {
+    if (currentPage) {
+      return value.interpolate({
+        inputRange: [0, currentPage],
+        outputRange: ["0%", `${(currentPage / totalPage) * 100}%`],
+      });
+    }
+  }, [currentPage]);
+
+  useEffect(() => {
+    if (currentPage) {
+      Animated.timing(value, {
+        toValue: currentPage,
+        useNativeDriver: false,
+        duration: 200,
+      }).start();
+    }
+  }, [currentPage]);
+
   return (
     <>
       <Container
@@ -77,10 +98,10 @@ const CustomHeader = ({
           {!disableBackButton ? (
             <Button
               onPress={() => {
-                if (navigation) {
-                  navigation.goBack();
+                if (onBackButtonPress) {
+                  onBackButtonPress();
                   return;
-                } else if (onBackButtonPress) onBackButtonPress();
+                } else if (navigation) navigation.goBack();
               }}>
               <Arrow width={rpWidth(13)} height={rpWidth(21)} />
             </Button>
@@ -107,7 +128,7 @@ const CustomHeader = ({
       </Container>
       {currentPage && totalPage ? (
         <PageBarBackground>
-          <PageBar style={{ width: `${(currentPage / totalPage) * 100}%` }} />
+          <PageBar style={{ width: widthInterpolate }} />
         </PageBarBackground>
       ) : null}
     </>

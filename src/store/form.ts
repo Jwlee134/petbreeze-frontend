@@ -10,8 +10,14 @@ interface IForm {
   gender: string;
   breed: string;
   weight: string;
-  phoneNumber: string;
-  etc: string;
+  characteristic: string;
+  hasTag: boolean;
+  lostTime: "오전" | "오후";
+  lostHour: string;
+  lostMinute: string;
+  lostPlace: string;
+  message: string;
+  photos: Image[];
 }
 
 const initialState: IForm = {
@@ -23,8 +29,14 @@ const initialState: IForm = {
   gender: "",
   breed: "",
   weight: "",
-  phoneNumber: "",
-  etc: "",
+  characteristic: "",
+  hasTag: true,
+  lostTime: "오전",
+  lostHour: "",
+  lostMinute: "",
+  lostPlace: "",
+  message: "",
+  photos: [],
 };
 
 const form = createSlice({
@@ -58,11 +70,29 @@ const form = createSlice({
     setWeight: (state, { payload }: PayloadAction<string>) => {
       state.weight = payload;
     },
-    setPhoneNumber: (state, { payload }: PayloadAction<string>) => {
-      state.phoneNumber = payload;
+    setCharacteristic: (state, { payload }: PayloadAction<string>) => {
+      state.characteristic = payload;
     },
-    setEtc: (state, { payload }: PayloadAction<string>) => {
-      state.etc = payload;
+    setHasTag: (state, { payload }: PayloadAction<boolean>) => {
+      state.hasTag = payload;
+    },
+    setLostTime: (state, { payload }: PayloadAction<"오전" | "오후">) => {
+      state.lostTime = payload;
+    },
+    setLostHour: (state, { payload }: PayloadAction<string>) => {
+      state.lostHour = payload;
+    },
+    setLostMinute: (state, { payload }: PayloadAction<string>) => {
+      state.lostMinute = payload;
+    },
+    setLostPlace: (state, { payload }: PayloadAction<string>) => {
+      state.lostPlace = payload;
+    },
+    setMessage: (state, { payload }: PayloadAction<string>) => {
+      state.message = payload;
+    },
+    setPhotos: (state, { payload }: PayloadAction<Image[]>) => {
+      state.photos = payload;
     },
     initState: state => {
       state = initialState;

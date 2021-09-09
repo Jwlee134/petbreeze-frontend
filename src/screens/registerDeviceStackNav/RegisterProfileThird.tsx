@@ -1,5 +1,5 @@
 import React from "react";
-import { Alert, SafeAreaView, View } from "react-native";
+import { Alert, View } from "react-native";
 import { useDispatch } from "react-redux";
 import styled from "styled-components/native";
 import deviceApi from "~/api/device";
@@ -92,43 +92,41 @@ const RegisterProfileThird = ({
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <KeyboardAwareScrollContainer
-        contentContainerStyle={{
-          flexGrow: 1,
-          justifyContent: "space-between",
+    <KeyboardAwareScrollContainer
+      contentContainerStyle={{
+        flexGrow: 1,
+        justifyContent: "space-between",
+      }}>
+      <View>
+        <AvatarContainer>
+          <AvatarCircle />
+          <PreviousValueBlock />
+        </AvatarContainer>
+        <InputContainer>
+          <InputTitle>보호자 연락처</InputTitle>
+          <Input
+            value={phoneNumber}
+            onChangeText={text => dispatch(formActions.setPhoneNumber(text))}
+            keyboardType="number-pad"
+          />
+          <InputTitle>기타사항</InputTitle>
+          <Input
+            value={etc}
+            onChangeText={text => dispatch(formActions.setEtc(text))}
+          />
+        </InputContainer>
+      </View>
+      <Button
+        /* disabled={!avatar || !phoneNumber || !etc} */
+        isLoading={avatarResult.isLoading || profileResult.isLoading}
+        useCommonMarginBottom
+        onPress={() => {
+          if (avatarResult.isLoading || profileResult.isLoading) return;
+          registerProfile();
         }}>
-        <View>
-          <AvatarContainer>
-            <AvatarCircle />
-            <PreviousValueBlock />
-          </AvatarContainer>
-          <InputContainer>
-            <InputTitle>보호자 연락처</InputTitle>
-            <Input
-              value={phoneNumber}
-              onChangeText={text => dispatch(formActions.setPhoneNumber(text))}
-              keyboardType="number-pad"
-            />
-            <InputTitle>기타사항</InputTitle>
-            <Input
-              value={etc}
-              onChangeText={text => dispatch(formActions.setEtc(text))}
-            />
-          </InputContainer>
-        </View>
-        <Button
-          /* disabled={!avatar || !phoneNumber || !etc} */
-          isLoading={avatarResult.isLoading || profileResult.isLoading}
-          useCommonMarginBottom
-          onPress={() => {
-            if (avatarResult.isLoading || profileResult.isLoading) return;
-            registerProfile();
-          }}>
-          완료
-        </Button>
-      </KeyboardAwareScrollContainer>
-    </SafeAreaView>
+        완료
+      </Button>
+    </KeyboardAwareScrollContainer>
   );
 };
 

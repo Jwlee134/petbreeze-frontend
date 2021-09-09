@@ -1,8 +1,10 @@
 import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { StyleSheet } from "react-native";
+import { useDispatch } from "react-redux";
 import styled from "styled-components/native";
 import { IDevice } from "~/store/device";
+import { formActions } from "~/store/form";
 import { rpWidth } from "~/styles";
 import palette from "~/styles/palette";
 import { HomeScreenNavigationProp } from "~/types/navigator";
@@ -20,6 +22,7 @@ const AvatarContainer = styled.View`
   border-radius: ${rpWidth(45)}px;
   position: absolute;
   top: -${rpWidth(112)}px;
+  align-self: center;
 `;
 
 const Button = styled.TouchableOpacity`
@@ -30,6 +33,7 @@ const Button = styled.TouchableOpacity`
 
 const HomeBottomModal = ({ device, close }: IProps) => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
+  const dispatch = useDispatch();
 
   return (
     <>
@@ -57,8 +61,11 @@ const HomeBottomModal = ({ device, close }: IProps) => {
       <Button
         onPress={() => {
           close();
-          navigation.navigate("EmergencyMissing", {
-            data: device,
+          dispatch(formActions.setName(device.name));
+          dispatch(formActions.setBreed(device.breed));
+          dispatch(formActions.setCharacteristic(device.etc));
+          navigation.navigate("EmergencyMissingStackNav", {
+            device,
           });
         }}>
         <MyText color={palette.red_f0}>긴급실종</MyText>

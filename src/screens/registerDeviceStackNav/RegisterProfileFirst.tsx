@@ -1,5 +1,5 @@
 import React from "react";
-import { Keyboard, SafeAreaView, View } from "react-native";
+import { Keyboard, View } from "react-native";
 import { useDispatch } from "react-redux";
 import styled from "styled-components/native";
 import Button from "~/components/common/Button";
@@ -40,82 +40,80 @@ const RegisterProfileFirst = ({
   const dispatch = useDispatch();
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <KeyboardAwareScrollContainer
-        contentContainerStyle={{
-          flexGrow: 1,
-          justifyContent: "space-between",
-        }}>
-        <View>
-          <MyText
-            style={{
-              textAlign: "center",
-              marginTop: rpWidth(46),
-              marginBottom: rpWidth(35),
-            }}
-            fontSize={24}>
-            반려동물 프로필을{"\n"}등록해주세요.
-          </MyText>
-          <AvatarContainer>
-            <AvatarCircle />
-          </AvatarContainer>
-          <InputContainer>
-            <InputTitle>이름</InputTitle>
+    <KeyboardAwareScrollContainer
+      contentContainerStyle={{
+        flexGrow: 1,
+        justifyContent: "space-between",
+      }}>
+      <View>
+        <MyText
+          style={{
+            textAlign: "center",
+            marginTop: rpWidth(46),
+            marginBottom: rpWidth(35),
+          }}
+          fontSize={24}>
+          반려동물 프로필을{"\n"}등록해주세요.
+        </MyText>
+        <AvatarContainer>
+          <AvatarCircle />
+        </AvatarContainer>
+        <InputContainer>
+          <InputTitle>이름</InputTitle>
+          <Input
+            value={name}
+            onChangeText={text => dispatch(formActions.setName(text))}
+          />
+          <InputTitle>생년월일</InputTitle>
+          <RowContainer>
             <Input
-              value={name}
-              onChangeText={text => dispatch(formActions.setName(text))}
+              value={birthYear}
+              onChangeText={text => dispatch(formActions.setBirthYear(text))}
+              keyboardType="number-pad"
+              textAlign="center"
+              containerStyle={{
+                width: "34.48%",
+                marginRight: "6.9%",
+              }}
+              solidPlaceholderTitle="년"
+              maxLength={4}
             />
-            <InputTitle>생년월일</InputTitle>
-            <RowContainer>
-              <Input
-                value={birthYear}
-                onChangeText={text => dispatch(formActions.setBirthYear(text))}
-                keyboardType="number-pad"
-                textAlign="center"
-                containerStyle={{
-                  width: "34.48%",
-                  marginRight: "6.9%",
-                }}
-                solidPlaceholderTitle="년"
-                maxLength={4}
-              />
-              <Input
-                value={birthMonth}
-                onChangeText={text => dispatch(formActions.setBirthMonth(text))}
-                keyboardType="number-pad"
-                textAlign="center"
-                containerStyle={{
-                  width: "25.86%",
-                  marginRight: "6.9%",
-                }}
-                solidPlaceholderTitle="월"
-                maxLength={2}
-              />
-              <Input
-                value={birthDay}
-                onChangeText={text => dispatch(formActions.setBirthDay(text))}
-                keyboardType="number-pad"
-                textAlign="center"
-                containerStyle={{
-                  width: "25.86%",
-                }}
-                solidPlaceholderTitle="일"
-                maxLength={2}
-              />
-            </RowContainer>
-          </InputContainer>
-        </View>
-        <Button
-          disabled={!name || !birthYear}
-          useCommonMarginBottom
-          onPress={() => {
-            Keyboard.dismiss();
-            navigation.navigate("RegisterProfileSecond");
-          }}>
-          다음
-        </Button>
-      </KeyboardAwareScrollContainer>
-    </SafeAreaView>
+            <Input
+              value={birthMonth}
+              onChangeText={text => dispatch(formActions.setBirthMonth(text))}
+              keyboardType="number-pad"
+              textAlign="center"
+              containerStyle={{
+                width: "25.86%",
+                marginRight: "6.9%",
+              }}
+              solidPlaceholderTitle="월"
+              maxLength={2}
+            />
+            <Input
+              value={birthDay}
+              onChangeText={text => dispatch(formActions.setBirthDay(text))}
+              keyboardType="number-pad"
+              textAlign="center"
+              containerStyle={{
+                width: "25.86%",
+              }}
+              solidPlaceholderTitle="일"
+              maxLength={2}
+            />
+          </RowContainer>
+        </InputContainer>
+      </View>
+      <Button
+        disabled={!name || !birthYear}
+        useCommonMarginBottom
+        onPress={() => {
+          Keyboard.dismiss();
+          navigation.navigate("RegisterProfileSecond");
+        }}>
+        다음
+      </Button>
+    </KeyboardAwareScrollContainer>
   );
 };
 
