@@ -1,16 +1,16 @@
 import React, { ReactNode } from "react";
-import { StyleProp, TextProps, TextStyle } from "react-native";
+import { Animated, StyleProp, TextProps, TextStyle } from "react-native";
 import styled from "styled-components/native";
 import { rpWidth } from "~/styles";
 
 export type fontWeight = "light" | "medium" | "bold";
 
-interface IProps extends TextProps {
+interface IProps extends Animated.AnimatedProps<TextProps> {
   children: ReactNode;
-  style?: StyleProp<TextStyle>;
   fontWeight?: fontWeight;
   fontSize?: number | undefined;
   color?: string;
+  style?: Animated.AnimatedProps<StyleProp<TextStyle>>;
 }
 
 interface IText {
@@ -18,7 +18,7 @@ interface IText {
   fontSize?: number | undefined;
 }
 
-const Text = styled.Text<IText>`
+const Text = styled(Animated.Text)<IText>`
   font-family: ${({ fontWeight }) => {
     switch (fontWeight) {
       case "bold":
@@ -37,10 +37,10 @@ const Text = styled.Text<IText>`
 
 const MyText = ({
   children,
-  style,
   fontWeight,
   fontSize,
   color,
+  style,
   ...props
 }: IProps) => (
   <Text

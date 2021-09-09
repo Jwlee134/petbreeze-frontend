@@ -10,7 +10,7 @@ import MyText from "./MyText";
 
 import CheckFill from "~/assets/svg/common/check-circle-fill.svg";
 import Check from "~/assets/svg/common/check-circle.svg";
-import RightArrow from "~/assets/svg/common/arrow-right-blue.svg";
+import RightArrow from "~/assets/svg/arrow/arrow-right-blue.svg";
 
 interface IProps extends TouchableOpacityProps {
   data: IDevice;

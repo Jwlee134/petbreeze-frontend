@@ -3,10 +3,10 @@ import {
   createMaterialTopTabNavigator,
   MaterialTopTabBarProps,
 } from "@react-navigation/material-top-tabs";
-import StartWalking from "~/screens/Walk/StartWalking";
-import WalkRecord from "~/screens/Walk/WalkRecord";
+import StartWalking from "~/screens/walkTopTabNav/StartWalking";
 import { WalkTopTabRouteProp } from "~/types/navigator";
 import CustomTopTabBar from "~/components/navigator/CustomTopTabBar";
+import WalkRecord from "~/screens/walkTopTabNav/WalkRecord";
 
 const Tab = createMaterialTopTabNavigator();
 

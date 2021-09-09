@@ -4,7 +4,7 @@ import styled from "styled-components/native";
 import ShadowContainer from "~/components/common/container/ShadowContainer";
 import { rpWidth, width } from "~/styles";
 
-import Arrow from "~/assets/svg/arrow-left-blue.svg";
+import Arrow from "~/assets/svg/arrow/arrow-left-blue.svg";
 import { Keyboard } from "react-native";
 import { useState } from "react";
 import SearchResult from "./SearchResult";

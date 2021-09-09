@@ -1,12 +1,13 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import Notification from "~/screens/Notification";
-import Home from "~/screens/Home";
+import Notification from "~/screens/bottomTabNav/Notification";
+import Home from "~/screens/bottomTabNav/Home";
 import WalkTopTabNav from "./WalkTopTabNav";
-import WalkDetail from "~/screens/Shared/WalkDetail";
 import CustomHeader from "~/components/navigator/CustomHeader";
-import MyPageStackNav from "./MyPageStackNav";
-import DeviceSetting from "~/screens/Shared/DeviceSetting";
+import DeviceSetting from "~/screens/sharedStackNav/DeviceSetting";
+import MyPage from "~/screens/bottomTabNav/MyPage";
+import WalkDetail from "~/screens/sharedStackNav/WalkDetail";
+import DeviceSettingList from "~/screens/sharedStackNav/DeviceSettingList";
 
 const Stack = createStackNavigator();
 
@@ -50,8 +51,8 @@ const SharedStack = ({
     )}
     {screenName === "MyPage" && (
       <Stack.Screen
-        name="MyPageStackNav"
-        component={MyPageStackNav}
+        name="MyPage"
+        component={MyPage}
         options={{
           headerShown: false,
         }}
@@ -62,22 +63,21 @@ const SharedStack = ({
       name="WalkDetail"
       component={WalkDetail}
       options={{
-        header: props => (
-          <CustomHeader useBackButton {...props}>
-            산책기록
-          </CustomHeader>
-        ),
+        header: props => <CustomHeader {...props}>산책기록</CustomHeader>,
       }}
     />
     <Stack.Screen
       name="DeviceSetting"
       component={DeviceSetting}
       options={{
-        header: props => (
-          <CustomHeader useBackButton {...props}>
-            기기설정
-          </CustomHeader>
-        ),
+        header: props => <CustomHeader {...props}>기기설정</CustomHeader>,
+      }}
+    />
+    <Stack.Screen
+      name="DeviceSettingList"
+      component={DeviceSettingList}
+      options={{
+        header: props => <CustomHeader {...props}>기기설정</CustomHeader>,
       }}
     />
   </Stack.Navigator>

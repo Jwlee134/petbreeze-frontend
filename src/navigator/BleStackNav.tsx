@@ -3,17 +3,14 @@ import {
   StackCardInterpolationProps,
 } from "@react-navigation/stack";
 import React from "react";
-import BleProgress from "~/screens/bleNav/BleProgress";
-import BluetoothCheck from "~/screens/bleNav/BluetoothCheck";
-import PreSafetyZone from "~/screens/bleNav/PreSafetyZone";
-import PreStart from "~/screens/bleNav/PreStart";
-import RegisterProfileFirst from "~/screens/bleNav/registerProfile/RegisterProfileFirst";
-import RegisterProfileSecond from "~/screens/bleNav/registerProfile/RegisterProfileSecond";
-import RegisterProfileThird from "~/screens/bleNav/registerProfile/RegisterProfileThird";
-import SafetyZone from "~/screens/bleNav/SafetyZone";
-import { BleStackNavRouteProp } from "~/types/navigator";
-
-const Stack = createStackNavigator();
+import { useDispatch } from "react-redux";
+import Fail from "~/components/lottie/Fail";
+import useBleMaganer from "~/hooks/useBleManager";
+import FirmwareProgress from "~/screens/bleStackNav/FirmwareProgress";
+import Scanning from "~/screens/bleStackNav/Scanning";
+import Success from "~/screens/bleStackNav/Success";
+import SafetyZone from "~/screens/bleStackNav/SafetyZone";
+import { useAppSelector } from "~/store";
 
 const forFade = ({ current }: StackCardInterpolationProps) => ({
   cardStyle: {
@@ -21,28 +18,26 @@ const forFade = ({ current }: StackCardInterpolationProps) => ({
   },
 });
 
-const BleStackNav = ({ route }: { route: BleStackNavRouteProp }) => {
+const Stack = createStackNavigator();
+
+const BleStackNav = ({ route }) => {
+  const bleStatus = useAppSelector(state => state.common.bleStatus);
+  const dispatch = useDispatch();
+  const { downloadingProgress, installingProgress } = useBleMaganer({
+    isOtaUpdate: route.params?.isOtaUpdate,
+  });
+
   return (
     <Stack.Navigator
-      initialRouteName={route.params?.initialRouteName || "PreStart"}
-      screenOptions={{ cardStyleInterpolator: forFade, headerShown: false }}>
-      <Stack.Screen name="PreStart" component={PreStart} />
-      <Stack.Screen name="BluetoothCheck" component={BluetoothCheck} />
-      <Stack.Screen name="BleProgress" component={BleProgress} />
-      <Stack.Screen name="PreSafetyZone" component={PreSafetyZone} />
+      screenOptions={{
+        cardStyleInterpolator: forFade,
+        headerShown: false,
+      }}>
+      <Stack.Screen name="Scanning" component={Scanning} />
+      <Stack.Screen name="Fail" component={Fail} />
+      <Stack.Screen name="FirmwareProgress" component={FirmwareProgress} />
+      <Stack.Screen name="Success" component={Success} />
       <Stack.Screen name="SafetyZone" component={SafetyZone} />
-      <Stack.Screen
-        name="RegisterProfileFirst"
-        component={RegisterProfileFirst}
-      />
-      <Stack.Screen
-        name="RegisterProfileSecond"
-        component={RegisterProfileSecond}
-      />
-      <Stack.Screen
-        name="RegisterProfileThird"
-        component={RegisterProfileThird}
-      />
     </Stack.Navigator>
   );
 };

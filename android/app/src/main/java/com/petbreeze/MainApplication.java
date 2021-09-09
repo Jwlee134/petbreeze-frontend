@@ -3,8 +3,6 @@ package com.petbreeze;
 import com.microsoft.codepush.react.CodePush;
 import com.petbreeze.generated.BasePackageList;
 
-import com.tuanpm.RCTMqtt.*;
-
 import android.app.Application;
 import android.content.Context;
 import com.facebook.react.PackageList;

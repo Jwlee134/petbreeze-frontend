@@ -3,7 +3,6 @@ import { useDispatch } from "react-redux";
 import styled from "styled-components/native";
 import Button from "~/components/common/Button";
 import Input from "~/components/common/Input";
-import InputTitle from "~/components/common/InputTitle";
 import useBottomSheet from "~/hooks/useBottomSheet";
 import { useAppSelector } from "~/store";
 import { safetyZoneActions } from "~/store/safetyZone";
@@ -35,14 +34,13 @@ const SafetyZoneMapBottomSheet = ({ snapPoints }: { snapPoints: number[] }) => {
     <BottomSheetComponent animateOnMount snapPoints={snapPoints} index={0}>
       <RowContainer>
         <InputContainer style={{ marginRight: "13%" }}>
-          <InputTitle>안심존 이름</InputTitle>
           <Input
             value={name}
+            placeholder="안심존 이름"
             onChangeText={text => dispatch(safetyZoneActions.setName(text))}
           />
         </InputContainer>
         <InputContainer>
-          <InputTitle>안심존 반경</InputTitle>
           <Input
             value={radius}
             onChangeText={text => dispatch(safetyZoneActions.setRadius(text))}

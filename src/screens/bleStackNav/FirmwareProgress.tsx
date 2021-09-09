@@ -3,7 +3,7 @@ import styled from "styled-components/native";
 import { rpHeight, rpWidth, width } from "~/styles";
 import palette from "~/styles/palette";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
-import Footprint from "~/assets/svg/common/footprint-outline.svg";
+import Footprint from "~/assets/svg/footprint/footprint-outline-blue.svg";
 import Points from "~/components/common/Points";
 import MyText from "~/components/common/MyText";
 

@@ -9,7 +9,7 @@ import Setting from "~/assets/svg/myPage/setting.svg";
 import Plus from "~/assets/svg/myPage/circle-plus.svg";
 import Bell from "~/assets/svg/myPage/bell.svg";
 import People from "~/assets/svg/myPage/people.svg";
-import Arrow from "~/assets/svg/myPage/arrow-right-gray.svg";
+import Arrow from "~/assets/svg/arrow/arrow-right-gray.svg";
 import { rpWidth } from "~/styles";
 import SidePaddingContainer from "~/components/common/container/SidePaddingContainer";
 import DeviceAvatarCircle from "~/components/common/DeviceAvatarCircle";

@@ -8,10 +8,11 @@ import {
   createStackNavigator,
   StackCardInterpolationProps,
 } from "@react-navigation/stack";
-import FirmwareUpdate from "~/components/init/FirmwareUpdate";
-import Start from "~/screens/Start";
+import FirmwareUpdate from "~/screens/rootNav/FirmwareUpdate";
+import Start from "~/screens/rootNav/Start";
+import { RootNavParamList } from "~/types/navigator";
 
-const Stack = createStackNavigator();
+const Stack = createStackNavigator<RootNavParamList>();
 
 const forFade = ({ current }: StackCardInterpolationProps) => ({
   cardStyle: {

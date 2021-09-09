@@ -291,8 +291,8 @@ const useBleMaganer = ({ isOtaUpdate = false } = {}) => {
   useEffect(() => {
     console.log(bleStatus);
     if (bleStatus === "scanning") {
-      scanPeripheral();
-      return;
+      /*   scanPeripheral();
+      return; */
     }
     if (bleStatus === "scanningSuccess") {
       getPeripheralData();

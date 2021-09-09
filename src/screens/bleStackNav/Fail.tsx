@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components/native";
 import Button from "~/components/common/Button";
 import MyText from "~/components/common/MyText";
-import { Status } from "~/hooks/useBleManager";
+import { BleStatus } from "~/store/common";
 
 const Container = styled.View`
   flex: 1;
@@ -10,7 +10,7 @@ const Container = styled.View`
   align-items: center;
 `;
 
-const Fail = ({ status, retry }: { status: Status; retry: () => void }) => {
+const Fail = ({ status, retry }: { status: BleStatus; retry: () => void }) => {
   return (
     <Container>
       <MyText>

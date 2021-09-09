@@ -6,6 +6,7 @@ import MyText from "~/components/common/MyText";
 import usePagingFlatList from "~/hooks/usePagingFlatList";
 import { storageActions } from "~/store/storage";
 import { width, rpWidth } from "~/styles";
+import GradientContainer from "../common/container/GradientContainer";
 import FirstIntro from "./FirstIntro";
 import PageIndicatorCircle from "./PageIndicatorCircle";
 import SecondIntro from "./SecondIntro";
@@ -37,40 +38,7 @@ const Intro = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
 
-  return (
-    <>
-      <SkipButton
-        top={top}
-        onPress={() => dispatch(storageActions.setInit("intro"))}>
-        <MyText
-          fontWeight="medium"
-          fontSize={14}
-          style={{
-            opacity: 0.5,
-          }}>
-          건너뛰기
-        </MyText>
-      </SkipButton>
-      <PagingFlatList
-        onScroll={e =>
-          setCurrentPage(
-            Math.round((e.nativeEvent.contentOffset.x + width) / width),
-          )
-        }
-        scrollEventThrottle={16}
-        scrollEnabled
-        data={data}
-      />
-      <PageIndicator
-        style={{
-          marginBottom: rpWidth(54) + bottom,
-        }}>
-        <PageIndicatorCircle isFocused={currentPage === 1} />
-        <PageIndicatorCircle isFocused={currentPage === 2} />
-        <PageIndicatorCircle isFocused={currentPage === 3} />
-      </PageIndicator>
-    </>
-  );
+  return <GradientContainer></GradientContainer>;
 };
 
 export default Intro;

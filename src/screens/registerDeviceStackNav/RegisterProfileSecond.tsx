@@ -6,6 +6,7 @@ import Button from "~/components/common/Button";
 import KeyboardAwareScrollContainer from "~/components/common/container/KeyboardAwareScrollContainer";
 import Input from "~/components/common/Input";
 import InputTitle from "~/components/common/InputTitle";
+import SelectableButton from "~/components/common/SelectableButton";
 import { useAppSelector } from "~/store";
 import { formActions } from "~/store/form";
 import { rpWidth } from "~/styles";
@@ -54,22 +55,19 @@ const RegisterProfileSecond = ({
           <InputContainer>
             <InputTitle>성별</InputTitle>
             <RowContainer>
-              <Button
-                isRow
-                useInputStyle
-                style={{ flexGrow: 1, marginRight: rpWidth(20) }}
-                onPress={() => dispatch(formActions.setGender("남"))}
-                selected={gender === "남"}>
+              <SelectableButton
+                selected={gender === "남"}
+                style={{
+                  marginRight: rpWidth(20),
+                }}
+                onPress={() => dispatch(formActions.setGender("남"))}>
                 남
-              </Button>
-              <Button
-                isRow
-                useInputStyle
-                style={{ flexGrow: 1 }}
-                onPress={() => dispatch(formActions.setGender("여"))}
-                selected={gender === "여"}>
+              </SelectableButton>
+              <SelectableButton
+                selected={gender === "여"}
+                onPress={() => dispatch(formActions.setGender("여"))}>
                 여
-              </Button>
+              </SelectableButton>
             </RowContainer>
             <InputTitle>품종</InputTitle>
             <Input

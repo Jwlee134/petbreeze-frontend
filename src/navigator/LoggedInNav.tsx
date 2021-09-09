@@ -5,17 +5,18 @@ import {
 } from "@react-navigation/stack";
 
 import BottomTabNav from "./BottomTabNav";
-import WalkMap from "~/screens/WalkMap";
+import WalkMap from "~/screens/loggedInNav/WalkMap";
 import CustomHeader from "~/components/navigator/CustomHeader";
 import { store } from "~/store";
-import DeleteAccount from "~/screens/DeleteAccount";
-import UpdateProfile from "~/screens/UpdateProfile";
+import DeleteAccount from "~/screens/loggedInNav/DeleteAccount";
 
 import messaging from "@react-native-firebase/messaging";
-import EmergencyMissing from "~/screens/EmergencyMissing";
-import BleStackNav from "./BleStackNav";
-import Permissions from "~/screens/Permissions";
+import RegisterDeviceStackNav from "./RegisterDeviceStackNav";
+import Permissions from "~/screens/loggedInNav/Permissions";
 import { LoggedInNavRouteProp } from "~/types/navigator";
+import UpdateProfile from "~/screens/loggedInNav/UpdateProfile";
+import EmergencyMissing from "~/screens/loggedInNav/EmergencyMissing";
+import BleStackNav from "./BleStackNav";
 
 const Stack = createStackNavigator();
 
@@ -79,13 +80,18 @@ const LoggedInNav = ({ route }: { route: LoggedInNavRouteProp }) => {
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="BleStackNav"
-        component={BleStackNav}
+        name="RegisterDeviceStackNav"
+        component={RegisterDeviceStackNav}
         initialParams={
           route.params?.initialRouteName2
             ? { initialRouteName: route.params.initialRouteName2 }
             : undefined
         }
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="BleStackNav"
+        component={BleStackNav}
         options={{ headerShown: false }}
       />
       <Stack.Screen
@@ -104,33 +110,21 @@ const LoggedInNav = ({ route }: { route: LoggedInNavRouteProp }) => {
         name="DeleteAccount"
         component={DeleteAccount}
         options={{
-          header: props => (
-            <CustomHeader useBackButton {...props}>
-              탈퇴하기
-            </CustomHeader>
-          ),
+          header: props => <CustomHeader {...props}>탈퇴하기</CustomHeader>,
         }}
       />
       <Stack.Screen
         name="UpdateProfile"
         component={UpdateProfile}
         options={{
-          header: props => (
-            <CustomHeader useBackButton {...props}>
-              프로필 수정
-            </CustomHeader>
-          ),
+          header: props => <CustomHeader {...props}>프로필 수정</CustomHeader>,
         }}
       />
       <Stack.Screen
         name="EmergencyMissing"
         component={EmergencyMissing}
         options={{
-          header: props => (
-            <CustomHeader useBackButton usePageIndicator {...props}>
-              긴급실종
-            </CustomHeader>
-          ),
+          header: props => <CustomHeader {...props}>긴급실종</CustomHeader>,
         }}
       />
     </Stack.Navigator>

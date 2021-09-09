@@ -213,8 +213,6 @@ dependencies {
 
     implementation project(':lottie-react-native')
 
-    implementation project(':sp-react-native-mqtt')
-
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
       exclude group:'com.facebook.fbjni'
     }

@@ -1,126 +1,114 @@
-import React, { ReactNode } from "react";
-import { ActivityIndicator, TouchableOpacityProps } from "react-native";
+import React, { ReactNode, useEffect, useRef, useState } from "react";
+import {
+  ActivityIndicator,
+  Animated,
+  TouchableOpacityProps,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import styled, { css } from "styled-components/native";
+import styled from "styled-components/native";
 import { rpWidth, width } from "~/styles";
 import palette from "~/styles/palette";
 import MyText, { fontWeight } from "./MyText";
 
 interface IButton extends TouchableOpacityProps {
   children?: ReactNode;
-  backgroundColor?: string;
   RightIcon?: () => JSX.Element;
-  disabled?: boolean;
   isLoading?: boolean;
   fontWeight?: fontWeight;
   fontColor?: string;
   useCommonMarginBottom?: boolean;
   useBottomInset?: boolean;
-  useInputStyle?: boolean;
-  selected?: boolean;
-  isRow?: boolean;
+  backgroundColor?: string;
+  delay?: number;
 }
 
-interface ITouchableOpacity {
-  disabled: boolean;
-  backgroundColor: string | undefined;
-  useInputStyle: boolean;
-  selected: boolean;
-  isRow: boolean;
-}
-
-const StyledButton = styled.TouchableOpacity<ITouchableOpacity>`
-  ${({ isRow }) =>
-    isRow
-      ? css`
-          width: auto;
-        `
-      : css`
-          width: ${width - rpWidth(32)}px;
-          margin: 0 auto;
-        `};
+const TouchableOpacity = styled.TouchableOpacity`
+  width: ${width - rpWidth(32)}px;
+  margin: 0 auto;
   height: ${rpWidth(50.5)}px;
+`;
+
+const Container = styled(Animated.View)`
+  width: 100%;
+  height: 100%;
   border-radius: ${rpWidth(25)}px;
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  background-color: ${({ backgroundColor }) =>
-    backgroundColor ? backgroundColor : palette.blue_7b};
-  ${({ disabled }) =>
-    disabled &&
-    css`
-      background-color: rgba(0, 0, 0, 0.1);
-    `}
-  ${({ useInputStyle, selected }) =>
-    useInputStyle &&
-    css`
-      background-color: white;
-      border-width: 1px;
-      height: ${rpWidth(39)}px;
-      margin-bottom: ${rpWidth(15)}px;
-      ${selected
-        ? {
-            borderColor: palette.blue_7b,
-          }
-        : {
-            borderColor: "rgba(0, 0, 0, 0.1)",
-          }}
-    `}
 `;
 
 const Button = ({
   children,
-  backgroundColor,
   RightIcon,
   fontWeight,
   fontColor,
   isLoading = false,
-  disabled = false,
   useCommonMarginBottom = false,
   useBottomInset = false,
-  useInputStyle = false,
-  selected = false,
-  isRow = false,
+  backgroundColor,
+  delay,
   ...props
 }: IButton) => {
   const { bottom } = useSafeAreaInsets();
+  const [enableAfterDelay, setEnableAfterDelay] = useState(
+    delay ? true : false,
+  );
+  const value = useRef(
+    new Animated.Value(props.disabled || delay ? 0 : 1),
+  ).current;
+
+  const color = value.interpolate({
+    inputRange: [0, 1],
+    outputRange: ["rgba(0, 0, 0, 0.3)", fontColor ? fontColor : "white"],
+  });
+
+  const backgroundColorInterpolate = value.interpolate({
+    inputRange: [0, 1],
+    outputRange: [
+      "rgba(0, 0, 0, 0.05)",
+      backgroundColor ? backgroundColor : palette.blue_7b_90,
+    ],
+  });
+
+  useEffect(() => {
+    if (enableAfterDelay) {
+      setTimeout(() => {
+        setEnableAfterDelay(false);
+      }, delay);
+    }
+    Animated.timing(value, {
+      toValue: props.disabled || enableAfterDelay ? 0 : 1,
+      duration: 200,
+      useNativeDriver: false,
+    }).start();
+  }, [props.disabled, enableAfterDelay]);
 
   return (
-    <StyledButton
-      backgroundColor={backgroundColor}
-      useInputStyle={useInputStyle}
-      isRow={isRow}
-      selected={selected}
-      disabled={disabled}
+    <TouchableOpacity
       style={{
         ...(useCommonMarginBottom && {
           marginBottom: useBottomInset ? rpWidth(31.5) + bottom : rpWidth(31.5),
         }),
       }}
+      disabled={enableAfterDelay ? true : props.disabled}
       {...props}>
-      {isLoading ? (
-        <ActivityIndicator color="white" size={rpWidth(25)} />
-      ) : (
-        <>
-          {RightIcon && <RightIcon />}
-          <MyText
-            fontWeight={fontWeight ? fontWeight : "medium"}
-            color={
-              useInputStyle
-                ? selected
-                  ? palette.blue_7b
-                  : "rgba(0, 0, 0, 0.1)"
-                : disabled
-                ? "rgba(0, 0, 0, 0.5)"
-                : fontColor
-                ? fontColor
-                : "white"
-            }>
-            {children}
-          </MyText>
-        </>
-      )}
-    </StyledButton>
+      <Container style={{ backgroundColor: backgroundColorInterpolate }}>
+        {isLoading ? (
+          <ActivityIndicator color="white" size={rpWidth(25)} />
+        ) : (
+          <>
+            {RightIcon && <RightIcon />}
+            <MyText
+              fontWeight={fontWeight ? fontWeight : "medium"}
+              style={{
+                color,
+              }}>
+              {children}
+            </MyText>
+          </>
+        )}
+      </Container>
+    </TouchableOpacity>
   );
 };
 

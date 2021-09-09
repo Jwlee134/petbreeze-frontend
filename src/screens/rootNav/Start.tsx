@@ -13,7 +13,7 @@ const LogoContainer = styled(Animated.View)`
   align-items: center;
 `;
 
-const Start = ({ navigation }: { navigation: StartScreenNavigationProp }) => {
+const Start = ({ navigation, route }: StartScreenNavigationProp) => {
   const footprintOpacity = useRef(new Animated.Value(0)).current;
   const appNameOpacity = useRef(new Animated.Value(0)).current;
   const marginBottom = useRef(new Animated.Value(0)).current;
@@ -103,18 +103,18 @@ const Start = ({ navigation }: { navigation: StartScreenNavigationProp }) => {
         if (isDeviceRegistered) {
           if (!isSafetyZoneRegistered)
             return navigation.replace("LoggedInNav", {
-              initialRouteName: "BleStackNav",
+              initialRouteName: "RegisterDeviceStackNav",
               initialRouteName2: "PreSafetyZone",
             });
           if (!isProfileRegistered)
             return navigation.replace("LoggedInNav", {
-              initialRouteName: "BleStackNav",
+              initialRouteName: "RegisterDeviceStackNav",
               initialRouteName2: "RegisterProfileFirst",
             });
         }
         if (!isInitialized)
           return navigation.replace("LoggedInNav", {
-            initialRouteName: "BleStackNav",
+            initialRouteName: "RegisterDeviceStackNav",
           });
         navigation.replace("LoggedInNav");
       }, 600);

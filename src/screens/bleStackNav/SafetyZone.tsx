@@ -4,12 +4,10 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import styled from "styled-components/native";
 import Button from "~/components/common/Button";
 import { rpWidth } from "~/styles";
-import SearchBar from "./SearchBar";
-import FakeMarker from "./FakeMarker";
-import SafetyZoneMapBottomSheet from "./SafetyZoneMapBottomSheet";
+import FakeMarker from "~/components/safetyZone/FakeMarker";
 import useKeyboard from "~/hooks/useKeyboard";
-import SafetyZoneMap from "./SafetyZoneMap";
-import Arrow from "~/assets/svg/arrow-left-blue.svg";
+import SafetyZoneMap from "~/components/safetyZone/SafetyZoneMap";
+import Arrow from "~/assets/svg/arrow/arrow-left-blue.svg";
 import { isAndroid, isIos } from "~/utils";
 import { useAppSelector } from "~/store";
 import { useDispatch } from "react-redux";
@@ -17,6 +15,8 @@ import { safetyZoneActions } from "~/store/safetyZone";
 import Geolocation from "react-native-geolocation-service";
 import MapFloatingCircle from "~/components/common/MapFloatingCircle";
 import { SafetyZoneScreenNavigationProp } from "~/types/navigator";
+import SafetyZoneMapBottomSheet from "~/components/safetyZone/SafetyZoneMapBottomSheet";
+import SearchBar from "~/components/safetyZone/SearchBar";
 
 const Container = styled.View`
   flex: 1;
@@ -60,8 +60,8 @@ const SafetyZone = ({
   const snapPoints = useMemo(
     () => [
       !keyboardHeight
-        ? rpWidth(194) + bottom
-        : rpWidth(97) + (isIos ? keyboardHeight : 0),
+        ? rpWidth(157) + bottom
+        : rpWidth(60) + (isIos ? keyboardHeight : 0),
     ],
     [keyboardHeight],
   );

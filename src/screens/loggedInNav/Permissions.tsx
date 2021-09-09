@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components/native";
 
 import Shield from "~/assets/svg/init/permission/shield.svg";
@@ -16,22 +16,22 @@ import {
 import { useDispatch } from "react-redux";
 import { rpWidth } from "~/styles";
 import { storageActions } from "~/store/storage";
-import { Alert } from "react-native";
+import { Alert, Animated } from "react-native";
 import useAppState from "~/hooks/useAppState";
 import { useAppSelector } from "~/store";
-import MyText from "../components/common/MyText";
+import MyText from "../../components/common/MyText";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import palette from "~/styles/palette";
-import SafeAreaContainer from "../components/common/container/SafeAreaContainer";
+import SafeAreaContainer from "../../components/common/container/SafeAreaContainer";
 import { PermissionsScreenNavigationProp } from "~/types/navigator";
 
-const TopContainer = styled.View`
+const TopContainer = styled(Animated.View)`
   flex: 1;
   justify-content: center;
   align-items: center;
 `;
 
-const BottomContainer = styled.View<{ width: number }>`
+const BottomContainer = styled(Animated.View)<{ width: number }>`
   flex: 1;
   width: ${({ width }) => `${width}px`};
   margin: 0 auto;
@@ -54,8 +54,12 @@ const TextContainer = styled.View`
 `;
 
 const Button = styled.TouchableOpacity`
-  background-color: ${palette.blue_7b};
   width: 100%;
+`;
+
+const ButtonView = styled(Animated.View)`
+  width: 100%;
+  height: 100%;
   align-items: center;
 `;
 
@@ -73,16 +77,53 @@ const Permissions = ({
   const [textWidth, setTextWidth] = useState(0);
 
   const [settingOpened, setSettingOpened] = useState(false);
-  const [isNotificationStep, setIsNotificationStep] = useState(true);
+
+  const value1 = useRef(new Animated.Value(0)).current;
+  const value2 = useRef(new Animated.Value(0)).current;
+  const value3 = useRef(new Animated.Value(0)).current;
+
+  const color = value3.interpolate({
+    inputRange: [0, 1],
+    outputRange: ["rgba(0, 0, 0, 0.3)", "white"],
+  });
+
+  const backgroundColor = value3.interpolate({
+    inputRange: [0, 1],
+    outputRange: ["rgba(0, 0, 0, 0.1)", palette.blue_7b_90],
+  });
+
+  useEffect(() => {
+    Animated.sequence([
+      Animated.delay(200),
+      Animated.timing(value1, {
+        toValue: 1,
+        duration: 200,
+        useNativeDriver: true,
+      }),
+      Animated.delay(200),
+      Animated.timing(value2, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+      Animated.delay(200),
+      Animated.timing(value3, {
+        toValue: 1,
+        duration: 200,
+        useNativeDriver: false,
+      }),
+    ]).start();
+  }, []);
 
   const handleAllowRest = () => {
     requestMultiple([
+      PERMISSIONS.IOS.LOCATION_ALWAYS,
       PERMISSIONS.IOS.BLUETOOTH_PERIPHERAL,
       PERMISSIONS.IOS.PHOTO_LIBRARY,
       PERMISSIONS.IOS.CAMERA,
     ]).then(() => {
       dispatch(storageActions.setInit("permission"));
-      navigation.replace("BleNav");
+      navigation.replace("BleStackNav");
     });
   };
 
@@ -94,31 +135,17 @@ const Permissions = ({
     });
   };
 
-  const handleLocation = () => {
-    setIsNotificationStep(false);
-    request(PERMISSIONS.IOS.LOCATION_ALWAYS).then(() => {
-      Alert.alert(
-        "알림",
-        "백그라운드에서 원활한 위치 기록을 위해 위치 접근 허용을 항상으로 설정해주세요.",
-        [
-          { text: "안할래요", onPress: handleAllowRest },
-          { text: "설정으로 이동", onPress: openSetting },
-        ],
-      );
-    });
-  };
-
   const handleNotification = () => {
     requestNotifications(["alert", "badge"]).then(({ status }) => {
       if (status === "granted") {
-        handleLocation();
+        handleAllowRest();
       }
       if (status === "blocked") {
         Alert.alert(
           "경고",
           "내 반려동물이 안심존을 벗어나도 알림을 받지 못하게 됩니다.",
           [
-            { text: "괜찮습니다", onPress: handleLocation },
+            { text: "괜찮습니다", onPress: handleAllowRest },
             { text: "권한 허용하기", onPress: openSetting },
           ],
         );
@@ -128,19 +155,15 @@ const Permissions = ({
 
   useEffect(() => {
     if (settingOpened && appState === "active" && !isPermissionAllowed) {
-      if (isNotificationStep) {
-        handleLocation();
-      } else {
-        handleAllowRest();
-      }
+      handleAllowRest();
       setSettingOpened(false);
     }
-  }, [settingOpened, appState, isPermissionAllowed, isNotificationStep]);
+  }, [settingOpened, appState, isPermissionAllowed]);
 
   return (
     <>
       <SafeAreaContainer>
-        <TopContainer>
+        <TopContainer style={{ opacity: value1 }}>
           <Shield width={rpWidth(114)} height={rpWidth(114)} />
           <MyText
             fontSize={20}
@@ -149,7 +172,7 @@ const Permissions = ({
             어디개 앱 이용을 위해{"\n"}다음 권한의 허용이 필요합니다.
           </MyText>
         </TopContainer>
-        <BottomContainer width={textWidth}>
+        <BottomContainer style={{ opacity: value2 }} width={textWidth}>
           <PermissionContainer isTop>
             <SvgContainer>
               <Bell width={rpWidth(24)} height={rpWidth(27)} />
@@ -221,14 +244,16 @@ const Permissions = ({
           height: rpWidth(66) + bottom,
         }}
         onPress={handleNotification}>
-        <MyText
-          color="white"
-          fontWeight="medium"
-          style={{
-            marginTop: rpWidth(19),
-          }}>
-          확인
-        </MyText>
+        <ButtonView style={{ backgroundColor }}>
+          <MyText
+            fontWeight="medium"
+            style={{
+              marginTop: rpWidth(19),
+              color,
+            }}>
+            확인
+          </MyText>
+        </ButtonView>
       </Button>
     </>
   );

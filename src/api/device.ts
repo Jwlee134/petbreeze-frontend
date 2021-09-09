@@ -216,6 +216,9 @@ const deviceApi = api.injectEndpoints({
       query: ({ deviceId, avatar }) => ({
         url: `/device/${deviceId}/profile/`,
         method: "PATCH",
+        headers: {
+          "content-type": "multipart/form-data",
+        },
         body: {
           profile_image: avatar,
         },
