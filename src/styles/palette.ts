@@ -5,5 +5,5 @@ export default {
   blue_7b_90: "#7B13FFE6",
   red_f0: "#F00043",
   gray_c4: "#C4C4C4",
-  gray_f3: "#F3F3F3",
+  gray_f0: "#F0F0F0",
 };

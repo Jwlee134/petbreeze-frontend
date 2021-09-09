@@ -26,12 +26,13 @@ const TouchableOpacity = styled.TouchableOpacity`
   width: ${width - rpWidth(32)}px;
   margin: 0 auto;
   height: ${rpWidth(50.5)}px;
+  border-radius: ${rpWidth(25)}px;
+  overflow: hidden;
 `;
 
 const Container = styled(Animated.View)`
   width: 100%;
   height: 100%;
-  border-radius: ${rpWidth(25)}px;
   flex-direction: row;
   justify-content: center;
   align-items: center;

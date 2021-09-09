@@ -7,6 +7,7 @@ import { rpWidth } from "~/styles";
 import palette from "~/styles/palette";
 import { HomeScreenNavigationProp } from "~/types/navigator";
 import DeviceAvatarCircle from "../common/DeviceAvatarCircle";
+import HairlineDivider from "../common/HairlineDivider";
 import MyText from "../common/MyText";
 
 interface IProps {
@@ -21,39 +22,17 @@ const AvatarContainer = styled.View`
   top: -${rpWidth(112)}px;
 `;
 
-const Container = styled.View`
-  align-items: center;
-`;
-
-const ButtonContainer = styled.View`
-  background-color: ${palette.gray_f3};
-  border-radius: 17px;
-  width: 100%;
-`;
-
-const Divider = styled.View`
-  width: 100%;
-  background-color: rgba(0, 0, 0, 0.3);
-  height: ${StyleSheet.hairlineWidth}px;
-`;
-
-const NameContainer = styled.View`
-  height: ${rpWidth(41)}px;
-  justify-content: center;
-  align-items: center;
-`;
-
 const Button = styled.TouchableOpacity`
   justify-content: center;
   align-items: center;
-  height: ${rpWidth(55)}px;
+  height: ${rpWidth(50)}px;
 `;
 
 const HomeBottomModal = ({ device, close }: IProps) => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
 
   return (
-    <Container>
+    <>
       <AvatarContainer>
         <DeviceAvatarCircle
           circleWidth={90}
@@ -61,38 +40,30 @@ const HomeBottomModal = ({ device, close }: IProps) => {
           battery={device.battery}
         />
       </AvatarContainer>
-      <ButtonContainer>
-        <NameContainer>
-          <MyText fontSize={14} color="rgba(0, 0, 0, 0.3)">
-            {device.name}
-          </MyText>
-        </NameContainer>
-        <Divider />
-        <Button>
-          <MyText color={palette.blue_7b}>이동경로</MyText>
-        </Button>
-        <Divider />
-        <Button
-          onPress={() => {
-            close();
-            navigation.navigate("DeviceSetting", {
-              data: device,
-            });
-          }}>
-          <MyText color={palette.blue_7b}>기기설정</MyText>
-        </Button>
-        <Divider />
-        <Button
-          onPress={() => {
-            close();
-            navigation.navigate("EmergencyMissing", {
-              data: device,
-            });
-          }}>
-          <MyText color={palette.red_f0}>긴급실종</MyText>
-        </Button>
-      </ButtonContainer>
-    </Container>
+      <Button>
+        <MyText color={palette.blue_7b}>이동경로</MyText>
+      </Button>
+      <HairlineDivider />
+      <Button
+        onPress={() => {
+          close();
+          navigation.navigate("DeviceSetting", {
+            data: device,
+          });
+        }}>
+        <MyText color={palette.blue_7b}>기기설정</MyText>
+      </Button>
+      <HairlineDivider />
+      <Button
+        onPress={() => {
+          close();
+          navigation.navigate("EmergencyMissing", {
+            data: device,
+          });
+        }}>
+        <MyText color={palette.red_f0}>긴급실종</MyText>
+      </Button>
+    </>
   );
 };
 

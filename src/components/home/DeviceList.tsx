@@ -112,7 +112,10 @@ const DeviceList = () => {
         </ScrollView>
       )}
       <Modal {...modalProps({ type: "bottom" })}>
-        <IosStyleBottomModal close={close}>
+        <IosStyleBottomModal
+          title={device?.name}
+          titleHeight={rpWidth(41)}
+          close={close}>
           <HomeBottomModal close={close} device={device} />
         </IosStyleBottomModal>
       </Modal>
