@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 import { Animated } from "react-native";
 import { useRef } from "react";
 import palette from "~/styles/palette";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface IProps extends Partial<StackHeaderProps> {
   children?: ReactNode;
@@ -63,11 +64,15 @@ const CustomHeader = ({
   currentPage = 0,
   totalPage = 0,
 }: IProps) => {
+  const { top } = useSafeAreaInsets();
   const dispatch = useDispatch();
 
   return (
     <>
-      <Container>
+      <Container
+        style={{
+          marginTop: navigation ? top : 0,
+        }}>
         <>
           {!disableBackButton ? (
             <Button
@@ -80,7 +85,7 @@ const CustomHeader = ({
               <Arrow width={rpWidth(13)} height={rpWidth(21)} />
             </Button>
           ) : null}
-          {useTitle ? (
+          {navigation ? (
             <MyText fontWeight="medium" fontSize={18}>
               {children}
             </MyText>

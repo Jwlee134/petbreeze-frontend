@@ -8,7 +8,6 @@ import BottomTabNav from "./BottomTabNav";
 import WalkMap from "~/screens/loggedInNav/WalkMap";
 import CustomHeader from "~/components/navigator/CustomHeader";
 import { store } from "~/store";
-import DeleteAccount from "~/screens/loggedInNav/DeleteAccount";
 
 import messaging from "@react-native-firebase/messaging";
 import RegisterDeviceStackNav from "./RegisterDeviceStackNav";
@@ -17,6 +16,7 @@ import { LoggedInNavRouteProp } from "~/types/navigator";
 import UpdateProfile from "~/screens/loggedInNav/UpdateProfile";
 import EmergencyMissing from "~/screens/loggedInNav/EmergencyMissing";
 import BleStackNav from "./BleStackNav";
+import DeleteAccountStackNav from "./DeleteAccountStackNav";
 
 const Stack = createStackNavigator();
 
@@ -73,7 +73,10 @@ const LoggedInNav = ({ route }: { route: LoggedInNavRouteProp }) => {
   return (
     <Stack.Navigator
       initialRouteName={route.params?.initialRouteName || "BottomTabNav"}
-      screenOptions={{ cardStyleInterpolator: forFade }}>
+      screenOptions={{
+        cardStyleInterpolator: forFade,
+        detachPreviousScreen: false,
+      }}>
       <Stack.Screen
         name="Permissions"
         component={Permissions}
@@ -107,8 +110,8 @@ const LoggedInNav = ({ route }: { route: LoggedInNavRouteProp }) => {
         }}
       />
       <Stack.Screen
-        name="DeleteAccount"
-        component={DeleteAccount}
+        name="DeleteAccountStackNav"
+        component={DeleteAccountStackNav}
         options={{
           header: props => <CustomHeader {...props}>탈퇴하기</CustomHeader>,
         }}

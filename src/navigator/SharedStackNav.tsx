@@ -1,5 +1,8 @@
 import React from "react";
-import { createStackNavigator } from "@react-navigation/stack";
+import {
+  createStackNavigator,
+  StackCardInterpolationProps,
+} from "@react-navigation/stack";
 import Notification from "~/screens/bottomTabNav/Notification";
 import Home from "~/screens/bottomTabNav/Home";
 import WalkTopTabNav from "./WalkTopTabNav";
@@ -11,6 +14,12 @@ import DeviceSettingList from "~/screens/sharedStackNav/DeviceSettingList";
 
 const Stack = createStackNavigator();
 
+const forFade = ({ current }: StackCardInterpolationProps) => ({
+  cardStyle: {
+    opacity: current.progress,
+  },
+});
+
 const SharedStack = ({
   screenName,
   initialWalkTab,
@@ -18,7 +27,7 @@ const SharedStack = ({
   screenName: string;
   initialWalkTab?: string;
 }) => (
-  <Stack.Navigator>
+  <Stack.Navigator screenOptions={{ cardStyleInterpolator: forFade }}>
     {screenName === "Home" && (
       <Stack.Screen
         name="Home"
@@ -36,7 +45,11 @@ const SharedStack = ({
         }}
         component={WalkTopTabNav}
         options={{
-          header: props => <CustomHeader {...props}>산책</CustomHeader>,
+          header: props => (
+            <CustomHeader disableBackButton {...props}>
+              산책
+            </CustomHeader>
+          ),
         }}
       />
     )}
@@ -45,7 +58,11 @@ const SharedStack = ({
         name="Notification"
         component={Notification}
         options={{
-          header: props => <CustomHeader {...props}>알림</CustomHeader>,
+          header: props => (
+            <CustomHeader disableBackButton {...props}>
+              알림
+            </CustomHeader>
+          ),
         }}
       />
     )}
@@ -54,7 +71,11 @@ const SharedStack = ({
         name="MyPage"
         component={MyPage}
         options={{
-          headerShown: false,
+          header: props => (
+            <CustomHeader disableBackButton {...props}>
+              마이페이지
+            </CustomHeader>
+          ),
         }}
       />
     )}

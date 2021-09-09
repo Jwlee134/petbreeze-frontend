@@ -119,7 +119,7 @@ const MyPage = ({ navigation }: { navigation: MyPageScreenNavigationProp }) => {
           <Button onPress={open}>
             <MyText>로그아웃</MyText>
           </Button>
-          <Button onPress={() => navigation.navigate("DeleteAccount")}>
+          <Button onPress={() => navigation.navigate("DeleteAccountStackNav")}>
             <MyText color="rgba(0, 0, 0, 0.3)">탈퇴하기</MyText>
           </Button>
           <Button isLast onPress={() => AsyncStorage.clear()}>
