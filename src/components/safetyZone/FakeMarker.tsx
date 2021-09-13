@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Animated, Easing, View } from "react-native";
+import React, { useEffect, useRef } from "react";
+import { Animated, Easing, StyleSheet } from "react-native";
 import styled from "styled-components/native";
 import ShadowContainer from "~/components/common/container/ShadowContainer";
 import { useAppSelector } from "~/store";
@@ -34,32 +34,32 @@ const InnerMarker = styled.View`
 const FakeMarker = ({ mapPadding, snapPoints }: IProps) => {
   const step2 = useAppSelector(state => state.safetyZone.step2);
   const value = useRef(new Animated.Value(0)).current;
-  const [animatedTo, setAnimatedTo] = useState(0);
 
   const exp = (t: number) => {
     return Math.min(Math.max(0, Math.pow(2, 10 * (t - 1))), 1);
   };
 
+  const marginBottom = value.interpolate({
+    inputRange: [0, 1],
+    outputRange: [mapPadding.bottom, snapPoints[0] + rpWidth(36)],
+  });
+
   useEffect(() => {
     Animated.timing(value, {
-      toValue: !step2 ? mapPadding.bottom : snapPoints[0] + rpWidth(36),
+      toValue: !step2 ? 0 : 1,
       duration: 500,
-      useNativeDriver: true,
+      useNativeDriver: false,
       easing: Easing.out(exp),
     }).start();
   }, [step2, snapPoints]);
 
-  useEffect(() => {
-    value.addListener(({ value }) => setAnimatedTo(value));
-  }, []);
-
   return (
-    <View
+    <Animated.View
       pointerEvents="none"
       style={{
-        flex: 1,
+        ...(StyleSheet.absoluteFill as object),
         marginTop: mapPadding.top - rpWidth(46),
-        marginBottom: animatedTo,
+        marginBottom,
       }}>
       <ShadowContainer
         shadowRadius={12}
@@ -75,7 +75,7 @@ const FakeMarker = ({ mapPadding, snapPoints }: IProps) => {
           <InnerMarker />
         </OuterMarker>
       </ShadowContainer>
-    </View>
+    </Animated.View>
   );
 };
 

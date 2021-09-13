@@ -7,7 +7,7 @@ export const width = Dimensions.get("window").width;
 export const height = Dimensions.get("window").height;
 
 export const isTablet = width > 480;
-const smallHeight = height < 713;
+const smallHeight = height < 700;
 const figmaWidth = 375;
 const figmaHeight = isAndroid ? 734 : isIphoneX() ? 812 : 778;
 

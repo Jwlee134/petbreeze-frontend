@@ -8,7 +8,7 @@ import FakeMarker from "~/components/safetyZone/FakeMarker";
 import useKeyboard from "~/hooks/useKeyboard";
 import SafetyZoneMap from "~/components/safetyZone/SafetyZoneMap";
 import Arrow from "~/assets/svg/arrow/arrow-left-blue.svg";
-import { isAndroid, isIos } from "~/utils";
+import { isIos } from "~/utils";
 import { useAppSelector } from "~/store";
 import { useDispatch } from "react-redux";
 import { safetyZoneActions } from "~/store/safetyZone";
@@ -60,8 +60,8 @@ const SafetyZone = ({
   const snapPoints = useMemo(
     () => [
       !keyboardHeight
-        ? rpWidth(157) + bottom
-        : rpWidth(60) + (isIos ? keyboardHeight : 0),
+        ? rpWidth(154) + bottom
+        : rpWidth(64) + (isIos ? keyboardHeight : 0),
     ],
     [keyboardHeight],
   );
@@ -80,7 +80,7 @@ const SafetyZone = ({
                 position: "absolute",
                 bottom: rpWidth(32) + bottom,
                 alignSelf: "center",
-                zIndex: 1,
+                zIndex: 0,
               }}
               onPress={() => dispatch(safetyZoneActions.setStep2(true))}>
               다음
@@ -90,7 +90,7 @@ const SafetyZone = ({
                 position: "absolute",
                 right: rpWidth(17),
                 bottom: rpWidth(106) + bottom,
-                zIndex: 1,
+                zIndex: 0,
               }}
               icon="myLocation"
               onPress={handleMyLocation}

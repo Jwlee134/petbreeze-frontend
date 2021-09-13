@@ -7,16 +7,19 @@ import useBottomSheet from "~/hooks/useBottomSheet";
 import { useAppSelector } from "~/store";
 import { safetyZoneActions } from "~/store/safetyZone";
 import { rpWidth } from "~/styles";
+import ScrollPicker from "../common/ScrollPicker";
 
 const RowContainer = styled.View`
   flex-direction: row;
   padding: 0px ${rpWidth(38)}px;
-  margin-bottom: ${rpWidth(23)}px;
+  margin-bottom: ${rpWidth(13)}px;
 `;
 
 const InputContainer = styled.View`
   width: 43%;
 `;
+
+const data = ["10m", "20m", "30m", "50m", "100m"];
 
 const SafetyZoneMapBottomSheet = ({ snapPoints }: { snapPoints: number[] }) => {
   const { BottomSheetComponent } = useBottomSheet();
@@ -31,7 +34,14 @@ const SafetyZoneMapBottomSheet = ({ snapPoints }: { snapPoints: number[] }) => {
   };
 
   return (
-    <BottomSheetComponent animateOnMount snapPoints={snapPoints} index={0}>
+    <BottomSheetComponent
+      enableContentPanningGesture={false}
+      enableHandlePanningGesture={false}
+      enableFlashScrollableIndicatorOnExpand={false}
+      enableOverDrag={false}
+      animateOnMount
+      snapPoints={snapPoints}
+      index={0}>
       <RowContainer>
         <InputContainer style={{ marginRight: "13%" }}>
           <Input
@@ -40,11 +50,15 @@ const SafetyZoneMapBottomSheet = ({ snapPoints }: { snapPoints: number[] }) => {
             onChangeText={text => dispatch(safetyZoneActions.setName(text))}
           />
         </InputContainer>
-        <InputContainer>
-          <Input
-            value={radius}
-            onChangeText={text => dispatch(safetyZoneActions.setRadius(text))}
-            keyboardType="number-pad"
+        <InputContainer style={{ alignItems: "center" }}>
+          <ScrollPicker
+            data={data}
+            onChange={index =>
+              dispatch(safetyZoneActions.setRadius(data[index]))
+            }
+            width={rpWidth(88)}
+            height={rpWidth(39)}
+            selectedIndex={data.findIndex(item => item === radius)}
           />
         </InputContainer>
       </RowContainer>

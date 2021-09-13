@@ -6,8 +6,9 @@ import DeviceAvatarCircle from "../common/DeviceAvatarCircle";
 import Modal from "react-native-modal";
 import IosStyleBottomModal from "../modal/IosStyleBottomModal";
 import HomeBottomModal from "../modal/HomeBottomModal";
-import { rpWidth } from "~/styles";
+import { rpWidth, width } from "~/styles";
 import { ScrollView } from "react-native";
+import LinearGradient from "react-native-linear-gradient";
 
 interface IPressable {
   index?: number;
@@ -21,8 +22,8 @@ const Pressable = styled.Pressable<IPressable>`
         return css`
           position: absolute;
           bottom: 0;
-          left: 50%;
-          margin-left: -${rpWidth(45)}px;
+          align-self: center;
+          margin-bottom: ${rpWidth(24)}px;
         `;
       case 2:
         return css`
@@ -37,25 +38,12 @@ const Pressable = styled.Pressable<IPressable>`
                 left: "66%",
               }}
         `;
-      case 3:
-        return css`
-          position: absolute;
-          bottom: 0;
-          margin-left: -${rpWidth(45)}px;
-          ${index === 0
-            ? { left: "20%" }
-            : index === 1
-            ? { left: "50%" }
-            : { left: "80%" }}
-        `;
       default:
         return css`
-          margin: 0px ${rpWidth(30)}px;
+          margin: 0px ${rpWidth(8)}px;
         `;
     }
   }}
-  width: ${rpWidth(90)}px;
-  border-radius: ${rpWidth(45)}px;
 `;
 
 const DeviceList = () => {
@@ -69,7 +57,7 @@ const DeviceList = () => {
 
   return (
     <>
-      {deviceList.length < 4 ? (
+      {deviceList.length < 3 ? (
         deviceList.map((device, i) => (
           <Pressable
             key={device.id}
@@ -87,29 +75,51 @@ const DeviceList = () => {
           </Pressable>
         ))
       ) : (
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={{
-            position: "absolute",
-            bottom: 0,
-            marginBottom: rpWidth(48),
-          }}>
-          {deviceList.map(device => (
-            <Pressable
-              key={device.id}
-              onLongPress={() => {
-                setClickedId(device.id);
-                open();
-              }}>
-              <DeviceAvatarCircle
-                circleWidth={90}
-                lineWidth={7}
-                battery={device.battery}
-              />
-            </Pressable>
-          ))}
-        </ScrollView>
+        <>
+          <LinearGradient
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            colors={["#FFFFFF00", "#FFFFFF"]}
+            style={{
+              position: "absolute",
+              bottom: 0,
+              right: rpWidth(80),
+              marginBottom: rpWidth(36),
+              width: rpWidth(60),
+              height: rpWidth(70),
+              zIndex: 1,
+            }}
+          />
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={{
+              position: "absolute",
+              bottom: 0,
+              marginBottom: rpWidth(36),
+            }}
+            contentContainerStyle={{
+              width: width - rpWidth(80),
+            }}>
+            {deviceList.map((device, i) => (
+              <Pressable
+                key={device.id}
+                style={{
+                  ...(i === 0 && { marginLeft: rpWidth(16) }),
+                }}
+                onLongPress={() => {
+                  setClickedId(device.id);
+                  open();
+                }}>
+                <DeviceAvatarCircle
+                  circleWidth={70}
+                  lineWidth={5}
+                  battery={device.battery}
+                />
+              </Pressable>
+            ))}
+          </ScrollView>
+        </>
       )}
       <Modal {...modalProps({ type: "bottom" })}>
         <IosStyleBottomModal

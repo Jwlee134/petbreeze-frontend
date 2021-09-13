@@ -6,7 +6,6 @@ import { rpWidth, width } from "~/styles";
 
 import Arrow from "~/assets/svg/arrow/arrow-left-blue.svg";
 import { Keyboard } from "react-native";
-import { useState } from "react";
 import SearchResult from "./SearchResult";
 import { useDispatch } from "react-redux";
 import { useAppSelector } from "~/store";

@@ -12,7 +12,7 @@ import { FileSystem } from "react-native-unimodules";
 import { decode, encode } from "base64-arraybuffer";
 import { useAppSelector } from "~/store";
 import { useDispatch } from "react-redux";
-import { commonActions } from "~/store/common";
+import { bleActions } from "~/store/ble";
 
 const interval = 512;
 
@@ -27,13 +27,12 @@ const DeviceInformation = {
   CharacteristicA: "c4a0fdf4-dd6e-11eb-ba80-0242ac130004",
 };
 
-const useBleMaganer = ({ isOtaUpdate = false } = {}) => {
-  const bleStatus = useAppSelector(state => state.common.bleStatus);
+const useBleMaganer = () => {
+  const status = useAppSelector(state => state.ble.status);
+  const isOtaUpdate = useAppSelector(state => state.ble.isOtaUpdate);
   const dispatch = useDispatch();
 
   const [peripheral, setPeripheral] = useState<Peripheral | null>(null);
-  const [downloadingProgress, setDownloadingProgress] = useState(0);
-  const [installingProgress, setInstallingProgress] = useState(0);
   const [firmware, setFirmware] = useState<number[]>([]);
   const [notifStatus, setNotifStatus] = useState<number[]>([]);
   const timeout = useRef<NodeJS.Timeout>();
@@ -56,8 +55,8 @@ const useBleMaganer = ({ isOtaUpdate = false } = {}) => {
     }
   };
 
-  const stopNotification = useCallback(() => {
-    /*  BleManager.stopNotification(
+  /*  const stopNotification = useCallback(() => {
+     BleManager.stopNotification(
       (peripheral as Peripheral).id,
       OTAControlPoint.UUID,
       OTAControlPoint.CharacteristicA,
@@ -67,16 +66,18 @@ const useBleMaganer = ({ isOtaUpdate = false } = {}) => {
         disconnect().finally(() => {
           setInstallingProgress(0);
         });
-      }); */
-  }, [bleStatus]);
+      }); 
+  }, [status]);*/
 
   const installFirmware = useCallback(async () => {
     if (!firmware) return;
     try {
       for (let i = 0; i < Math.floor(firmware.length / interval); i++) {
         const data = firmware.slice(i * interval, (i + 1) * interval);
-        setInstallingProgress(
-          Math.round(((interval * i) / firmware.length) * 100),
+        dispatch(
+          bleActions.setProgress(
+            Math.round(((interval * i) / firmware.length) * 100),
+          ),
         );
         await BleManager.write(
           (peripheral as Peripheral).id,
@@ -97,24 +98,22 @@ const useBleMaganer = ({ isOtaUpdate = false } = {}) => {
         );
         console.log(firmware.slice(-(firmware.length % interval)));
       }
-      dispatch(
-        commonActions.setBleStatus(
-          isOtaUpdate ? "otaUpdateSuccess" : "allSuccess",
-        ),
-      );
+      dispatch(bleActions.setStatus("otaUpdateSuccess"));
     } catch (error) {
       disconnect().finally(() => {
         console.log("Failed to send firmware: ", error);
-        dispatch(commonActions.setBleStatus("installingFail"));
+        dispatch(bleActions.setProgress(0));
+        dispatch(bleActions.setStatus("installingFail"));
       });
     }
-  }, [bleStatus]);
+  }, [status]);
 
   useEffect(() => {
     if (firmware.length) {
       console.log("Firmware download has completed.");
       setTimeout(() => {
-        dispatch(commonActions.setBleStatus("firmwareInstalling"));
+        dispatch(bleActions.setProgress(0.001));
+        dispatch(bleActions.setStatus("installingFirmware"));
       }, 1000);
     }
   }, [firmware]);
@@ -130,7 +129,7 @@ const useBleMaganer = ({ isOtaUpdate = false } = {}) => {
             downloadProgress.totalBytesExpectedToWrite) *
             100,
         );
-        setDownloadingProgress(progress);
+        dispatch(bleActions.setProgress(progress));
       },
     );
     downloadResumable
@@ -151,19 +150,20 @@ const useBleMaganer = ({ isOtaUpdate = false } = {}) => {
       })
       .catch(error => {
         console.log("Failed to download: ", error);
-        dispatch(commonActions.setBleStatus("downloadingFail"));
+        dispatch(bleActions.setProgress(0));
+        dispatch(bleActions.setStatus("downloadingFail"));
       });
-  }, [bleStatus]);
+  }, [status]);
 
   useEffect(() => {
     if (notifStatus[0] === 79 && notifStatus[1] === 75) {
       console.log("yes");
-      dispatch(commonActions.setBleStatus("firmwareDownloading"));
+      dispatch(bleActions.setStatus("downloadingFirmware"));
     }
     if (notifStatus[0] === 78 && notifStatus[1] === 79) {
       disconnect().finally(() => {
         console.log("no");
-        dispatch(commonActions.setBleStatus("notificationFail"));
+        dispatch(bleActions.setStatus("notificationFail"));
       });
     }
   }, [notifStatus]);
@@ -180,7 +180,7 @@ const useBleMaganer = ({ isOtaUpdate = false } = {}) => {
       .catch(error => {
         disconnect().finally(() => {
           console.log("Failed to start notification: ", error);
-          dispatch(commonActions.setBleStatus("startNotificationFail"));
+          dispatch(bleActions.setStatus("startNotificationFail"));
         });
       });
   };
@@ -207,7 +207,7 @@ const useBleMaganer = ({ isOtaUpdate = false } = {}) => {
     }
     if (devEUIResult.isError && devEUIResult.error.status === 400) {
       disconnect().finally(() => {
-        dispatch(commonActions.setBleStatus("devEUIFail"));
+        dispatch(bleActions.setStatus("devEUIFail"));
       });
     }
   }, [devEUIResult]);
@@ -225,7 +225,7 @@ const useBleMaganer = ({ isOtaUpdate = false } = {}) => {
       .catch(error => {
         disconnect().finally(() => {
           console.log("Failed to read devEUI", error);
-          dispatch(commonActions.setBleStatus("retrieveFail"));
+          dispatch(bleActions.setStatus("retrieveFail"));
         });
       });
   };
@@ -243,10 +243,10 @@ const useBleMaganer = ({ isOtaUpdate = false } = {}) => {
       .catch(error => {
         disconnect().finally(() => {
           console.log("Failed to retrieve data: ", error);
-          dispatch(commonActions.setBleStatus("retrieveFail"));
+          dispatch(bleActions.setStatus("retrieveFail"));
         });
       });
-  }, [bleStatus]);
+  }, [status]);
 
   const handleConnect = (peripheral: Peripheral) => {
     console.log(peripheral);
@@ -254,11 +254,11 @@ const useBleMaganer = ({ isOtaUpdate = false } = {}) => {
       .then(async () => {
         console.log("Connected to: ", peripheral.id);
         if (isAndroid) await BleManager.requestMTU(peripheral.id, 515);
-        dispatch(commonActions.setBleStatus("scanningSuccess"));
+        dispatch(bleActions.setStatus("scanningSuccess"));
       })
       .catch(error => {
         console.log("Failed to connect: ", error);
-        dispatch(commonActions.setBleStatus("connectingFail"));
+        dispatch(bleActions.setStatus("connectingFail"));
       });
   };
 
@@ -282,35 +282,39 @@ const useBleMaganer = ({ isOtaUpdate = false } = {}) => {
     timeout.current = setTimeout(() => {
       if (!peripheral) {
         BleManager.stopScan().then(() => {
-          dispatch(commonActions.setBleStatus("scanningFail"));
+          dispatch(bleActions.setStatus("scanningFail"));
         });
       }
     }, 10000);
-  }, [bleStatus]);
+  }, [status]);
 
   useEffect(() => {
-    console.log(bleStatus);
-    if (bleStatus === "scanning") {
-      /*   scanPeripheral();
-      return; */
-    }
-    if (bleStatus === "scanningSuccess") {
-      getPeripheralData();
+    console.log(status);
+    if (status === "scanning") {
+      scanPeripheral();
       return;
     }
-    if (bleStatus === "firmwareDownloading") {
+    if (status === "scanningSuccess") {
+      setTimeout(() => {
+        getPeripheralData();
+      }, 1700);
+      return;
+    }
+    if (status === "downloadingFirmware") {
       downloadFirmware();
       return;
     }
-    if (bleStatus === "firmwareInstalling") {
+    if (status === "installingFirmware") {
       installFirmware();
       return;
     }
-    if (bleStatus === "otaUpdateSuccess" || bleStatus === "allSuccess") {
-      stopNotification();
-      return;
+    if (status === "otaUpdateSuccess") {
     }
-  }, [bleStatus]);
+    if (status === "connectingToWifi") {
+    }
+    if (status === "sendingSafetyZone") {
+    }
+  }, [status]);
 
   useEffect(() => {
     const discover = bleManagerEmitter.addListener(
@@ -329,11 +333,6 @@ const useBleMaganer = ({ isOtaUpdate = false } = {}) => {
       notification.remove();
     };
   }, []);
-
-  return {
-    downloadingProgress,
-    installingProgress,
-  };
 };
 
 export default useBleMaganer;

@@ -1,20 +1,19 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components/native";
 import GradientContainer from "~/components/common/container/GradientContainer";
-import MyText from "~/components/common/MyText";
-import Points from "~/components/common/Points";
+import AnimatedPoints from "~/components/common/AnimatedPoints";
 import Footprint from "~/assets/svg/footprint/footprint-outline-blue.svg";
-import { Animated, View } from "react-native";
+import { Animated } from "react-native";
 import { rpWidth } from "~/styles";
+import useAnimatedSequence from "~/hooks/useAnimatedSequence";
+import { ScanningScreenNavigationProp } from "~/types/navigator";
+import { useAppSelector } from "~/store";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const TopContainer = styled.View`
   flex: 1;
   align-items: center;
   justify-content: space-between;
-`;
-
-const RowContainer = styled.View`
-  flex-direction: row;
 `;
 
 const BottomContainer = styled.View`
@@ -49,58 +48,48 @@ const FootPrintInner = styled.View`
   border-radius: ${rpWidth(49)}px;
   justify-content: center;
   align-items: center;
+  margin-bottom: ${-rpWidth(20)}px;
 `;
 
-const Scanning = () => {
-  const value = useRef(new Animated.Value(0)).current;
-  const value2 = useRef(new Animated.Value(0)).current;
+const Scanning = ({
+  navigation,
+}: {
+  navigation: ScanningScreenNavigationProp;
+}) => {
+  const { top } = useSafeAreaInsets();
+  const status = useAppSelector(state => state.ble.status);
+  const [value1, value2] = useAnimatedSequence({
+    numOfValues: 2,
+    delayAfterMount: 400,
+    delayAfterFirst: 400,
+    delayAfterSecond: 400,
+    loop: true,
+    delayAfterReset: 400,
+  });
 
   useEffect(() => {
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(value, {
-          toValue: 1,
-          duration: 200,
-          useNativeDriver: true,
-        }),
-        Animated.delay(400),
-        Animated.timing(value2, {
-          toValue: 1,
-          duration: 200,
-          useNativeDriver: true,
-        }),
-        Animated.delay(400),
-        Animated.parallel([
-          Animated.timing(value, {
-            toValue: 0,
-            duration: 200,
-            useNativeDriver: true,
-          }),
-          Animated.timing(value2, {
-            toValue: 0,
-            duration: 200,
-            useNativeDriver: true,
-          }),
-        ]),
-        Animated.delay(400),
-      ]),
-    ).start();
-  }, []);
+    if (status === "scanningFail") navigation.replace("ScanningFail");
+    if (status === "scanningSuccess") navigation.replace("Success");
+  }, [status]);
 
   return (
     <GradientContainer>
       <TopContainer>
-        <View />
-        <RowContainer>
-          <MyText fontSize={24} fontWeight="medium" color="white">
-            디바이스 검색중
-          </MyText>
-          <Points color="white" />
-        </RowContainer>
+        <AnimatedPoints
+          fontWeight="medium"
+          fontSize={24}
+          value2={value1}
+          value3={value2}
+          color="white"
+          text="디바이스 검색중"
+          style={{
+            marginTop: top + rpWidth(99),
+          }}
+        />
         <FootPrintInner>
           <Footprint width={rpWidth(58)} height={rpWidth(56)} />
           <FootPrintBorder style={{ opacity: value2 }} />
-          <FootPrintOuter style={{ opacity: value }} />
+          <FootPrintOuter style={{ opacity: value1 }} />
         </FootPrintInner>
       </TopContainer>
       <BottomContainer />

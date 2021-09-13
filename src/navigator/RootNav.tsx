@@ -21,12 +21,17 @@ const forFade = ({ current }: StackCardInterpolationProps) => ({
 });
 
 const RootNav = () => {
-  /*   useEffect(() => {
-    if (isPermissonAllowed)
+  const isPermissionAllowed = useAppSelector(
+    state => state.storage.init.isPermissionAllowed,
+  );
+
+  useEffect(() => {
+    if (isPermissionAllowed) {
       Blemanager.start({ showAlert: false }).then(() => {
         console.log("BLE Module is initialized.");
       });
-  }, [isPermissonAllowed]); */
+    }
+  }, [isPermissionAllowed]);
 
   return (
     <>

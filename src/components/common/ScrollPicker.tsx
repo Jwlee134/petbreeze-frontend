@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { Animated, StyleProp, ViewStyle } from "react-native";
+import { Animated, StyleProp, View, ViewStyle } from "react-native";
 import Picker from "react-native-wheel-scrollview-picker";
 import MyText from "./MyText";
 import styled from "styled-components/native";
@@ -32,7 +32,12 @@ const ScrollPicker = ({
   onChange,
 }: IProps) => {
   return (
-    <Container style={{ width, height, ...(style as object) }}>
+    <Container
+      style={{
+        width,
+        height,
+        ...(style as object),
+      }}>
       <Picker
         dataSource={data}
         selectedIndex={selectedIndex}
@@ -54,14 +59,17 @@ const ScrollPicker = ({
           }, [selected]);
 
           return (
-            <MyText style={{ color }} fontWeight="medium" key={index}>
-              {item}
-            </MyText>
+            <View onStartShouldSetResponder={() => true}>
+              <MyText style={{ color }} fontWeight="medium" key={index}>
+                {item}
+              </MyText>
+            </View>
           );
         }}
         onValueChange={(data, selectedIndex) => onChange(selectedIndex)}
         wrapperHeight={height}
         wrapperWidth={width}
+        wrapperBackground="red"
         itemHeight={height}
         wrapperColor="white"
         highlightColor="transparent"

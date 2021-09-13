@@ -7,19 +7,19 @@ import {
 import BottomTabNav from "./BottomTabNav";
 import WalkMap from "~/screens/loggedInNav/WalkMap";
 import CustomHeader from "~/components/navigator/CustomHeader";
-import { store } from "~/store";
+import { store, useAppSelector } from "~/store";
 
 import messaging from "@react-native-firebase/messaging";
-import RegisterDeviceStackNav from "./RegisterDeviceStackNav";
 import Permissions from "~/screens/loggedInNav/Permissions";
-import { LoggedInNavRouteProp } from "~/types/navigator";
+import {
+  LoggedInNavParamList,
+  LoggedInNavScreenProps,
+} from "~/types/navigator";
 import UpdateProfile from "~/screens/loggedInNav/UpdateProfile";
-import EmergencyMissing from "~/screens/loggedInNav/EmergencyMissing";
-import BleStackNav from "./BleStackNav";
-import DeleteAccountStackNav from "./DeleteAccountStackNav";
 import EmergencyMissingStackNav from "./EmergencyMissingStackNav";
+import BleRootStackNav from "./BleRootStackNav";
 
-const Stack = createStackNavigator();
+const Stack = createStackNavigator<LoggedInNavParamList>();
 
 const forFade = ({ current }: StackCardInterpolationProps) => ({
   cardStyle: {
@@ -27,7 +27,10 @@ const forFade = ({ current }: StackCardInterpolationProps) => ({
   },
 });
 
-const LoggedInNav = ({ route }: { route: LoggedInNavRouteProp }) => {
+const LoggedInNav = ({ navigation, route }: LoggedInNavScreenProps) => {
+  const initialRouteName = useAppSelector(
+    state => state.navigator.initialLoggedInNavRouteName,
+  );
   /* const [isLoading, setIsLoading] = useState(true);
   const [initialRoute, setInitialRoute] = useState("BottomTabNav");
 
@@ -73,7 +76,7 @@ const LoggedInNav = ({ route }: { route: LoggedInNavRouteProp }) => {
 
   return (
     <Stack.Navigator
-      initialRouteName={route.params?.initialRouteName || "BottomTabNav"}
+      initialRouteName={initialRouteName}
       screenOptions={{
         cardStyleInterpolator: forFade,
         detachPreviousScreen: false,
@@ -84,23 +87,18 @@ const LoggedInNav = ({ route }: { route: LoggedInNavRouteProp }) => {
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="RegisterDeviceStackNav"
-        component={RegisterDeviceStackNav}
-        initialParams={
-          route.params?.initialRouteName2
-            ? { initialRouteName: route.params.initialRouteName2 }
-            : undefined
-        }
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="BleStackNav"
-        component={BleStackNav}
+        name="BleRootStackNav"
+        component={BleRootStackNav}
         options={{ headerShown: false }}
       />
       <Stack.Screen
         name="BottomTabNav"
         component={BottomTabNav}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="EmergencyMissingStackNav"
+        component={EmergencyMissingStackNav}
         options={{ headerShown: false }}
       />
       <Stack.Screen
@@ -111,24 +109,10 @@ const LoggedInNav = ({ route }: { route: LoggedInNavRouteProp }) => {
         }}
       />
       <Stack.Screen
-        name="DeleteAccountStackNav"
-        component={DeleteAccountStackNav}
-        options={{
-          header: props => <CustomHeader {...props}>탈퇴하기</CustomHeader>,
-        }}
-      />
-      <Stack.Screen
         name="UpdateProfile"
         component={UpdateProfile}
         options={{
           header: props => <CustomHeader {...props}>프로필 수정</CustomHeader>,
-        }}
-      />
-      <Stack.Screen
-        name="EmergencyMissingStackNav"
-        component={EmergencyMissingStackNav}
-        options={{
-          headerShown: false,
         }}
       />
     </Stack.Navigator>

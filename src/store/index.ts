@@ -16,22 +16,24 @@ import {
   REGISTER,
 } from "redux-persist";
 
-import common from "./common";
+import ble from "./ble";
 import form from "./form";
 import safetyZone from "./safetyZone";
 import storage from "./storage";
 import map from "./map";
 import device from "./device";
+import navigator from "./navigator";
 
 import api from "~/api";
 
 const rootReducer = combineReducers({
-  common,
+  ble,
   form,
   safetyZone,
   storage,
   map,
   device,
+  navigator,
   [api.reducerPath]: api.reducer,
 });
 

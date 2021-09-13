@@ -18,6 +18,9 @@ interface IForm {
   lostPlace: string;
   message: string;
   photos: Image[];
+  deviceName: string;
+  wifiName: string;
+  wifiPw: string;
 }
 
 const initialState: IForm = {
@@ -37,6 +40,9 @@ const initialState: IForm = {
   lostPlace: "",
   message: "",
   photos: [],
+  deviceName: "",
+  wifiName: "",
+  wifiPw: "",
 };
 
 const form = createSlice({
@@ -93,6 +99,15 @@ const form = createSlice({
     },
     setPhotos: (state, { payload }: PayloadAction<Image[]>) => {
       state.photos = payload;
+    },
+    setDeviceName: (state, { payload }: PayloadAction<string>) => {
+      state.deviceName = payload;
+    },
+    setWifiName: (state, { payload }: PayloadAction<string>) => {
+      state.wifiName = payload;
+    },
+    setWifiPw: (state, { payload }: PayloadAction<string>) => {
+      state.wifiPw = payload;
     },
     initState: state => {
       state = initialState;

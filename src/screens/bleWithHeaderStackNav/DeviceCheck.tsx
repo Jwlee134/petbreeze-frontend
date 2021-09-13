@@ -2,16 +2,14 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import styled from "styled-components/native";
 
-import Device from "~/assets/svg/device.svg";
+import Device from "~/assets/svg/device/device.svg";
 import Button from "~/components/common/Button";
 import { storageActions } from "~/store/storage";
 import MyText from "~/components/common/MyText";
 import SafeAreaContainer from "~/components/common/container/SafeAreaContainer";
 import { rpHeight, rpWidth } from "~/styles";
-import { PreStartScreenNavigationProp } from "~/types/navigator";
 import { useAppSelector } from "~/store";
-import CustomHeader from "~/components/navigator/CustomHeader";
-import { commonActions } from "~/store/common";
+import { DeviceCheckScreenNavigationProp } from "~/types/navigator";
 
 const TopContainer = styled.View`
   flex: 1;
@@ -24,7 +22,11 @@ const BottomContainer = styled.View`
   justify-content: flex-end;
 `;
 
-const PreStart = ({ navigation }: PreStartScreenNavigationProp) => {
+const DeviceCheck = ({
+  navigation,
+}: {
+  navigation: DeviceCheckScreenNavigationProp;
+}) => {
   const isInitialized = useAppSelector(
     state => state.storage.init.isInitialized,
   );
@@ -32,9 +34,8 @@ const PreStart = ({ navigation }: PreStartScreenNavigationProp) => {
 
   return (
     <SafeAreaContainer>
-      <CustomHeader disableBackButton currentPage={1} totalPage={5} />
       <TopContainer>
-        <Device width={rpWidth(100)} height={rpWidth(156)} fill="black" />
+        <Device width={rpWidth(100)} height={rpWidth(156)} />
         <MyText
           fontSize={24}
           style={{
@@ -48,11 +49,10 @@ const PreStart = ({ navigation }: PreStartScreenNavigationProp) => {
       <BottomContainer>
         <Button
           style={{
-            marginBottom: 12,
+            marginBottom: rpWidth(12),
           }}
           onPress={() => {
-            navigation.replace("BleProgress");
-            dispatch(commonActions.setBleStatus("scanning"));
+            navigation.navigate("ChargingCheck");
           }}
           delay={400}>
           네, 있습니다.
@@ -72,4 +72,4 @@ const PreStart = ({ navigation }: PreStartScreenNavigationProp) => {
   );
 };
 
-export default PreStart;
+export default DeviceCheck;

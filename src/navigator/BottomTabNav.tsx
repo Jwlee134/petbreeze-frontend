@@ -11,20 +11,22 @@ import Bell from "~/assets/svg/tab/bell.svg";
 import BellOutline from "~/assets/svg/tab/bell-outline.svg";
 import User from "~/assets/svg/tab/user.svg";
 import UserOutline from "~/assets/svg/tab/user-outline.svg";
-import { BottomTabNavRouteProp } from "~/types/navigator";
 import { rpWidth } from "~/styles";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useAppSelector } from "~/store";
+import { BottomTabParamList } from "~/types/navigator";
 
-const Tab = createBottomTabNavigator();
+const Tab = createBottomTabNavigator<BottomTabParamList>();
 
-const BottomTabNav = ({ route }: { route: BottomTabNavRouteProp }) => {
+const BottomTabNav = () => {
+  const initialRouteName = useAppSelector(
+    state => state.navigator.initialBottomTabNavRouteName,
+  );
   const { bottom } = useSafeAreaInsets();
 
   return (
     <Tab.Navigator
-      initialRouteName={
-        route?.params?.initialTab?.includes("Walk") ? "WalkTab" : "HomeTab"
-      }
+      initialRouteName={initialRouteName}
       screenOptions={{
         headerShown: false,
         tabBarShowLabel: false,
@@ -57,12 +59,7 @@ const BottomTabNav = ({ route }: { route: BottomTabNavRouteProp }) => {
               <FootprintOutline width={rpWidth(25)} height={rpWidth(24)} />
             ),
         }}>
-        {() => (
-          <SharedStackNav
-            initialWalkTab={route?.params?.initialTab}
-            screenName="Walk"
-          />
-        )}
+        {() => <SharedStackNav screenName="Walk" />}
       </Tab.Screen>
       <Tab.Screen
         name="NotificationTab"

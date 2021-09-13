@@ -60,7 +60,7 @@ const Button = ({
 
   const color = value.interpolate({
     inputRange: [0, 1],
-    outputRange: ["rgba(0, 0, 0, 0.3)", fontColor ? fontColor : "white"],
+    outputRange: ["rgba(0, 0, 0, 0.5)", fontColor ? fontColor : "white"],
   });
 
   const backgroundColorInterpolate = value.interpolate({

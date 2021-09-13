@@ -14,6 +14,7 @@ import CameraRoll from "@react-native-community/cameraroll";
 import { storageActions } from "~/store/storage";
 import { useNavigation } from "@react-navigation/core";
 import { SafetyZoneScreenNavigationProp } from "~/types/navigator";
+import { navigatorActions } from "~/store/navigator";
 
 interface IProps {
   snapPoints: number[];
@@ -28,7 +29,6 @@ const SafetyZoneMap = ({ snapPoints, mapPadding }: IProps) => {
   const circleRef = useRef<Circle>(null);
   const { Map, mapRef } = useMap();
   const value = useRef(new Animated.Value(0)).current;
-  const [animatedTo, setAnimatedTo] = useState(0);
   const viewShotRef = useRef<ViewShot>(null);
 
   const step2 = useAppSelector(state => state.safetyZone.step2);
@@ -50,7 +50,7 @@ const SafetyZoneMap = ({ snapPoints, mapPadding }: IProps) => {
       return getLeftRightPointsOfCircle(
         coord.latitude,
         coord.longitude,
-        Number(radius),
+        Number(radius.replace(/[^0-9\.]+/g, "")),
       );
     }
   }, [radius, step2]);
@@ -64,60 +64,69 @@ const SafetyZoneMap = ({ snapPoints, mapPadding }: IProps) => {
     return Math.min(Math.max(0, Math.pow(2, 10 * (t - 1))), 1);
   };
 
+  const marginBottom = value.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, snapPoints[0] - rpWidth(46)],
+  });
+
   useEffect(() => {
     Animated.timing(value, {
-      toValue: !step2 ? 0 : snapPoints[0] - rpWidth(46),
+      toValue: !step2 ? 0 : 1,
       duration: 500,
-      useNativeDriver: true,
+      useNativeDriver: false,
       easing: Easing.out(exp),
     }).start();
   }, [step2, snapPoints]);
 
   useEffect(() => {
-    value.addListener(({ value }) => setAnimatedTo(value));
-  }, []);
-
-  useEffect(() => {
-    /* if (isSubmitting && viewShotRef.current) {
-      viewShotRef.current?.capture().then(uri => {});
-    } */
-    if (isSubmitting) {
-      dispatch(storageActions.setDeviceRegistrationStep("safetyZone"));
-      navigation.navigate("RegisterProfileFirst");
+    if (isSubmitting && viewShotRef.current) {
+      viewShotRef.current?.capture().then(uri => {
+        CameraRoll.save(uri, { album: "어디개" });
+      });
+      /* dispatch(storageActions.setDeviceRegistrationStep("safetyZone")) */
+      dispatch(
+        navigatorActions.setInitialRoute({
+          initialBleWithHeaderStackNavRouteName: "RegisterProfileFirst",
+        }),
+      );
+      navigation.replace("BleWithHeaderStackNav");
     }
   }, [isSubmitting, viewShotRef.current]);
 
   return (
-    <ViewShot
-      ref={viewShotRef}
+    <Animated.View
       style={{
         ...(StyleSheet.absoluteFill as object),
         zIndex: 0,
         marginTop: -rpWidth(46),
-        marginBottom: animatedTo,
+        marginBottom,
       }}>
-      <Map
-        style={StyleSheet.absoluteFill}
-        onCameraChange={({ latitude, longitude }) => {
-          dispatch(safetyZoneActions.setCoord({ latitude, longitude }));
-        }}
-        onMapClick={Keyboard.dismiss}
-        mapPadding={mapPadding}
-        rotateGesturesEnabled={false}
-        zoomGesturesEnabled={!step2}>
-        {coord.latitude && coord.longitude && radius ? (
-          <Circle
-            ref={circleRef}
-            coordinate={{
-              latitude: coord.latitude,
-              longitude: coord.longitude,
-            }}
-            radius={Number(radius)}
-            color="rgba(255,0,0,0.3)"
-          />
-        ) : null}
-      </Map>
-    </ViewShot>
+      <ViewShot ref={viewShotRef} style={StyleSheet.absoluteFill as object}>
+        <Map
+          style={StyleSheet.absoluteFill}
+          onCameraChange={({ latitude, longitude }) => {
+            dispatch(safetyZoneActions.setCoord({ latitude, longitude }));
+          }}
+          onMapClick={Keyboard.dismiss}
+          mapPadding={mapPadding}
+          rotateGesturesEnabled={false}
+          zoomGesturesEnabled={!step2}>
+          {coord.latitude && coord.longitude && radius ? (
+            <>
+              <Circle
+                ref={circleRef}
+                coordinate={{
+                  latitude: coord.latitude,
+                  longitude: coord.longitude,
+                }}
+                radius={Number(radius.replace(/[^0-9\.]+/g, ""))}
+                color="rgba(255,0,0,0.3)"
+              />
+            </>
+          ) : null}
+        </Map>
+      </ViewShot>
+    </Animated.View>
   );
 };
 

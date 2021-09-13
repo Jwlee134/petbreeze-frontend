@@ -7,7 +7,7 @@ import KeyboardAwareScrollContainer from "~/components/common/container/Keyboard
 import Input from "~/components/common/Input";
 import InputTitle from "~/components/common/InputTitle";
 import MyText from "~/components/common/MyText";
-import CustomHeader from "~/components/navigator/CustomHeader";
+import SelectableButton from "~/components/common/SelectableButton";
 import { useAppSelector } from "~/store";
 import { formActions } from "~/store/form";
 import { rpWidth } from "~/styles";
@@ -16,8 +16,7 @@ import AvatarCircle from "./AvatarCircle";
 
 const InputContainer = styled.View`
   padding: 0px ${rpWidth(42)}px;
-  margin-top: ${rpWidth(48)}px;
-  margin-bottom: ${rpWidth(50)}px;
+  margin-top: ${rpWidth(35)}px;
 `;
 
 const AvatarContainer = styled.View`
@@ -33,10 +32,9 @@ const RegisterProfileFirst = ({
 }: {
   navigation: RegisterProfileFirstScreenNavigationProp;
 }) => {
-  const name = useAppSelector(state => state.form.name);
-  const birthYear = useAppSelector(state => state.form.birthYear);
-  const birthMonth = useAppSelector(state => state.form.birthMonth);
-  const birthDay = useAppSelector(state => state.form.birthDay);
+  const { name, birthYear, birthMonth, birthDay, gender } = useAppSelector(
+    state => state.form,
+  );
   const dispatch = useDispatch();
 
   return (
@@ -45,7 +43,7 @@ const RegisterProfileFirst = ({
         flexGrow: 1,
         justifyContent: "space-between",
       }}>
-      <View>
+      <View style={{ marginBottom: rpWidth(30) }}>
         <MyText
           style={{
             textAlign: "center",
@@ -53,7 +51,7 @@ const RegisterProfileFirst = ({
             marginBottom: rpWidth(35),
           }}
           fontSize={24}>
-          반려동물 프로필을{"\n"}등록해주세요.
+          프로필을 등록해주세요.
         </MyText>
         <AvatarContainer>
           <AvatarCircle />
@@ -102,10 +100,26 @@ const RegisterProfileFirst = ({
               maxLength={2}
             />
           </RowContainer>
+          <InputTitle>성별</InputTitle>
+          <RowContainer>
+            <SelectableButton
+              selected={gender === "남"}
+              style={{
+                marginRight: rpWidth(20),
+              }}
+              onPress={() => dispatch(formActions.setGender("남"))}>
+              남
+            </SelectableButton>
+            <SelectableButton
+              selected={gender === "여"}
+              onPress={() => dispatch(formActions.setGender("여"))}>
+              여
+            </SelectableButton>
+          </RowContainer>
         </InputContainer>
       </View>
       <Button
-        disabled={!name || !birthYear}
+        disabled={!name || !birthYear || !gender}
         useCommonMarginBottom
         onPress={() => {
           Keyboard.dismiss();

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components/native";
 
 import Shield from "~/assets/svg/init/permission/shield.svg";
@@ -24,6 +24,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import palette from "~/styles/palette";
 import SafeAreaContainer from "../../components/common/container/SafeAreaContainer";
 import { PermissionsScreenNavigationProp } from "~/types/navigator";
+import useAnimatedSequence from "~/hooks/useAnimatedSequence";
 
 const TopContainer = styled(Animated.View)`
   flex: 1;
@@ -78,9 +79,11 @@ const Permissions = ({
 
   const [settingOpened, setSettingOpened] = useState(false);
 
-  const value1 = useRef(new Animated.Value(0)).current;
-  const value2 = useRef(new Animated.Value(0)).current;
-  const value3 = useRef(new Animated.Value(0)).current;
+  const [value1, value2, value3] = useAnimatedSequence({
+    numOfValues: 3,
+    useNativeDriverOnThird: false,
+    secondDuration: 300,
+  });
 
   const color = value3.interpolate({
     inputRange: [0, 1],
@@ -92,29 +95,6 @@ const Permissions = ({
     outputRange: ["rgba(0, 0, 0, 0.1)", palette.blue_7b_90],
   });
 
-  useEffect(() => {
-    Animated.sequence([
-      Animated.delay(200),
-      Animated.timing(value1, {
-        toValue: 1,
-        duration: 200,
-        useNativeDriver: true,
-      }),
-      Animated.delay(200),
-      Animated.timing(value2, {
-        toValue: 1,
-        duration: 300,
-        useNativeDriver: true,
-      }),
-      Animated.delay(200),
-      Animated.timing(value3, {
-        toValue: 1,
-        duration: 200,
-        useNativeDriver: false,
-      }),
-    ]).start();
-  }, []);
-
   const handleAllowRest = () => {
     requestMultiple([
       PERMISSIONS.IOS.LOCATION_ALWAYS,
@@ -123,7 +103,7 @@ const Permissions = ({
       PERMISSIONS.IOS.CAMERA,
     ]).then(() => {
       dispatch(storageActions.setInit("permission"));
-      navigation.replace("BleStackNav");
+      navigation.replace("BleRootStackNav");
     });
   };
 

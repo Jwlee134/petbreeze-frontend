@@ -21,7 +21,7 @@ const initialState: IState = {
     longitude: 0,
   },
   name: "",
-  radius: "",
+  radius: "10m",
   addr: "",
   step2: false,
   animateCamera: false,

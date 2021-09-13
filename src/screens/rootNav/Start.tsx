@@ -1,24 +1,28 @@
 import React, { useEffect, useRef } from "react";
 import styled from "styled-components/native";
 import GradientContainer from "~/components/common/container/GradientContainer";
-import Footprint from "~/assets/svg/footprint/footprint-start.svg";
+import Footprint from "~/assets/svg/footprint/footprint-app-icon-blue.svg";
 import AppName from "~/assets/svg/app-name.svg";
 import { rpWidth } from "~/styles";
 import { Animated, Easing } from "react-native";
-import { store } from "~/store";
 import { StartScreenNavigationProp } from "~/types/navigator";
+import { store } from "~/store";
+import { useDispatch } from "react-redux";
+import { navigatorActions } from "~/store/navigator";
 
 const LogoContainer = styled(Animated.View)`
   justify-content: center;
   align-items: center;
 `;
 
-const Start = ({ navigation, route }: StartScreenNavigationProp) => {
+const Start = ({ navigation }: { navigation: StartScreenNavigationProp }) => {
   const footprintOpacity = useRef(new Animated.Value(0)).current;
   const appNameOpacity = useRef(new Animated.Value(0)).current;
   const marginBottom = useRef(new Animated.Value(0)).current;
   const footprintWidth = useRef(new Animated.Value(0)).current;
   const appNameWidth = useRef(new Animated.Value(0)).current;
+
+  const dispatch = useDispatch();
 
   const translateY = footprintOpacity.interpolate({
     inputRange: [0, 1],
@@ -87,35 +91,56 @@ const Start = ({ navigation, route }: StartScreenNavigationProp) => {
         reduceMarginBottom,
       ]), */
     ]).start(() => {
-      const {
-        init: { isPermissionAllowed, isInitialized },
-        device: {
-          isDeviceRegistered,
-          isSafetyZoneRegistered,
-          isProfileRegistered,
-        },
-      } = store.getState().storage;
       setTimeout(() => {
-        if (!isPermissionAllowed)
-          return navigation.replace("LoggedInNav", {
-            initialRouteName: "Permissions",
-          });
-        if (isDeviceRegistered) {
-          if (!isSafetyZoneRegistered)
-            return navigation.replace("LoggedInNav", {
-              initialRouteName: "RegisterDeviceStackNav",
-              initialRouteName2: "PreSafetyZone",
-            });
-          if (!isProfileRegistered)
-            return navigation.replace("LoggedInNav", {
-              initialRouteName: "RegisterDeviceStackNav",
-              initialRouteName2: "RegisterProfileFirst",
-            });
+        const {
+          init: { isPermissionAllowed, isInitialized },
+          device: {
+            isDeviceRegistered,
+            isSafetyZoneRegistered,
+            isProfileRegistered,
+          },
+        } = store.getState().storage;
+
+        if (!isPermissionAllowed) {
+          dispatch(
+            navigatorActions.setInitialRoute({
+              initialLoggedInNavRouteName: "Permissons",
+            }),
+          );
+          navigation.replace("LoggedInNav");
+          return;
         }
-        if (!isInitialized)
-          return navigation.replace("LoggedInNav", {
-            initialRouteName: "RegisterDeviceStackNav",
-          });
+        if (isDeviceRegistered) {
+          if (!isSafetyZoneRegistered) {
+            dispatch(
+              navigatorActions.setInitialRoute({
+                initialLoggedInNavRouteName: "BleRootStackNav",
+                initialBleWithHeaderStackNavRouteName: "PreSafetyZone",
+              }),
+            );
+            navigation.replace("LoggedInNav");
+            return;
+          }
+          if (!isProfileRegistered) {
+            dispatch(
+              navigatorActions.setInitialRoute({
+                initialLoggedInNavRouteName: "BleRootStackNav",
+                initialBleWithHeaderStackNavRouteName: "RegisterProfileFirst",
+              }),
+            );
+            navigation.replace("LoggedInNav");
+            return;
+          }
+        }
+        if (!isInitialized) {
+          dispatch(
+            navigatorActions.setInitialRoute({
+              initialLoggedInNavRouteName: "BleRootStackNav",
+            }),
+          );
+          navigation.replace("LoggedInNav");
+          return;
+        }
         navigation.replace("LoggedInNav");
       }, 600);
     });

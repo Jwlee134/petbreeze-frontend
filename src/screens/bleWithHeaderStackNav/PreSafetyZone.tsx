@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import Button from "~/components/common/Button";
 import styled from "styled-components/native";
 
@@ -9,6 +9,9 @@ import MyText from "~/components/common/MyText";
 import SafeAreaContainer from "~/components/common/container/SafeAreaContainer";
 import { PreSafetyZoneScreenNavigationProp } from "~/types/navigator";
 import { Animated } from "react-native";
+import useAnimatedSequence from "~/hooks/useAnimatedSequence";
+import { useDispatch } from "react-redux";
+import { navigatorActions } from "~/store/navigator";
 
 const DescriptionContainer = styled(Animated.View)`
   width: 100%;
@@ -38,25 +41,11 @@ const PreSafetyZone = ({
 }: {
   navigation: PreSafetyZoneScreenNavigationProp;
 }) => {
-  const value1 = useRef(new Animated.Value(0)).current;
-  const value2 = useRef(new Animated.Value(0)).current;
-
-  useEffect(() => {
-    Animated.sequence([
-      Animated.delay(200),
-      Animated.timing(value1, {
-        toValue: 1,
-        duration: 200,
-        useNativeDriver: true,
-      }),
-      Animated.delay(200),
-      Animated.timing(value2, {
-        toValue: 1,
-        duration: 300,
-        useNativeDriver: true,
-      }),
-    ]).start();
-  }, []);
+  const [value1, value2] = useAnimatedSequence({
+    numOfValues: 2,
+    secondDuration: 300,
+  });
+  const dispatch = useDispatch();
 
   return (
     <SafeAreaContainer>
@@ -103,10 +92,15 @@ const PreSafetyZone = ({
           </Description>
         </DescriptionContainer>
         <Button
-          delay={1100}
+          delay={1300}
           useCommonMarginBottom
           onPress={() => {
-            navigation.navigate("SafetyZone");
+            dispatch(
+              navigatorActions.setInitialRoute({
+                initialBleWithoutHeaderStackNavRouteName: "SafetyZone",
+              }),
+            );
+            navigation.replace("BleWithoutHeaderStackNav");
           }}>
           다음
         </Button>

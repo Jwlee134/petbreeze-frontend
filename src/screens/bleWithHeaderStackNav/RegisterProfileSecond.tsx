@@ -6,11 +6,12 @@ import Button from "~/components/common/Button";
 import KeyboardAwareScrollContainer from "~/components/common/container/KeyboardAwareScrollContainer";
 import Input from "~/components/common/Input";
 import InputTitle from "~/components/common/InputTitle";
-import SelectableButton from "~/components/common/SelectableButton";
 import { useAppSelector } from "~/store";
 import { formActions } from "~/store/form";
+import { navigatorActions } from "~/store/navigator";
 import { rpWidth } from "~/styles";
 import { RegisterProfileSecondScreenNavigationProp } from "~/types/navigator";
+import { isIos } from "~/utils";
 import AvatarCircle from "./AvatarCircle";
 import PreviousValueBlock from "./PreviousValueBlock";
 
@@ -35,10 +36,41 @@ const RegisterProfileSecond = ({
 }: {
   navigation: RegisterProfileSecondScreenNavigationProp;
 }) => {
-  const gender = useAppSelector(state => state.form.gender);
-  const breed = useAppSelector(state => state.form.breed);
-  const weight = useAppSelector(state => state.form.weight);
+  const {
+    avatar,
+    name,
+    birthYear,
+    birthMonth,
+    birthDay,
+    gender,
+    breed,
+    weight,
+    characteristic,
+  } = useAppSelector(state => state.form);
   const dispatch = useDispatch();
+
+  const handleFormData = () => {
+    if (!avatar) return;
+    const image = new FormData();
+    console.log(avatar);
+    image.append(`image1`, {
+      name: avatar.path.substring(avatar.path.lastIndexOf("/") + 1),
+      type: avatar.mime,
+      uri: isIos ? `file://${avatar.path}` : avatar.path,
+      data: avatar?.data || null,
+    });
+    return image;
+  };
+
+  const handleSubmit = () => {
+    Keyboard.dismiss();
+    dispatch(
+      navigatorActions.setInitialRoute({
+        initialBleWithoutHeaderStackNavRouteName: "Completion",
+      }),
+    );
+    navigation.replace("BleWithoutHeaderStackNav");
+  };
 
   return (
     <KeyboardAwareScrollContainer
@@ -49,25 +81,9 @@ const RegisterProfileSecond = ({
       <View>
         <AvatarContainer>
           <AvatarCircle />
-          <PreviousValueBlock isSecond />
+          <PreviousValueBlock />
         </AvatarContainer>
         <InputContainer>
-          <InputTitle>성별</InputTitle>
-          <RowContainer>
-            <SelectableButton
-              selected={gender === "남"}
-              style={{
-                marginRight: rpWidth(20),
-              }}
-              onPress={() => dispatch(formActions.setGender("남"))}>
-              남
-            </SelectableButton>
-            <SelectableButton
-              selected={gender === "여"}
-              onPress={() => dispatch(formActions.setGender("여"))}>
-              여
-            </SelectableButton>
-          </RowContainer>
           <InputTitle>품종</InputTitle>
           <Input
             value={breed}
@@ -82,16 +98,18 @@ const RegisterProfileSecond = ({
             alignLeftSolidPlaceholderWhenFocus
             maxLength={2}
           />
+          <InputTitle>특징</InputTitle>
+          <Input
+            value={characteristic}
+            onChangeText={text => dispatch(formActions.setCharacteristic(text))}
+          />
         </InputContainer>
       </View>
       <Button
-        disabled={!gender || !breed || !weight}
+        disabled={!avatar || !breed || !weight}
         useCommonMarginBottom
-        onPress={() => {
-          Keyboard.dismiss();
-          navigation.navigate("RegisterProfileThird");
-        }}>
-        다음
+        onPress={handleSubmit}>
+        확인
       </Button>
     </KeyboardAwareScrollContainer>
   );

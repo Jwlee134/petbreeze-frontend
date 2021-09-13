@@ -4,15 +4,14 @@ import styled from "styled-components/native";
 import { rpWidth } from "~/styles";
 import MyText from "../common/MyText";
 import Arrow from "~/assets/svg/arrow/arrow-left.svg";
-import { useDispatch } from "react-redux";
 import { Animated } from "react-native";
 import { useRef } from "react";
 import palette from "~/styles/palette";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Dissolve from "../common/Dissolve";
 
 interface IProps extends Partial<StackHeaderProps> {
   children?: ReactNode;
-  useTitle?: boolean;
   disableBackButton?: boolean;
   onBackButtonPress?: () => void;
   currentPage?: number;
@@ -27,12 +26,10 @@ const Container = styled(Animated.View)`
 `;
 
 const Button = styled.TouchableOpacity`
-  width: ${rpWidth(32)}px;
+  width: 100%;
   height: 100%;
   justify-content: center;
   align-items: center;
-  position: absolute;
-  left: ${rpWidth(5)}px;
 `;
 
 const PageCount = styled.View`
@@ -46,7 +43,6 @@ const PageCount = styled.View`
 
 const PageBarBackground = styled.View`
   height: ${rpWidth(4)}px;
-  background-color: rgba(0, 0, 0, 0.1);
   margin-top: ${rpWidth(5)}px;
 `;
 
@@ -58,14 +54,13 @@ const PageBar = styled(Animated.View)`
 const CustomHeader = ({
   children,
   navigation,
-  useTitle,
   onBackButtonPress,
   disableBackButton = false,
   currentPage = 0,
   totalPage = 0,
 }: IProps) => {
   const { top } = useSafeAreaInsets();
-  const dispatch = useDispatch();
+  const showPage = currentPage !== 0 && totalPage !== 0;
 
   const value = useRef(new Animated.Value(currentPage)).current;
 
@@ -95,7 +90,14 @@ const CustomHeader = ({
           marginTop: navigation ? top : 0,
         }}>
         <>
-          {!disableBackButton ? (
+          <Dissolve
+            style={{
+              position: "absolute",
+              left: rpWidth(5),
+              width: rpWidth(32),
+              height: "100%",
+            }}
+            isVisible={!disableBackButton}>
             <Button
               onPress={() => {
                 if (onBackButtonPress) {
@@ -105,13 +107,13 @@ const CustomHeader = ({
               }}>
               <Arrow width={rpWidth(13)} height={rpWidth(21)} />
             </Button>
-          ) : null}
-          {navigation ? (
+          </Dissolve>
+          {children ? (
             <MyText fontWeight="medium" fontSize={18}>
               {children}
             </MyText>
           ) : null}
-          {currentPage && totalPage ? (
+          {showPage ? (
             <PageCount>
               <MyText fontSize={14} fontWeight="medium" color={palette.blue_7b}>
                 {currentPage}{" "}
@@ -126,11 +128,12 @@ const CustomHeader = ({
           ) : null}
         </>
       </Container>
-      {currentPage && totalPage ? (
-        <PageBarBackground>
-          <PageBar style={{ width: widthInterpolate }} />
-        </PageBarBackground>
-      ) : null}
+      <PageBarBackground
+        style={{
+          backgroundColor: showPage ? "rgba(0, 0, 0, 0.1)" : "transparent",
+        }}>
+        {showPage ? <PageBar style={{ width: widthInterpolate }} /> : null}
+      </PageBarBackground>
     </>
   );
 };

@@ -25,6 +25,7 @@ interface IStorage {
     isSafetyZoneRegistered: boolean;
     isProfileRegistered: boolean;
     deviceIdInProgress: string;
+    redirectionRouteName: string;
   };
   walk: {
     selectedDeviceId: string[];
@@ -67,6 +68,7 @@ const initialState: IStorage = {
     isSafetyZoneRegistered: false,
     isProfileRegistered: false,
     deviceIdInProgress: "1",
+    redirectionRouteName: "",
   },
   walk: {
     selectedDeviceId: [],
@@ -147,7 +149,13 @@ const storage = createSlice({
       state.device.deviceIdInProgress = payload;
     },
     initDeviceRegistrationStep: state => {
-      state.device = initialState.device;
+      state.device = {
+        ...initialState.device,
+        redirectionRouteName: state.device.redirectionRouteName,
+      };
+    },
+    setRedirectionRouteName: (state, { payload }: PayloadAction<string>) => {
+      state.device.redirectionRouteName = payload;
     },
     logout: state => {
       state.user = initialState.user;

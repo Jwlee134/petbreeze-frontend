@@ -10,7 +10,6 @@ import Button from "../common/Button";
 import { LoginManager, AccessToken } from "react-native-fbsdk-next";
 import palette from "~/styles/palette";
 import { storageActions } from "~/store/storage";
-import { commonActions } from "~/store/common";
 import authApi from "~/api/auth";
 
 import MyText from "../common/MyText";
