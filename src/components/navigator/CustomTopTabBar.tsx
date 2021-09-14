@@ -16,12 +16,12 @@ type Route = {
 
 const TabContainer = styled.View`
   flex-direction: row;
-  height: ${rpWidth(46)}px;
+  height: ${rpWidth(37)}px;
 `;
 
 const BorderBottomContainer = styled(Animated.View)`
   width: 50%;
-  height: 2px;
+  height: ${rpWidth(3)}px;
   background-color: transparent;
   align-items: center;
 `;

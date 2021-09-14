@@ -12,11 +12,11 @@ const figmaWidth = 375;
 const figmaHeight = isAndroid ? 734 : isIphoneX() ? 812 : 778;
 
 export const rpHeight = (size: number) =>
-  Math.round((size * height) / figmaHeight);
+  Math.floor((size * height) / figmaHeight);
 
 export const rpWidth = (size: number) => {
   if (smallHeight || isTablet) {
     return rpHeight(size);
   }
-  return Math.round((size * width) / figmaWidth);
+  return Math.floor((size * width) / figmaWidth);
 };

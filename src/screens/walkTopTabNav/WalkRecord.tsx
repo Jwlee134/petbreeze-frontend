@@ -3,7 +3,7 @@ import { ScrollView } from "react-native";
 import deviceApi from "~/api/device";
 import walkApi from "~/api/walk";
 import Calendar from "~/components/common/Calendar";
-import Device from "~/components/common/Device";
+import WalkDeviceListItem from "~/components/common/WalkDeviceListItem";
 import { useAppSelector } from "~/store";
 import { rpHeight, rpWidth } from "~/styles";
 import palette from "~/styles/palette";
@@ -56,18 +56,20 @@ const WalkRecord = ({
     <ScrollView
       contentContainerStyle={{
         paddingHorizontal: rpWidth(16),
-        paddingTop: rpHeight(31),
+        paddingVertical: rpHeight(31),
       }}
       showsVerticalScrollIndicator={false}>
-      {devices.map(item => (
-        <Device
+      {devices.map((item, i) => (
+        <WalkDeviceListItem
+          isLast={i === devices.length - 1}
           key={item.id}
           data={item}
-          onPress={() => {}}
-          isWalk
+          onPress={() =>
+            navigation.navigate("WalkDetail", {
+              id: item.id,
+            })
+          }
           isIconArrow
-          lineWidth={2}
-          circleWidth={70}
         />
       ))}
       {/* <Calendar

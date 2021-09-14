@@ -1,4 +1,7 @@
-import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
+import {
+  BottomTabNavigationProp,
+  BottomTabScreenProps,
+} from "@react-navigation/bottom-tabs";
 import { CompositeNavigationProp, RouteProp } from "@react-navigation/core";
 import { MaterialTopTabNavigationProp } from "@react-navigation/material-top-tabs";
 import { CompositeScreenProps } from "@react-navigation/native";
@@ -235,7 +238,7 @@ export type SharedStackNavParamList = {
   Home: undefined;
   WalkTopTabNav: undefined;
   Notification: undefined;
-  MyPageStackNav: undefined;
+  MyPage: undefined;
   WalkDetail: {
     id: string;
   };
@@ -243,8 +246,44 @@ export type SharedStackNavParamList = {
     data: IDevice;
   };
 };
+export type WalkDetailScreenProps = CompositeScreenProps<
+  StackScreenProps<SharedStackNavParamList, "WalkDetail">,
+  CompositeScreenProps<
+    BottomTabScreenProps<BottomTabParamList>,
+    CompositeScreenProps<
+      StackScreenProps<LoggedInNavParamList>,
+      StackScreenProps<RootNavParamList>
+    >
+  >
+>;
 
 export type WalkTopTabParamList = {
   StartWalking: undefined;
   WalkRecord: undefined;
 };
+export type StartWalkingScreenNavigationProp = CompositeNavigationProp<
+  StackNavigationProp<WalkTopTabParamList, "StartWalking">,
+  CompositeNavigationProp<
+    StackNavigationProp<SharedStackNavParamList>,
+    CompositeNavigationProp<
+      BottomTabNavigationProp<BottomTabParamList>,
+      CompositeNavigationProp<
+        StackNavigationProp<LoggedInNavParamList>,
+        StackNavigationProp<RootNavParamList>
+      >
+    >
+  >
+>;
+export type WalkRecordScreenNavigationProp = CompositeNavigationProp<
+  StackNavigationProp<WalkTopTabParamList, "WalkRecord">,
+  CompositeNavigationProp<
+    StackNavigationProp<SharedStackNavParamList>,
+    CompositeNavigationProp<
+      BottomTabNavigationProp<BottomTabParamList>,
+      CompositeNavigationProp<
+        StackNavigationProp<LoggedInNavParamList>,
+        StackNavigationProp<RootNavParamList>
+      >
+    >
+  >
+>;

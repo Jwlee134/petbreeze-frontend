@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components/native";
 import SidePaddingContainer from "~/components/common/container/SidePaddingContainer";
-import Device from "~/components/common/Device";
+import Device from "~/components/common/WalkDeviceListItem";
 import { rpWidth } from "~/styles";
 import {
   DeviceSettingListRouteProp,

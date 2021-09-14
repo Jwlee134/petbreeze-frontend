@@ -25,7 +25,7 @@ interface IStorage {
     isSafetyZoneRegistered: boolean;
     isProfileRegistered: boolean;
     deviceIdInProgress: string;
-    redirectionRouteName: string;
+    redirectionRouteName: "StartWalking" | "MyPageTab" | "";
   };
   walk: {
     selectedDeviceId: string[];
@@ -154,7 +154,10 @@ const storage = createSlice({
         redirectionRouteName: state.device.redirectionRouteName,
       };
     },
-    setRedirectionRouteName: (state, { payload }: PayloadAction<string>) => {
+    setRedirectionRouteName: (
+      state,
+      { payload }: PayloadAction<"StartWalking" | "MyPageTab" | "">,
+    ) => {
       state.device.redirectionRouteName = payload;
     },
     logout: state => {

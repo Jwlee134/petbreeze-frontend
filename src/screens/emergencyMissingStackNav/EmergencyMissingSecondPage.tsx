@@ -38,11 +38,11 @@ const AddPhotoBox = styled.TouchableOpacity`
 
 const Photo = styled.Image`
   width: 100%;
-  height: ${(width - rpWidth(64)) * (2 / 3)}px;
+  height: ${(width - rpWidth(64)) * 0.67}px;
   margin-bottom: ${rpWidth(11)}px;
 `;
 
-const lostTimeArr = ["오전", "오후"];
+const lostTimeArr: ["오전", "오후"] = ["오전", "오후"];
 
 const EmergencyMissingSecondPage = () => {
   const { lostHour, lostMinute, lostPlace, lostTime, message, photos } =
@@ -118,7 +118,7 @@ const EmergencyMissingSecondPage = () => {
                 style={{
                   marginBottom:
                     i === photos.length - 1 && photos.length === 4
-                      ? rpWidth(37)
+                      ? rpWidth(24)
                       : rpWidth(11),
                 }}
               />
@@ -135,7 +135,7 @@ const EmergencyMissingSecondPage = () => {
               style={{
                 textAlign: "right",
                 marginTop: rpWidth(8),
-                marginBottom: rpWidth(37),
+                marginBottom: rpWidth(24),
               }}>
               최대 4장까지 가능
             </MyText>

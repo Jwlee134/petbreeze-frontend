@@ -30,9 +30,10 @@ const BleWithHeaderStackNav = ({
   navigation,
   route,
 }: BleWithHeaderStackNavScreenProps) => {
-  const isInitialized = useAppSelector(
-    state => state.storage.init.isInitialized,
-  );
+  const {
+    init: { isInitialized },
+    device: { redirectionRouteName },
+  } = useAppSelector(state => state.storage);
   const initialRouteName = useAppSelector(
     state => state.navigator.initialBleWithHeaderStackNavRouteName,
   );
@@ -61,7 +62,13 @@ const BleWithHeaderStackNav = ({
         totalPage={4}
         navigation={navigation}
         onBackButtonPress={() => {
-          if (routeName === "ChargingCheck") navigation.replace("DeviceCheck");
+          if (routeName === "ChargingCheck") {
+            if (redirectionRouteName) {
+              navigation.goBack();
+            } else {
+              navigation.replace("DeviceCheck");
+            }
+          }
           if (routeName === "WiFiForm") navigation.replace("PreWiFiForm");
           if (routeName === "RegisterProfileSecond")
             navigation.replace("RegisterProfileFirst");

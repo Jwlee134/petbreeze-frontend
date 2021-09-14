@@ -6,7 +6,7 @@ import MyText from "./MyText";
 const Container = styled.View`
   height: ${rpWidth(37)}px;
   justify-content: center;
-  padding-left: ${rpWidth(9)}px;
+  padding-left: ${rpWidth(4)}px;
 `;
 
 const InputTitle = ({ children }: { children: ReactNode }) => (

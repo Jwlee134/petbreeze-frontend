@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { TouchableOpacityProps } from "react-native";
 import styled from "styled-components/native";
 import { rpWidth } from "~/styles";
+import palette from "~/styles/palette";
 import MyText from "../common/MyText";
 
 interface IProps extends TouchableOpacityProps {
@@ -35,7 +36,9 @@ const Tab = ({ isFocused, onPress, label, setToValue, ...props }: IProps) => {
       }}
       onPress={onPress}
       {...props}>
-      <MyText fontSize={14} color="rgba(0, 0, 0, 0.5)">
+      <MyText
+        fontSize={14}
+        color={isFocused ? palette.blue_7b : "rgba(0, 0, 0, 0.5)"}>
         {label}
       </MyText>
     </TabButton>

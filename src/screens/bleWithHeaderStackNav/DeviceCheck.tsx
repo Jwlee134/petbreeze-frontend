@@ -10,6 +10,7 @@ import SafeAreaContainer from "~/components/common/container/SafeAreaContainer";
 import { rpHeight, rpWidth } from "~/styles";
 import { useAppSelector } from "~/store";
 import { DeviceCheckScreenNavigationProp } from "~/types/navigator";
+import { navigatorActions } from "~/store/navigator";
 
 const TopContainer = styled.View`
   flex: 1;
@@ -62,7 +63,12 @@ const DeviceCheck = ({
           fontColor="rgba(0, 0, 0, 0.5)"
           useCommonMarginBottom
           onPress={() => {
-            dispatch(storageActions.setInit("init"));
+            /* dispatch(storageActions.setInit("init")); */
+            dispatch(
+              navigatorActions.setInitialRoute({
+                initialLoggedInNavRouteName: "BottomTabNav",
+              }),
+            );
             navigation.replace("LoggedInNav");
           }}>
           건너뛰기

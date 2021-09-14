@@ -29,7 +29,7 @@ const Container = styled.View`
 
 const InputContainer = styled.View<IContainer>`
   width: 100%;
-  height: ${rpWidth(37)}px;
+  height: ${rpWidth(36)}px;
   flex-direction: row;
   align-items: center;
 `;

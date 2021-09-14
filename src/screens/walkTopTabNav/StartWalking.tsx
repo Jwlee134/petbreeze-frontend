@@ -9,19 +9,15 @@ import { permissionCheck } from "~/utils";
 import { rpHeight, rpWidth } from "~/styles";
 import Button from "~/components/common/Button";
 import { useAppSelector } from "~/store";
-import { ScrollView } from "react-native";
-import Device from "~/components/common/Device";
+import { ScrollView, View } from "react-native";
+import WalkDeviceListItem from "~/components/common/WalkDeviceListItem";
+import { navigatorActions } from "~/store/navigator";
+import MyText from "~/components/common/MyText";
+import Dog from "~/assets/svg/dog/dog-with-device.svg";
 
 const Container = styled.View`
   flex: 1;
   justify-content: space-between;
-`;
-
-const ButtonContainer = styled.View`
-  align-items: center;
-  padding: 20px 16px;
-  width: 100%;
-  background-color: white;
 `;
 
 const StartWalking = ({
@@ -35,35 +31,44 @@ const StartWalking = ({
   const devices = useAppSelector(state => state.device);
 
   const handleStart = () => {
-    permissionCheck("location").then(() => {
-      dispatch(storageActions.setSelectedDeviceId(selected));
-      dispatch(storageActions.setIsStopped(false));
-      navigation.replace("WalkMap");
-    });
+    if (!selected.length) {
+      dispatch(
+        navigatorActions.setInitialRoute({
+          initialBleWithHeaderStackNavRouteName: "ChargingCheck",
+        }),
+      );
+      dispatch(storageActions.setRedirectionRouteName("StartWalking"));
+      navigation.navigate("BleRootStackNav");
+    } else {
+      permissionCheck("location").then(() => {
+        dispatch(storageActions.setSelectedDeviceId(selected));
+        dispatch(storageActions.setIsStopped(false));
+        dispatch(
+          navigatorActions.setInitialRoute({
+            initialLoggedInNavRouteName: "WalkMap",
+          }),
+        );
+        navigation.replace("LoggedInNav");
+      });
+    }
   };
-
-  const handleNavigate = () =>
-    navigation.navigate("AddDevice", {
-      isOtaUpdate: false,
-    });
 
   return (
     <Container>
-      {devices && devices.length && (
+      {devices && devices.length ? (
         <ScrollView
           contentContainerStyle={{
             paddingHorizontal: rpWidth(16),
             paddingTop: rpHeight(31),
+            paddingBottom: rpWidth(184),
             flexGrow: 1,
           }}
           showsVerticalScrollIndicator={false}>
-          {devices.map(item => (
-            <Device
-              isWalk
+          {devices.map((item, i) => (
+            <WalkDeviceListItem
+              isLast={i === devices.length - 1}
               key={item.id}
               data={item}
-              lineWidth={2}
-              circleWidth={70}
               onPress={() => {
                 const selectedArr = [...selected];
                 const isSelected = selectedArr.some(
@@ -83,12 +88,44 @@ const StartWalking = ({
             />
           ))}
         </ScrollView>
+      ) : (
+        <View>
+          <MyText
+            fontWeight="light"
+            fontSize={18}
+            color="rgba(0, 0, 0, 0.5)"
+            style={{ textAlign: "center", marginTop: rpWidth(84) }}>
+            산책할 반려동물이 없습니다.
+          </MyText>
+          <MyText
+            fontWeight="light"
+            fontSize={18}
+            color="rgba(0, 0, 0, 0.5)"
+            style={{ textAlign: "center", marginTop: rpWidth(5) }}>
+            기기등록을 해주세요!
+          </MyText>
+          <Dog
+            width={rpWidth(133)}
+            height={rpWidth(214)}
+            style={{
+              alignSelf: "flex-end",
+              marginRight: rpWidth(54),
+              marginTop: rpWidth(77),
+            }}
+          />
+        </View>
       )}
-      <ButtonContainer>
-        <Button disabled={!selected.length} onPress={handleStart}>
-          {!selected.length ? "반려동물을 선택해주세요." : "선택 완료"}
-        </Button>
-      </ButtonContainer>
+      <Button
+        style={{
+          width: rpWidth(126),
+          position: "absolute",
+          bottom: rpWidth(67),
+          alignSelf: "center",
+        }}
+        disabled={devices.length !== 0 && !selected.length}
+        onPress={handleStart}>
+        {devices.length ? "선택 완료" : "등록"}
+      </Button>
     </Container>
   );
 };
