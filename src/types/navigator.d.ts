@@ -1,9 +1,8 @@
 import {
-  BottomTabBarProps,
   BottomTabNavigationProp,
   BottomTabScreenProps,
 } from "@react-navigation/bottom-tabs";
-import { CompositeNavigationProp, RouteProp } from "@react-navigation/core";
+import { CompositeNavigationProp } from "@react-navigation/core";
 import { MaterialTopTabNavigationProp } from "@react-navigation/material-top-tabs";
 import { CompositeScreenProps } from "@react-navigation/native";
 import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
@@ -12,6 +11,7 @@ import { IDevice } from "~/store/device";
 export type RootNavParamList = {
   FirmwareUpdate: undefined;
   Start: undefined;
+  Intro: undefined;
   LoggedInNav: undefined;
 };
 export type FirmwareUpdateScreenNavigationProp = StackNavigationProp<
@@ -21,6 +21,10 @@ export type FirmwareUpdateScreenNavigationProp = StackNavigationProp<
 export type StartScreenNavigationProp = StackNavigationProp<
   RootNavParamList,
   "Start"
+>;
+export type IntroScreenNavigationProp = StackNavigationProp<
+  RootNavParamList,
+  "Intro"
 >;
 export type LoggedInNavScreenProps = StackScreenProps<
   RootNavParamList,

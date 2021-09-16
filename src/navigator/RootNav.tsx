@@ -11,6 +11,7 @@ import {
 import FirmwareUpdate from "~/screens/rootNav/FirmwareUpdate";
 import Start from "~/screens/rootNav/Start";
 import { RootNavParamList } from "~/types/navigator";
+import Intro from "~/screens/rootNav/Intro";
 
 const Stack = createStackNavigator<RootNavParamList>();
 
@@ -45,12 +46,19 @@ const RootNav = () => {
           cardStyleInterpolator: forFade,
           headerShown: false,
         }}
-        initialRouteName={
-          !store.getState().storage.init.isCodePushUpdated
-            ? "FirmwareUpdate"
-            : "Start"
-        }>
+        initialRouteName={(() => {
+          const { isCodePushUpdated, isIntroPassed } =
+            store.getState().storage.init;
+          if (!isCodePushUpdated) {
+            return "FirmwareUpdate";
+          }
+          if (!isIntroPassed) {
+            return "Intro";
+          }
+          return "Start";
+        })()}>
         <Stack.Screen name="FirmwareUpdate" component={FirmwareUpdate} />
+        <Stack.Screen name="Intro" component={Intro} />
         <Stack.Screen name="Start" component={Start} />
         <Stack.Screen name="LoggedInNav" component={LoggedInNav} />
       </Stack.Navigator>

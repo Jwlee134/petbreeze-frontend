@@ -1,3 +1,4 @@
+import { useNavigation } from "@react-navigation/core";
 import React from "react";
 import { View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -7,6 +8,7 @@ import MyText from "~/components/common/MyText";
 import { storageActions } from "~/store/storage";
 import { isTablet, rpHeight, rpWidth } from "~/styles";
 import palette from "~/styles/palette";
+import { IntroScreenNavigationProp } from "~/types/navigator";
 import { isAndroid } from "~/utils";
 import Button from "../common/Button";
 import { IntroContainer } from "./styles";
@@ -28,6 +30,7 @@ const Phone = styled.Image`
 `;
 
 const ThirdIntro = () => {
+  const navigation = useNavigation<IntroScreenNavigationProp>();
   const dispatch = useDispatch();
   const { top, bottom } = useSafeAreaInsets();
 
@@ -39,10 +42,10 @@ const ThirdIntro = () => {
       />
       <IntroContainer topInset={top} spaceBetween>
         <View style={{ marginLeft: rpWidth(25) }}>
-          <MyText fontSize={18} color={palette.blue_6e}>
+          <MyText fontSize={18} color={palette.blue_7b}>
             펫브리즈 반려동물 트래커를 통해
           </MyText>
-          <MyText fontWeight="bold" fontSize={18} color={palette.blue_6e}>
+          <MyText fontWeight="bold" fontSize={18} color={palette.blue_7b}>
             말못하는 가족의 안전을 지켜주세요!
           </MyText>
         </View>
@@ -54,7 +57,14 @@ const ThirdIntro = () => {
           style={{
             marginBottom: rpWidth(94) + bottom,
           }}
-          onPress={() => dispatch(storageActions.setInit("intro"))}>
+          onPress={() => {
+            navigation.replace("Start");
+            /* dispatch(
+              storageActions.setInit({
+                isIntroPassed: true,
+              }),
+            ); */
+          }}>
           어디개와 함께하기
         </Button>
       </IntroContainer>
