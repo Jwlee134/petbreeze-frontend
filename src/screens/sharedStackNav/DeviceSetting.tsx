@@ -1,41 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components/native";
-import { ScrollView, StyleSheet, TouchableOpacity } from "react-native";
-import { rpHeight, rpWidth } from "~/styles";
-import DeviceAvatarCircle from "~/components/common/DeviceAvatarCircle";
+import { ScrollView, TouchableOpacity } from "react-native";
+import { rpWidth } from "~/styles";
 import MyText from "~/components/common/MyText";
-import Pencil from "~/assets/svg/myPage/pencil.svg";
 
-import SidePaddingContainer from "~/components/common/container/SidePaddingContainer";
-import LocationInfoCollectionPeriod from "~/components/myPage/LocationInfoCollectionPeriod";
-import SafetyZone from "~/components/myPage/SafetyZone";
-import {
-  DeviceSettingRouteProp,
-  DeviceSettingScreenNavigationProp,
-} from "~/types/navigator";
+import LocationInfoCollectionPeriod from "~/components/deviceSetting/LocationInfoCollectionPeriod";
+import SafetyZone from "~/components/deviceSetting/SafetyZone";
+import { DeviceSettingScreenNavigationProp } from "~/types/navigator";
+import Divider from "~/components/common/Divider";
+import CustomHeader from "~/components/navigator/CustomHeader";
+import palette from "~/styles/palette";
+import WiFi from "~/components/deviceSetting/WiFi";
+import ProfileSection from "~/components/deviceSetting/ProfileSection";
+import { store, useAppSelector } from "~/store";
 
-const TopContainer = styled.View`
-  justify-content: center;
-  align-items: center;
-  padding: ${rpWidth(11)}px 0px;
-`;
-
-const TextDivider = styled.View`
-  width: ${StyleSheet.hairlineWidth}px;
-  height: ${rpWidth(8)}px;
-  background-color: rgba(0, 0, 0, 0.3);
-`;
-
-const ThickDivider = styled.View`
-  width: 100%;
-  height: ${rpWidth(4)}px;
-  background-color: rgba(0, 0, 0, 0.03);
-`;
-
-const ThinDivider = styled.View`
-  width: 100%;
-  height: ${StyleSheet.hairlineWidth}px;
-  background-color: rgba(0, 0, 0, 0.3);
+const PaddingContainer = styled.View`
+  padding: 0px ${rpWidth(16)}px;
 `;
 
 const DeviceSetting = ({
@@ -43,54 +23,58 @@ const DeviceSetting = ({
   route,
 }: {
   navigation: DeviceSettingScreenNavigationProp;
-  route: DeviceSettingRouteProp;
 }) => {
   const data = route.params.data;
+  const [isEdit, setIsEdit] = useState(false);
+
+  const handleSubmit = () => {
+    const {
+      locationInfoCollectionPeriod,
+      safetyZone: { result: safetyZone },
+      wifi: { result: wifi },
+    } = store.getState().deviceSetting;
+
+    setIsEdit(false);
+  };
 
   return (
-    <ScrollView
-      contentContainerStyle={{
-        flexGrow: 1,
-      }}>
-      <TopContainer>
-        <TouchableOpacity
-          onPress={() =>
-            navigation.navigate("UpdateProfile", {
-              data,
-            })
-          }>
-          <DeviceAvatarCircle />
-          <Pencil
-            width={rpWidth(28)}
-            height={rpWidth(28)}
-            style={{
-              position: "absolute",
-              bottom: 0,
-              right: -10,
-            }}
-          />
-        </TouchableOpacity>
-        <MyText style={{ marginTop: rpHeight(7) }} fontWeight="medium">
-          {data.name}
-        </MyText>
-        <MyText fontSize={12} color="rgba(0, 0, 0, 0.3)">
-          {data.breed}
-          {"  "}
-          <TextDivider />
-          {"  "}
-          {data.age}세{"  "}
-          <TextDivider />
-          {"  "}
-          {data.gender}
-        </MyText>
-      </TopContainer>
-      <ThickDivider />
-      <SidePaddingContainer>
-        <LocationInfoCollectionPeriod />
-        <ThinDivider />
-        <SafetyZone />
-      </SidePaddingContainer>
-    </ScrollView>
+    <>
+      <CustomHeader
+        RightButton={() => (
+          <TouchableOpacity
+            onPress={() => {
+              if (!isEdit) {
+                setIsEdit(true);
+              } else {
+                handleSubmit();
+              }
+            }}>
+            <MyText color={palette.blue_7b}>{!isEdit ? "편집" : "완료"}</MyText>
+          </TouchableOpacity>
+        )}
+        navigation={navigation}>
+        기기설정
+      </CustomHeader>
+      <ScrollView
+        contentContainerStyle={{
+          flexGrow: 1,
+          paddingBottom: rpWidth(35),
+        }}>
+        <ProfileSection data={data} />
+        <Divider isHairline={false} />
+        <PaddingContainer>
+          <LocationInfoCollectionPeriod />
+        </PaddingContainer>
+        <PaddingContainer>
+          <Divider />
+        </PaddingContainer>
+        <SafetyZone isEdit={isEdit} />
+        <PaddingContainer>
+          <Divider style={{ marginTop: rpWidth(35) }} />
+        </PaddingContainer>
+        <WiFi isEdit={isEdit} />
+      </ScrollView>
+    </>
   );
 };
 

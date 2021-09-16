@@ -11,7 +11,7 @@ interface IProps {
   imageWidth?: number;
   avatar: string;
   isInModal?: boolean;
-  isWalkListItem?: boolean;
+  isBackgroundTransparent?: boolean;
 }
 
 const Image = styled.Image<{ circleWidth?: number }>`
@@ -27,19 +27,19 @@ const DeviceAvatarCircle = ({
   battery,
   lineWidth,
   circleWidth,
+  isBackgroundTransparent,
   avatar,
   isInModal = false,
-  isWalkListItem = false,
 }: IProps) =>
   battery !== undefined && circleWidth && lineWidth ? (
     <AnimatedCircularProgress
-      size={isWalkListItem ? rpWidth(70) : rpWidth(circleWidth)}
-      width={isWalkListItem ? 2 : rpWidth(lineWidth)}
+      size={rpWidth(circleWidth)}
+      width={lineWidth < 3 ? lineWidth : rpWidth(lineWidth)}
       fill={battery}
       prefill={battery}
       tintColor={battery > 25 ? `${palette.blue_7b}E6` : `${palette.red_f0}E6`}
       backgroundColor={
-        isWalkListItem
+        isBackgroundTransparent
           ? "transparent"
           : battery > 25
           ? `${palette.blue_7b}33`

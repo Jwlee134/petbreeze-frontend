@@ -5,7 +5,7 @@ import Button from "~/components/common/Button";
 import Input from "~/components/common/Input";
 import useBottomSheet from "~/hooks/useBottomSheet";
 import { useAppSelector } from "~/store";
-import { safetyZoneActions } from "~/store/safetyZone";
+import { deviceSettingActions } from "~/store/deviceSetting";
 import { rpWidth } from "~/styles";
 import ScrollPicker from "../common/ScrollPicker";
 
@@ -24,13 +24,26 @@ const data = ["10m", "20m", "30m", "50m", "100m"];
 const SafetyZoneMapBottomSheet = ({ snapPoints }: { snapPoints: number[] }) => {
   const { BottomSheetComponent } = useBottomSheet();
 
-  const name = useAppSelector(state => state.safetyZone.name);
-  const radius = useAppSelector(state => state.safetyZone.radius);
-  const isSubmitting = useAppSelector(state => state.safetyZone.isSubmitting);
+  const name = useAppSelector(
+    state => state.deviceSetting.safetyZone.draft.name,
+  );
+  const radius = useAppSelector(
+    state => state.deviceSetting.safetyZone.draft.radius,
+  );
+  const isSubmitting = useAppSelector(
+    state => state.deviceSetting.safetyZone.isSubmitting,
+  );
+  const fromDeviceSetting = useAppSelector(
+    state => state.deviceSetting.safetyZone.fromDeviceSetting,
+  );
   const dispatch = useDispatch();
 
   const handleFinish = () => {
-    dispatch(safetyZoneActions.setIsSubmitting(true));
+    dispatch(
+      deviceSettingActions.setSafetyZone({
+        isSubmitting: true,
+      }),
+    );
   };
 
   return (
@@ -47,25 +60,35 @@ const SafetyZoneMapBottomSheet = ({ snapPoints }: { snapPoints: number[] }) => {
           <Input
             value={name}
             placeholder="안심존 이름"
-            onChangeText={text => dispatch(safetyZoneActions.setName(text))}
+            onChangeText={text =>
+              dispatch(
+                deviceSettingActions.setSafetyZone({
+                  draft: { name: text },
+                }),
+              )
+            }
           />
         </InputContainer>
         <InputContainer style={{ alignItems: "center" }}>
           <ScrollPicker
             data={data}
             onChange={index =>
-              dispatch(safetyZoneActions.setRadius(data[index]))
+              dispatch(
+                deviceSettingActions.setSafetyZone({
+                  draft: { radius: parseInt(data[index]) },
+                }),
+              )
             }
             width={rpWidth(88)}
             height={rpWidth(39)}
-            selectedIndex={data.findIndex(item => item === radius)}
+            selectedIndex={data.findIndex(item => item === `${radius}m`)}
           />
         </InputContainer>
       </RowContainer>
       <Button
         /* disabled={!name || !radius} */ isLoading={isSubmitting}
         onPress={handleFinish}>
-        다음
+        {fromDeviceSetting ? "확인" : "다음"}
       </Button>
     </BottomSheetComponent>
   );

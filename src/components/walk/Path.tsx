@@ -7,7 +7,6 @@ import { store, useAppSelector } from "~/store";
 import { storageActions } from "~/store/storage";
 import { rpWidth } from "~/styles";
 import palette from "~/styles/palette";
-import { getDistanceBetween2Points } from "~/utils";
 
 const Path = ({
   mapRef,

@@ -18,7 +18,7 @@ import {
 
 import ble from "./ble";
 import form from "./form";
-import safetyZone from "./safetyZone";
+import deviceSetting from "./deviceSetting";
 import storage from "./storage";
 import map from "./map";
 import device from "./device";
@@ -29,7 +29,7 @@ import api from "~/api";
 const rootReducer = combineReducers({
   ble,
   form,
-  safetyZone,
+  deviceSetting,
   storage,
   map,
   device,

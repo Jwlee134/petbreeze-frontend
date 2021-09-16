@@ -4,7 +4,7 @@ import styled from "styled-components/native";
 import { rpHeight, rpWidth, width } from "~/styles";
 import palette from "~/styles/palette";
 import Button from "../common/Button";
-import HairlineDivider from "../common/HairlineDivider";
+import Divider from "../common/Divider";
 import MyText from "../common/MyText";
 
 interface IProps {
@@ -49,7 +49,7 @@ const IosStyleBottomModal = ({
               {title}
             </MyText>
           </NameContainer>
-          <HairlineDivider />
+          <Divider />
         </>
       )}
       {children}

@@ -56,9 +56,11 @@ const Toggle = ({ handleStop }: { handleStop: () => void }) => {
         <SmallButton
           onPress={() => {
             if (isWalking) {
-              dispatch(storageActions.setIsWalking(false));
               dispatch(
-                storageActions.setCurrentPauseTime(new Date().toISOString()),
+                storageActions.setWalk({
+                  isWalking: false,
+                  currentPauseTime: new Date().toISOString(),
+                }),
               );
             } else {
               handleStop();
@@ -77,7 +79,11 @@ const Toggle = ({ handleStop }: { handleStop: () => void }) => {
             if (isWalking) {
               handleStop();
             } else {
-              dispatch(storageActions.setIsWalking(true));
+              dispatch(
+                storageActions.setWalk({
+                  isWalking: true,
+                }),
+              );
               dispatch(
                 storageActions.setTotalPauseDuration(
                   Math.floor(

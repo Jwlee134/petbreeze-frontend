@@ -40,7 +40,11 @@ const Success = ({
     if (status === "otaUpdateSuccess") {
       if (isOtaUpdate) {
       } else {
-        /* dispatch(storageActions.setDeviceRegistrationStep("device")) */
+        /* dispatch(
+          storageActions.setDevice({
+            isDeviceRegistered: true,
+          }),
+        ); */
         setTimeout(() => {
           dispatch(
             navigatorActions.setInitialRoute({

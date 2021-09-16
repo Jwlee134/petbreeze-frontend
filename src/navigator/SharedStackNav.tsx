@@ -3,12 +3,12 @@ import {
   createStackNavigator,
   StackCardInterpolationProps,
 } from "@react-navigation/stack";
-import Notification from "~/screens/bottomTabNav/Notification";
-import Home from "~/screens/bottomTabNav/Home";
+import Notification from "~/screens/sharedStackNav/Notification";
+import Home from "~/screens/sharedStackNav/Home";
 import WalkTopTabNav from "./WalkTopTabNav";
 import CustomHeader from "~/components/navigator/CustomHeader";
 import DeviceSetting from "~/screens/sharedStackNav/DeviceSetting";
-import MyPage from "~/screens/bottomTabNav/MyPage";
+import MyPage from "~/screens/sharedStackNav/MyPage";
 import WalkDetail from "~/screens/sharedStackNav/WalkDetail";
 import DeviceSettingList from "~/screens/sharedStackNav/DeviceSettingList";
 import { useAppSelector } from "~/store";
@@ -88,16 +88,12 @@ const SharedStackNav = ({ screenName }: { screenName: string }) => {
       <Stack.Screen
         name="DeviceSetting"
         component={DeviceSetting}
-        options={{
-          header: props => <CustomHeader {...props}>기기설정</CustomHeader>,
-        }}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="DeviceSettingList"
         component={DeviceSettingList}
-        options={{
-          header: props => <CustomHeader {...props}>기기설정</CustomHeader>,
-        }}
+        options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );

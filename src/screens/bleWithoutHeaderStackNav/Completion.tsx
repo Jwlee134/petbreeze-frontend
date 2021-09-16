@@ -7,7 +7,7 @@ import { rpWidth } from "~/styles";
 import Footprint from "~/assets/svg/footprint/footprint-rotated.svg";
 import { useAppSelector } from "~/store";
 import palette from "~/styles/palette";
-import HairlineDivider from "~/components/common/HairlineDivider";
+import Divider from "~/components/common/Divider";
 import { Animated, View } from "react-native";
 import useAnimatedSequence from "~/hooks/useAnimatedSequence";
 import { CompletionScreenNavigationProp } from "~/types/navigator";
@@ -104,14 +104,14 @@ const Completion = ({
           <MyText fontSize={14} color="rgba(0, 0, 0, 0.3)">
             {breed}
           </MyText>
-          <HairlineDivider
+          <Divider
             isVertical
             style={{ height: rpWidth(10), marginHorizontal: rpWidth(5) }}
           />
           <MyText fontSize={14} color="rgba(0, 0, 0, 0.3)">
             {new Date().getFullYear() - Number(birthYear || 1997) + 1}세
           </MyText>
-          <HairlineDivider
+          <Divider
             isVertical
             style={{ height: rpWidth(10), marginHorizontal: rpWidth(5) }}
           />

@@ -9,7 +9,7 @@ import { Keyboard } from "react-native";
 import SearchResult from "./SearchResult";
 import { useDispatch } from "react-redux";
 import { useAppSelector } from "~/store";
-import { safetyZoneActions } from "~/store/safetyZone";
+import { deviceSettingActions } from "~/store/deviceSetting";
 
 const Container = styled.View`
   width: ${width - rpWidth(32)}px;
@@ -39,8 +39,12 @@ const Input = styled.TextInput`
 
 const SearchBar = () => {
   const { top } = useSafeAreaInsets();
-  const isSearchMode = useAppSelector(state => state.safetyZone.isSearchMode);
-  const addr = useAppSelector(state => state.safetyZone.addr);
+  const isSearchMode = useAppSelector(
+    state => state.deviceSetting.safetyZone.isSearchMode,
+  );
+  const addr = useAppSelector(
+    state => state.deviceSetting.safetyZone.draft.addr,
+  );
   const dispatch = useDispatch();
 
   return (
@@ -59,7 +63,11 @@ const SearchBar = () => {
           {isSearchMode && (
             <Button
               onPress={() => {
-                dispatch(safetyZoneActions.setIsSearchMode(false));
+                dispatch(
+                  deviceSettingActions.setSafetyZone({
+                    isSearchMode: false,
+                  }),
+                );
                 Keyboard.dismiss();
               }}>
               <Arrow width={rpWidth(9)} height={rpWidth(15)} />
@@ -67,8 +75,20 @@ const SearchBar = () => {
           )}
           <Input
             value={addr}
-            onChangeText={text => dispatch(safetyZoneActions.setAddr(text))}
-            onFocus={() => dispatch(safetyZoneActions.setIsSearchMode(true))}
+            onChangeText={text =>
+              dispatch(
+                deviceSettingActions.setSafetyZone({
+                  draft: { addr: text },
+                }),
+              )
+            }
+            onFocus={() =>
+              dispatch(
+                deviceSettingActions.setSafetyZone({
+                  isSearchMode: true,
+                }),
+              )
+            }
             placeholder="주소 검색"
             placeholderTextColor="rgba(0, 0, 0, 0.5)"
             style={{

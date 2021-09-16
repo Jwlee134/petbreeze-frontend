@@ -81,7 +81,11 @@ const Timer = () => {
 
   useEffect(() => {
     if (isStopped) {
-      dispatch(storageActions.setDuration(duration));
+      dispatch(
+        storageActions.setWalk({
+          duration,
+        }),
+      );
     }
   }, [isStopped]);
 

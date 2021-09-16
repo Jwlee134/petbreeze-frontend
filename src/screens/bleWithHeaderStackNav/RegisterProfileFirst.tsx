@@ -38,11 +38,7 @@ const RegisterProfileFirst = ({
   const dispatch = useDispatch();
 
   return (
-    <KeyboardAwareScrollContainer
-      contentContainerStyle={{
-        flexGrow: 1,
-        justifyContent: "space-between",
-      }}>
+    <KeyboardAwareScrollContainer isSpaceBetween>
       <View style={{ marginBottom: rpWidth(30) }}>
         <MyText
           style={{

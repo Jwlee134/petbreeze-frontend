@@ -3,7 +3,7 @@ import { View } from "react-native";
 import styled from "styled-components/native";
 import { rpWidth } from "~/styles";
 import palette from "~/styles/palette";
-import HairlineDivider from "../common/HairlineDivider";
+import Divider from "../common/Divider";
 import MyText from "../common/MyText";
 
 interface IProps {
@@ -47,12 +47,12 @@ const CommonCenterModal = ({
         {description}
       </MyText>
     ) : null}
-    <HairlineDivider />
+    <Divider />
     <View style={{ flexDirection: "row" }}>
       <Button onPress={close}>
         <MyText color="rgba(0, 0, 0, 0.3)">취소</MyText>
       </Button>
-      <HairlineDivider isVertical />
+      <Divider isVertical />
       <Button onPress={onRightButtonPress}>
         <MyText fontWeight="medium" color={palette.blue_7b}>
           {rightButtonText}

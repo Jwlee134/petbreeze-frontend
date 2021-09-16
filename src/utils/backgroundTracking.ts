@@ -22,24 +22,30 @@ const setCoords = () =>
       pos => {
         const { latitude, longitude } = pos.coords;
         console.log(latitude, longitude);
-        store.dispatch(
-          storageActions.setCoords({
-            latitude: Number(latitude.toFixed(6)),
-            longitude: Number(longitude.toFixed(6)),
-          }),
-        );
 
         const coords = store.getState().storage.walk.coords;
-        if (coords.length > 1) {
+
+        if (coords.length === 0) {
+          store.dispatch(
+            storageActions.setCoords({
+              latitude: Number(latitude.toFixed(6)),
+              longitude: Number(longitude.toFixed(6)),
+            }),
+          );
+        } else {
           const distanceBetweenCoords = getDistanceBetween2Points(
+            latitude,
+            longitude,
             coords[coords.length - 1][0],
             coords[coords.length - 1][1],
-            coords[coords.length - 2][0],
-            coords[coords.length - 2][1],
           );
-          if (distanceBetweenCoords < 10) {
-            store.dispatch(storageActions.spliceCoords());
-          } else {
+          if (distanceBetweenCoords > 9) {
+            store.dispatch(
+              storageActions.setCoords({
+                latitude: Number(latitude.toFixed(6)),
+                longitude: Number(longitude.toFixed(6)),
+              }),
+            );
             store.dispatch(
               storageActions.setMeter(Math.round(distanceBetweenCoords)),
             );
@@ -53,8 +59,9 @@ const setCoords = () =>
         reject();
       },
       {
-        enableHighAccuracy: false,
+        enableHighAccuracy: true,
         distanceFilter: 10,
+        showsBackgroundLocationIndicator: true,
       },
     );
   });
@@ -63,22 +70,29 @@ const backgroundTask = async () => {
   await new Promise<void>(() => {
     setCoords()
       .then(trackingId => {
-        store.dispatch(storageActions.setTrackingId(trackingId));
+        store.dispatch(
+          storageActions.setWalk({
+            trackingId,
+          }),
+        );
       })
       .catch(() => {
-        store.dispatch(storageActions.setIsWalking(false));
+        store.dispatch(
+          storageActions.setWalk({
+            isWalking: false,
+          }),
+        );
         BackgroundService.stop();
       });
   });
 };
 
-const trackingId = store.getState().storage.walk.trackingId;
-
 export default {
   start: () => BackgroundService.start(backgroundTask, options),
   stop: () =>
     BackgroundService.stop().then(() => {
-      if (trackingId) {
+      const trackingId = store.getState().storage.walk.trackingId;
+      if (trackingId !== null) {
         Geolocation.clearWatch(trackingId);
       }
     }),

@@ -73,11 +73,7 @@ const RegisterProfileSecond = ({
   };
 
   return (
-    <KeyboardAwareScrollContainer
-      contentContainerStyle={{
-        flexGrow: 1,
-        justifyContent: "space-between",
-      }}>
+    <KeyboardAwareScrollContainer isSpaceBetween>
       <View>
         <AvatarContainer>
           <AvatarCircle />

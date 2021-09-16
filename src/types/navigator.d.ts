@@ -1,4 +1,5 @@
 import {
+  BottomTabBarProps,
   BottomTabNavigationProp,
   BottomTabScreenProps,
 } from "@react-navigation/bottom-tabs";
@@ -38,9 +39,18 @@ export type LoggedInNavParamList = {
   EmergencyMissingStackNav: {
     data: IDevice;
   };
+  UpdateWiFi: undefined;
 };
 export type PermissionsScreenNavigationProp = CompositeNavigationProp<
   StackNavigationProp<LoggedInNavParamList, "Permissions">,
+  StackNavigationProp<RootNavParamList>
+>;
+export type WalkMapScreenNavigationProp = CompositeNavigationProp<
+  StackNavigationProp<LoggedInNavParamList, "WalkMap">,
+  StackNavigationProp<RootNavParamList>
+>;
+export type UpdateWiFiScreenNavigationProp = CompositeNavigationProp<
+  StackNavigationProp<LoggedInNavParamList, "UpdateWiFi">,
   StackNavigationProp<RootNavParamList>
 >;
 
@@ -245,7 +255,28 @@ export type SharedStackNavParamList = {
   DeviceSetting: {
     data: IDevice;
   };
+  DeviceSettingList: undefined;
 };
+export type HomeScreenNavigationProp = CompositeNavigationProp<
+  StackNavigationProp<SharedStackNavParamList, "Home">,
+  CompositeNavigationProp<
+    BottomTabNavigationProp<BottomTabParamList>,
+    CompositeNavigationProp<
+      StackNavigationProp<LoggedInNavParamList>,
+      StackNavigationProp<RootNavParamList>
+    >
+  >
+>;
+export type MyPageScreenNavigationProp = CompositeNavigationProp<
+  StackNavigationProp<SharedStackNavParamList, "MyPage">,
+  CompositeNavigationProp<
+    BottomTabNavigationProp<BottomTabParamList>,
+    CompositeNavigationProp<
+      StackNavigationProp<LoggedInNavParamList>,
+      StackNavigationProp<RootNavParamList>
+    >
+  >
+>;
 export type WalkDetailScreenProps = CompositeScreenProps<
   StackScreenProps<SharedStackNavParamList, "WalkDetail">,
   CompositeScreenProps<
@@ -256,13 +287,33 @@ export type WalkDetailScreenProps = CompositeScreenProps<
     >
   >
 >;
+export type DeviceSettingListScreenNavigationProp = CompositeNavigationProp<
+  StackNavigationProp<SharedStackNavParamList, "DeviceSettingList">,
+  CompositeNavigationProp<
+    BottomTabNavigationProp<BottomTabParamList>,
+    CompositeNavigationProp<
+      StackNavigationProp<LoggedInNavParamList>,
+      StackNavigationProp<RootNavParamList>
+    >
+  >
+>;
+export type DeviceSettingScreenNavigationProp = CompositeNavigationProp<
+  StackNavigationProp<SharedStackNavParamList, "DeviceSetting">,
+  CompositeNavigationProp<
+    BottomTabNavigationProp<BottomTabParamList>,
+    CompositeNavigationProp<
+      StackNavigationProp<LoggedInNavParamList>,
+      StackNavigationProp<RootNavParamList>
+    >
+  >
+>;
 
 export type WalkTopTabParamList = {
   StartWalking: undefined;
   WalkRecord: undefined;
 };
 export type StartWalkingScreenNavigationProp = CompositeNavigationProp<
-  StackNavigationProp<WalkTopTabParamList, "StartWalking">,
+  MaterialTopTabNavigationProp<WalkTopTabParamList, "StartWalking">,
   CompositeNavigationProp<
     StackNavigationProp<SharedStackNavParamList>,
     CompositeNavigationProp<
@@ -275,7 +326,7 @@ export type StartWalkingScreenNavigationProp = CompositeNavigationProp<
   >
 >;
 export type WalkRecordScreenNavigationProp = CompositeNavigationProp<
-  StackNavigationProp<WalkTopTabParamList, "WalkRecord">,
+  MaterialTopTabNavigationProp<WalkTopTabParamList, "WalkRecord">,
   CompositeNavigationProp<
     StackNavigationProp<SharedStackNavParamList>,
     CompositeNavigationProp<

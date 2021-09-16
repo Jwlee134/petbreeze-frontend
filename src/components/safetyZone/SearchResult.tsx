@@ -16,7 +16,9 @@ import { storageActions } from "~/store/storage";
 
 const SearchResult = () => {
   const { top } = useSafeAreaInsets();
-  const addr = useAppSelector(state => state.safetyZone.addr);
+  const addr = useAppSelector(
+    state => state.deviceSetting.safetyZone.draft.addr,
+  );
   const history = useAppSelector(
     state => state.storage.history.safetyZoneSearch,
   );
@@ -61,7 +63,7 @@ const SearchResult = () => {
           {history.length ? (
             <MyText
               onPress={() =>
-                dispatch(storageActions.setSafetyZoneSearchHistory([]))
+                dispatch(storageActions.setSafetyZoneSearchHistory(null))
               }
               style={{ marginTop: rpWidth(25), textAlign: "center" }}
               fontSize={14}

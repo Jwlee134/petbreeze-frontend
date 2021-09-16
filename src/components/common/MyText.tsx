@@ -48,7 +48,7 @@ const MyText = ({
     fontSize={fontSize}
     style={{
       includeFontPadding: false,
-      color,
+      color: color || "rgba(0, 0, 0, 0.8)",
       flexShrink: 1,
       ...(style as object),
     }}

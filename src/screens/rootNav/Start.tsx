@@ -104,7 +104,7 @@ const Start = ({ navigation }: { navigation: StartScreenNavigationProp }) => {
         if (!isPermissionAllowed) {
           dispatch(
             navigatorActions.setInitialRoute({
-              initialLoggedInNavRouteName: "Permissons",
+              initialLoggedInNavRouteName: "Permissions",
             }),
           );
           navigation.replace("LoggedInNav");

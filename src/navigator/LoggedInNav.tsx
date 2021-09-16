@@ -18,6 +18,7 @@ import {
 import UpdateProfile from "~/screens/loggedInNav/UpdateProfile";
 import EmergencyMissingStackNav from "./EmergencyMissingStackNav";
 import BleRootStackNav from "./BleRootStackNav";
+import UpdateWiFi from "~/screens/loggedInNav/UpdateWiFi";
 
 const Stack = createStackNavigator<LoggedInNavParamList>();
 
@@ -106,6 +107,13 @@ const LoggedInNav = ({ navigation, route }: LoggedInNavScreenProps) => {
         component={WalkMap}
         options={{
           header: props => <CustomHeader {...props}>산책하기</CustomHeader>,
+        }}
+      />
+      <Stack.Screen
+        name="UpdateWiFi"
+        component={UpdateWiFi}
+        options={{
+          header: props => <CustomHeader {...props} />,
         }}
       />
       <Stack.Screen

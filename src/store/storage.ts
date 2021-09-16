@@ -1,60 +1,55 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { isAndroid } from "~/utils";
 
+interface IInit {
+  isCodePushUpdated: boolean;
+  isIntroPassed: boolean;
+  isPermissionAllowed: boolean;
+  isInitialized: boolean;
+}
+
+interface IDevice {
+  isOtaUpdateAvailable: boolean;
+  isDeviceRegistered: boolean;
+  isSafetyZoneRegistered: boolean;
+  isProfileRegistered: boolean;
+  deviceId: string;
+  safetyZoneName: string;
+  redirectionRouteName: "StartWalking" | "MyPage" | "";
+}
+
+interface IWalk {
+  selectedDeviceId: string[];
+  trackingId: number | null;
+  duration: number;
+  coords: number[][];
+  meter: number;
+  isWalking: boolean;
+  startTime: string;
+  isStopped: boolean;
+  currentPauseTime: string;
+  totalPauseDuration: number;
+}
+
+interface IHistory {
+  safetyZoneSearch: { addr: string; latitude: number; longitude: number }[];
+}
+
 interface IStorage {
-  notifications: {
-    mySurrounding: boolean;
-  };
-  coord: {
+  lastCoord: {
     latitude: number;
     longitude: number;
   };
-  user: {
-    token: string;
-    nickname: string;
-  };
-  init: {
-    isCodePushUpdated: boolean;
-    isIntroPassed: boolean;
-    isPermissionAllowed: boolean;
-    isInitialized: boolean;
-  };
-  device: {
-    isOtaUpdateAvailable: boolean;
-    isDeviceRegistered: boolean;
-    isSafetyZoneRegistered: boolean;
-    isProfileRegistered: boolean;
-    deviceIdInProgress: string;
-    redirectionRouteName: "StartWalking" | "MyPageTab" | "";
-  };
-  walk: {
-    selectedDeviceId: string[];
-    trackingId: number | null;
-    duration: number;
-    coords: number[][];
-    meter: number;
-    isWalking: boolean;
-    startTime: string;
-    isStopped: boolean;
-    currentPauseTime: string;
-    totalPauseDuration: number;
-  };
-  history: {
-    safetyZoneSearch: { addr: string; latitude: number; longitude: number }[];
-  };
+  init: IInit;
+  device: IDevice;
+  walk: IWalk;
+  history: IHistory;
 }
 
 const initialState: IStorage = {
-  notifications: {
-    mySurrounding: true,
-  },
-  coord: {
-    latitude: 37.564362,
-    longitude: 126.977011,
-  },
-  user: {
-    token: "",
-    nickname: "",
+  lastCoord: {
+    latitude: 0,
+    longitude: 0,
   },
   init: {
     isCodePushUpdated: false,
@@ -67,7 +62,8 @@ const initialState: IStorage = {
     isDeviceRegistered: false,
     isSafetyZoneRegistered: false,
     isProfileRegistered: false,
-    deviceIdInProgress: "1",
+    deviceId: "1",
+    safetyZoneName: "",
     redirectionRouteName: "",
   },
   walk: {
@@ -91,88 +87,24 @@ const storage = createSlice({
   name: "storage",
   initialState,
   reducers: {
-    setMySurrounding: (state, { payload }: PayloadAction<boolean>) => {
-      state.notifications.mySurrounding = payload;
+    setInit: (state, { payload }: PayloadAction<Partial<IInit>>) => {
+      state.init = { ...state.init, ...payload };
     },
-    setCoord: (
-      state,
-      { payload }: PayloadAction<{ latitude: number; longitude: number }>,
-    ) => {
-      state.coord = payload;
-    },
-    login: (
-      state,
-      { payload }: PayloadAction<{ token: string; nickname: string }>,
-    ) => {
-      state.user.token = payload.token;
-      state.user.nickname = payload.nickname;
-    },
-    setInit: (
-      state,
-      { payload }: PayloadAction<"permission" | "init" | "codePush" | "intro">,
-    ) => {
-      switch (payload) {
-        case "permission":
-          state.init.isPermissionAllowed = true;
-          break;
-        case "init":
-          state.init.isInitialized = true;
-          break;
-        case "codePush":
-          state.init.isCodePushUpdated = true;
-          break;
-        case "intro":
-          state.init.isIntroPassed = true;
-          break;
+
+    setDevice: (state, { payload }: PayloadAction<Partial<IDevice> | null>) => {
+      if (payload) {
+        state.device = { ...state.device, ...payload };
+      } else {
+        state.device = initialState.device;
       }
     },
-    setDeviceRegistrationStep: (
-      state,
-      { payload }: PayloadAction<"device" | "safetyZone" | "profile" | "ota">,
-    ) => {
-      switch (payload) {
-        case "device":
-          state.device.isDeviceRegistered = true;
-          break;
-        case "safetyZone":
-          state.device.isSafetyZoneRegistered = true;
-          break;
-        case "profile":
-          state.device.isProfileRegistered = true;
-          break;
-        case "ota":
-          state.device.isOtaUpdateAvailable = true;
-          break;
+
+    setWalk: (state, { payload }: PayloadAction<Partial<IWalk> | null>) => {
+      if (payload) {
+        state.walk = { ...state.walk, ...payload };
+      } else {
+        state.walk = { ...initialState.walk, isStopped: state.walk.isStopped };
       }
-    },
-    setDeviceId: (state, { payload }: PayloadAction<string>) => {
-      state.device.deviceIdInProgress = payload;
-    },
-    initDeviceRegistrationStep: state => {
-      state.device = {
-        ...initialState.device,
-        redirectionRouteName: state.device.redirectionRouteName,
-      };
-    },
-    setRedirectionRouteName: (
-      state,
-      { payload }: PayloadAction<"StartWalking" | "MyPageTab" | "">,
-    ) => {
-      state.device.redirectionRouteName = payload;
-    },
-    logout: state => {
-      state.user = initialState.user;
-      state.init.isInitialized = false;
-      state.init.isPermissionAllowed = false;
-    },
-    setSelectedDeviceId: (state, { payload }: PayloadAction<string[]>) => {
-      state.walk.selectedDeviceId = payload;
-    },
-    setTrackingId: (state, { payload }: PayloadAction<number>) => {
-      state.walk.trackingId = payload;
-    },
-    setDuration: (state, { payload }: PayloadAction<number>) => {
-      state.walk.duration = payload;
     },
     setCoords: (
       state,
@@ -180,37 +112,36 @@ const storage = createSlice({
     ) => {
       state.walk.coords.push([payload.latitude, payload.longitude]);
     },
-    spliceCoords: state => {
-      state.walk.coords.splice(-1);
-    },
-    setIsWalking: (state, { payload }: PayloadAction<boolean>) => {
-      state.walk.isWalking = payload;
+    setTotalPauseDuration: (state, { payload }: PayloadAction<number>) => {
+      state.walk.totalPauseDuration = state.walk.totalPauseDuration + payload;
     },
     setMeter: (state, { payload }: PayloadAction<number>) => {
       state.walk.meter = state.walk.meter + payload;
     },
-    setStartTime: (state, { payload }: PayloadAction<string>) => {
-      state.walk.startTime = payload;
-    },
-    setIsStopped: (state, { payload }: PayloadAction<boolean>) => {
-      state.walk.isStopped = payload;
-    },
-    setCurrentPauseTime: (state, { payload }: PayloadAction<string>) => {
-      state.walk.currentPauseTime = payload;
-    },
-    setTotalPauseDuration: (state, { payload }: PayloadAction<number>) => {
-      state.walk.totalPauseDuration = state.walk.totalPauseDuration + payload;
-    },
-    clearWalk: state => {
-      state.walk = { ...initialState.walk, isStopped: state.walk.isStopped };
-    },
+
     setSafetyZoneSearchHistory: (
       state,
       {
         payload,
-      }: PayloadAction<{ addr: string; latitude: number; longitude: number }[]>,
+      }: PayloadAction<{
+        addr: string;
+        latitude: number;
+        longitude: number;
+      } | null>,
     ) => {
-      state.history.safetyZoneSearch = payload;
+      if (!payload) {
+        state.history.safetyZoneSearch = [];
+        return;
+      }
+      const exist = state.history.safetyZoneSearch.some(
+        data => data.addr === payload.addr,
+      );
+      if (!exist) {
+        state.history.safetyZoneSearch = [
+          payload,
+          ...state.history.safetyZoneSearch,
+        ];
+      }
     },
   },
 });

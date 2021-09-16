@@ -10,16 +10,22 @@ import { bytesToString, isAndroid } from "~/utils";
 
 import { FileSystem } from "react-native-unimodules";
 import { decode, encode } from "base64-arraybuffer";
-import { useAppSelector } from "~/store";
+import { store, useAppSelector } from "~/store";
 import { useDispatch } from "react-redux";
 import { bleActions } from "~/store/ble";
 
 const interval = 512;
 
+const SafetyZone = {
+  UUID: "",
+  CharacteristicLocation: "",
+  CharacteristicWifi: "",
+};
+
 const OTAControlPoint = {
   UUID: "c4a10060-dd6e-11eb-ba80-0242ac130004",
-  CharacteristicA: "c4a1020e-dd6e-11eb-ba80-0242ac130004",
-  CharacteristicB: "c4a10146-dd6e-11eb-ba80-0242ac130004",
+  CharacteristicNotif: "c4a1020e-dd6e-11eb-ba80-0242ac130004",
+  CharacteristicFirmware: "c4a10146-dd6e-11eb-ba80-0242ac130004",
 };
 
 const DeviceInformation = {
@@ -55,19 +61,52 @@ const useBleMaganer = () => {
     }
   };
 
-  /*  const stopNotification = useCallback(() => {
-     BleManager.stopNotification(
+  const sendSafetyZone = useCallback(() => {
+    const {
+      coord: { latitude, longitude },
+      radius,
+    } = store.getState().deviceSetting.safetyZone.draft;
+    /*  */
+    BleManager.write(
+      (peripheral as Peripheral).id,
+      SafetyZone.UUID,
+      SafetyZone.CharacteristicWifi,
+      "",
+    )
+      .then(() => {
+        dispatch(bleActions.setStatus("safetyZoneSuccess"));
+      })
+      .catch(() => {
+        dispatch(bleActions.setStatus("safetyZoneFail"));
+      });
+  }, [status]);
+
+  const sendWifi = useCallback(() => {
+    const { name, password } = store.getState().deviceSetting.wifi.draft;
+    /*  */
+    BleManager.write(
+      (peripheral as Peripheral).id,
+      SafetyZone.UUID,
+      SafetyZone.CharacteristicWifi,
+      "",
+    )
+      .then(() => {
+        dispatch(bleActions.setStatus("wifiSuccess"));
+      })
+      .catch(() => {
+        dispatch(bleActions.setStatus("wifiFail"));
+      });
+  }, [status]);
+
+  const stopNotification = useCallback(() => {
+    BleManager.stopNotification(
       (peripheral as Peripheral).id,
       OTAControlPoint.UUID,
-      OTAControlPoint.CharacteristicA,
+      OTAControlPoint.CharacteristicNotif,
     )
-      .catch(err => console.log("Failed to stop notification: ", err))
-      .finally(() => {
-        disconnect().finally(() => {
-          setInstallingProgress(0);
-        });
-      }); 
-  }, [status]);*/
+      .then(() => console.log("Succeeded to stop notification"))
+      .catch(err => console.log("Failed to stop notification: ", err));
+  }, [status]);
 
   const installFirmware = useCallback(async () => {
     if (!firmware) return;
@@ -82,7 +121,7 @@ const useBleMaganer = () => {
         await BleManager.write(
           (peripheral as Peripheral).id,
           OTAControlPoint.UUID,
-          OTAControlPoint.CharacteristicB,
+          OTAControlPoint.CharacteristicFirmware,
           firmware.slice(i * interval, (i + 1) * interval),
           512,
         );
@@ -92,7 +131,7 @@ const useBleMaganer = () => {
         await BleManager.write(
           (peripheral as Peripheral).id,
           OTAControlPoint.UUID,
-          OTAControlPoint.CharacteristicB,
+          OTAControlPoint.CharacteristicFirmware,
           firmware.slice(-(firmware.length % interval)),
           512,
         );
@@ -102,9 +141,10 @@ const useBleMaganer = () => {
     } catch (error) {
       disconnect().finally(() => {
         console.log("Failed to send firmware: ", error);
-        dispatch(bleActions.setProgress(0));
         dispatch(bleActions.setStatus("installingFail"));
       });
+    } finally {
+      dispatch(bleActions.setProgress(0));
     }
   }, [status]);
 
@@ -172,7 +212,7 @@ const useBleMaganer = () => {
     BleManager.startNotification(
       (peripheral as Peripheral).id,
       OTAControlPoint.UUID,
-      OTAControlPoint.CharacteristicA,
+      OTAControlPoint.CharacteristicNotif,
     )
       .then(() => {
         console.log("Succeded to start notification: ", peripheral?.id);
@@ -292,27 +332,27 @@ const useBleMaganer = () => {
     console.log(status);
     if (status === "scanning") {
       scanPeripheral();
-      return;
     }
     if (status === "scanningSuccess") {
-      setTimeout(() => {
-        getPeripheralData();
-      }, 1700);
-      return;
+      getPeripheralData();
     }
     if (status === "downloadingFirmware") {
       downloadFirmware();
-      return;
     }
     if (status === "installingFirmware") {
       installFirmware();
-      return;
     }
     if (status === "otaUpdateSuccess") {
+      stopNotification();
     }
     if (status === "connectingToWifi") {
+      sendWifi();
     }
     if (status === "sendingSafetyZone") {
+      sendSafetyZone();
+    }
+    if (status === "safetyZoneSuccess" || status === "safetyZoneFail") {
+      disconnect();
     }
   }, [status]);
 

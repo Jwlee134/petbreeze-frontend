@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
+  BleRootStackNavParamList,
   BleWithHeaderStackeNavParamList,
   BleWithoutHeaderStackNavParamList,
   BottomTabParamList,
@@ -10,6 +11,7 @@ import {
 
 interface IState {
   initialLoggedInNavRouteName: keyof LoggedInNavParamList;
+  initialBleRootStackNavRouteName: keyof BleRootStackNavParamList;
   initialBleWithHeaderStackNavRouteName: keyof BleWithHeaderStackeNavParamList;
   initialBleWithoutHeaderStackNavRouteName: keyof BleWithoutHeaderStackNavParamList;
   initialBottomTabNavRouteName: keyof BottomTabParamList;
@@ -20,6 +22,7 @@ interface IState {
 
 const initialState: IState = {
   initialLoggedInNavRouteName: "BottomTabNav",
+  initialBleRootStackNavRouteName: "BleWithHeaderStackNav",
   initialBleWithHeaderStackNavRouteName: "DeviceCheck",
   initialBleWithoutHeaderStackNavRouteName: "Scanning",
   initialBottomTabNavRouteName: "HomeTab",

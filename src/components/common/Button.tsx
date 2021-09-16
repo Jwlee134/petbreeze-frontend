@@ -8,13 +8,13 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import styled from "styled-components/native";
 import { rpWidth, width } from "~/styles";
 import palette from "~/styles/palette";
-import MyText, { fontWeight } from "./MyText";
+import MyText, { FontWeight } from "./MyText";
 
 interface IButton extends TouchableOpacityProps {
   children?: ReactNode;
   RightIcon?: () => JSX.Element;
   isLoading?: boolean;
-  fontWeight?: fontWeight;
+  fontWeight?: FontWeight;
   fontColor?: string;
   useCommonMarginBottom?: boolean;
   useBottomInset?: boolean;

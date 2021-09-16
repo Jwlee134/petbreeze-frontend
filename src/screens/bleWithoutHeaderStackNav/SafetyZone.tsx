@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { Alert, Keyboard, TouchableWithoutFeedback } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import styled from "styled-components/native";
@@ -11,12 +11,12 @@ import Arrow from "~/assets/svg/arrow/arrow-left-blue.svg";
 import { isIos } from "~/utils";
 import { useAppSelector } from "~/store";
 import { useDispatch } from "react-redux";
-import { safetyZoneActions } from "~/store/safetyZone";
 import Geolocation from "react-native-geolocation-service";
 import MapFloatingCircle from "~/components/common/MapFloatingCircle";
 import { SafetyZoneScreenNavigationProp } from "~/types/navigator";
 import SafetyZoneMapBottomSheet from "~/components/safetyZone/SafetyZoneMapBottomSheet";
 import SearchBar from "~/components/safetyZone/SearchBar";
+import { deviceSettingActions } from "~/store/deviceSetting";
 
 const Container = styled.View`
   flex: 1;
@@ -40,15 +40,23 @@ const SafetyZone = ({
   const { top, bottom } = useSafeAreaInsets();
   const { keyboardHeight } = useKeyboard();
 
-  const step2 = useAppSelector(state => state.safetyZone.step2);
+  const step2 = useAppSelector(state => state.deviceSetting.safetyZone.step2);
 
   const dispatch = useDispatch();
 
   const handleMyLocation = () => {
     Geolocation.getCurrentPosition(
       ({ coords: { latitude, longitude } }) => {
-        dispatch(safetyZoneActions.setAnimateCamera(true));
-        dispatch(safetyZoneActions.setCoord({ latitude, longitude }));
+        dispatch(
+          deviceSettingActions.setSafetyZone({
+            animateCamera: true,
+          }),
+        );
+        dispatch(
+          deviceSettingActions.setSafetyZone({
+            draft: { coord: { latitude, longitude } },
+          }),
+        );
       },
       err => {
         Alert.alert("알림", "위치를 가져올 수 없습니다.");
@@ -68,6 +76,12 @@ const SafetyZone = ({
   // mapPadding 변경 시 지도 크기 줄어들 때 센터 변경됨
   const mapPadding = { top: rpWidth(82), bottom: rpWidth(82) };
 
+  useEffect(() => {
+    return () => {
+      dispatch(deviceSettingActions.setSafetyZone(null));
+    };
+  }, []);
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <Container>
@@ -82,7 +96,13 @@ const SafetyZone = ({
                 alignSelf: "center",
                 zIndex: 0,
               }}
-              onPress={() => dispatch(safetyZoneActions.setStep2(true))}>
+              onPress={() =>
+                dispatch(
+                  deviceSettingActions.setSafetyZone({
+                    step2: true,
+                  }),
+                )
+              }>
               다음
             </Button>
             <MapFloatingCircle
@@ -100,7 +120,13 @@ const SafetyZone = ({
         ) : (
           <>
             <BackButton
-              onPress={() => dispatch(safetyZoneActions.setStep2(false))}
+              onPress={() =>
+                dispatch(
+                  deviceSettingActions.setSafetyZone({
+                    step2: false,
+                  }),
+                )
+              }
               style={{
                 top,
               }}>

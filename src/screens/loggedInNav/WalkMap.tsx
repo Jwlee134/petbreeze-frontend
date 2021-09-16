@@ -12,6 +12,7 @@ import { storageActions } from "~/store/storage";
 import { useDispatch } from "react-redux";
 import { useState } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { navigatorActions } from "~/store/navigator";
 
 const WalkMap = ({
   navigation,
@@ -36,10 +37,13 @@ const WalkMap = ({
   const handleFinish = async () => {
     const { startTime, duration, meter, coords, selectedDeviceId } =
       store.getState().storage.walk;
-    dispatch(storageActions.clearWalk());
-    navigation.replace("BottomTabNav", {
-      initialTab: "WalkRecord",
-    });
+    dispatch(storageActions.setWalk(null));
+    dispatch(
+      navigatorActions.setInitialRoute({
+        initialBottomTabNavRouteName: "WalkTab",
+      }),
+    );
+    navigation.replace("BottomTabNav");
     // const promise = selectedDeviceId.map(id =>
     //   trigger({
     //     deviceId: id,

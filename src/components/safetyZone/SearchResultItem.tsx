@@ -2,12 +2,12 @@ import React from "react";
 import { Keyboard, StyleSheet } from "react-native";
 import styled from "styled-components/native";
 import { rpWidth } from "~/styles";
-import { safetyZoneActions } from "~/store/safetyZone";
 import Search from "~/assets/svg/search.svg";
 import MyText from "~/components/common/MyText";
 import { useDispatch } from "react-redux";
 import { storageActions } from "~/store/storage";
 import { useAppSelector } from "~/store";
+import { deviceSettingActions } from "~/store/deviceSetting";
 
 const Button = styled.TouchableOpacity`
   height: ${rpWidth(44)}px;
@@ -35,17 +35,28 @@ const SearchResultItem = ({
       <Button
         onPress={() => {
           Keyboard.dismiss();
-          dispatch(safetyZoneActions.setAddr(item.addr));
           dispatch(
-            storageActions.setSafetyZoneSearchHistory([item, ...history]),
+            deviceSettingActions.setSafetyZone({
+              draft: { addr: item.addr },
+            }),
           );
+          dispatch(storageActions.setSafetyZoneSearchHistory(item));
           setTimeout(() => {
-            dispatch(safetyZoneActions.setIsSearchMode(false));
-            dispatch(safetyZoneActions.setAnimateCamera(true));
             dispatch(
-              safetyZoneActions.setCoord({
-                latitude: item.latitude,
-                longitude: item.longitude,
+              deviceSettingActions.setSafetyZone({
+                isSearchMode: false,
+              }),
+            );
+            dispatch(
+              deviceSettingActions.setSafetyZone({
+                animateCamera: true,
+              }),
+            );
+            dispatch(
+              deviceSettingActions.setSafetyZone({
+                draft: {
+                  coord: { latitude: item.latitude, longitude: item.longitude },
+                },
               }),
             );
           }, 200);

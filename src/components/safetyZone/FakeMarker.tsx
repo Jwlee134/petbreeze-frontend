@@ -32,7 +32,7 @@ const InnerMarker = styled.View`
 `;
 
 const FakeMarker = ({ mapPadding, snapPoints }: IProps) => {
-  const step2 = useAppSelector(state => state.safetyZone.step2);
+  const step2 = useAppSelector(state => state.deviceSetting.safetyZone.step2);
   const value = useRef(new Animated.Value(0)).current;
 
   const exp = (t: number) => {

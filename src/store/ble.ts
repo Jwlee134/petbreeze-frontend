@@ -19,7 +19,9 @@ export type BleStatus =
   | "connectingToWifi"
   | "wifiSuccess"
   | "wifiFail"
-  | "sendingSafetyZone";
+  | "sendingSafetyZone"
+  | "safetyZoneSuccess"
+  | "safetyZoneFail";
 
 interface IState {
   status: BleStatus;

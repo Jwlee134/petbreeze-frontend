@@ -1,20 +1,20 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import { Animated, Easing, Keyboard, StyleSheet } from "react-native";
-import { Circle, Marker } from "react-native-nmap";
+import { Circle } from "react-native-nmap";
 import useMap from "~/hooks/useMap";
 import { rpWidth } from "~/styles";
 import { getLeftRightPointsOfCircle } from "~/utils";
 
 import { useDispatch } from "react-redux";
-import { useAppSelector } from "~/store";
-import { safetyZoneActions } from "~/store/safetyZone";
+import { store, useAppSelector } from "~/store";
 
 import ViewShot from "react-native-view-shot";
-import CameraRoll from "@react-native-community/cameraroll";
-import { storageActions } from "~/store/storage";
 import { useNavigation } from "@react-navigation/core";
 import { SafetyZoneScreenNavigationProp } from "~/types/navigator";
 import { navigatorActions } from "~/store/navigator";
+import { deviceSettingActions } from "~/store/deviceSetting";
+import { bleActions } from "~/store/ble";
+import { storageActions } from "~/store/storage";
 
 interface IProps {
   snapPoints: number[];
@@ -31,17 +31,30 @@ const SafetyZoneMap = ({ snapPoints, mapPadding }: IProps) => {
   const value = useRef(new Animated.Value(0)).current;
   const viewShotRef = useRef<ViewShot>(null);
 
-  const step2 = useAppSelector(state => state.safetyZone.step2);
-  const coord = useAppSelector(state => state.safetyZone.coord);
-  const radius = useAppSelector(state => state.safetyZone.radius);
-  const animateCamera = useAppSelector(state => state.safetyZone.animateCamera);
-  const isSubmitting = useAppSelector(state => state.safetyZone.isSubmitting);
+  const step2 = useAppSelector(state => state.deviceSetting.safetyZone.step2);
+  const coord = useAppSelector(
+    state => state.deviceSetting.safetyZone.draft.coord,
+  );
+  const radius = useAppSelector(
+    state => state.deviceSetting.safetyZone.draft.radius,
+  );
+  const animateCamera = useAppSelector(
+    state => state.deviceSetting.safetyZone.animateCamera,
+  );
+  const isSubmitting = useAppSelector(
+    state => state.deviceSetting.safetyZone.isSubmitting,
+  );
+  const status = useAppSelector(state => state.ble.status);
   const dispatch = useDispatch();
 
   useEffect(() => {
     if (animateCamera && coord.latitude && coord.longitude) {
       mapRef.current?.animateToCoordinate(coord);
-      dispatch(safetyZoneActions.setAnimateCamera(false));
+      dispatch(
+        deviceSettingActions.setSafetyZone({
+          animateCamera: false,
+        }),
+      );
     }
   }, [coord]);
 
@@ -50,7 +63,7 @@ const SafetyZoneMap = ({ snapPoints, mapPadding }: IProps) => {
       return getLeftRightPointsOfCircle(
         coord.latitude,
         coord.longitude,
-        Number(radius.replace(/[^0-9\.]+/g, "")),
+        radius,
       );
     }
   }, [radius, step2]);
@@ -81,17 +94,51 @@ const SafetyZoneMap = ({ snapPoints, mapPadding }: IProps) => {
   useEffect(() => {
     if (isSubmitting && viewShotRef.current) {
       viewShotRef.current?.capture().then(uri => {
-        CameraRoll.save(uri, { album: "어디개" });
+        const {
+          draft: { name, addr },
+          fromDeviceSetting,
+        } = store.getState().deviceSetting.safetyZone;
+        if (fromDeviceSetting) {
+          dispatch(
+            deviceSettingActions.updateSafetyZoneResult({
+              name,
+              addr,
+              image: uri,
+              coord: { latitude: coord.latitude, longitude: coord.longitude },
+              radius,
+            }),
+          );
+          navigation.goBack();
+        } else {
+          const {
+            draft: { name },
+          } = store.getState().deviceSetting.safetyZone;
+          dispatch(bleActions.setStatus("sendingSafetyZone"));
+          /* dispatch(
+            storageActions.setDevice({
+              isSafetyZoneRegistered: true,
+              safetyZoneName: name,
+            }),
+          ); */
+          /* dispatch(
+            navigatorActions.setInitialRoute({
+              initialBleWithHeaderStackNavRouteName: "RegisterProfileFirst",
+            }),
+          );
+          navigation.replace("BleWithHeaderStackNav"); */
+        }
       });
-      /* dispatch(storageActions.setDeviceRegistrationStep("safetyZone")) */
-      dispatch(
-        navigatorActions.setInitialRoute({
-          initialBleWithHeaderStackNavRouteName: "RegisterProfileFirst",
-        }),
-      );
-      navigation.replace("BleWithHeaderStackNav");
     }
   }, [isSubmitting, viewShotRef.current]);
+
+  useEffect(() => {
+    if (status === "safetyZoneSuccess") {
+      /* api 리퀘스트 */
+    }
+    if (status === "safetyZoneFail") {
+      /* api 리퀘스트 */
+    }
+  }, [status]);
 
   return (
     <Animated.View
@@ -105,7 +152,11 @@ const SafetyZoneMap = ({ snapPoints, mapPadding }: IProps) => {
         <Map
           style={StyleSheet.absoluteFill}
           onCameraChange={({ latitude, longitude }) => {
-            dispatch(safetyZoneActions.setCoord({ latitude, longitude }));
+            dispatch(
+              deviceSettingActions.setSafetyZone({
+                draft: { coord: { latitude, longitude } },
+              }),
+            );
           }}
           onMapClick={Keyboard.dismiss}
           mapPadding={mapPadding}
@@ -119,7 +170,7 @@ const SafetyZoneMap = ({ snapPoints, mapPadding }: IProps) => {
                   latitude: coord.latitude,
                   longitude: coord.longitude,
                 }}
-                radius={Number(radius.replace(/[^0-9\.]+/g, ""))}
+                radius={radius}
                 color="rgba(255,0,0,0.3)"
               />
             </>

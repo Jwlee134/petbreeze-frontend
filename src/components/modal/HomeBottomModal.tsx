@@ -1,6 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
 import React from "react";
-import { StyleSheet } from "react-native";
 import { useDispatch } from "react-redux";
 import styled from "styled-components/native";
 import { IDevice } from "~/store/device";
@@ -9,7 +8,7 @@ import { rpWidth } from "~/styles";
 import palette from "~/styles/palette";
 import { HomeScreenNavigationProp } from "~/types/navigator";
 import DeviceAvatarCircle from "../common/DeviceAvatarCircle";
-import HairlineDivider from "../common/HairlineDivider";
+import Divider from "../common/Divider";
 import MyText from "../common/MyText";
 
 interface IProps {
@@ -47,7 +46,7 @@ const HomeBottomModal = ({ device, close }: IProps) => {
       <Button>
         <MyText color={palette.blue_7b}>이동경로</MyText>
       </Button>
-      <HairlineDivider />
+      <Divider />
       <Button
         onPress={() => {
           close();
@@ -57,13 +56,17 @@ const HomeBottomModal = ({ device, close }: IProps) => {
         }}>
         <MyText color={palette.blue_7b}>기기설정</MyText>
       </Button>
-      <HairlineDivider />
+      <Divider />
       <Button
         onPress={() => {
           close();
-          dispatch(formActions.setName(device.name));
-          dispatch(formActions.setBreed(device.breed));
-          dispatch(formActions.setCharacteristic(device.etc));
+          dispatch(
+            formActions.setDefaultValue({
+              name: device.name,
+              breed: device.breed,
+              characteristic: device.etc,
+            }),
+          );
           navigation.navigate("EmergencyMissingStackNav", {
             device,
           });

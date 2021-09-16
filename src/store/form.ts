@@ -49,8 +49,9 @@ const form = createSlice({
   name: "form",
   initialState,
   reducers: {
-    setDefaultValue: (state, { payload }: PayloadAction<IForm>) => {
-      state = payload;
+    setDefaultValue: (state, { payload }: PayloadAction<Partial<IForm>>) => {
+      state = { ...state, ...payload };
+      return state;
     },
     setAvatar: (state, { payload }: PayloadAction<Image>) => {
       state.avatar = payload;

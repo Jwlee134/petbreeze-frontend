@@ -19,10 +19,10 @@ import { storageActions } from "~/store/storage";
 import { Alert, Animated } from "react-native";
 import useAppState from "~/hooks/useAppState";
 import { useAppSelector } from "~/store";
-import MyText from "../../components/common/MyText";
+import MyText from "~/components/common/MyText";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import palette from "~/styles/palette";
-import SafeAreaContainer from "../../components/common/container/SafeAreaContainer";
+import SafeAreaContainer from "~/components/common/container/SafeAreaContainer";
 import { PermissionsScreenNavigationProp } from "~/types/navigator";
 import useAnimatedSequence from "~/hooks/useAnimatedSequence";
 
@@ -78,6 +78,7 @@ const Permissions = ({
   const [textWidth, setTextWidth] = useState(0);
 
   const [settingOpened, setSettingOpened] = useState(false);
+  const [isNotificationStep, setIsNotificationStep] = useState(true);
 
   const [value1, value2, value3] = useAnimatedSequence({
     numOfValues: 3,
@@ -97,12 +98,15 @@ const Permissions = ({
 
   const handleAllowRest = () => {
     requestMultiple([
-      PERMISSIONS.IOS.LOCATION_ALWAYS,
       PERMISSIONS.IOS.BLUETOOTH_PERIPHERAL,
       PERMISSIONS.IOS.PHOTO_LIBRARY,
       PERMISSIONS.IOS.CAMERA,
     ]).then(() => {
-      dispatch(storageActions.setInit("permission"));
+      dispatch(
+        storageActions.setInit({
+          isPermissionAllowed: true,
+        }),
+      );
       navigation.replace("BleRootStackNav");
     });
   };
@@ -115,17 +119,31 @@ const Permissions = ({
     });
   };
 
+  const handleLocation = () => {
+    setIsNotificationStep(false);
+    request(PERMISSIONS.IOS.LOCATION_ALWAYS).then(() => {
+      Alert.alert(
+        "알림",
+        "백그라운드에서 원활한 위치 기록을 위해 위치 접근 허용을 항상으로 설정해주세요.",
+        [
+          { text: "안할래요", onPress: handleAllowRest },
+          { text: "설정으로 이동", onPress: openSetting },
+        ],
+      );
+    });
+  };
+
   const handleNotification = () => {
     requestNotifications(["alert", "badge"]).then(({ status }) => {
       if (status === "granted") {
-        handleAllowRest();
+        handleLocation();
       }
       if (status === "blocked") {
         Alert.alert(
           "경고",
           "내 반려동물이 안심존을 벗어나도 알림을 받지 못하게 됩니다.",
           [
-            { text: "괜찮습니다", onPress: handleAllowRest },
+            { text: "괜찮습니다", onPress: handleLocation },
             { text: "권한 허용하기", onPress: openSetting },
           ],
         );
@@ -135,10 +153,14 @@ const Permissions = ({
 
   useEffect(() => {
     if (settingOpened && appState === "active" && !isPermissionAllowed) {
-      handleAllowRest();
+      if (isNotificationStep) {
+        handleLocation();
+      } else {
+        handleAllowRest();
+      }
       setSettingOpened(false);
     }
-  }, [settingOpened, appState, isPermissionAllowed]);
+  }, [settingOpened, appState, isPermissionAllowed, isNotificationStep]);
 
   return (
     <>

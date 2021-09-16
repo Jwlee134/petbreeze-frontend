@@ -3,11 +3,23 @@ import { ScrollView } from "react-native";
 import deviceApi from "~/api/device";
 import walkApi from "~/api/walk";
 import Calendar from "~/components/common/Calendar";
-import WalkDeviceListItem from "~/components/common/WalkDeviceListItem";
+import DeviceAvatarCircle from "~/components/common/DeviceAvatarCircle";
+import ListItem from "~/components/common/ListItem";
+import MyText from "~/components/common/MyText";
 import { useAppSelector } from "~/store";
 import { rpHeight, rpWidth } from "~/styles";
 import palette from "~/styles/palette";
 import { WalkRecordScreenNavigationProp } from "~/types/navigator";
+import styled from "styled-components/native";
+
+const TextContainer = styled.View`
+  margin-left: ${rpWidth(26)}px;
+`;
+
+const RowContainer = styled.View`
+  flex-direction: row;
+  align-items: center;
+`;
 
 const WalkRecord = ({
   navigation,
@@ -55,22 +67,44 @@ const WalkRecord = ({
   return (
     <ScrollView
       contentContainerStyle={{
-        paddingHorizontal: rpWidth(16),
-        paddingVertical: rpHeight(31),
+        paddingTop: rpHeight(31),
+        flexGrow: 1,
       }}
       showsVerticalScrollIndicator={false}>
-      {devices.map((item, i) => (
-        <WalkDeviceListItem
-          isLast={i === devices.length - 1}
+      {devices.map(item => (
+        <ListItem
           key={item.id}
-          data={item}
           onPress={() =>
             navigation.navigate("WalkDetail", {
               id: item.id,
             })
-          }
-          isIconArrow
-        />
+          }>
+          <RowContainer>
+            <DeviceAvatarCircle
+              isBackgroundTransparent
+              lineWidth={2}
+              circleWidth={70}
+              battery={item.battery}
+            />
+            <TextContainer>
+              <RowContainer>
+                <MyText fontWeight="medium">{item.name}</MyText>
+                <MyText
+                  fontSize={12}
+                  color={palette.blue_7b}
+                  style={{ marginLeft: rpWidth(12) }}>
+                  {item.battery}%
+                </MyText>
+              </RowContainer>
+              <MyText
+                style={{ marginTop: rpWidth(5) }}
+                fontSize={12}
+                color="rgba(0, 0, 0, 0.5)">
+                마지막 산책
+              </MyText>
+            </TextContainer>
+          </RowContainer>
+        </ListItem>
       ))}
       {/* <Calendar
         onDayPress={day => {

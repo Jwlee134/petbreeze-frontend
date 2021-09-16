@@ -78,12 +78,7 @@ const ScanningFail = ({
             다시 시도
           </Button>
           <Button
-            onPress={() => {
-              if (!isInitialized) {
-                navigation.replace("BleWithHeaderStackNav");
-              } else {
-              }
-            }}
+            onPress={() => navigation.replace("BleWithHeaderStackNav")}
             useCommonMarginBottom
             useBottomInset
             backgroundColor="transparent"

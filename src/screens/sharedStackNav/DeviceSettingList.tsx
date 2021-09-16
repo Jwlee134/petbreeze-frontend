@@ -1,47 +1,59 @@
-import React from "react";
-import styled from "styled-components/native";
-import SidePaddingContainer from "~/components/common/container/SidePaddingContainer";
-import Device from "~/components/common/WalkDeviceListItem";
+import React, { useState } from "react";
+import { ScrollView, TouchableOpacity } from "react-native";
+import MyText from "~/components/common/MyText";
+import CustomHeader from "~/components/navigator/CustomHeader";
+import { useAppSelector } from "~/store";
 import { rpWidth } from "~/styles";
-import {
-  DeviceSettingListRouteProp,
-  DeviceSettingScreenNavigationProp,
-} from "~/types/navigator";
-
-const Container = styled.ScrollView``;
+import palette from "~/styles/palette";
+import { DeviceSettingListScreenNavigationProp } from "~/types/navigator";
+import Swipeable from "~/components/common/Swipeable";
+import Trashcan from "~/assets/svg/trashcan.svg";
+import ListItem from "~/components/common/ListItem";
+import DeviceSettingListItem from "~/components/deviceSetting/DeviceSettingListItem";
 
 const DeviceSettingList = ({
   navigation,
-  route,
 }: {
-  navigation: DeviceSettingScreenNavigationProp;
-  route: DeviceSettingListRouteProp;
+  navigation: DeviceSettingListScreenNavigationProp;
 }) => {
-  const devices = route?.params?.data;
+  const devices = useAppSelector(state => state.device);
+  const [isEdit, setIsEdit] = useState(false);
 
   return (
-    <Container
-      contentContainerStyle={{
-        paddingTop: rpWidth(30),
-        flexGrow: 1,
-      }}>
-      <SidePaddingContainer>
-        {devices.map(device => (
-          <Device
-            lineWidth={2}
-            circleWidth={70}
-            isIconArrow
+    <>
+      <CustomHeader
+        RightButton={() => (
+          <TouchableOpacity onPress={() => setIsEdit(prev => !prev)}>
+            <MyText color={palette.blue_7b}>{!isEdit ? "편집" : "완료"}</MyText>
+          </TouchableOpacity>
+        )}
+        navigation={navigation}>
+        기기설정
+      </CustomHeader>
+      <ScrollView
+        contentContainerStyle={{
+          paddingVertical: rpWidth(25),
+          flexGrow: 1,
+        }}>
+        {devices.map((device, i) => (
+          <Swipeable
+            animate={i === 0 && isEdit}
             key={device.id}
-            data={device}
-            onPress={() =>
-              navigation.navigate("DeviceSetting", {
-                data: device,
-              })
-            }
-          />
+            onRightButtonPress={() => {}}
+            RightButtonIcon={() => <Trashcan />}
+            enableRightActions={isEdit}>
+            <ListItem
+              onPress={() =>
+                navigation.navigate("DeviceSetting", {
+                  data: device,
+                })
+              }>
+              <DeviceSettingListItem device={device} />
+            </ListItem>
+          </Swipeable>
         ))}
-      </SidePaddingContainer>
-    </Container>
+      </ScrollView>
+    </>
   );
 };
 
