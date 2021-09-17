@@ -12,6 +12,8 @@ import FirmwareUpdate from "~/screens/rootNav/FirmwareUpdate";
 import Start from "~/screens/rootNav/Start";
 import { RootNavParamList } from "~/types/navigator";
 import Intro from "~/screens/rootNav/Intro";
+import Auth from "~/screens/rootNav/Auth";
+import Loading from "~/screens/rootNav/Loading";
 
 const Stack = createStackNavigator<RootNavParamList>();
 
@@ -59,8 +61,10 @@ const RootNav = () => {
         })()}>
         <Stack.Screen name="FirmwareUpdate" component={FirmwareUpdate} />
         <Stack.Screen name="Intro" component={Intro} />
+        <Stack.Screen name="Auth" component={Auth} />
         <Stack.Screen name="Start" component={Start} />
         <Stack.Screen name="LoggedInNav" component={LoggedInNav} />
+        <Stack.Screen name="Loading" component={Loading} />
       </Stack.Navigator>
     </>
   );

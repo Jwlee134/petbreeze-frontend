@@ -7,6 +7,7 @@ import Location from "~/assets/svg/init/permission/location.svg";
 import Bluetooth from "~/assets/svg/init/permission/bluetooth.svg";
 import Gallery from "~/assets/svg/init/permission/gallery.svg";
 import {
+  check,
   openSettings,
   PERMISSIONS,
   request,
@@ -102,11 +103,11 @@ const Permissions = ({
       PERMISSIONS.IOS.PHOTO_LIBRARY,
       PERMISSIONS.IOS.CAMERA,
     ]).then(() => {
-      dispatch(
+      /*  dispatch(
         storageActions.setInit({
           isPermissionAllowed: true,
         }),
-      );
+      ); */
       navigation.replace("BleRootStackNav");
     });
   };
@@ -121,15 +122,21 @@ const Permissions = ({
 
   const handleLocation = () => {
     setIsNotificationStep(false);
-    request(PERMISSIONS.IOS.LOCATION_ALWAYS).then(() => {
-      Alert.alert(
-        "알림",
-        "백그라운드에서 원활한 위치 기록을 위해 위치 접근 허용을 항상으로 설정해주세요.",
-        [
-          { text: "안할래요", onPress: handleAllowRest },
-          { text: "설정으로 이동", onPress: openSetting },
-        ],
-      );
+    check(PERMISSIONS.IOS.LOCATION_ALWAYS).then(result => {
+      if (result === "granted") {
+        handleAllowRest();
+        return;
+      }
+      request(PERMISSIONS.IOS.LOCATION_ALWAYS).then(() => {
+        Alert.alert(
+          "알림",
+          "백그라운드에서 원활한 위치 기록을 위해 위치 접근 허용을 항상으로 설정해주세요.",
+          [
+            { text: "안할래요", onPress: handleAllowRest },
+            { text: "설정으로 이동", onPress: openSetting },
+          ],
+        );
+      });
     });
   };
 

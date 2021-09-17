@@ -1,179 +1,139 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components/native";
 import GradientContainer from "~/components/common/container/GradientContainer";
 import Footprint from "~/assets/svg/footprint/footprint-app-icon-blue.svg";
 import AppName from "~/assets/svg/app-name.svg";
-import { rpWidth } from "~/styles";
-import { Animated, Easing } from "react-native";
+import { rpHeight, rpWidth } from "~/styles";
+import { Animated } from "react-native";
 import { StartScreenNavigationProp } from "~/types/navigator";
 import { store } from "~/store";
 import { useDispatch } from "react-redux";
 import { navigatorActions } from "~/store/navigator";
+import useAnimatedSequence from "~/hooks/useAnimatedSequence";
+import * as SecureStore from "expo-secure-store";
+import { isIos } from "~/utils";
+
+const Container = styled.View`
+  flex: 1;
+`;
 
 const LogoContainer = styled(Animated.View)`
-  justify-content: center;
+  position: absolute;
   align-items: center;
+  align-self: center;
 `;
 
 const Start = ({ navigation }: { navigation: StartScreenNavigationProp }) => {
-  const footprintOpacity = useRef(new Animated.Value(0)).current;
-  const appNameOpacity = useRef(new Animated.Value(0)).current;
-  const marginBottom = useRef(new Animated.Value(0)).current;
-  const footprintWidth = useRef(new Animated.Value(0)).current;
-  const appNameWidth = useRef(new Animated.Value(0)).current;
-
+  const [renderAuth, setRenderAuth] = useState<boolean | null>(null);
   const dispatch = useDispatch();
 
-  const translateY = footprintOpacity.interpolate({
-    inputRange: [0, 1],
-    outputRange: [rpWidth(-80), 0],
-  });
+  const onAnimatedFinish = () => {
+    if (renderAuth) {
+      navigation.replace("Auth");
+    }
+    if (renderAuth === false) {
+      const {
+        init: { isPermissionAllowed, isInitialized },
+        device: {
+          isDeviceRegistered,
+          isSafetyZoneRegistered,
+          isProfileRegistered,
+        },
+      } = store.getState().storage;
 
-  const slideDownWithFadeIn = Animated.timing(footprintOpacity, {
-    toValue: 1,
-    duration: 200,
-    easing: Easing.ease,
-    useNativeDriver: true,
-  });
-
-  const fadeInAppName = Animated.timing(appNameOpacity, {
-    toValue: 1,
-    duration: 200,
-    easing: Easing.ease,
-    useNativeDriver: true,
-  });
-
-  const footPrintWidthInterpolate = footprintWidth.interpolate({
-    inputRange: [0, 1],
-    outputRange: [rpWidth(60), rpWidth(33)],
-  });
-
-  const reduceFootprintWidth = Animated.timing(footprintWidth, {
-    toValue: 1,
-    duration: 200,
-    easing: Easing.ease,
-    useNativeDriver: false,
-  });
-
-  const appNameWidthInterpolate = appNameWidth.interpolate({
-    inputRange: [0, 1],
-    outputRange: [rpWidth(137), rpWidth(79)],
-  });
-
-  const reduceAppNameWidth = Animated.timing(appNameWidth, {
-    toValue: 1,
-    duration: 200,
-    easing: Easing.ease,
-    useNativeDriver: false,
-  });
-
-  const marginBottomInterpolate = marginBottom.interpolate({
-    inputRange: [0, 1],
-    outputRange: [rpWidth(38), -rpWidth(8)],
-  });
-
-  const reduceMarginBottom = Animated.timing(marginBottom, {
-    toValue: 1,
-    duration: 200,
-    easing: Easing.ease,
-    useNativeDriver: false,
-  });
-
-  useEffect(() => {
-    Animated.sequence([
-      slideDownWithFadeIn,
-      Animated.delay(200),
-      fadeInAppName,
-      /* Animated.delay(400),
-      Animated.parallel([
-        reduceFootprintWidth,
-        reduceAppNameWidth,
-        reduceMarginBottom,
-      ]), */
-    ]).start(() => {
-      setTimeout(() => {
-        const {
-          init: { isPermissionAllowed, isInitialized },
-          device: {
-            isDeviceRegistered,
-            isSafetyZoneRegistered,
-            isProfileRegistered,
-          },
-        } = store.getState().storage;
-
-        if (!isPermissionAllowed) {
-          dispatch(
-            navigatorActions.setInitialRoute({
-              initialLoggedInNavRouteName: "Permissions",
-            }),
-          );
-          navigation.replace("LoggedInNav");
-          return;
-        }
-        if (isDeviceRegistered) {
-          if (!isSafetyZoneRegistered) {
-            dispatch(
-              navigatorActions.setInitialRoute({
-                initialLoggedInNavRouteName: "BleRootStackNav",
-                initialBleWithHeaderStackNavRouteName: "PreSafetyZone",
-              }),
-            );
-            navigation.replace("LoggedInNav");
-            return;
-          }
-          if (!isProfileRegistered) {
-            dispatch(
-              navigatorActions.setInitialRoute({
-                initialLoggedInNavRouteName: "BleRootStackNav",
-                initialBleWithHeaderStackNavRouteName: "RegisterProfileFirst",
-              }),
-            );
-            navigation.replace("LoggedInNav");
-            return;
-          }
-        }
-        if (!isInitialized) {
+      if (!isPermissionAllowed) {
+        dispatch(
+          navigatorActions.setInitialRoute({
+            initialLoggedInNavRouteName: "Permissions",
+          }),
+        );
+        navigation.replace("LoggedInNav");
+        return;
+      }
+      if (isDeviceRegistered) {
+        if (!isSafetyZoneRegistered) {
           dispatch(
             navigatorActions.setInitialRoute({
               initialLoggedInNavRouteName: "BleRootStackNav",
+              initialBleWithHeaderStackNavRouteName: "PreSafetyZone",
             }),
           );
           navigation.replace("LoggedInNav");
           return;
         }
+        if (!isProfileRegistered) {
+          dispatch(
+            navigatorActions.setInitialRoute({
+              initialLoggedInNavRouteName: "BleRootStackNav",
+              initialBleWithHeaderStackNavRouteName: "RegisterProfileFirst",
+            }),
+          );
+          navigation.replace("LoggedInNav");
+          return;
+        }
+      }
+      if (!isInitialized) {
+        dispatch(
+          navigatorActions.setInitialRoute({
+            initialLoggedInNavRouteName: "BleRootStackNav",
+          }),
+        );
         navigation.replace("LoggedInNav");
-      }, 600);
+        return;
+      }
+      navigation.replace("LoggedInNav");
+    }
+  };
+
+  const [footprint, appName] = useAnimatedSequence({
+    numOfValues: 3,
+    onAnimatedFinish,
+    shouldDelayOnMount: false,
+    delayAfterFirst: 400,
+    dependencies: [renderAuth],
+  });
+
+  const translateY = footprint.interpolate({
+    inputRange: [0, 1],
+    outputRange: [rpHeight(isIos ? 181 : 137), rpHeight(isIos ? 262 : 218)],
+  });
+
+  useEffect(() => {
+    SecureStore.getItemAsync("token").then(value => {
+      if (value) {
+        console.log("🔐 Here's your value 🔐 \n" + value);
+        setRenderAuth(false);
+      } else {
+        console.log("No values stored under that key.");
+        setRenderAuth(true);
+      }
     });
   }, []);
 
   return (
-    <GradientContainer
-      style={{ justifyContent: "center", alignItems: "center" }}>
-      <LogoContainer>
-        <Animated.View
-          style={{
-            opacity: footprintOpacity,
-            transform: [{ translateY }],
-          }}>
+    <GradientContainer>
+      <Container>
+        <LogoContainer style={{ transform: [{ translateY }] }}>
           <Animated.View
             style={{
-              width: footPrintWidthInterpolate,
-              height: rpWidth(83),
-              marginBottom: marginBottomInterpolate,
+              opacity: footprint,
+              width: rpWidth(60),
+              height: rpHeight(83),
+              marginBottom: rpHeight(38),
             }}>
             <Footprint width="100%" height="100%" />
           </Animated.View>
-        </Animated.View>
-        <Animated.View
-          style={{
-            opacity: appNameOpacity,
-          }}>
           <Animated.View
-            style={{ width: appNameWidthInterpolate, height: rpWidth(47) }}>
+            style={{
+              opacity: appName,
+              width: rpWidth(137),
+              height: rpHeight(47),
+            }}>
             <AppName width="100%" height="100%" />
           </Animated.View>
-        </Animated.View>
-      </LogoContainer>
+        </LogoContainer>
+      </Container>
+      <Container />
     </GradientContainer>
   );
 };

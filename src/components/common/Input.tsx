@@ -17,6 +17,7 @@ interface IProps extends TextInputProps {
   solidPlaceholderTitle?: string;
   alignLeftSolidPlaceholderWhenFocus?: boolean;
   containerStyle?: StyleProp<ViewStyle>;
+  isWhiteBorder?: boolean;
 }
 
 interface IContainer {
@@ -41,19 +42,16 @@ const TextInputComponent = styled.TextInput`
   height: 100%;
   font-size: ${rpWidth(16)}px;
   font-family: "NotoSansKR-Regular";
-  color: black;
 `;
 
 const BorderContainer = styled.View`
   width: 100%;
   height: 1px;
-  background-color: rgba(0, 0, 0, 0.3);
   align-items: center;
 `;
 
 const Border = styled(Animated.View)`
   height: 100%;
-  background-color: ${palette.blue_7b};
 `;
 
 const Input = forwardRef(
@@ -63,6 +61,7 @@ const Input = forwardRef(
       solidPlaceholderTitle,
       alignLeftSolidPlaceholderWhenFocus = false,
       containerStyle,
+      isWhiteBorder,
       ...props
     }: IProps,
     ref: ForwardedRef<TextInput>,
@@ -99,8 +98,12 @@ const Input = forwardRef(
             onBlur={handleBlur}
             style={{
               includeFontPadding: false,
+              color: isWhiteBorder ? "white" : "rgba(0, 0, 0, 0.7)",
             }}
             placeholderTextColor="rgba(0, 0, 0, 0.3)"
+            selectionColor={
+              isWhiteBorder ? "rgba(255, 255, 255, 0.3)" : undefined
+            }
             {...props}
           />
           {solidPlaceholderTitle && (
@@ -120,8 +123,18 @@ const Input = forwardRef(
             </MyText>
           )}
         </InputContainer>
-        <BorderContainer>
-          <Border style={{ width: borderWidth }} />
+        <BorderContainer
+          style={{
+            backgroundColor: isWhiteBorder
+              ? "rgba(255, 255, 255, 0.3)"
+              : "rgba(0, 0, 0, 0.3)",
+          }}>
+          <Border
+            style={{
+              width: borderWidth,
+              backgroundColor: isWhiteBorder ? "white" : palette.blue_7b,
+            }}
+          />
         </BorderContainer>
       </Container>
     );

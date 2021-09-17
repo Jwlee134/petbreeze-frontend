@@ -12,7 +12,11 @@ export type RootNavParamList = {
   FirmwareUpdate: undefined;
   Start: undefined;
   Intro: undefined;
+  Auth: undefined;
   LoggedInNav: undefined;
+  Loading: {
+    previousRouteName: string;
+  };
 };
 export type FirmwareUpdateScreenNavigationProp = StackNavigationProp<
   RootNavParamList,
@@ -26,10 +30,15 @@ export type IntroScreenNavigationProp = StackNavigationProp<
   RootNavParamList,
   "Intro"
 >;
+export type AuthScreenNavigationProp = StackNavigationProp<
+  RootNavParamList,
+  "Auth"
+>;
 export type LoggedInNavScreenProps = StackScreenProps<
   RootNavParamList,
   "LoggedInNav"
 >;
+export type LoadingScreenProps = StackScreenProps<RootNavParamList, "Loading">;
 
 export type LoggedInNavParamList = {
   Permissions: undefined;

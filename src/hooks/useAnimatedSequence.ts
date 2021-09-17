@@ -5,7 +5,7 @@ interface IProps {
   firstDuration?: number;
   secondDuration?: number;
   thirdDuration?: number;
-  delayOnMount?: boolean;
+  shouldDelayOnMount?: boolean;
   delayAfterMount?: number;
   delayAfterFirst?: number;
   delayAfterSecond?: number;
@@ -16,15 +16,16 @@ interface IProps {
   useNativeDriverOnFirst?: boolean;
   useNativeDriverOnSecond?: boolean;
   useNativeDriverOnThird?: boolean;
-  onAnimatedFinished?: () => void;
+  onAnimatedFinish?: () => void;
   numOfValues: number;
+  dependencies?: any[];
 }
 
 const useAnimatedSequence = ({
   firstDuration = 200,
   secondDuration = 200,
   thirdDuration = 200,
-  delayOnMount = true,
+  shouldDelayOnMount = true,
   delayAfterMount = 400,
   delayAfterFirst = 200,
   delayAfterSecond = 200,
@@ -35,19 +36,14 @@ const useAnimatedSequence = ({
   useNativeDriverOnFirst = true,
   useNativeDriverOnSecond = true,
   useNativeDriverOnThird = true,
-  onAnimatedFinished,
+  onAnimatedFinish,
   numOfValues,
+  dependencies,
 }: IProps) => {
-  const value1 = useRef(new Animated.Value(0)).current;
-  const value2 = useRef(new Animated.Value(0)).current;
-  const value3 = useRef(new Animated.Value(0)).current;
-
-  const valueArr =
-    numOfValues === 1
-      ? [value1]
-      : numOfValues === 2
-      ? [value1, value2]
-      : [value1, value2, value3];
+  const valueArr = Array.from(
+    { length: numOfValues },
+    () => useRef(new Animated.Value(0)).current,
+  );
 
   useEffect(() => {
     const sequence = () =>
@@ -108,23 +104,23 @@ const useAnimatedSequence = ({
       Animated.sequence([Animated.delay(delayAfterMount), main]);
 
     if (loop) {
-      if (delayOnMount) {
+      if (shouldDelayOnMount) {
         delayOnMountSequence(Animated.loop(sequence())).start();
       } else {
         Animated.loop(sequence()).start();
       }
     } else {
-      if (delayOnMount) {
+      if (shouldDelayOnMount) {
         delayOnMountSequence(sequence()).start(() => {
-          if (onAnimatedFinished) onAnimatedFinished();
+          if (onAnimatedFinish) onAnimatedFinish();
         });
       } else {
         sequence().start(() => {
-          if (onAnimatedFinished) onAnimatedFinished();
+          if (onAnimatedFinish) onAnimatedFinish();
         });
       }
     }
-  }, [loop]);
+  }, [loop, ...(dependencies ? dependencies : [])]);
 
   return valueArr;
 };
