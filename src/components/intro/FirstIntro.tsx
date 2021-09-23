@@ -1,18 +1,19 @@
-import React from "react";
-import { rpWidth } from "~/styles";
+import React, { useContext } from "react";
 import Dog from "~/assets/svg/dog/dog-question-mark.svg";
 import MyText from "~/components/common/MyText";
 import { View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { IntroContainer } from "./styles";
 import GradientContainer from "../common/container/GradientContainer";
+import { DimensionsContext } from "~/context/DimensionsContext";
 
 const FirstIntro = () => {
   const { top, bottom } = useSafeAreaInsets();
+  const { rpWidth } = useContext(DimensionsContext);
 
   return (
     <GradientContainer isBlackStatusBar>
-      <IntroContainer topInset={top} spaceBetween>
+      <IntroContainer rpWidth={rpWidth} topInset={top} spaceBetween>
         <View style={{ paddingHorizontal: rpWidth(22) }}>
           <MyText color="white" fontSize={24}>
             반려동물 실종은

@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import styled from "styled-components/native";
-import { ScrollView, TouchableOpacity } from "react-native";
-import { rpWidth } from "~/styles";
+import { ScrollView, TouchableOpacity, View } from "react-native";
 import MyText from "~/components/common/MyText";
 
 import LocationInfoCollectionPeriod from "~/components/deviceSetting/LocationInfoCollectionPeriod";
@@ -13,10 +12,7 @@ import palette from "~/styles/palette";
 import WiFi from "~/components/deviceSetting/WiFi";
 import ProfileSection from "~/components/deviceSetting/ProfileSection";
 import { store, useAppSelector } from "~/store";
-
-const PaddingContainer = styled.View`
-  padding: 0px ${rpWidth(16)}px;
-`;
+import { DimensionsContext } from "~/context/DimensionsContext";
 
 const DeviceSetting = ({
   navigation,
@@ -24,6 +20,7 @@ const DeviceSetting = ({
 }: {
   navigation: DeviceSettingScreenNavigationProp;
 }) => {
+  const { rpWidth } = useContext(DimensionsContext);
   const data = route.params.data;
   const [isEdit, setIsEdit] = useState(false);
 
@@ -62,16 +59,16 @@ const DeviceSetting = ({
         }}>
         <ProfileSection data={data} />
         <Divider isHairline={false} />
-        <PaddingContainer>
+        <View style={{ paddingHorizontal: rpWidth(16) }}>
           <LocationInfoCollectionPeriod />
-        </PaddingContainer>
-        <PaddingContainer>
+        </View>
+        <View style={{ paddingHorizontal: rpWidth(16) }}>
           <Divider />
-        </PaddingContainer>
+        </View>
         <SafetyZone isEdit={isEdit} />
-        <PaddingContainer>
+        <View style={{ paddingHorizontal: rpWidth(16) }}>
           <Divider style={{ marginTop: rpWidth(35) }} />
-        </PaddingContainer>
+        </View>
         <WiFi isEdit={isEdit} />
       </ScrollView>
     </>

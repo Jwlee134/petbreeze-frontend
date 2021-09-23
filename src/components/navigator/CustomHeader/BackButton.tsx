@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useContext } from "react";
 import styled from "styled-components/native";
-import { rpWidth } from "~/styles";
 import Dissolve from "../../common/Dissolve";
 import Arrow from "~/assets/svg/arrow/arrow-left.svg";
+import { DimensionsContext } from "~/context/DimensionsContext";
 
 const Button = styled.TouchableOpacity`
   width: 100%;
@@ -20,6 +20,8 @@ const BackButton = ({
   onBackButtonPress?: () => void;
   navigation: any;
 }) => {
+  const { rpWidth } = useContext(DimensionsContext);
+
   return (
     <Dissolve
       style={{

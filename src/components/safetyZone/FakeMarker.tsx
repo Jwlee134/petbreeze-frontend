@@ -1,9 +1,9 @@
-import React, { useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import { Animated, Easing, StyleSheet } from "react-native";
-import styled from "styled-components/native";
+import styled, { css } from "styled-components/native";
 import ShadowContainer from "~/components/common/container/ShadowContainer";
+import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import { useAppSelector } from "~/store";
-import { rpWidth } from "~/styles";
 import palette from "~/styles/palette";
 
 interface IProps {
@@ -14,26 +14,31 @@ interface IProps {
   };
 }
 
-const OuterMarker = styled.View`
-  width: ${rpWidth(22)}px;
-  height: ${rpWidth(22)}px;
-  border-radius: ${rpWidth(11)}px;
+const OuterMarker = styled.View<{ rpWidth: RpWidth }>`
+  ${({ rpWidth }) => css`
+    width: ${rpWidth(22)}px;
+    height: ${rpWidth(22)}px;
+    border-radius: ${rpWidth(11)}px;
+  `}
   background-color: white;
   flex: 1;
   justify-content: center;
   align-items: center;
 `;
 
-const InnerMarker = styled.View`
-  width: ${rpWidth(16)}px;
-  height: ${rpWidth(16)}px;
-  border-radius: ${rpWidth(8)}px;
+const InnerMarker = styled.View<{ rpWidth: RpWidth }>`
+  ${({ rpWidth }) => css`
+    width: ${rpWidth(16)}px;
+    height: ${rpWidth(16)}px;
+    border-radius: ${rpWidth(8)}px;
+  `}
   background-color: ${palette.blue_7b};
 `;
 
 const FakeMarker = ({ mapPadding, snapPoints }: IProps) => {
   const step2 = useAppSelector(state => state.deviceSetting.safetyZone.step2);
   const value = useRef(new Animated.Value(0)).current;
+  const { rpWidth } = useContext(DimensionsContext);
 
   const exp = (t: number) => {
     return Math.min(Math.max(0, Math.pow(2, 10 * (t - 1))), 1);
@@ -71,8 +76,8 @@ const FakeMarker = ({ mapPadding, snapPoints }: IProps) => {
           marginLeft: -rpWidth(11),
           marginTop: -rpWidth(11),
         }}>
-        <OuterMarker>
-          <InnerMarker />
+        <OuterMarker rpWidth={rpWidth}>
+          <InnerMarker rpWidth={rpWidth} />
         </OuterMarker>
       </ShadowContainer>
     </Animated.View>

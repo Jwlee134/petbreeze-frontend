@@ -1,5 +1,4 @@
-import React from "react";
-import { rpWidth } from "~/styles";
+import React, { useContext } from "react";
 import MyText from "../common/MyText";
 import Trashcan from "~/assets/svg/trashcan.svg";
 import ListItem from "../common/ListItem";
@@ -11,11 +10,13 @@ import { DeviceSettingScreenNavigationProp } from "~/types/navigator";
 import { View } from "react-native";
 import { useAppSelector } from "~/store";
 import { deviceSettingActions } from "~/store/deviceSetting";
+import { DimensionsContext } from "~/context/DimensionsContext";
 
 const WiFi = ({ isEdit }: { isEdit: boolean }) => {
   const navigation = useNavigation<DeviceSettingScreenNavigationProp>();
   const dispatch = useDispatch();
   const result = useAppSelector(state => state.deviceSetting.wifi.result);
+  const { rpWidth } = useContext(DimensionsContext);
 
   return (
     <DeviceSettingSection

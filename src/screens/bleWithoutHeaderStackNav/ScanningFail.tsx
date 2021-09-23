@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useDispatch } from "react-redux";
@@ -7,11 +7,11 @@ import Button from "~/components/common/Button";
 import GradientContainer from "~/components/common/container/GradientContainer";
 import MyText from "~/components/common/MyText";
 import { bleActions } from "~/store/ble";
-import { rpWidth } from "~/styles";
 import { ScanningFailScreenNavigationProp } from "~/types/navigator";
 import Exclamation from "~/assets/svg/exclamation/exclamation-mark-white.svg";
 import ParagraphWithCheckCircle from "~/components/common/ParagraphWithCheckCircle";
 import { useAppSelector } from "~/store";
+import { DimensionsContext } from "~/context/DimensionsContext";
 
 const TopContainer = styled.View`
   flex: 1;
@@ -34,6 +34,7 @@ const ScanningFail = ({
   const isInitialized = useAppSelector(
     state => state.storage.init.isInitialized,
   );
+  const { rpWidth } = useContext(DimensionsContext);
 
   return (
     <GradientContainer>

@@ -1,10 +1,9 @@
-import React from "react";
+import React, { useContext } from "react";
 import Button from "~/components/common/Button";
-import styled from "styled-components/native";
+import styled, { css } from "styled-components/native";
 
 import Shield from "~/assets/svg/safetyZone/footprint-shield.svg";
 import CheckCircle from "~/assets/svg/check/check-circle-black50.svg";
-import { rpHeight, rpWidth } from "~/styles";
 import MyText from "~/components/common/MyText";
 import SafeAreaContainer from "~/components/common/container/SafeAreaContainer";
 import { PreSafetyZoneScreenNavigationProp } from "~/types/navigator";
@@ -12,6 +11,7 @@ import { Animated } from "react-native";
 import useAnimatedSequence from "~/hooks/useAnimatedSequence";
 import { useDispatch } from "react-redux";
 import { navigatorActions } from "~/store/navigator";
+import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 
 const DescriptionContainer = styled(Animated.View)`
   width: 100%;
@@ -28,12 +28,14 @@ const BottomContainer = styled.View`
   justify-content: space-between;
 `;
 
-const Description = styled.View`
+const Description = styled.View<{ rpWidth: RpWidth }>`
   background-color: white;
   flex-direction: row;
   align-items: center;
-  margin-bottom: ${rpWidth(32)}px;
-  margin-left: ${rpWidth(40)}px;
+  ${({ rpWidth }) => css`
+    margin-bottom: ${rpWidth(32)}px;
+    margin-left: ${rpWidth(40)}px;
+  `}
 `;
 
 const PreSafetyZone = ({
@@ -46,6 +48,7 @@ const PreSafetyZone = ({
     secondDuration: 300,
   });
   const dispatch = useDispatch();
+  const { rpHeight, rpWidth } = useContext(DimensionsContext);
 
   return (
     <SafeAreaContainer>
@@ -60,7 +63,7 @@ const PreSafetyZone = ({
       </TopContainer>
       <BottomContainer>
         <DescriptionContainer style={{ opacity: value2 }}>
-          <Description>
+          <Description rpWidth={rpWidth}>
             <CheckCircle
               width={rpWidth(24)}
               height={rpWidth(24)}
@@ -70,7 +73,7 @@ const PreSafetyZone = ({
               안심존 이탈 시 푸시알림을 보내드립니다.
             </MyText>
           </Description>
-          <Description>
+          <Description rpWidth={rpWidth}>
             <CheckCircle
               width={rpWidth(24)}
               height={rpWidth(24)}
@@ -80,7 +83,7 @@ const PreSafetyZone = ({
               실내 및 지하에서는 오차가 있을 수 있습니다.
             </MyText>
           </Description>
-          <Description>
+          <Description rpWidth={rpWidth}>
             <CheckCircle
               width={rpWidth(24)}
               height={rpWidth(24)}

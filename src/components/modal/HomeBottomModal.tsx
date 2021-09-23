@@ -1,10 +1,10 @@
 import { useNavigation } from "@react-navigation/native";
-import React from "react";
+import React, { useContext } from "react";
 import { useDispatch } from "react-redux";
-import styled from "styled-components/native";
+import styled, { css } from "styled-components/native";
+import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import { IDevice } from "~/store/device";
 import { formActions } from "~/store/form";
-import { rpWidth } from "~/styles";
 import palette from "~/styles/palette";
 import { HomeScreenNavigationProp } from "~/types/navigator";
 import DeviceAvatarCircle from "../common/DeviceAvatarCircle";
@@ -16,38 +16,42 @@ interface IProps {
   close: () => void;
 }
 
-const AvatarContainer = styled.View`
-  width: ${rpWidth(90)}px;
-  border-radius: ${rpWidth(45)}px;
+const AvatarContainer = styled.View<{ rpWidth: RpWidth }>`
+  ${({ rpWidth }) => css`
+    width: ${rpWidth(90)}px;
+    border-radius: ${rpWidth(45)}px;
+    top: -${rpWidth(112)}px;
+  `}
   position: absolute;
-  top: -${rpWidth(112)}px;
   align-self: center;
 `;
 
-const Button = styled.TouchableOpacity`
+const Button = styled.TouchableOpacity<{ rpWidth: RpWidth }>`
   justify-content: center;
   align-items: center;
-  height: ${rpWidth(50)}px;
+  height: ${({ rpWidth }) => rpWidth(50)}px;
 `;
 
 const HomeBottomModal = ({ device, close }: IProps) => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
   const dispatch = useDispatch();
+  const { rpWidth } = useContext(DimensionsContext);
 
   return (
     <>
-      <AvatarContainer>
+      <AvatarContainer rpWidth={rpWidth}>
         <DeviceAvatarCircle
           circleWidth={90}
           lineWidth={7}
           battery={device.battery}
         />
       </AvatarContainer>
-      <Button>
+      <Button rpWidth={rpWidth}>
         <MyText color={palette.blue_7b}>이동경로</MyText>
       </Button>
       <Divider />
       <Button
+        rpWidth={rpWidth}
         onPress={() => {
           close();
           navigation.navigate("DeviceSetting", {
@@ -58,6 +62,7 @@ const HomeBottomModal = ({ device, close }: IProps) => {
       </Button>
       <Divider />
       <Button
+        rpWidth={rpWidth}
         onPress={() => {
           close();
           dispatch(

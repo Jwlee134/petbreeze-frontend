@@ -1,15 +1,15 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { ScrollView, TouchableOpacity } from "react-native";
 import MyText from "~/components/common/MyText";
 import CustomHeader from "~/components/navigator/CustomHeader";
 import { useAppSelector } from "~/store";
-import { rpWidth } from "~/styles";
 import palette from "~/styles/palette";
 import { DeviceSettingListScreenNavigationProp } from "~/types/navigator";
 import Swipeable from "~/components/common/Swipeable";
 import Trashcan from "~/assets/svg/trashcan.svg";
 import ListItem from "~/components/common/ListItem";
 import DeviceSettingListItem from "~/components/deviceSetting/DeviceSettingListItem";
+import { DimensionsContext } from "~/context/DimensionsContext";
 
 const DeviceSettingList = ({
   navigation,
@@ -18,6 +18,7 @@ const DeviceSettingList = ({
 }) => {
   const devices = useAppSelector(state => state.device);
   const [isEdit, setIsEdit] = useState(false);
+  const { rpWidth } = useContext(DimensionsContext);
 
   return (
     <>

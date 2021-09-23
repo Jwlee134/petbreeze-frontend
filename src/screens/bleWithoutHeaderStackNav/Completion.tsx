@@ -1,9 +1,8 @@
-import React, { useEffect } from "react";
-import styled from "styled-components/native";
+import React, { useContext, useEffect } from "react";
+import styled, { css } from "styled-components/native";
 import SafeAreaContainer from "~/components/common/container/SafeAreaContainer";
 import MyText from "~/components/common/MyText";
 import Confetti from "~/components/lottie/Confetti";
-import { rpWidth } from "~/styles";
 import Footprint from "~/assets/svg/footprint/footprint-rotated.svg";
 import { useAppSelector } from "~/store";
 import palette from "~/styles/palette";
@@ -14,17 +13,20 @@ import { CompletionScreenNavigationProp } from "~/types/navigator";
 import { useDispatch } from "react-redux";
 import { storageActions } from "~/store/storage";
 import { navigatorActions } from "~/store/navigator";
+import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 
-const DeviceContainer = styled(Animated.View)`
-  margin-top: ${rpWidth(52)}px;
+const DeviceContainer = styled(Animated.View)<{ rpWidth: RpWidth }>`
+  margin-top: ${({ rpWidth }) => rpWidth(52)}px;
   align-items: center;
 `;
 
-const Image = styled.Image`
-  width: ${rpWidth(120)}px;
-  height: ${rpWidth(120)}px;
-  border-radius: ${rpWidth(60)}px;
-  margin-bottom: ${rpWidth(10)}px;
+const Image = styled.Image<{ rpWidth: RpWidth }>`
+  ${({ rpWidth }) => css`
+    width: ${rpWidth(120)}px;
+    height: ${rpWidth(120)}px;
+    border-radius: ${rpWidth(60)}px;
+    margin-bottom: ${rpWidth(10)}px;
+  `}
 `;
 
 const RowContainer = styled.View`
@@ -46,11 +48,12 @@ const Completion = ({
   );
   const { name: safetyZoneName } = useAppSelector(state => state.safetyZone);
   const dispatch = useDispatch();
+  const { rpWidth } = useContext(DimensionsContext);
 
   const [value1, value2] = useAnimatedSequence({
     numOfValues: 2,
     delayAfterMount: 800,
-    onAnimatedFinished: () => {
+    onAnimatedFinish: () => {
       setTimeout(() => {
         if (redirectionRouteName) {
         } else {
@@ -88,8 +91,10 @@ const Completion = ({
           모든 단계를{"\n"}완료했습니다!
         </MyText>
       </Animated.View>
-      <DeviceContainer style={{ transform: [{ translateY }] }}>
-        <Image source={require("~/assets/image/test.jpg")} />
+      <DeviceContainer
+        rpWidth={rpWidth}
+        style={{ transform: [{ translateY }] }}>
+        <Image rpWidth={rpWidth} source={require("~/assets/image/test.jpg")} />
         <RowContainer>
           <Footprint
             width={rpWidth(22)}

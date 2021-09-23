@@ -1,7 +1,6 @@
-import React from "react";
-import styled from "styled-components/native";
+import React, { useContext } from "react";
+import styled, { css } from "styled-components/native";
 import MyText from "~/components/common/MyText";
-import { rpHeight, rpWidth } from "~/styles";
 
 import SharePeople from "~/assets/svg/intro/share-people.svg";
 import FootpringPath from "~/assets/svg/intro/footprint-path.svg";
@@ -9,16 +8,19 @@ import PhoneVibrate from "~/assets/svg/intro/phone-vibrate.svg";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { IntroContainer } from "./styles";
 import { View } from "react-native";
+import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 
-const IconContainer = styled.View<{ isLast?: boolean }>`
+const IconContainer = styled.View<{ isLast?: boolean; rpWidth: RpWidth }>`
   flex-direction: row;
-  margin-left: ${rpWidth(13)}px;
-  margin-bottom: ${({ isLast }) => (!isLast ? rpWidth(52) : 0)}px;
+  ${({ rpWidth, isLast }) => css`
+    margin-left: ${rpWidth(13)}px;
+    margin-bottom: ${!isLast ? rpWidth(52) : 0}px;
+  `}
   align-items: center;
 `;
 
-const SvgContainer = styled.View`
-  width: ${rpWidth(110)}px;
+const SvgContainer = styled.View<{ rpWidth: RpWidth }>`
+  width: ${({ rpWidth }) => rpWidth(110)}px;
 `;
 
 const TextContainer = styled.View`
@@ -27,9 +29,10 @@ const TextContainer = styled.View`
 
 const SecondIntro = () => {
   const { top } = useSafeAreaInsets();
+  const { rpHeight, rpWidth } = useContext(DimensionsContext);
 
   return (
-    <IntroContainer topInset={top}>
+    <IntroContainer rpWidth={rpWidth} topInset={top}>
       <View style={{ paddingHorizontal: rpWidth(22) }}>
         <MyText fontSize={24}>펫브리즈</MyText>
         <MyText
@@ -38,8 +41,8 @@ const SecondIntro = () => {
           style={{ marginBottom: rpWidth(91) }}>
           트래커와 함께라면?
         </MyText>
-        <IconContainer>
-          <SvgContainer>
+        <IconContainer rpWidth={rpWidth}>
+          <SvgContainer rpWidth={rpWidth}>
             <SharePeople width={rpWidth(55)} height={rpWidth(63)} />
           </SvgContainer>
           <TextContainer>
@@ -54,8 +57,8 @@ const SecondIntro = () => {
             </MyText>
           </TextContainer>
         </IconContainer>
-        <IconContainer>
-          <SvgContainer>
+        <IconContainer rpWidth={rpWidth}>
+          <SvgContainer rpWidth={rpWidth}>
             <FootpringPath width={rpWidth(62)} height={rpWidth(62)} />
           </SvgContainer>
           <TextContainer>
@@ -70,8 +73,8 @@ const SecondIntro = () => {
             </MyText>
           </TextContainer>
         </IconContainer>
-        <IconContainer isLast>
-          <SvgContainer>
+        <IconContainer rpWidth={rpWidth} isLast>
+          <SvgContainer rpWidth={rpWidth}>
             <PhoneVibrate width={rpWidth(56)} height={rpWidth(60)} />
           </SvgContainer>
           <TextContainer>

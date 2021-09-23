@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useContext } from "react";
 import styled from "styled-components/native";
+import { DimensionsContext } from "~/context/DimensionsContext";
 import { IDevice } from "~/store/device";
-import { rpWidth } from "~/styles";
 import palette from "~/styles/palette";
 import DeviceAvatarCircle from "../common/DeviceAvatarCircle";
 import MyText from "../common/MyText";
@@ -12,6 +12,8 @@ const RowContainer = styled.View`
 `;
 
 const DeviceSettingListItem = ({ device }: { device: IDevice }) => {
+  const { rpWidth } = useContext(DimensionsContext);
+
   return (
     <RowContainer
       style={{

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useContext } from "react";
 import { View } from "react-native";
 import styled from "styled-components/native";
 import WiFi from "~/assets/svg/wifi/wifi-blue.svg";
@@ -6,13 +6,10 @@ import Button from "~/components/common/Button";
 import MyText from "~/components/common/MyText";
 import ParagraphWithCheckCircle from "~/components/common/ParagraphWithCheckCircle";
 import useModal from "~/hooks/useModal";
-import { rpWidth } from "~/styles";
 import { PreWiFiFormScreenNavigationProp } from "~/types/navigator";
 import Modal from "react-native-modal";
 import CommonCenterModal from "~/components/modal/CommonCenterModal";
-import WifiManager from "react-native-wifi-reborn";
-import { useDispatch } from "react-redux";
-import { deviceSettingActions } from "~/store/deviceSetting";
+import { DimensionsContext } from "~/context/DimensionsContext";
 
 const TopContainer = styled.View`
   flex: 1;
@@ -31,17 +28,7 @@ const PreWiFiForm = ({
   navigation: PreWiFiFormScreenNavigationProp;
 }) => {
   const { open, close, modalProps } = useModal();
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    WifiManager.getCurrentWifiSSID().then(ssid => {
-      dispatch(
-        deviceSettingActions.setWifi({
-          draft: { name: ssid },
-        }),
-      );
-    });
-  }, []);
+  const { rpWidth } = useContext(DimensionsContext);
 
   return (
     <>
@@ -65,7 +52,7 @@ const PreWiFiForm = ({
         <View>
           <Button
             onPress={() => {
-              navigation.navigate("WiFiForm", {});
+              navigation.navigate("WiFiForm");
             }}
             style={{
               marginBottom: rpWidth(12),

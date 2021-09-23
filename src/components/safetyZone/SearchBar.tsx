@@ -1,8 +1,7 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import styled from "styled-components/native";
 import ShadowContainer from "~/components/common/container/ShadowContainer";
-import { rpWidth, width } from "~/styles";
 
 import Arrow from "~/assets/svg/arrow/arrow-left-blue.svg";
 import { Keyboard } from "react-native";
@@ -10,29 +9,28 @@ import SearchResult from "./SearchResult";
 import { useDispatch } from "react-redux";
 import { useAppSelector } from "~/store";
 import { deviceSettingActions } from "~/store/deviceSetting";
+import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 
 const Container = styled.View`
-  width: ${width - rpWidth(32)}px;
-  height: ${rpWidth(45)}px;
   border-radius: 100px;
   background-color: white;
   flex-direction: row;
   align-items: center;
 `;
 
-const Button = styled.TouchableOpacity`
-  width: ${rpWidth(53)}px;
+const Button = styled.TouchableOpacity<{ rpWidth: RpWidth }>`
+  width: ${({ rpWidth }) => rpWidth(53)}px;
   height: 100%;
   align-items: center;
   justify-content: center;
 `;
 
-const Input = styled.TextInput`
+const Input = styled.TextInput<{ rpWidth: RpWidth }>`
   flex-grow: 1;
   height: 100%;
   margin: 0;
   padding: 0;
-  font-size: ${rpWidth(16)}px;
+  font-size: ${({ rpWidth }) => rpWidth(16)}px;
   font-family: "NotoSansKR-Medium";
   color: black;
 `;
@@ -46,6 +44,7 @@ const SearchBar = () => {
     state => state.deviceSetting.safetyZone.draft.addr,
   );
   const dispatch = useDispatch();
+  const { rpWidth, width } = useContext(DimensionsContext);
 
   return (
     <>
@@ -59,9 +58,14 @@ const SearchBar = () => {
           alignSelf: "center",
           zIndex: 3,
         }}>
-        <Container>
+        <Container
+          style={{
+            width: width - rpWidth(32),
+            height: rpWidth(45),
+          }}>
           {isSearchMode && (
             <Button
+              rpWidth={rpWidth}
               onPress={() => {
                 dispatch(
                   deviceSettingActions.setSafetyZone({
@@ -74,6 +78,7 @@ const SearchBar = () => {
             </Button>
           )}
           <Input
+            rpWidth={rpWidth}
             value={addr}
             onChangeText={text =>
               dispatch(

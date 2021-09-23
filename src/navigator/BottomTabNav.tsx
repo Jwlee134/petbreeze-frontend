@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import palette from "~/styles/palette";
 import SharedStackNav from "./SharedStackNav";
@@ -11,10 +11,10 @@ import Bell from "~/assets/svg/tab/bell.svg";
 import BellOutline from "~/assets/svg/tab/bell-outline.svg";
 import User from "~/assets/svg/tab/user.svg";
 import UserOutline from "~/assets/svg/tab/user-outline.svg";
-import { rpWidth } from "~/styles";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAppSelector } from "~/store";
 import { BottomTabParamList } from "~/types/navigator";
+import { DimensionsContext } from "~/context/DimensionsContext";
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
 
@@ -23,6 +23,7 @@ const BottomTabNav = () => {
     state => state.navigator.initialBottomTabNavRouteName,
   );
   const { bottom } = useSafeAreaInsets();
+  const { rpWidth } = useContext(DimensionsContext);
 
   return (
     <Tab.Navigator

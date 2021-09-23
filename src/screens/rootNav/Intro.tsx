@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Animated } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useDispatch } from "react-redux";
@@ -8,13 +8,13 @@ import FirstIntro from "~/components/intro/FirstIntro";
 import PageIndicatorCircle from "~/components/intro/PageIndicatorCircle";
 import SecondIntro from "~/components/intro/SecondIntro";
 import ThirdIntro from "~/components/intro/ThirdIntro";
+import { DimensionsContext } from "~/context/DimensionsContext";
 import usePagingFlatList from "~/hooks/usePagingFlatList";
+import { navigatorActions } from "~/store/navigator";
 import { storageActions } from "~/store/storage";
-import { width, rpWidth } from "~/styles";
 import { IntroScreenNavigationProp } from "~/types/navigator";
 
-const SkipButton = styled.TouchableOpacity<{ top: number }>`
-  margin: ${({ top }) => `${rpWidth(18) + top}px ${rpWidth(20)}px 0 auto`};
+const SkipButton = styled.TouchableOpacity`
   position: absolute;
   right: 0;
   z-index: 1;
@@ -35,6 +35,7 @@ const Intro = ({ navigation }: { navigation: IntroScreenNavigationProp }) => {
   const { PagingFlatList } = usePagingFlatList();
   const { top, bottom } = useSafeAreaInsets();
   const dispatch = useDispatch();
+  const { width, rpWidth } = useContext(DimensionsContext);
 
   const [currentPage, setCurrentPage] = useState(1);
   const value = useRef(new Animated.Value(0)).current;
@@ -55,9 +56,18 @@ const Intro = ({ navigation }: { navigation: IntroScreenNavigationProp }) => {
   return (
     <>
       <SkipButton
-        top={top}
+        style={{
+          marginTop: rpWidth(18) + top,
+          marginRight: rpWidth(20),
+          marginLeft: "auto",
+        }}
         onPress={() => {
-          navigation.replace("Start");
+          dispatch(
+            navigatorActions.setInitialRoute({
+              initialLoggedInNavRouteName: "BleRootStackNav",
+            }),
+          );
+          navigation.replace("LoggedInNav");
           /* dispatch(
             storageActions.setInit({
               isIntroPassed: true,

@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components/native";
 import GradientContainer from "~/components/common/container/GradientContainer";
 import Footprint from "~/assets/svg/footprint/footprint-app-icon-blue.svg";
 import AppName from "~/assets/svg/app-name.svg";
-import { rpHeight, rpWidth } from "~/styles";
 import { Animated } from "react-native";
 import { StartScreenNavigationProp } from "~/types/navigator";
 import { store } from "~/store";
@@ -12,6 +11,7 @@ import { navigatorActions } from "~/store/navigator";
 import useAnimatedSequence from "~/hooks/useAnimatedSequence";
 import * as SecureStore from "expo-secure-store";
 import { isIos } from "~/utils";
+import { DimensionsContext } from "~/context/DimensionsContext";
 
 const Container = styled.View`
   flex: 1;
@@ -26,6 +26,7 @@ const LogoContainer = styled(Animated.View)`
 const Start = ({ navigation }: { navigation: StartScreenNavigationProp }) => {
   const [renderAuth, setRenderAuth] = useState<boolean | null>(null);
   const dispatch = useDispatch();
+  const { rpWidth, rpHeight } = useContext(DimensionsContext);
 
   const onAnimatedFinish = () => {
     if (renderAuth) {

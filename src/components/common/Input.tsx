@@ -1,4 +1,10 @@
-import React, { ForwardedRef, forwardRef, useEffect, useRef } from "react";
+import React, {
+  ForwardedRef,
+  forwardRef,
+  useContext,
+  useEffect,
+  useRef,
+} from "react";
 import { useState } from "react";
 import {
   Animated,
@@ -7,8 +13,8 @@ import {
   TextInputProps,
   ViewStyle,
 } from "react-native";
-import styled from "styled-components/native";
-import { rpWidth } from "~/styles";
+import styled, { css } from "styled-components/native";
+import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import palette from "~/styles/palette";
 import MyText from "./MyText";
 
@@ -22,25 +28,28 @@ interface IProps extends TextInputProps {
 
 interface IContainer {
   isFocused: boolean;
+  rpWidth: RpWidth;
 }
 
-const Container = styled.View`
-  margin-bottom: ${rpWidth(20)}px;
+const Container = styled.View<{ rpWidth: RpWidth }>`
+  margin-bottom: ${({ rpWidth }) => rpWidth(20)}px;
 `;
 
 const InputContainer = styled.View<IContainer>`
   width: 100%;
-  height: ${rpWidth(36)}px;
+  height: ${({ rpWidth }) => rpWidth(36)}px;
   flex-direction: row;
   align-items: center;
 `;
 
-const TextInputComponent = styled.TextInput`
+const TextInputComponent = styled.TextInput<{ rpWidth: RpWidth }>`
+  ${({ rpWidth }) => css`
+    padding: 0px ${rpWidth(9)}px;
+    font-size: ${rpWidth(16)}px;
+  `}
   margin: 0;
-  padding: 0px ${rpWidth(9)}px;
   width: 100%;
   height: 100%;
-  font-size: ${rpWidth(16)}px;
   font-family: "NotoSansKR-Regular";
 `;
 
@@ -68,6 +77,7 @@ const Input = forwardRef(
   ) => {
     const [isFocused, setIsFocused] = useState(!!props.value || false);
     const value = useRef(new Animated.Value(isFocused ? 1 : 0)).current;
+    const { rpWidth } = useContext(DimensionsContext);
 
     const borderWidth = value.interpolate({
       inputRange: [0, 1],
@@ -90,9 +100,10 @@ const Input = forwardRef(
     };
 
     return (
-      <Container style={containerStyle}>
-        <InputContainer isFocused={isFocused}>
+      <Container rpWidth={rpWidth} style={containerStyle}>
+        <InputContainer rpWidth={rpWidth} isFocused={isFocused}>
           <TextInputComponent
+            rpWidth={rpWidth}
             ref={ref}
             onFocus={handleFocus}
             onBlur={handleBlur}

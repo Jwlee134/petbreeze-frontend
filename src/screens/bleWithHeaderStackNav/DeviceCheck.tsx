@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useDispatch } from "react-redux";
 import styled from "styled-components/native";
 
@@ -7,10 +7,10 @@ import Button from "~/components/common/Button";
 import { storageActions } from "~/store/storage";
 import MyText from "~/components/common/MyText";
 import SafeAreaContainer from "~/components/common/container/SafeAreaContainer";
-import { rpHeight, rpWidth } from "~/styles";
 import { useAppSelector } from "~/store";
 import { DeviceCheckScreenNavigationProp } from "~/types/navigator";
 import { navigatorActions } from "~/store/navigator";
+import { DimensionsContext } from "~/context/DimensionsContext";
 
 const TopContainer = styled.View`
   flex: 1;
@@ -32,6 +32,7 @@ const DeviceCheck = ({
     state => state.storage.init.isInitialized,
   );
   const dispatch = useDispatch();
+  const { rpHeight, rpWidth } = useContext(DimensionsContext);
 
   return (
     <SafeAreaContainer>

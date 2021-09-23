@@ -1,26 +1,28 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useDispatch } from "react-redux";
-import styled from "styled-components/native";
+import styled, { css } from "styled-components/native";
 import Button from "~/components/common/Button";
 import KeyboardAwareScrollContainer from "~/components/common/container/KeyboardAwareScrollContainer";
 import Input from "~/components/common/Input";
 import InputTitle from "~/components/common/InputTitle";
 import SelectableButton from "~/components/common/SelectableButton";
+import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import { useAppSelector } from "~/store";
 import { formActions } from "~/store/form";
-import { rpWidth } from "~/styles";
 
-const Avatar = styled.Image`
-  width: ${rpWidth(108)}px;
-  height: ${rpWidth(108)}px;
-  border-radius: ${rpWidth(54)}px;
-  margin-top: ${rpWidth(50)}px;
-  margin-bottom: ${rpWidth(30)}px;
+const Avatar = styled.Image<{ rpWidth: RpWidth }>`
+  ${({ rpWidth }) => css`
+    width: ${rpWidth(108)}px;
+    height: ${rpWidth(108)}px;
+    border-radius: ${rpWidth(54)}px;
+    margin-top: ${rpWidth(50)}px;
+    margin-bottom: ${rpWidth(30)}px;
+  `}
   align-self: center;
 `;
 
-const PaddingContainer = styled.View`
-  padding: 0px ${rpWidth(42)}px;
+const PaddingContainer = styled.View<{ rpWidth: RpWidth }>`
+  padding: ${({ rpWidth }) => `0px ${rpWidth(42)}px`};
 `;
 
 const RowContainer = styled.View`
@@ -31,12 +33,13 @@ const EmergencyMissingFirstPage = ({ navigation }) => {
   const { name, breed, hasTag, characteristic } = useAppSelector(
     state => state.form,
   );
+  const { rpWidth } = useContext(DimensionsContext);
   const dispatch = useDispatch();
 
   return (
     <KeyboardAwareScrollContainer isSpaceBetween>
-      <PaddingContainer>
-        <Avatar source={require("~/assets/image/test.jpg")} />
+      <PaddingContainer rpWidth={rpWidth}>
+        <Avatar rpWidth={rpWidth} source={require("~/assets/image/test.jpg")} />
         <InputTitle>이름</InputTitle>
         <Input
           value={name}

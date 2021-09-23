@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect } from "react";
 import { View } from "react-native";
 import Button from "~/components/common/Button";
 import KeyboardAwareScrollContainer from "~/components/common/container/KeyboardAwareScrollContainer";
 import Input from "~/components/common/Input";
 import InputTitle from "~/components/common/InputTitle";
 import useModal from "~/hooks/useModal";
-import { rpWidth } from "~/styles";
 import { WiFiFormScreenNavigationProp } from "~/types/navigator";
 import Modal from "react-native-modal";
 import CommonCenterModal from "~/components/modal/CommonCenterModal";
@@ -13,7 +12,9 @@ import { useDispatch } from "react-redux";
 import { bleActions } from "~/store/ble";
 import { navigatorActions } from "~/store/navigator";
 import { useAppSelector } from "~/store";
-import { formActions } from "~/store/form";
+import { deviceSettingActions } from "~/store/deviceSetting";
+import WifiManager from "react-native-wifi-reborn";
+import { DimensionsContext } from "~/context/DimensionsContext";
 
 const WiFiForm = ({
   navigation,
@@ -21,8 +22,21 @@ const WiFiForm = ({
   navigation: WiFiFormScreenNavigationProp;
 }) => {
   const { open, close, modalProps } = useModal();
-  const { wifiName, wifiPw } = useAppSelector(state => state.form);
+  const { name, password } = useAppSelector(
+    state => state.deviceSetting.wifi.draft,
+  );
   const dispatch = useDispatch();
+  const { rpWidth } = useContext(DimensionsContext);
+
+  useEffect(() => {
+    WifiManager.getCurrentWifiSSID().then(ssid => {
+      dispatch(
+        deviceSettingActions.setWifi({
+          draft: { name: ssid },
+        }),
+      );
+    });
+  }, []);
 
   return (
     <>
@@ -35,18 +49,30 @@ const WiFiForm = ({
           }}>
           <InputTitle>WiFi 이름</InputTitle>
           <Input
-            value={wifiName}
-            onChangeText={text => dispatch(formActions.setWifiName(text))}
+            value={name}
+            onChangeText={text =>
+              dispatch(
+                deviceSettingActions.setWifi({
+                  draft: { name: text },
+                }),
+              )
+            }
           />
           <InputTitle>암호</InputTitle>
           <Input
-            value={wifiPw}
-            onChangeText={text => dispatch(formActions.setWifiPw(text))}
+            value={password}
+            onChangeText={text =>
+              dispatch(
+                deviceSettingActions.setWifi({
+                  draft: { password: text },
+                }),
+              )
+            }
           />
         </View>
         <View>
           <Button
-            disabled={!wifiName || !wifiPw}
+            disabled={!name || !password}
             onPress={() => {
               dispatch(navigatorActions.setLoadingText("연결 확인중"));
               dispatch(

@@ -1,34 +1,38 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Keyboard, View } from "react-native";
 import { useDispatch } from "react-redux";
-import styled from "styled-components/native";
+import styled, { css } from "styled-components/native";
 import Button from "~/components/common/Button";
 import KeyboardAwareScrollContainer from "~/components/common/container/KeyboardAwareScrollContainer";
 import Input from "~/components/common/Input";
 import InputTitle from "~/components/common/InputTitle";
+import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import { useAppSelector } from "~/store";
 import { formActions } from "~/store/form";
 import { navigatorActions } from "~/store/navigator";
-import { rpWidth } from "~/styles";
 import { RegisterProfileSecondScreenNavigationProp } from "~/types/navigator";
 import { isIos } from "~/utils";
 import AvatarCircle from "./AvatarCircle";
 import PreviousValueBlock from "./PreviousValueBlock";
 
-const InputContainer = styled.View`
+const InputContainer = styled.View<{ rpWidth: RpWidth }>`
   padding: 0px 42px;
-  margin-top: ${rpWidth(56)}px;
-  margin-bottom: ${rpWidth(50)}px;
+  ${({ rpWidth }) => css`
+    margin-top: ${rpWidth(56)}px;
+    margin-bottom: ${rpWidth(50)}px;
+  `}
 `;
 
 const RowContainer = styled.View`
   flex-direction: row;
 `;
 
-const AvatarContainer = styled(RowContainer)`
-  padding-right: ${rpWidth(30)}px;
-  padding-left: ${rpWidth(37)}px;
-  margin-top: ${rpWidth(51)}px;
+const AvatarContainer = styled(RowContainer)<{ rpWidth: RpWidth }>`
+  ${({ rpWidth }) => css`
+    padding-right: ${rpWidth(30)}px;
+    padding-left: ${rpWidth(37)}px;
+    margin-top: ${rpWidth(51)}px;
+  `}
 `;
 
 const RegisterProfileSecond = ({
@@ -48,6 +52,7 @@ const RegisterProfileSecond = ({
     characteristic,
   } = useAppSelector(state => state.form);
   const dispatch = useDispatch();
+  const { rpWidth } = useContext(DimensionsContext);
 
   const handleFormData = () => {
     if (!avatar) return;
@@ -75,11 +80,11 @@ const RegisterProfileSecond = ({
   return (
     <KeyboardAwareScrollContainer isSpaceBetween>
       <View>
-        <AvatarContainer>
+        <AvatarContainer rpWidth={rpWidth}>
           <AvatarCircle />
           <PreviousValueBlock />
         </AvatarContainer>
-        <InputContainer>
+        <InputContainer rpWidth={rpWidth}>
           <InputTitle>품종</InputTitle>
           <Input
             value={breed}

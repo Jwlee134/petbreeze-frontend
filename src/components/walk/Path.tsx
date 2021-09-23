@@ -1,11 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useEffect } from "react";
 import NaverMapView, { Path as Polyline, Marker } from "react-native-nmap";
 import { useDispatch } from "react-redux";
+import { DimensionsContext } from "~/context/DimensionsContext";
 import { delta } from "~/staticData";
 import { store, useAppSelector } from "~/store";
 import { storageActions } from "~/store/storage";
-import { rpWidth } from "~/styles";
 import palette from "~/styles/palette";
 
 const Path = ({
@@ -17,6 +17,7 @@ const Path = ({
 }) => {
   const coords = useAppSelector(state => state.storage.walk.coords);
   const dispatch = useDispatch();
+  const { rpWidth } = useContext(DimensionsContext);
 
   useEffect(() => {
     if (!mapRef.current) return;

@@ -1,10 +1,10 @@
-import React, { useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import { Animated, StyleProp, View, ViewStyle } from "react-native";
 import Picker from "react-native-wheel-scrollview-picker";
 import MyText from "./MyText";
 import styled from "styled-components/native";
 import palette from "~/styles/palette";
-import { rpWidth } from "~/styles";
+import { DimensionsContext } from "~/context/DimensionsContext";
 
 interface IProps {
   width: string | number;
@@ -20,7 +20,6 @@ const Container = styled.View`
   overflow: hidden;
   border-width: 1px;
   border-color: ${palette.blue_7b};
-  border-radius: ${rpWidth(28)}px;
 `;
 
 const ScrollPicker = ({
@@ -31,11 +30,14 @@ const ScrollPicker = ({
   selectedIndex,
   onChange,
 }: IProps) => {
+  const { rpWidth } = useContext(DimensionsContext);
+
   return (
     <Container
       style={{
         width,
         height,
+        borderRadius: rpWidth(28),
         ...(style as object),
       }}>
       <Picker

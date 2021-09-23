@@ -1,25 +1,30 @@
-import React from "react";
+import React, { useContext } from "react";
 import { FlatList, Text, View } from "react-native";
-import styled from "styled-components/native";
+import styled, { css } from "styled-components/native";
 import MyText from "~/components/common/MyText";
 import { useAppSelector } from "~/store";
-import { rpWidth } from "~/styles";
 import { WalkDetailScreenProps } from "~/types/navigator";
 import CalendarStrip from "react-native-calendar-strip";
 import palette from "~/styles/palette";
+import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 
-const TopContainer = styled.View`
+const TopContainer = styled.View<{ rpWidth: RpWidth }>`
   align-items: center;
-  border-bottom-width: ${rpWidth(4)}px;
   border-bottom-color: rgba(0, 0, 0, 0.03);
+  ${({ rpWidth }) =>
+    css`
+      border-bottom-width: ${rpWidth(4)}px;
+    `}
 `;
 
-const Image = styled.Image`
-  width: ${rpWidth(70)}px;
-  height: ${rpWidth(70)}px;
-  border-radius: ${rpWidth(35)}px;
-  margin-top: ${rpWidth(25)}px;
-  margin-bottom: ${rpWidth(15)}px;
+const Image = styled.Image<{ rpWidth: RpWidth }>`
+  ${({ rpWidth }) => css`
+    width: ${rpWidth(70)}px;
+    height: ${rpWidth(70)}px;
+    border-radius: ${rpWidth(35)}px;
+    margin-top: ${rpWidth(25)}px;
+    margin-bottom: ${rpWidth(15)}px;
+  `}
 `;
 
 const locale = {
@@ -92,13 +97,14 @@ const locale = {
 const WalkDetail = ({ navigation, route }: WalkDetailScreenProps) => {
   const devices = useAppSelector(state => state.device);
   const data = devices.find(device => device.id === route.params.id);
+  const { rpWidth } = useContext(DimensionsContext);
 
   console.log(data);
 
   return (
     <>
-      <TopContainer>
-        <Image source={require("~/assets/image/test.jpg")} />
+      <TopContainer rpWidth={rpWidth}>
+        <Image rpWidth={rpWidth} source={require("~/assets/image/test.jpg")} />
         <MyText style={{ marginBottom: rpWidth(19) }} fontWeight="medium">
           {data?.name}
         </MyText>

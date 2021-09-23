@@ -1,6 +1,5 @@
-import React from "react";
-import styled from "styled-components/native";
-import { rpWidth } from "~/styles";
+import React, { useContext } from "react";
+import styled, { css } from "styled-components/native";
 import DeviceAvatarCircle from "../common/DeviceAvatarCircle";
 import Pencil from "~/assets/svg/myPage/pencil.svg";
 import Divider from "../common/Divider";
@@ -8,17 +7,22 @@ import { TouchableOpacity } from "react-native";
 import MyText from "../common/MyText";
 import { IDevice } from "~/store/device";
 import { useNavigation } from "@react-navigation/core";
+import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 
-const Container = styled.View`
+const Container = styled.View<{ rpWidth: RpWidth }>`
   align-items: center;
-  padding-top: ${rpWidth(25)}px;
-  padding-bottom: ${rpWidth(14)}px;
+  ${({ rpWidth }) => css`
+    padding-top: ${rpWidth(25)}px;
+    padding-bottom: ${rpWidth(14)}px;
+  `}
 `;
 
 const ProfileSection = ({ data }: { data: IDevice }) => {
   const navigation = useNavigation();
+  const { rpWidth } = useContext(DimensionsContext);
+
   return (
-    <Container>
+    <Container rpWidth={rpWidth}>
       <TouchableOpacity
         onPress={() =>
           navigation.navigate("UpdateProfile", {

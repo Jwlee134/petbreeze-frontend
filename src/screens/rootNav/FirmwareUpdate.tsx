@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components/native";
 import CodePush, { DownloadProgress } from "react-native-code-push";
 import { useDispatch } from "react-redux";
@@ -6,9 +6,9 @@ import { storageActions } from "~/store/storage";
 import MyText from "~/components/common/MyText";
 import FootPrint from "~/assets/svg/footprint/footprint-outline-white.svg";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
-import { rpWidth } from "~/styles";
 import GradientContainer from "~/components/common/container/GradientContainer";
 import { FirmwareUpdateScreenNavigationProp } from "~/types/navigator";
+import { DimensionsContext } from "~/context/DimensionsContext";
 
 const HalfContainer = styled.View`
   flex: 1;
@@ -19,6 +19,7 @@ const FirmwareUpdate = ({
 }: {
   navigation: FirmwareUpdateScreenNavigationProp;
 }) => {
+  const { rpWidth } = useContext(DimensionsContext);
   const [progress, setProgress] = useState(0);
   const dispatch = useDispatch();
 

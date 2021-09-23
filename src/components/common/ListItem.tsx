@@ -1,10 +1,10 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, useContext } from "react";
 import { TouchableOpacityProps } from "react-native";
-import styled from "styled-components/native";
-import { rpWidth } from "~/styles";
+import styled, { css } from "styled-components/native";
 
 import RightArrow from "~/assets/svg/arrow/arrow-right-blue.svg";
 import RightArrowGray from "~/assets/svg/arrow/arrow-right-gray.svg";
+import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import CheckCircle from "./CheckCircle";
 import Dissolve from "./Dissolve";
 
@@ -16,10 +16,12 @@ interface IProps extends TouchableOpacityProps {
   showIcon?: boolean;
 }
 
-const Container = styled.TouchableOpacity`
-  height: ${rpWidth(99)}px;
+const Container = styled.TouchableOpacity<{ rpWidth: RpWidth }>`
+  ${({ rpWidth }) => css`
+    height: ${rpWidth(99)}px;
+    padding: 0px ${rpWidth(32)}px;
+  `}
   background-color: white;
-  padding: 0px ${rpWidth(32)}px;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
@@ -33,8 +35,10 @@ const ListItem = ({
   showIcon = true,
   ...props
 }: IProps) => {
+  const { rpWidth } = useContext(DimensionsContext);
+
   return (
-    <Container activeOpacity={1} {...props}>
+    <Container rpWidth={rpWidth} activeOpacity={1} {...props}>
       {children}
       <Dissolve
         style={{

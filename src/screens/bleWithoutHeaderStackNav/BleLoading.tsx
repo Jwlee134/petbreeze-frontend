@@ -18,6 +18,8 @@ const BleLoading = ({
       navigation.replace("FirmwareProgress");
     if (status === "wifiSuccess") navigation.replace("Success");
     if (status === "wifiFail") navigation.replace("Fail");
+    if (status === "retrieveFail" || status === "startNotificationFail")
+      navigation.replace("ScanningFail");
   }, [status]);
 
   return <Loading loadingText={loadingText} />;

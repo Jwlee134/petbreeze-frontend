@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useContext } from "react";
 import ImageCropPicker from "react-native-image-crop-picker";
 import { useDispatch } from "react-redux";
-import styled from "styled-components/native";
+import styled, { css } from "styled-components/native";
 import Button from "~/components/common/Button";
 import KeyboardAwareScrollContainer from "~/components/common/container/KeyboardAwareScrollContainer";
 import Input from "~/components/common/Input";
@@ -10,17 +10,19 @@ import MyText from "~/components/common/MyText";
 import ScrollPicker from "~/components/common/ScrollPicker";
 import { useAppSelector } from "~/store";
 import { formActions } from "~/store/form";
-import { rpWidth, width } from "~/styles";
 import palette from "~/styles/palette";
 import Plus from "~/assets/svg/plus-circle-blue.svg";
+import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 
-const PaddingContainer = styled.View`
-  padding: 0px ${rpWidth(42)}px;
-  margin-top: ${rpWidth(28)}px;
+const PaddingContainer = styled.View<{ rpWidth: RpWidth }>`
+  ${({ rpWidth }) => css`
+    padding: 0px ${rpWidth(42)}px;
+    margin-top: ${rpWidth(28)}px;
+  `}
 `;
 
-const PhotoContainer = styled.View`
-  padding: 0px ${rpWidth(32)}px;
+const PhotoContainer = styled.View<{ rpWidth: RpWidth }>`
+  padding: ${({ rpWidth }) => `0px ${rpWidth(32)}px`};
 `;
 
 const RowContainer = styled.View`
@@ -28,7 +30,6 @@ const RowContainer = styled.View`
 `;
 
 const AddPhotoBox = styled.TouchableOpacity`
-  height: ${(width - rpWidth(64)) * (2 / 3)}px;
   background-color: rgba(0, 0, 0, 0.02);
   border-width: 1px;
   border-color: rgba(0, 0, 0, 0.1);
@@ -38,8 +39,6 @@ const AddPhotoBox = styled.TouchableOpacity`
 
 const Photo = styled.Image`
   width: 100%;
-  height: ${(width - rpWidth(64)) * 0.67}px;
-  margin-bottom: ${rpWidth(11)}px;
 `;
 
 const lostTimeArr: ["오전", "오후"] = ["오전", "오후"];
@@ -48,6 +47,7 @@ const EmergencyMissingSecondPage = () => {
   const { lostHour, lostMinute, lostPlace, lostTime, message, photos } =
     useAppSelector(state => state.form);
   const dispatch = useDispatch();
+  const { width, rpWidth } = useContext(DimensionsContext);
 
   const handleOpenPicker = () => {
     ImageCropPicker.openPicker({
@@ -65,7 +65,7 @@ const EmergencyMissingSecondPage = () => {
 
   return (
     <KeyboardAwareScrollContainer isSpaceBetween>
-      <PaddingContainer>
+      <PaddingContainer rpWidth={rpWidth}>
         <InputTitle>잃어버린 시간</InputTitle>
         <RowContainer>
           <ScrollPicker
@@ -109,7 +109,7 @@ const EmergencyMissingSecondPage = () => {
           containerStyle={{ marginBottom: rpWidth(36) }}
         />
       </PaddingContainer>
-      <PhotoContainer>
+      <PhotoContainer rpWidth={rpWidth}>
         {photos.length
           ? photos.map((photo, i) => (
               <Photo
@@ -120,13 +120,16 @@ const EmergencyMissingSecondPage = () => {
                     i === photos.length - 1 && photos.length === 4
                       ? rpWidth(24)
                       : rpWidth(11),
+                  height: (width - rpWidth(64)) * 0.67,
                 }}
               />
             ))
           : null}
         {photos.length < 3 ? (
           <>
-            <AddPhotoBox onPress={handleOpenPicker}>
+            <AddPhotoBox
+              style={{ height: (width - rpWidth(64)) * (2 / 3) }}
+              onPress={handleOpenPicker}>
               <Plus />
             </AddPhotoBox>
             <MyText

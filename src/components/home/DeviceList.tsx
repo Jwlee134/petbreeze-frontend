@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useContext, useMemo, useState } from "react";
 import styled, { css } from "styled-components/native";
 import useModal from "~/hooks/useModal";
 import { useAppSelector } from "~/store";
@@ -6,17 +6,18 @@ import DeviceAvatarCircle from "../common/DeviceAvatarCircle";
 import Modal from "react-native-modal";
 import IosStyleBottomModal from "../modal/IosStyleBottomModal";
 import HomeBottomModal from "../modal/HomeBottomModal";
-import { rpWidth, width } from "~/styles";
 import { ScrollView } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
+import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 
 interface IPressable {
   index?: number;
   deviceLength?: number;
+  rpWidth: RpWidth;
 }
 
 const Pressable = styled.Pressable<IPressable>`
-  ${({ index, deviceLength }) => {
+  ${({ index, deviceLength, rpWidth }) => {
     switch (deviceLength) {
       case 1:
         return css`
@@ -50,6 +51,7 @@ const DeviceList = () => {
   const deviceList = useAppSelector(state => state.device);
   const { open, close, modalProps } = useModal();
   const [clickedId, setClickedId] = useState("");
+  const { rpWidth, width } = useContext(DimensionsContext);
 
   const device = useMemo(() => {
     return deviceList[deviceList.findIndex(device => device.id === clickedId)];
@@ -60,6 +62,7 @@ const DeviceList = () => {
       {deviceList.length < 3 ? (
         deviceList.map((device, i) => (
           <Pressable
+            rpWidth={rpWidth}
             key={device.id}
             index={i}
             deviceLength={deviceList.length}
@@ -76,20 +79,6 @@ const DeviceList = () => {
         ))
       ) : (
         <>
-          <LinearGradient
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            colors={["#FFFFFF00", "#FFFFFF"]}
-            style={{
-              position: "absolute",
-              bottom: 0,
-              right: rpWidth(80),
-              marginBottom: rpWidth(36),
-              width: rpWidth(60),
-              height: rpWidth(70),
-              zIndex: 1,
-            }}
-          />
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -103,6 +92,7 @@ const DeviceList = () => {
             }}>
             {deviceList.map((device, i) => (
               <Pressable
+                rpWidth={rpWidth}
                 key={device.id}
                 style={{
                   ...(i === 0 && { marginLeft: rpWidth(16) }),

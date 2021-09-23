@@ -1,11 +1,10 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useDispatch } from "react-redux";
-import styled from "styled-components/native";
+import styled, { css } from "styled-components/native";
 import { storageActions } from "~/store/storage";
 import palette from "~/styles/palette";
 
 import { useAppSelector } from "~/store";
-import { rpWidth } from "~/styles";
 
 import Camera from "~/assets/svg/walk/camera.svg";
 import Play from "~/assets/svg/walk/play.svg";
@@ -15,27 +14,32 @@ import StopFill from "~/assets/svg/walk/stop-fill.svg";
 import ShadowContainer from "../common/container/ShadowContainer";
 import ImageCropPicker from "react-native-image-crop-picker";
 import CameraRoll from "@react-native-community/cameraroll";
+import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 
-const RowContainer = styled.View`
+const RowContainer = styled.View<{ rpWidth: RpWidth }>`
   flex-direction: row;
   align-items: flex-end;
   justify-content: space-evenly;
-  margin-top: ${rpWidth(30)}px;
+  margin-top: ${({ rpWidth }) => rpWidth(30)}px;
 `;
 
-const SmallButton = styled.TouchableOpacity`
-  width: ${rpWidth(71)}px;
-  height: ${rpWidth(71)}px;
-  border-radius: ${rpWidth(35.5)}px;
+const SmallButton = styled.TouchableOpacity<{ rpWidth: RpWidth }>`
+  ${({ rpWidth }) => css`
+    width: ${rpWidth(71)}px;
+    height: ${rpWidth(71)}px;
+    border-radius: ${rpWidth(35.5)}px;
+  `};
   justify-content: center;
   align-items: center;
   background-color: white;
 `;
 
-const Button = styled.TouchableOpacity`
-  width: ${rpWidth(89)}px;
-  height: ${rpWidth(89)}px;
-  border-radius: ${rpWidth(44.5)}px;
+const Button = styled.TouchableOpacity<{ rpWidth: RpWidth }>`
+  ${({ rpWidth }) => css`
+    width: ${rpWidth(89)}px;
+    height: ${rpWidth(89)}px;
+    border-radius: ${rpWidth(44.5)}px;
+  `};
   justify-content: center;
   align-items: center;
   background-color: white;
@@ -49,11 +53,13 @@ const Toggle = ({ handleStop }: { handleStop: () => void }) => {
   );
   const isWalking = useAppSelector(state => state.storage.walk.isWalking);
   const dispatch = useDispatch();
+  const { rpWidth } = useContext(DimensionsContext);
 
   return (
-    <RowContainer>
+    <RowContainer rpWidth={rpWidth}>
       <ShadowContainer shadowOpacity={0.1} shadowRadius={10}>
         <SmallButton
+          rpWidth={rpWidth}
           onPress={() => {
             if (isWalking) {
               dispatch(
@@ -75,6 +81,7 @@ const Toggle = ({ handleStop }: { handleStop: () => void }) => {
       </ShadowContainer>
       <ShadowContainer shadowOpacity={0.1} shadowRadius={10}>
         <Button
+          rpWidth={rpWidth}
           onPress={() => {
             if (isWalking) {
               handleStop();
@@ -106,6 +113,7 @@ const Toggle = ({ handleStop }: { handleStop: () => void }) => {
       </ShadowContainer>
       <ShadowContainer shadowOpacity={0.1} shadowRadius={10}>
         <SmallButton
+          rpWidth={rpWidth}
           onPress={() => {
             ImageCropPicker.openCamera({}).then(image => {
               CameraRoll.save(image.path, { album: "어디개" }).then(() => {

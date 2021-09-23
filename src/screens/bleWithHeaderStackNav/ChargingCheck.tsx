@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useDispatch } from "react-redux";
 import styled from "styled-components/native";
 
@@ -6,9 +6,9 @@ import Device from "~/assets/svg/device/device-charging.svg";
 import Button from "~/components/common/Button";
 import MyText from "~/components/common/MyText";
 import SafeAreaContainer from "~/components/common/container/SafeAreaContainer";
-import { rpHeight, rpWidth } from "~/styles";
 import { ChargingCheckScreenNavigationProp } from "~/types/navigator";
 import { bleActions } from "~/store/ble";
+import { DimensionsContext } from "~/context/DimensionsContext";
 
 const TopContainer = styled.View`
   flex: 1;
@@ -27,6 +27,7 @@ const ChargingCheck = ({
   navigation: ChargingCheckScreenNavigationProp;
 }) => {
   const dispatch = useDispatch();
+  const { rpWidth, rpHeight } = useContext(DimensionsContext);
 
   return (
     <SafeAreaContainer>

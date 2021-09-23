@@ -1,12 +1,18 @@
-import React, { ReactNode, useEffect, useRef, useState } from "react";
+import React, {
+  ReactNode,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import {
   ActivityIndicator,
   Animated,
   TouchableOpacityProps,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import styled from "styled-components/native";
-import { rpWidth, width } from "~/styles";
+import styled, { css } from "styled-components/native";
+import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import palette from "~/styles/palette";
 import MyText, { FontWeight } from "./MyText";
 
@@ -22,11 +28,16 @@ interface IButton extends TouchableOpacityProps {
   delay?: number;
 }
 
-const TouchableOpacity = styled.TouchableOpacity`
-  width: ${width - rpWidth(32)}px;
+const TouchableOpacity = styled.TouchableOpacity<{
+  width: number;
+  rpWidth: RpWidth;
+}>`
+  ${({ width, rpWidth }) => css`
+    width: ${width - rpWidth(32)}px;
+    height: ${rpWidth(50.5)}px;
+    border-radius: ${rpWidth(25)}px;
+  `}
   margin: 0 auto;
-  height: ${rpWidth(50.5)}px;
-  border-radius: ${rpWidth(25)}px;
   overflow: hidden;
 `;
 
@@ -51,6 +62,7 @@ const Button = ({
   ...props
 }: IButton) => {
   const { bottom } = useSafeAreaInsets();
+  const { rpWidth, width } = useContext(DimensionsContext);
   const [enableAfterDelay, setEnableAfterDelay] = useState(
     delay ? true : false,
   );
@@ -86,6 +98,8 @@ const Button = ({
 
   return (
     <TouchableOpacity
+      width={width}
+      rpWidth={rpWidth}
       style={{
         ...(useCommonMarginBottom && {
           marginBottom: useBottomInset ? rpWidth(31.5) + bottom : rpWidth(31.5),

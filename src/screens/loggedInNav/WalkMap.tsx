@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useContext, useMemo } from "react";
 import useMap from "~/hooks/useMap";
 import { WalkMapScreenNavigationProp } from "~/types/navigator";
 import { StyleSheet } from "react-native";
@@ -6,13 +6,13 @@ import Path from "~/components/walk/Path";
 import { store, useAppSelector } from "~/store";
 import WalkBottomSheet from "~/components/walk/WalkBottomSheet";
 import MapFloatingCircle from "~/components/common/MapFloatingCircle";
-import { rpWidth } from "~/styles";
 import walkApi from "~/api/walk";
 import { storageActions } from "~/store/storage";
 import { useDispatch } from "react-redux";
 import { useState } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { navigatorActions } from "~/store/navigator";
+import { DimensionsContext } from "~/context/DimensionsContext";
 
 const WalkMap = ({
   navigation,
@@ -24,6 +24,7 @@ const WalkMap = ({
   const dispatch = useDispatch();
   const isStopped = useAppSelector(state => state.storage.walk.isStopped);
   const { bottom } = useSafeAreaInsets();
+  const { rpWidth } = useContext(DimensionsContext);
 
   const animateToMyLocation = () => {
     const coords = store.getState().storage.walk.coords;

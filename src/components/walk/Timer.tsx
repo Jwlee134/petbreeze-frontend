@@ -1,15 +1,15 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useAppSelector } from "~/store";
 import TimerSVG from "~/assets/svg/walk/timer.svg";
 import TimerGraySVG from "~/assets/svg/walk/timer-gray.svg";
 import MyText from "../common/MyText";
-import { rpHeight, rpWidth } from "~/styles";
 import styled from "styled-components/native";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useRef } from "react";
 import { useDispatch } from "react-redux";
 import { storageActions } from "~/store/storage";
+import { DimensionsContext } from "~/context/DimensionsContext";
 
 const RowContainer = styled.View`
   flex-direction: row;
@@ -30,6 +30,7 @@ const Timer = () => {
   );
   const dispatch = useDispatch();
   const timeout = useRef<NodeJS.Timeout>();
+  const { rpHeight, rpWidth } = useContext(DimensionsContext);
 
   const getDuration = () => {
     if (!isWalking && currentPauseTime) {

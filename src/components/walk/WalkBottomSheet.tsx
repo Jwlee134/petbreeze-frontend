@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import styled from "styled-components/native";
 import Timer from "./Timer";
 import Distance from "./Distance";
@@ -12,11 +12,11 @@ import { Alert, View } from "react-native";
 import useBottomSheet from "~/hooks/useBottomSheet";
 import { WalkMapScreenNavigationProp } from "~/types/navigator";
 import MyText from "../common/MyText";
-import { rpWidth } from "~/styles";
 import DeviceAvatarCircle from "../common/DeviceAvatarCircle";
 import { useNavigation } from "@react-navigation/native";
 import backgroundTracking from "~/utils/backgroundTracking";
 import { navigatorActions } from "~/store/navigator";
+import { DimensionsContext } from "~/context/DimensionsContext";
 
 interface IProps {
   handleFinish: () => Promise<void>;
@@ -34,6 +34,7 @@ const WalkBottomSheet = ({
   handleChange,
   snapPoints,
 }: IProps) => {
+  const { rpWidth } = useContext(DimensionsContext);
   const isWalking = useAppSelector(state => state.storage.walk.isWalking);
   const isStopped = useAppSelector(state => state.storage.walk.isStopped);
   const startTime = useAppSelector(state => state.storage.walk.startTime);

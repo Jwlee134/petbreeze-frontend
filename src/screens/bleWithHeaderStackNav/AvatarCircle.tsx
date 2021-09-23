@@ -1,38 +1,41 @@
-import React from "react";
-import styled from "styled-components/native";
+import React, { useContext } from "react";
+import styled, { css } from "styled-components/native";
 import { useAppSelector } from "~/store";
 import FootprintOutline from "~/assets/svg/tab/footprint-outline.svg";
-import { rpHeight, rpWidth } from "~/styles";
 import PlusCircle from "~/assets/svg/plus-circle-blue.svg";
 import ImagePicker from "react-native-image-crop-picker";
 import { useDispatch } from "react-redux";
 import { formActions } from "~/store/form";
 import palette from "~/styles/palette";
+import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 
-const Container = styled.TouchableOpacity<{ noImg: boolean }>`
-  width: ${rpWidth(124)}px;
-  height: ${rpWidth(124)}px;
-  border-radius: ${rpWidth(62)}px;
+const Container = styled.TouchableOpacity<{ noImg: boolean; rpWidth: RpWidth }>`
+  ${({ rpWidth }) => css`
+    width: ${rpWidth(124)}px;
+    height: ${rpWidth(124)}px;
+    border-radius: ${rpWidth(62)}px;
+  `}
   background-color: rgba(0, 0, 0, 0.03);
   justify-content: center;
   align-items: center;
 `;
 
-const Svg = styled.View`
+const Svg = styled.View<{ rpWidth: RpWidth }>`
   position: absolute;
   bottom: 0;
-  right: ${rpWidth(10)}px;
+  right: ${({ rpWidth }) => rpWidth(10)}px;
 `;
 
-const Image = styled.Image`
+const Image = styled.Image<{ rpWidth: RpWidth }>`
   width: 100%;
   height: 100%;
-  border-radius: ${rpHeight(62)}px;
+  border-radius: ${({ rpWidth }) => rpWidth(62)}px;
 `;
 
 const AvatarCircle = () => {
   const avatar = useAppSelector(state => state.form.avatar);
   const dispatch = useDispatch();
+  const { rpWidth } = useContext(DimensionsContext);
 
   const openPicker = () => {
     ImagePicker.openPicker({
@@ -51,7 +54,7 @@ const AvatarCircle = () => {
   };
 
   return (
-    <Container onPress={openPicker} noImg={!avatar}>
+    <Container rpWidth={rpWidth} onPress={openPicker} noImg={!avatar}>
       {!avatar ? (
         <FootprintOutline
           width={rpWidth(77)}
@@ -59,9 +62,9 @@ const AvatarCircle = () => {
           opacity={0.3}
         />
       ) : (
-        <Image source={{ uri: avatar.path }} />
+        <Image rpWidth={rpWidth} source={{ uri: avatar.path }} />
       )}
-      <Svg>
+      <Svg rpWidth={rpWidth}>
         <PlusCircle width={rpWidth(28)} height={rpWidth(28)} />
       </Svg>
     </Container>

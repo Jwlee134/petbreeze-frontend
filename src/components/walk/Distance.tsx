@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useContext } from "react";
 import styled from "styled-components/native";
 import { useAppSelector } from "~/store";
 import MyText from "../common/MyText";
 import Path from "~/assets/svg/walk/path.svg";
 import PathGray from "~/assets/svg/walk/path-gray.svg";
-import { rpHeight, rpWidth } from "~/styles";
+import { DimensionsContext } from "~/context/DimensionsContext";
 
 const RowContainer = styled.View`
   flex-direction: row;
@@ -16,6 +16,7 @@ const RowContainer = styled.View`
 const Distance = () => {
   const meter = useAppSelector(state => state.storage.walk.meter);
   const isStopped = useAppSelector(state => state.storage.walk.isStopped);
+  const { rpHeight, rpWidth } = useContext(DimensionsContext);
 
   return (
     <RowContainer>

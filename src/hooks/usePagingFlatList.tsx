@@ -1,6 +1,12 @@
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  useCallback,
+  useContext,
+} from "react";
 import { FlatList, FlatListProps, View } from "react-native";
-import { width } from "~/styles";
+import { DimensionsContext } from "~/context/DimensionsContext";
 
 interface IProps extends Partial<FlatListProps<JSX.Element>> {
   data: JSX.Element[];
@@ -10,6 +16,7 @@ interface IProps extends Partial<FlatListProps<JSX.Element>> {
 const usePagingFlatList = ({ initialIndex = 0 } = {}) => {
   const flatListRef = useRef<FlatList>(null);
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
+  const { width } = useContext(DimensionsContext);
 
   const next = useCallback(() => setCurrentIndex(prev => prev + 1), []);
   const prev = useCallback(() => setCurrentIndex(prev => prev - 1), []);

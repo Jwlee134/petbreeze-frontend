@@ -1,24 +1,26 @@
-import React, { useRef } from "react";
+import React, { useContext, useRef } from "react";
 import BottomSheet, {
   BottomSheetProps,
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
-import styled from "styled-components/native";
+import styled, { css } from "styled-components/native";
 import { useCallback } from "react";
 import ShadowContainer from "~/components/common/container/ShadowContainer";
-import { rpHeight } from "~/styles";
+import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 
-const HandleContainer = styled.View`
-  height: ${rpHeight(36)}px;
+const HandleContainer = styled.View<{ rpWidth: RpWidth }>`
+  height: ${({ rpWidth }) => rpWidth(36)}px;
   align-items: center;
 `;
 
-const Handle = styled.View`
-  width: ${rpHeight(29)}px;
-  height: ${rpHeight(3)}px;
+const Handle = styled.View<{ rpWidth: RpWidth }>`
+  ${({ rpWidth }) => css`
+    width: ${rpWidth(29)}px;
+    height: ${rpWidth(3)}px;
+    margin-top: ${rpWidth(8)}px;
+  `}
   background-color: rgba(0, 0, 0, 0.1);
   border-radius: 100px;
-  margin-top: ${rpHeight(8)}px;
 `;
 
 const BackgroundContainer = styled.View`
@@ -30,6 +32,7 @@ interface IProps extends BottomSheetProps {}
 
 const useBottomSheet = () => {
   const sheetRef = useRef<BottomSheet>(null);
+  const { rpWidth } = useContext(DimensionsContext);
 
   const BottomSheetComponent = useCallback(
     ({ children, ...props }: IProps) => (
@@ -41,8 +44,8 @@ const useBottomSheet = () => {
           </ShadowContainer>
         )}
         handleComponent={() => (
-          <HandleContainer>
-            <Handle />
+          <HandleContainer rpWidth={rpWidth}>
+            <Handle rpWidth={rpWidth} />
           </HandleContainer>
         )}
         {...props}>

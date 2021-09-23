@@ -1,14 +1,14 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useEffect } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useDispatch } from "react-redux";
 import styled from "styled-components/native";
 import MyText from "~/components/common/MyText";
 import SuccessLottie from "~/components/lottie/Success";
+import { DimensionsContext } from "~/context/DimensionsContext";
 import { useAppSelector } from "~/store";
 import { navigatorActions } from "~/store/navigator";
 import { storageActions } from "~/store/storage";
-import { rpWidth } from "~/styles";
 import { SuccessScreenNavigationProp } from "~/types/navigator";
 
 const TopContainer = styled.View`
@@ -26,6 +26,7 @@ const Success = ({
 }: {
   navigation: SuccessScreenNavigationProp;
 }) => {
+  const { rpWidth } = useContext(DimensionsContext);
   const { top } = useSafeAreaInsets();
   const { status, isOtaUpdate } = useAppSelector(state => state.ble);
   const dispatch = useDispatch();

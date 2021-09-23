@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components/native";
 
 import Shield from "~/assets/svg/init/permission/shield.svg";
@@ -15,7 +15,6 @@ import {
   requestNotifications,
 } from "react-native-permissions";
 import { useDispatch } from "react-redux";
-import { rpWidth } from "~/styles";
 import { storageActions } from "~/store/storage";
 import { Alert, Animated } from "react-native";
 import useAppState from "~/hooks/useAppState";
@@ -26,6 +25,7 @@ import palette from "~/styles/palette";
 import SafeAreaContainer from "~/components/common/container/SafeAreaContainer";
 import { PermissionsScreenNavigationProp } from "~/types/navigator";
 import useAnimatedSequence from "~/hooks/useAnimatedSequence";
+import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 
 const TopContainer = styled(Animated.View)`
   flex: 1;
@@ -39,19 +39,19 @@ const BottomContainer = styled(Animated.View)<{ width: number }>`
   margin: 0 auto;
 `;
 
-const PermissionContainer = styled.View<{ isTop?: boolean }>`
+const PermissionContainer = styled.View<{ isTop?: boolean; rpWidth: RpWidth }>`
   flex-direction: row;
   align-items: center;
-  margin-top: ${({ isTop }) => (isTop ? "0px" : `${rpWidth(18)}px`)};
+  margin-top: ${({ isTop, rpWidth }) => (isTop ? "0px" : `${rpWidth(18)}px`)};
 `;
 
-const SvgContainer = styled.View`
-  width: ${rpWidth(32)}px;
+const SvgContainer = styled.View<{ rpWidth: RpWidth }>`
+  width: ${({ rpWidth }) => rpWidth(32)}px;
   align-items: center;
 `;
 
-const TextContainer = styled.View`
-  margin-left: ${rpWidth(20)}px;
+const TextContainer = styled.View<{ rpWidth: RpWidth }>`
+  margin-left: ${({ rpWidth }) => rpWidth(20)}px;
   justify-content: center;
 `;
 
@@ -70,6 +70,7 @@ const Permissions = ({
 }: {
   navigation: PermissionsScreenNavigationProp;
 }) => {
+  const { rpWidth } = useContext(DimensionsContext);
   const isPermissionAllowed = useAppSelector(
     state => state.storage.init.isPermissionAllowed,
   );
@@ -182,11 +183,11 @@ const Permissions = ({
           </MyText>
         </TopContainer>
         <BottomContainer style={{ opacity: value2 }} width={textWidth}>
-          <PermissionContainer isTop>
-            <SvgContainer>
+          <PermissionContainer rpWidth={rpWidth} isTop>
+            <SvgContainer rpWidth={rpWidth}>
               <Bell width={rpWidth(24)} height={rpWidth(27)} />
             </SvgContainer>
-            <TextContainer>
+            <TextContainer rpWidth={rpWidth}>
               <MyText fontWeight="medium" fontSize={16}>
                 알림
               </MyText>
@@ -198,11 +199,11 @@ const Permissions = ({
               </MyText>
             </TextContainer>
           </PermissionContainer>
-          <PermissionContainer>
-            <SvgContainer>
+          <PermissionContainer rpWidth={rpWidth}>
+            <SvgContainer rpWidth={rpWidth}>
               <Location width={rpWidth(21)} height={rpWidth(30)} />
             </SvgContainer>
-            <TextContainer>
+            <TextContainer rpWidth={rpWidth}>
               <MyText fontWeight="medium" fontSize={16}>
                 위치
               </MyText>
@@ -214,11 +215,11 @@ const Permissions = ({
               </MyText>
             </TextContainer>
           </PermissionContainer>
-          <PermissionContainer>
-            <SvgContainer>
+          <PermissionContainer rpWidth={rpWidth}>
+            <SvgContainer rpWidth={rpWidth}>
               <Bluetooth width={rpWidth(22)} height={rpWidth(29)} />
             </SvgContainer>
-            <TextContainer>
+            <TextContainer rpWidth={rpWidth}>
               <MyText fontWeight="medium" fontSize={16}>
                 블루투스
               </MyText>
@@ -230,11 +231,11 @@ const Permissions = ({
               </MyText>
             </TextContainer>
           </PermissionContainer>
-          <PermissionContainer>
-            <SvgContainer>
+          <PermissionContainer rpWidth={rpWidth}>
+            <SvgContainer rpWidth={rpWidth}>
               <Gallery width={rpWidth(23)} height={rpWidth(23)} />
             </SvgContainer>
-            <TextContainer>
+            <TextContainer rpWidth={rpWidth}>
               <MyText fontWeight="medium" fontSize={16}>
                 갤러리
               </MyText>

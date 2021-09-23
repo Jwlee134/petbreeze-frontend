@@ -1,5 +1,5 @@
-import React, { useState, useMemo, useEffect } from "react";
-import { ScrollView } from "react-native";
+import React, { useState, useMemo, useEffect, useContext } from "react";
+import { ScrollView, View } from "react-native";
 import deviceApi from "~/api/device";
 import walkApi from "~/api/walk";
 import Calendar from "~/components/common/Calendar";
@@ -7,14 +7,10 @@ import DeviceAvatarCircle from "~/components/common/DeviceAvatarCircle";
 import ListItem from "~/components/common/ListItem";
 import MyText from "~/components/common/MyText";
 import { useAppSelector } from "~/store";
-import { rpHeight, rpWidth } from "~/styles";
 import palette from "~/styles/palette";
 import { WalkRecordScreenNavigationProp } from "~/types/navigator";
 import styled from "styled-components/native";
-
-const TextContainer = styled.View`
-  margin-left: ${rpWidth(26)}px;
-`;
+import { DimensionsContext } from "~/context/DimensionsContext";
 
 const RowContainer = styled.View`
   flex-direction: row;
@@ -26,6 +22,7 @@ const WalkRecord = ({
 }: {
   navigation: WalkRecordScreenNavigationProp;
 }) => {
+  const { rpWidth, rpHeight } = useContext(DimensionsContext);
   const devices = useAppSelector(state => state.device);
   /* const { data: devices } = deviceApi.useGetDeviceListQuery();
   const [getWalkRecord] = walkApi.useLazyGetWalkDetailQuery(); */
@@ -86,7 +83,10 @@ const WalkRecord = ({
               circleWidth={70}
               battery={item.battery}
             />
-            <TextContainer>
+            <View
+              style={{
+                marginLeft: rpWidth(26),
+              }}>
               <RowContainer>
                 <MyText fontWeight="medium">{item.name}</MyText>
                 <MyText
@@ -102,7 +102,7 @@ const WalkRecord = ({
                 color="rgba(0, 0, 0, 0.5)">
                 마지막 산책
               </MyText>
-            </TextContainer>
+            </View>
           </RowContainer>
         </ListItem>
       ))}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useDispatch } from "react-redux";
 import styled from "styled-components/native";
 import Button from "~/components/common/Button";
@@ -8,8 +8,8 @@ import { FailScreenNavigationProp } from "~/types/navigator";
 import Exclamation from "~/assets/svg/exclamation/exclamation-mark-gray.svg";
 import { View } from "react-native";
 import { bleActions } from "~/store/ble";
-import { rpWidth } from "~/styles";
 import { navigatorActions } from "~/store/navigator";
+import { DimensionsContext } from "~/context/DimensionsContext";
 
 const TopContainer = styled.View`
   flex: 1;
@@ -26,6 +26,7 @@ const BottomContainer = styled.View`
 const Fail = ({ navigation }: { navigation: FailScreenNavigationProp }) => {
   const status = useAppSelector(state => state.ble.status);
   const dispatch = useDispatch();
+  const { rpWidth } = useContext(DimensionsContext);
 
   return (
     <>

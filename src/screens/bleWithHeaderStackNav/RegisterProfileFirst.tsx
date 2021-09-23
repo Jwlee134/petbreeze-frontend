@@ -1,22 +1,24 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Keyboard, View } from "react-native";
 import { useDispatch } from "react-redux";
-import styled from "styled-components/native";
+import styled, { css } from "styled-components/native";
 import Button from "~/components/common/Button";
 import KeyboardAwareScrollContainer from "~/components/common/container/KeyboardAwareScrollContainer";
 import Input from "~/components/common/Input";
 import InputTitle from "~/components/common/InputTitle";
 import MyText from "~/components/common/MyText";
 import SelectableButton from "~/components/common/SelectableButton";
+import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import { useAppSelector } from "~/store";
 import { formActions } from "~/store/form";
-import { rpWidth } from "~/styles";
 import { RegisterProfileFirstScreenNavigationProp } from "~/types/navigator";
 import AvatarCircle from "./AvatarCircle";
 
-const InputContainer = styled.View`
-  padding: 0px ${rpWidth(42)}px;
-  margin-top: ${rpWidth(35)}px;
+const InputContainer = styled.View<{ rpWidth: RpWidth }>`
+  ${({ rpWidth }) => css`
+    padding: 0px ${rpWidth(42)}px;
+    margin-top: ${rpWidth(35)}px;
+  `}
 `;
 
 const AvatarContainer = styled.View`
@@ -36,6 +38,7 @@ const RegisterProfileFirst = ({
     state => state.form,
   );
   const dispatch = useDispatch();
+  const { rpWidth } = useContext(DimensionsContext);
 
   return (
     <KeyboardAwareScrollContainer isSpaceBetween>
@@ -52,7 +55,7 @@ const RegisterProfileFirst = ({
         <AvatarContainer>
           <AvatarCircle />
         </AvatarContainer>
-        <InputContainer>
+        <InputContainer rpWidth={rpWidth}>
           <InputTitle>이름</InputTitle>
           <Input
             value={name}

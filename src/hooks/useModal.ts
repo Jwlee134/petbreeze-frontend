@@ -1,12 +1,13 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Dimensions, Keyboard } from "react-native";
 import { ModalProps } from "react-native-modal";
-import { rpWidth } from "~/styles";
+import { DimensionsContext } from "~/context/DimensionsContext";
 
 const { width, height } = Dimensions.get("screen");
 
 const useModal = () => {
   const [isModalVisible, setModalVisible] = useState(false);
+  const { rpWidth } = useContext(DimensionsContext);
 
   const open = () => {
     Keyboard.dismiss();

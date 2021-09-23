@@ -1,16 +1,16 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Keyboard, StyleSheet } from "react-native";
 import styled from "styled-components/native";
-import { rpWidth } from "~/styles";
 import Search from "~/assets/svg/search.svg";
 import MyText from "~/components/common/MyText";
 import { useDispatch } from "react-redux";
 import { storageActions } from "~/store/storage";
 import { useAppSelector } from "~/store";
 import { deviceSettingActions } from "~/store/deviceSetting";
+import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 
-const Button = styled.TouchableOpacity`
-  height: ${rpWidth(44)}px;
+const Button = styled.TouchableOpacity<{ rpWidth: RpWidth }>`
+  height: ${({ rpWidth }) => rpWidth(44)}px;
   flex-direction: row;
   align-items: center;
 `;
@@ -29,10 +29,12 @@ const SearchResultItem = ({
     state => state.storage.history.safetyZoneSearch,
   );
   const dispatch = useDispatch();
+  const { rpWidth } = useContext(DimensionsContext);
 
   return (
     <>
       <Button
+        rpWidth={rpWidth}
         onPress={() => {
           Keyboard.dismiss();
           dispatch(

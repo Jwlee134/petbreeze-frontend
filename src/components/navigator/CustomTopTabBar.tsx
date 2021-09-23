@@ -1,10 +1,10 @@
 import { MaterialTopTabBarProps } from "@react-navigation/material-top-tabs";
-import React from "react";
+import React, { useContext } from "react";
 import { useState } from "react";
 import { useRef } from "react";
 import { Animated } from "react-native";
 import styled from "styled-components/native";
-import { rpWidth } from "~/styles";
+import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import palette from "~/styles/palette";
 import Tab from "./Tab";
 
@@ -14,20 +14,20 @@ type Route = {
   params?: object | undefined;
 };
 
-const TabContainer = styled.View`
+const TabContainer = styled.View<{ rpWidth: RpWidth }>`
   flex-direction: row;
-  height: ${rpWidth(37)}px;
+  height: ${({ rpWidth }) => rpWidth(37)}px;
 `;
 
-const BorderBottomContainer = styled(Animated.View)`
+const BorderBottomContainer = styled(Animated.View)<{ rpWidth: RpWidth }>`
   width: 50%;
-  height: ${rpWidth(3)}px;
+  height: ${({ rpWidth }) => rpWidth(3)}px;
   background-color: transparent;
   align-items: center;
 `;
 
-const BorderBottom = styled.View`
-  width: ${rpWidth(85)}px;
+const BorderBottom = styled.View<{ rpWidth: RpWidth }>`
+  width: ${({ rpWidth }) => rpWidth(85)}px;
   height: 100%;
   background-color: ${palette.blue_7b};
 `;
@@ -39,6 +39,7 @@ const CustomTopTabBar = ({
 }: MaterialTopTabBarProps) => {
   const value = useRef(new Animated.Value(0)).current;
   const [toValue, setToValue] = useState(0);
+  const { rpWidth } = useContext(DimensionsContext);
 
   Animated.spring(value, {
     toValue,
@@ -53,7 +54,7 @@ const CustomTopTabBar = ({
 
   return (
     <>
-      <TabContainer>
+      <TabContainer rpWidth={rpWidth}>
         {state.routes.map((route: Route, index: number) => {
           const { options } = descriptors[route.key];
           const label =
@@ -88,10 +89,11 @@ const CustomTopTabBar = ({
         })}
       </TabContainer>
       <BorderBottomContainer
+        rpWidth={rpWidth}
         style={{
           transform: [{ translateX: value }],
         }}>
-        <BorderBottom />
+        <BorderBottom rpWidth={rpWidth} />
       </BorderBottomContainer>
     </>
   );

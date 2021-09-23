@@ -1,6 +1,5 @@
-import React, { useEffect, useRef } from "react";
-import styled from "styled-components/native";
-import { rpWidth } from "~/styles";
+import React, { useContext, useEffect, useRef } from "react";
+import styled, { css } from "styled-components/native";
 import { useAppSelector } from "~/store";
 import AnimatedPoints from "~/components/common/AnimatedPoints";
 import useAnimatedSequence from "~/hooks/useAnimatedSequence";
@@ -9,6 +8,7 @@ import palette from "~/styles/palette";
 import { useDispatch } from "react-redux";
 import Footprint from "~/assets/svg/footprint/footprint-app-icon-white.svg";
 import { FirmwareProgressScreenNavigationProp } from "~/types/navigator";
+import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 
 const TopContainer = styled.View`
   flex: 1;
@@ -21,11 +21,13 @@ const BottomContainer = styled.View`
   align-items: center;
 `;
 
-const BarBackground = styled.View`
-  width: ${rpWidth(268)}px;
-  height: ${rpWidth(12)}px;
+const BarBackground = styled.View<{ rpWidth: RpWidth }>`
+  ${({ rpWidth }) => css`
+    width: ${rpWidth(268)}px;
+    height: ${rpWidth(12)}px;
+    margin-bottom: ${rpWidth(42)}px;
+  `}
   border-radius: 100px;
-  margin-bottom: ${rpWidth(42)}px;
   background-color: rgba(0, 0, 0, 0.05);
   overflow: hidden;
 `;
@@ -41,6 +43,7 @@ const FirmwareProgress = ({
 }: {
   navigation: FirmwareProgressScreenNavigationProp;
 }) => {
+  const { rpWidth } = useContext(DimensionsContext);
   const { status, progress } = useAppSelector(state => state.ble);
   const dispatch = useDispatch();
   const [value1] = useAnimatedSequence({
@@ -101,7 +104,7 @@ const FirmwareProgress = ({
           }}>
           <Footprint width={rpWidth(60)} height={rpWidth(83)} />
         </Animated.View>
-        <BarBackground>
+        <BarBackground rpWidth={rpWidth}>
           <Bar style={{ width: widthInterpolate }} />
         </BarBackground>
       </TopContainer>

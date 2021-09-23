@@ -1,12 +1,12 @@
-import React, { ReactNode, useEffect, useRef } from "react";
+import React, { ReactNode, useContext, useEffect, useRef } from "react";
 import {
   Animated,
   StyleProp,
   TouchableOpacityProps,
   ViewStyle,
 } from "react-native";
-import styled from "styled-components/native";
-import { rpWidth } from "~/styles";
+import styled, { css } from "styled-components/native";
+import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import palette from "~/styles/palette";
 import MyText from "./MyText";
 
@@ -16,16 +16,18 @@ interface IProps extends TouchableOpacityProps {
   containerStyle?: Animated.AnimatedProps<StyleProp<ViewStyle>>;
 }
 
-const Button = styled.TouchableOpacity`
-  height: ${rpWidth(39)}px;
-  margin-bottom: ${rpWidth(20)}px;
+const Button = styled.TouchableOpacity<{ rpWidth: RpWidth }>`
+  ${({ rpWidth }) => css`
+    height: ${rpWidth(39)}px;
+    margin-bottom: ${rpWidth(20)}px;
+  `}
   flex-grow: 1;
 `;
 
-const Container = styled(Animated.View)`
+const Container = styled(Animated.View)<{ rpWidth: RpWidth }>`
   background-color: white;
   height: 100%;
-  border-radius: ${rpWidth(28)}px;
+  border-radius: ${({ rpWidth }) => rpWidth(28)}px;
   border-width: 1px;
   justify-content: center;
   align-items: center;
@@ -37,6 +39,7 @@ const SelectableButton = ({
   containerStyle,
   ...props
 }: IProps) => {
+  const { rpWidth } = useContext(DimensionsContext);
   const value = useRef(new Animated.Value(selected ? 1 : 0)).current;
 
   const color = value.interpolate({
@@ -53,8 +56,9 @@ const SelectableButton = ({
   }, [selected]);
 
   return (
-    <Button {...props}>
+    <Button rpWidth={rpWidth} {...props}>
       <Container
+        rpWidth={rpWidth}
         style={{
           borderColor: color,
           ...(containerStyle as object),

@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
+import { View } from "react-native";
 import { useDispatch } from "react-redux";
 import styled from "styled-components/native";
 import WiFi from "~/assets/svg/wifi/wifi-blue.svg";
@@ -6,14 +7,10 @@ import Button from "~/components/common/Button";
 import KeyboardAwareScrollContainer from "~/components/common/container/KeyboardAwareScrollContainer";
 import Input from "~/components/common/Input";
 import InputTitle from "~/components/common/InputTitle";
+import { DimensionsContext } from "~/context/DimensionsContext";
 import { useAppSelector } from "~/store";
 import { deviceSettingActions } from "~/store/deviceSetting";
-import { rpWidth } from "~/styles";
 import { UpdateWiFiScreenNavigationProp } from "~/types/navigator";
-
-const Container = styled.View`
-  padding: 0px ${rpWidth(43)}px;
-`;
 
 const UpdateWiFi = ({
   navigation,
@@ -24,6 +21,7 @@ const UpdateWiFi = ({
     state => state.deviceSetting.wifi.draft,
   );
   const dispatch = useDispatch();
+  const { rpWidth } = useContext(DimensionsContext);
 
   useEffect(() => {
     return () => {
@@ -33,7 +31,7 @@ const UpdateWiFi = ({
 
   return (
     <KeyboardAwareScrollContainer isSpaceBetween>
-      <Container>
+      <View style={{ paddingHorizontal: rpWidth(43) }}>
         <WiFi
           style={{
             alignSelf: "center",
@@ -65,7 +63,7 @@ const UpdateWiFi = ({
             )
           }
         />
-      </Container>
+      </View>
       <Button
         onPress={() => {
           dispatch(

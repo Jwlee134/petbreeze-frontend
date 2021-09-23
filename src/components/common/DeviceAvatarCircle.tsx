@@ -1,26 +1,37 @@
-import React from "react";
-import styled from "styled-components/native";
+import React, { useContext } from "react";
+import styled, { css } from "styled-components/native";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
-import { rpWidth } from "~/styles";
 import palette from "~/styles/palette";
+import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 
 interface IProps {
   battery?: number;
   lineWidth?: number;
   circleWidth?: number;
-  imageWidth?: number;
   avatar: string;
   isInModal?: boolean;
   isBackgroundTransparent?: boolean;
+  preventRpHeight?: boolean;
 }
 
-const Image = styled.Image<{ circleWidth?: number }>`
-  width: ${({ circleWidth }) =>
-    circleWidth ? rpWidth(circleWidth) : rpWidth(70)}px;
-  height: ${({ circleWidth }) =>
-    circleWidth ? rpWidth(circleWidth) : rpWidth(70)}px;
-  border-radius: ${({ circleWidth }) =>
-    circleWidth ? rpWidth(circleWidth) : rpWidth(35)}px;
+interface Image {
+  circleWidth?: number;
+  preventRpHeight: boolean;
+  rpWidth: RpWidth;
+}
+
+const Image = styled.Image<Image>`
+  ${({ circleWidth, preventRpHeight, rpWidth }) => css`
+    width: ${circleWidth
+      ? rpWidth(circleWidth)
+      : rpWidth(70, preventRpHeight)}px;
+    height: ${circleWidth
+      ? rpWidth(circleWidth)
+      : rpWidth(70, preventRpHeight)}px;
+    border-radius: ${circleWidth
+      ? rpWidth(circleWidth)
+      : rpWidth(35, preventRpHeight)}px;
+  `}
 `;
 
 const DeviceAvatarCircle = ({
@@ -30,8 +41,11 @@ const DeviceAvatarCircle = ({
   isBackgroundTransparent,
   avatar,
   isInModal = false,
-}: IProps) =>
-  battery !== undefined && circleWidth && lineWidth ? (
+  preventRpHeight = false,
+}: IProps) => {
+  const { rpWidth } = useContext(DimensionsContext);
+
+  return battery !== undefined && circleWidth && lineWidth ? (
     <AnimatedCircularProgress
       size={rpWidth(circleWidth)}
       width={lineWidth < 3 ? lineWidth : rpWidth(lineWidth)}
@@ -57,13 +71,20 @@ const DeviceAvatarCircle = ({
       }}>
       {() => (
         <Image
+          rpWidth={rpWidth}
+          preventRpHeight={preventRpHeight}
           circleWidth={circleWidth - lineWidth}
           source={require("~/assets/image/test.jpg")}
         />
       )}
     </AnimatedCircularProgress>
   ) : (
-    <Image source={require("~/assets/image/test.jpg")} />
+    <Image
+      rpWidth={rpWidth}
+      preventRpHeight={preventRpHeight}
+      source={require("~/assets/image/test.jpg")}
+    />
   );
+};
 
 export default DeviceAvatarCircle;

@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useEffect } from "react";
 import { StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { getAddress } from "~/api/place";
 import useDebounce from "~/hooks/useDebounce";
-import { height, rpWidth } from "~/styles";
 
 import KeyboardAwareScrollContainer from "~/components/common/container/KeyboardAwareScrollContainer";
 import { useDispatch } from "react-redux";
@@ -13,6 +12,7 @@ import { useAppSelector } from "~/store";
 import SearchResultItem from "./SearchResultItem";
 import MyText from "~/components/common/MyText";
 import { storageActions } from "~/store/storage";
+import { DimensionsContext } from "~/context/DimensionsContext";
 
 const SearchResult = () => {
   const { top } = useSafeAreaInsets();
@@ -31,6 +31,7 @@ const SearchResult = () => {
     }[]
   >([]);
   const dispatch = useDispatch();
+  const { height, rpWidth } = useContext(DimensionsContext);
 
   useEffect(() => {
     if (value) {

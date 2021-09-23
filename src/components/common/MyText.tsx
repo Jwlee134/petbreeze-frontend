@@ -1,7 +1,7 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, useContext } from "react";
 import { Animated, StyleProp, TextProps, TextStyle } from "react-native";
 import styled from "styled-components/native";
-import { rpWidth } from "~/styles";
+import { DimensionsContext } from "~/context/DimensionsContext";
 
 export type FontWeight = "light" | "medium" | "bold";
 
@@ -15,7 +15,6 @@ interface IProps extends Animated.AnimatedProps<TextProps> {
 
 interface IText {
   fontWeight: FontWeight | undefined;
-  fontSize?: number | undefined;
 }
 
 const Text = styled(Animated.Text)<IText>`
@@ -31,8 +30,6 @@ const Text = styled(Animated.Text)<IText>`
         return "NotoSansKR-Regular";
     }
   }};
-  font-size: ${({ fontSize }) =>
-    fontSize !== undefined ? `${rpWidth(fontSize)}px` : `${rpWidth(16)}px`};
 `;
 
 const MyText = ({
@@ -42,19 +39,23 @@ const MyText = ({
   color,
   style,
   ...props
-}: IProps) => (
-  <Text
-    fontWeight={fontWeight}
-    fontSize={fontSize}
-    style={{
-      includeFontPadding: false,
-      color: color || "rgba(0, 0, 0, 0.8)",
-      flexShrink: 1,
-      ...(style as object),
-    }}
-    {...props}>
-    {children}
-  </Text>
-);
+}: IProps) => {
+  const { rpWidth } = useContext(DimensionsContext);
+
+  return (
+    <Text
+      fontWeight={fontWeight}
+      style={{
+        includeFontPadding: false,
+        color: color || "rgba(0, 0, 0, 0.8)",
+        flexShrink: 1,
+        fontSize: fontSize !== undefined ? rpWidth(fontSize) : rpWidth(16),
+        ...(style as object),
+      }}
+      {...props}>
+      {children}
+    </Text>
+  );
+};
 
 export default MyText;

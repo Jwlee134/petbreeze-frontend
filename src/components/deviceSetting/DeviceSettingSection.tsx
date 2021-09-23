@@ -1,11 +1,11 @@
-import React, { ReactNode } from "react";
-import styled from "styled-components/native";
-import { rpWidth } from "~/styles";
+import React, { ReactNode, useContext } from "react";
+import styled, { css } from "styled-components/native";
 import MyText from "../common/MyText";
 import Shield from "~/assets/svg/myPage/shield.svg";
 import WiFiIcon from "~/assets/svg/wifi/wifi-black.svg";
 import Plus from "~/assets/svg/plus-circle-blue.svg";
 import Dissolve from "../common/Dissolve";
+import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 
 interface IProps {
   type: "safetyZone" | "wifi";
@@ -20,14 +20,16 @@ const RowContainer = styled.View`
   align-items: center;
 `;
 
-const SvgContainer = styled.View`
-  width: ${rpWidth(48)}px;
+const SvgContainer = styled.View<{ rpWidth: RpWidth }>`
+  width: ${({ rpWidth }) => rpWidth(48)}px;
   align-items: center;
 `;
 
-const Container = styled(RowContainer)`
-  height: ${rpWidth(79)}px;
-  padding: 0px ${rpWidth(16)}px;
+const Container = styled(RowContainer)<{ rpWidth: RpWidth }>`
+  ${({ rpWidth }) => css`
+    height: ${rpWidth(79)}px;
+    padding: 0px ${rpWidth(16)}px;
+  `}
 `;
 
 const PlusContainer = styled.TouchableOpacity`
@@ -42,11 +44,13 @@ const DeviceSettingSection = ({
   onPlusButtonClick,
   disablePlusButton,
 }: IProps) => {
+  const { rpWidth } = useContext(DimensionsContext);
+
   return (
     <>
-      <Container>
+      <Container rpWidth={rpWidth}>
         <RowContainer>
-          <SvgContainer>
+          <SvgContainer rpWidth={rpWidth}>
             {type === "safetyZone" ? (
               <Shield width={rpWidth(19)} height={rpWidth(20)} />
             ) : (

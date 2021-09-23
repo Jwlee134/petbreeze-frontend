@@ -1,6 +1,5 @@
-import React from "react";
-import styled from "styled-components/native";
-import { rpWidth } from "~/styles";
+import React, { useContext } from "react";
+import styled, { css } from "styled-components/native";
 import MyText from "../common/MyText";
 
 import Swipeable from "../common/Swipeable";
@@ -13,6 +12,7 @@ import { navigatorActions } from "~/store/navigator";
 import { DeviceSettingScreenNavigationProp } from "~/types/navigator";
 import { useAppSelector } from "~/store";
 import { deviceSettingActions } from "~/store/deviceSetting";
+import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 
 const RowContainer = styled.View`
   flex-shrink: 1;
@@ -21,22 +21,25 @@ const RowContainer = styled.View`
   width: 100%;
 `;
 
-const Image = styled.Image`
-  width: ${rpWidth(70)}px;
-  height: ${rpWidth(70)}px;
-  border-radius: ${rpWidth(70)}px;
-  margin-right: ${rpWidth(19)}px;
+const Image = styled.Image<{ rpWidth: RpWidth }>`
+  ${({ rpWidth }) => css`
+    width: ${rpWidth(70)}px;
+    height: ${rpWidth(70)}px;
+    border-radius: ${rpWidth(70)}px;
+    margin-right: ${rpWidth(19)}px;
+  `}
 `;
 
-const TextContainer = styled.View`
+const TextContainer = styled.View<{ rpWidth: RpWidth }>`
   flex-shrink: 1;
-  padding-right: ${rpWidth(32)}px;
+  padding-right: ${({ rpWidth }) => rpWidth(32)}px;
 `;
 
 const SafetyZone = ({ isEdit }: { isEdit: boolean }) => {
   const navigation = useNavigation<DeviceSettingScreenNavigationProp>();
   const dispatch = useDispatch();
   const result = useAppSelector(state => state.deviceSetting.safetyZone.result);
+  const { rpWidth } = useContext(DimensionsContext);
 
   return (
     <DeviceSettingSection
@@ -92,8 +95,8 @@ const SafetyZone = ({ isEdit }: { isEdit: boolean }) => {
             }}
             showIcon={isEdit}>
             <RowContainer>
-              <Image source={{ uri: item.image }} />
-              <TextContainer>
+              <Image rpWidth={rpWidth} source={{ uri: item.image }} />
+              <TextContainer rpWidth={rpWidth}>
                 <MyText
                   numberOfLines={1}
                   fontSize={rpWidth(12)}

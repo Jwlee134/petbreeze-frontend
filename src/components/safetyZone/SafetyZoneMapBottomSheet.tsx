@@ -1,18 +1,20 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useDispatch } from "react-redux";
-import styled from "styled-components/native";
+import styled, { css } from "styled-components/native";
 import Button from "~/components/common/Button";
 import Input from "~/components/common/Input";
+import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import useBottomSheet from "~/hooks/useBottomSheet";
 import { useAppSelector } from "~/store";
 import { deviceSettingActions } from "~/store/deviceSetting";
-import { rpWidth } from "~/styles";
 import ScrollPicker from "../common/ScrollPicker";
 
-const RowContainer = styled.View`
+const RowContainer = styled.View<{ rpWidth: RpWidth }>`
   flex-direction: row;
-  padding: 0px ${rpWidth(38)}px;
-  margin-bottom: ${rpWidth(13)}px;
+  ${({ rpWidth }) => css`
+    padding: 0px ${rpWidth(38)}px;
+    margin-bottom: ${rpWidth(13)}px;
+  `}
 `;
 
 const InputContainer = styled.View`
@@ -23,6 +25,7 @@ const data = ["10m", "20m", "30m", "50m", "100m"];
 
 const SafetyZoneMapBottomSheet = ({ snapPoints }: { snapPoints: number[] }) => {
   const { BottomSheetComponent } = useBottomSheet();
+  const { rpWidth } = useContext(DimensionsContext);
 
   const name = useAppSelector(
     state => state.deviceSetting.safetyZone.draft.name,
@@ -55,7 +58,7 @@ const SafetyZoneMapBottomSheet = ({ snapPoints }: { snapPoints: number[] }) => {
       animateOnMount
       snapPoints={snapPoints}
       index={0}>
-      <RowContainer>
+      <RowContainer rpWidth={rpWidth}>
         <InputContainer style={{ marginRight: "13%" }}>
           <Input
             value={name}

@@ -1,8 +1,7 @@
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useContext, useEffect, useMemo, useRef } from "react";
 import { Animated, Easing, Keyboard, StyleSheet } from "react-native";
 import { Circle } from "react-native-nmap";
 import useMap from "~/hooks/useMap";
-import { rpWidth } from "~/styles";
 import { getLeftRightPointsOfCircle } from "~/utils";
 
 import { useDispatch } from "react-redux";
@@ -15,6 +14,7 @@ import { navigatorActions } from "~/store/navigator";
 import { deviceSettingActions } from "~/store/deviceSetting";
 import { bleActions } from "~/store/ble";
 import { storageActions } from "~/store/storage";
+import { DimensionsContext } from "~/context/DimensionsContext";
 
 interface IProps {
   snapPoints: number[];
@@ -30,6 +30,7 @@ const SafetyZoneMap = ({ snapPoints, mapPadding }: IProps) => {
   const { Map, mapRef } = useMap();
   const value = useRef(new Animated.Value(0)).current;
   const viewShotRef = useRef<ViewShot>(null);
+  const { rpWidth } = useContext(DimensionsContext);
 
   const step2 = useAppSelector(state => state.deviceSetting.safetyZone.step2);
   const coord = useAppSelector(
@@ -98,6 +99,7 @@ const SafetyZoneMap = ({ snapPoints, mapPadding }: IProps) => {
           draft: { name, addr },
           fromDeviceSetting,
         } = store.getState().deviceSetting.safetyZone;
+
         if (fromDeviceSetting) {
           dispatch(
             deviceSettingActions.updateSafetyZoneResult({
@@ -110,9 +112,6 @@ const SafetyZoneMap = ({ snapPoints, mapPadding }: IProps) => {
           );
           navigation.goBack();
         } else {
-          const {
-            draft: { name },
-          } = store.getState().deviceSetting.safetyZone;
           dispatch(bleActions.setStatus("sendingSafetyZone"));
           /* dispatch(
             storageActions.setDevice({
@@ -133,10 +132,10 @@ const SafetyZoneMap = ({ snapPoints, mapPadding }: IProps) => {
 
   useEffect(() => {
     if (status === "safetyZoneSuccess") {
-      /* api 리퀘스트 */
+      /* api 리퀘스트 with device에 적용 x */
     }
     if (status === "safetyZoneFail") {
-      /* api 리퀘스트 */
+      /* api 리퀘스트 with device에 적용 o */
     }
   }, [status]);
 

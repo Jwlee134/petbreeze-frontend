@@ -1,21 +1,22 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import {
   Animated,
   Keyboard,
   KeyboardAvoidingView,
   TextInput,
   TouchableWithoutFeedback,
+  View,
 } from "react-native";
 import styled from "styled-components/native";
 import GradientContainer from "~/components/common/container/GradientContainer";
 import { AuthScreenNavigationProp } from "~/types/navigator";
 import Footprint from "~/assets/svg/footprint/footprint-app-icon-blue.svg";
 import AppName from "~/assets/svg/app-name.svg";
-import { rpHeight, rpWidth } from "~/styles";
 import useAnimatedSequence from "~/hooks/useAnimatedSequence";
 import MyText from "~/components/common/MyText";
 import Input from "~/components/common/Input";
 import { isIos } from "~/utils";
+import { DimensionsContext } from "~/context/DimensionsContext";
 
 const TopContainer = styled.View`
   flex: 1;
@@ -32,11 +33,8 @@ const LogoContainer = styled(Animated.View)`
   align-self: center;
 `;
 
-const PaddingContainer = styled.View`
-  padding: 0px ${rpWidth(50)}px;
-`;
-
 const Auth = ({ navigation }: { navigation: AuthScreenNavigationProp }) => {
+  const { rpHeight, rpWidth } = useContext(DimensionsContext);
   const [slideTop, opacity] = useAnimatedSequence({
     numOfValues: 2,
     delayAfterMount: 200,
@@ -98,7 +96,7 @@ const Auth = ({ navigation }: { navigation: AuthScreenNavigationProp }) => {
               fontWeight="light">
               반갑습니다 :){"\n"}내 이름을 설정해주세요.
             </MyText>
-            <PaddingContainer>
+            <View style={{ paddingHorizontal: rpWidth(50) }}>
               <Input
                 ref={ref}
                 isWhiteBorder
@@ -107,7 +105,7 @@ const Auth = ({ navigation }: { navigation: AuthScreenNavigationProp }) => {
                 textAlign="center"
                 onSubmitEditing={handleSubmit}
               />
-            </PaddingContainer>
+            </View>
           </BottomContainer>
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>

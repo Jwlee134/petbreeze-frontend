@@ -1,20 +1,26 @@
-import React, { ReactNode } from "react";
-import styled from "styled-components/native";
-import { rpWidth } from "~/styles";
+import React, { ReactNode, useContext } from "react";
+import styled, { css } from "styled-components/native";
+import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import MyText from "./MyText";
 
-const Container = styled.View`
-  height: ${rpWidth(37)}px;
+const Container = styled.View<{ rpWidth: RpWidth }>`
+  ${({ rpWidth }) => css`
+    height: ${rpWidth(37)}px;
+    padding-left: ${rpWidth(4)}px;
+  `}
   justify-content: center;
-  padding-left: ${rpWidth(4)}px;
 `;
 
-const InputTitle = ({ children }: { children: ReactNode }) => (
-  <Container>
-    <MyText fontSize={14} color="rgba(0, 0, 0, 0.5)">
-      {children}
-    </MyText>
-  </Container>
-);
+const InputTitle = ({ children }: { children: ReactNode }) => {
+  const { rpWidth } = useContext(DimensionsContext);
+
+  return (
+    <Container rpWidth={rpWidth}>
+      <MyText fontSize={14} color="rgba(0, 0, 0, 0.5)">
+        {children}
+      </MyText>
+    </Container>
+  );
+};
 
 export default InputTitle;

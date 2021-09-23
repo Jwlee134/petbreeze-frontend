@@ -1,26 +1,28 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useState } from "react";
 import { View } from "react-native";
-import styled from "styled-components/native";
+import styled, { css } from "styled-components/native";
 import Button from "~/components/common/Button";
 import KeyboardAwareScrollContainer from "~/components/common/container/KeyboardAwareScrollContainer";
 import Input from "~/components/common/Input";
 import InputTitle from "~/components/common/InputTitle";
 import SelectableButton from "~/components/common/SelectableButton";
-import { rpWidth } from "~/styles";
+import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import {
   UpdateProfileRouteProp,
   UpdateProfileScreenNavigationProp,
 } from "~/types/navigator";
 
-const AvatarButton = styled.TouchableOpacity`
-  width: ${rpWidth(108)}px;
-  height: ${rpWidth(108)}px;
-  border-radius: ${rpWidth(54)}px;
+const AvatarButton = styled.TouchableOpacity<{ rpWidth: RpWidth }>`
+  ${({ rpWidth }) => css`
+    width: ${rpWidth(108)}px;
+    height: ${rpWidth(108)}px;
+    border-radius: ${rpWidth(54)}px;
+    margin-top: ${rpWidth(34)}px;
+    margin-bottom: ${rpWidth(28)}px;
+  `}
   overflow: hidden;
   align-self: center;
-  margin-top: ${rpWidth(34)}px;
-  margin-bottom: ${rpWidth(28)}px;
 `;
 
 const Image = styled.Image`
@@ -28,8 +30,8 @@ const Image = styled.Image`
   height: 100%;
 `;
 
-const InputContainer = styled.View`
-  padding: 0px ${rpWidth(36)}px;
+const InputContainer = styled.View<{ rpWidth: RpWidth }>`
+  padding: ${({ rpWidth }) => `0px ${rpWidth(36)}px`};
 `;
 
 const RowContainer = styled.View`
@@ -41,6 +43,7 @@ const UpdateProfile = ({
 }: {
   navigation: UpdateProfileScreenNavigationProp;
 }) => {
+  const { rpWidth } = useContext(DimensionsContext);
   const [name, setName] = useState(device.name);
   const [birthYear, setBirthYear] = useState("1997");
   const [birtyMonth, setBirthMonth] = useState("11");
@@ -55,10 +58,10 @@ const UpdateProfile = ({
   return (
     <KeyboardAwareScrollContainer isSpaceBetween>
       <View style={{ marginBottom: rpWidth(30) }}>
-        <AvatarButton>
+        <AvatarButton rpWidth={rpWidth}>
           <Image source={require("~/assets/image/test.jpg")} />
         </AvatarButton>
-        <InputContainer>
+        <InputContainer rpWidth={rpWidth}>
           <InputTitle>이름</InputTitle>
           <Input value={name} onChangeText={text => setName(text)} />
           <InputTitle>생년월일</InputTitle>

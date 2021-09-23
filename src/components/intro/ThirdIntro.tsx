@@ -1,12 +1,12 @@
 import { useNavigation } from "@react-navigation/core";
-import React from "react";
+import React, { useContext } from "react";
 import { View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useDispatch } from "react-redux";
 import styled from "styled-components/native";
 import MyText from "~/components/common/MyText";
+import { DimensionsContext } from "~/context/DimensionsContext";
 import { storageActions } from "~/store/storage";
-import { isTablet, rpHeight, rpWidth } from "~/styles";
 import palette from "~/styles/palette";
 import { IntroScreenNavigationProp } from "~/types/navigator";
 import { isAndroid } from "~/utils";
@@ -17,30 +17,28 @@ const BackgroundImage = styled.Image`
   position: absolute;
   right: 0;
   width: 100%;
-  height: ${rpHeight(isAndroid ? 543 : 577)}px;
 `;
 
 const Phone = styled.Image`
-  width: ${rpWidth(491)}px;
-  height: ${rpHeight(369)}px;
   position: absolute;
-  top: ${rpHeight(172)}px;
-  left: ${!isTablet ? 0 : "auto"};
-  right: ${isTablet ? 0 : "auto"};
 `;
 
 const ThirdIntro = () => {
   const navigation = useNavigation<IntroScreenNavigationProp>();
   const dispatch = useDispatch();
   const { top, bottom } = useSafeAreaInsets();
+  const { isTablet, rpHeight, rpWidth } = useContext(DimensionsContext);
 
   return (
     <>
       <BackgroundImage
+        style={{
+          height: rpHeight(isAndroid ? 543 : 577),
+        }}
         source={require("~/assets/image/intro/background-wave.png")}
         resizeMode="stretch"
       />
-      <IntroContainer topInset={top} spaceBetween>
+      <IntroContainer rpWidth={rpWidth} topInset={top} spaceBetween>
         <View style={{ marginLeft: rpWidth(25) }}>
           <MyText fontSize={18} color={palette.blue_7b}>
             펫브리즈 반려동물 트래커를 통해
@@ -52,6 +50,14 @@ const ThirdIntro = () => {
         <Phone
           source={require("~/assets/image/intro/phone-mockup.png")}
           resizeMode="contain"
+          fadeDuration={0}
+          style={{
+            top: rpHeight(172),
+            left: !isTablet ? 0 : "auto",
+            right: isTablet ? 0 : "auto",
+            width: rpWidth(491),
+            height: rpHeight(369),
+          }}
         />
         <Button
           style={{

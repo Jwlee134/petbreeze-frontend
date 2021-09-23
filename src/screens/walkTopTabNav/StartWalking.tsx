@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import styled from "styled-components/native";
 import { StartWalkingScreenNavigationProp } from "~/types/navigator";
 import { useState } from "react";
@@ -6,7 +6,6 @@ import deviceApi from "~/api/device";
 import { useDispatch } from "react-redux";
 import { storageActions } from "~/store/storage";
 import { permissionCheck } from "~/utils";
-import { rpHeight, rpWidth } from "~/styles";
 import Button from "~/components/common/Button";
 import { useAppSelector } from "~/store";
 import { ScrollView, View } from "react-native";
@@ -16,14 +15,11 @@ import MyText from "~/components/common/MyText";
 import Dog from "~/assets/svg/dog/dog-with-device.svg";
 import palette from "~/styles/palette";
 import DeviceAvatarCircle from "~/components/common/DeviceAvatarCircle";
+import { DimensionsContext } from "~/context/DimensionsContext";
 
 const Container = styled.View`
   flex: 1;
   justify-content: space-between;
-`;
-
-const TextContainer = styled.View`
-  margin-left: ${rpWidth(26)}px;
 `;
 
 const RowContainer = styled.View`
@@ -36,6 +32,7 @@ const StartWalking = ({
 }: {
   navigation: StartWalkingScreenNavigationProp;
 }) => {
+  const { rpHeight, rpWidth } = useContext(DimensionsContext);
   const [selected, setSelected] = useState<string[]>([]);
   const dispatch = useDispatch();
   // const { data: devices } = deviceApi.useGetDeviceListQuery();
@@ -112,7 +109,7 @@ const StartWalking = ({
                   circleWidth={70}
                   battery={item.battery}
                 />
-                <TextContainer>
+                <View style={{ marginLeft: rpWidth(26) }}>
                   <RowContainer>
                     <MyText fontWeight="medium">{item.name}</MyText>
                     <MyText
@@ -128,7 +125,7 @@ const StartWalking = ({
                     color="rgba(0, 0, 0, 0.5)">
                     마지막 산책
                   </MyText>
-                </TextContainer>
+                </View>
               </RowContainer>
             </ListItem>
           ))}

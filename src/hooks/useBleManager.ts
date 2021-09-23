@@ -17,9 +17,9 @@ import { bleActions } from "~/store/ble";
 const interval = 512;
 
 const SafetyZone = {
-  UUID: "",
-  CharacteristicLocation: "",
-  CharacteristicWifi: "",
+  UUID: "C4A28FCC-DD6E-11EB-BA80-0242AC130004",
+  CharacteristicArea: "C4A21988-DD6E-11EB-BA80-0242AC130004",
+  CharacteristicWifi: "C4A2577E-DD6E-11EB-BA80-0242AC130004",
 };
 
 const OTAControlPoint = {
@@ -45,57 +45,71 @@ const useBleMaganer = () => {
 
   const [registerDevice, devEUIResult] = deviceApi.usePostDeviceMutation();
 
-  const disconnect = async () => {
+  const isConnected = () => {
     if (peripheral) {
-      const connected = await BleManager.isPeripheralConnected(
-        peripheral.id,
-        [],
-      );
-      if (connected) {
-        await BleManager.disconnect(peripheral.id)
-          .catch(err => console.log("Failed to disconnect: ", err))
-          .then(() => {
-            console.log("Disconnected to: ", peripheral.id);
-          });
-      }
+      return BleManager.isPeripheralConnected(peripheral.id, []);
+    } else {
+      return false;
     }
   };
 
-  const sendSafetyZone = useCallback(() => {
+  const disconnect = async () => {
+    const connected = await isConnected();
+    if (connected) {
+      await BleManager.disconnect((peripheral as Peripheral).id)
+        .catch(err => console.log("Failed to disconnect: ", err))
+        .then(() => {
+          console.log("Disconnected to: ", (peripheral as Peripheral).id);
+        });
+    } else {
+      return;
+    }
+  };
+
+  const sendSafetyZone = useCallback(async () => {
     const {
       coord: { latitude, longitude },
       radius,
     } = store.getState().deviceSetting.safetyZone.draft;
-    /*  */
-    BleManager.write(
-      (peripheral as Peripheral).id,
-      SafetyZone.UUID,
-      SafetyZone.CharacteristicWifi,
-      "",
-    )
-      .then(() => {
-        dispatch(bleActions.setStatus("safetyZoneSuccess"));
-      })
-      .catch(() => {
-        dispatch(bleActions.setStatus("safetyZoneFail"));
-      });
+    const connected = await isConnected();
+    if (connected) {
+      BleManager.write(
+        (peripheral as Peripheral).id,
+        SafetyZone.UUID,
+        SafetyZone.CharacteristicWifi,
+        "",
+      )
+        .then(() => {
+          dispatch(bleActions.setStatus("safetyZoneSuccess"));
+        })
+        .catch(() => {
+          dispatch(bleActions.setStatus("safetyZoneFail"));
+        });
+    } else {
+      dispatch(bleActions.setStatus("safetyZoneFail"));
+    }
   }, [status]);
 
-  const sendWifi = useCallback(() => {
+  const sendWifi = useCallback(async () => {
     const { name, password } = store.getState().deviceSetting.wifi.draft;
     /*  */
-    BleManager.write(
-      (peripheral as Peripheral).id,
-      SafetyZone.UUID,
-      SafetyZone.CharacteristicWifi,
-      "",
-    )
-      .then(() => {
-        dispatch(bleActions.setStatus("wifiSuccess"));
-      })
-      .catch(() => {
-        dispatch(bleActions.setStatus("wifiFail"));
-      });
+    const connected = await isConnected();
+    if (connected) {
+      BleManager.write(
+        (peripheral as Peripheral).id,
+        SafetyZone.UUID,
+        SafetyZone.CharacteristicWifi,
+        "",
+      )
+        .then(() => {
+          dispatch(bleActions.setStatus("wifiSuccess"));
+        })
+        .catch(() => {
+          dispatch(bleActions.setStatus("wifiFail"));
+        });
+    } else {
+      dispatch(bleActions.setStatus("wifiFail"));
+    }
   }, [status]);
 
   const stopNotification = useCallback(() => {
@@ -208,21 +222,26 @@ const useBleMaganer = () => {
     }
   }, [notifStatus]);
 
-  const startNotification = () => {
-    BleManager.startNotification(
-      (peripheral as Peripheral).id,
-      OTAControlPoint.UUID,
-      OTAControlPoint.CharacteristicNotif,
-    )
-      .then(() => {
-        console.log("Succeded to start notification: ", peripheral?.id);
-      })
-      .catch(error => {
-        disconnect().finally(() => {
-          console.log("Failed to start notification: ", error);
-          dispatch(bleActions.setStatus("startNotificationFail"));
+  const startNotification = async () => {
+    const connected = await isConnected();
+    if (connected) {
+      BleManager.startNotification(
+        (peripheral as Peripheral).id,
+        OTAControlPoint.UUID,
+        OTAControlPoint.CharacteristicNotif,
+      )
+        .then(() => {
+          console.log("Succeded to start notification: ", peripheral?.id);
+        })
+        .catch(error => {
+          disconnect().finally(() => {
+            console.log("Failed to start notification: ", error);
+            dispatch(bleActions.setStatus("startNotificationFail"));
+          });
         });
-      });
+    } else {
+      dispatch(bleActions.setStatus("startNotificationFail"));
+    }
   };
 
   useEffect(() => {
@@ -252,40 +271,51 @@ const useBleMaganer = () => {
     }
   }, [devEUIResult]);
 
-  const handleReadDevEUI = () => {
-    BleManager.read(
-      (peripheral as Peripheral).id,
-      DeviceInformation.UUID,
-      DeviceInformation.CharacteristicA,
-    )
-      .then(devEUI => {
-        console.log("Succeded to read devEUI: ", bytesToString(devEUI));
-        registerDevice(bytesToString(devEUI));
-      })
-      .catch(error => {
-        disconnect().finally(() => {
-          console.log("Failed to read devEUI", error);
-          dispatch(bleActions.setStatus("retrieveFail"));
+  const handleReadDevEUI = async () => {
+    const connected = await isConnected();
+    if (connected) {
+      BleManager.read(
+        (peripheral as Peripheral).id,
+        DeviceInformation.UUID,
+        DeviceInformation.CharacteristicA,
+      )
+        .then(devEUI => {
+          console.log("Succeded to read devEUI: ", bytesToString(devEUI));
+          startNotification();
+          /* registerDevice(bytesToString(devEUI)); */
+        })
+        .catch(error => {
+          disconnect().finally(() => {
+            console.log("Failed to read devEUI", error);
+            dispatch(bleActions.setStatus("retrieveFail"));
+          });
         });
-      });
+    } else {
+      dispatch(bleActions.setStatus("retrieveFail"));
+    }
   };
 
-  const getPeripheralData = useCallback(() => {
-    BleManager.retrieveServices((peripheral as Peripheral).id)
-      .then(data => {
-        console.log("Succeeded to retrieve data: ", data);
-        if (isOtaUpdate) {
-          startNotification();
-        } else {
-          handleReadDevEUI();
-        }
-      })
-      .catch(error => {
-        disconnect().finally(() => {
-          console.log("Failed to retrieve data: ", error);
-          dispatch(bleActions.setStatus("retrieveFail"));
+  const getPeripheralData = useCallback(async () => {
+    const connected = await isConnected();
+    if (connected) {
+      BleManager.retrieveServices((peripheral as Peripheral).id)
+        .then(data => {
+          console.log("Succeeded to retrieve data: ", data);
+          if (isOtaUpdate) {
+            startNotification();
+          } else {
+            handleReadDevEUI();
+          }
+        })
+        .catch(error => {
+          disconnect().finally(() => {
+            console.log("Failed to retrieve data: ", error);
+            dispatch(bleActions.setStatus("retrieveFail"));
+          });
         });
-      });
+    } else {
+      dispatch(bleActions.setStatus("retrieveFail"));
+    }
   }, [status]);
 
   const handleConnect = (peripheral: Peripheral) => {
@@ -319,6 +349,7 @@ const useBleMaganer = () => {
 
   const scanPeripheral = useCallback(() => {
     BleManager.scan([], 10, false);
+
     timeout.current = setTimeout(() => {
       if (!peripheral) {
         BleManager.stopScan().then(() => {
@@ -334,7 +365,9 @@ const useBleMaganer = () => {
       scanPeripheral();
     }
     if (status === "scanningSuccess") {
-      getPeripheralData();
+      setTimeout(() => {
+        getPeripheralData();
+      }, 1700);
     }
     if (status === "downloadingFirmware") {
       downloadFirmware();

@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useEffect } from "react";
 import { TouchableOpacityProps } from "react-native";
 import styled from "styled-components/native";
-import { rpWidth } from "~/styles";
+import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import palette from "~/styles/palette";
 import MyText from "../common/MyText";
 
@@ -13,15 +13,16 @@ interface IProps extends TouchableOpacityProps {
   setToValue: React.Dispatch<React.SetStateAction<number>>;
 }
 
-const TabButton = styled.TouchableOpacity`
+const TabButton = styled.TouchableOpacity<{ rpWidth: RpWidth }>`
   flex: 1;
   justify-content: center;
   align-items: center;
-  padding: 0px ${rpWidth(20)}px;
+  padding: ${({ rpWidth }) => `0px ${rpWidth(20)}px`};
 `;
 
 const Tab = ({ isFocused, onPress, label, setToValue, ...props }: IProps) => {
   const [layout, setLayout] = useState<number | null>(null);
+  const { rpWidth } = useContext(DimensionsContext);
 
   useEffect(() => {
     if (isFocused && layout !== null) {
@@ -31,6 +32,7 @@ const Tab = ({ isFocused, onPress, label, setToValue, ...props }: IProps) => {
 
   return (
     <TabButton
+      rpWidth={rpWidth}
       onLayout={e => {
         setLayout(e.nativeEvent.layout.x);
       }}

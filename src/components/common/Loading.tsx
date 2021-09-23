@@ -1,23 +1,23 @@
-import React from "react";
+import React, { useContext } from "react";
 import styled from "styled-components/native";
 import Loading1 from "~/assets/svg/loading/loading1.svg";
 import Loading2 from "~/assets/svg/loading/loading2.svg";
 import Loading3 from "~/assets/svg/loading/loading3.svg";
 import Marker from "~/assets/svg/footprint/footprint-app-icon-blue.svg";
 import GradientContainer from "~/components/common/container/GradientContainer";
-import { rpWidth } from "~/styles";
 import { Animated } from "react-native";
 import useAnimatedSequence from "~/hooks/useAnimatedSequence";
 import AnimatedPoints from "~/components/common/AnimatedPoints";
+import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 
-const Container = styled.View`
-  margin-bottom: ${rpWidth(40)}px;
+const Container = styled.View<{ rpWidth: RpWidth }>`
+  margin-bottom: ${({ rpWidth }) => rpWidth(40)}px;
 `;
 
-const LoadingContainer = styled.View`
+const LoadingContainer = styled.View<{ rpWidth: RpWidth }>`
   position: absolute;
   align-self: center;
-  bottom: ${rpWidth(6)}px;
+  bottom: ${({ rpWidth }) => rpWidth(6)}px;
 `;
 
 const LoadingView = styled(Animated.View)`
@@ -25,9 +25,9 @@ const LoadingView = styled(Animated.View)`
   align-self: center;
 `;
 
-const RowContainer = styled.View`
+const RowContainer = styled.View<{ rpWidth: RpWidth }>`
   flex-direction: row;
-  margin-top: ${rpWidth(80)}px;
+  margin-top: ${({ rpWidth }) => rpWidth(80)}px;
 `;
 
 const Loading = ({ loadingText }: { loadingText: string }) => {
@@ -35,6 +35,7 @@ const Loading = ({ loadingText }: { loadingText: string }) => {
     loop: true,
     numOfValues: 3,
   });
+  const { rpWidth } = useContext(DimensionsContext);
 
   return (
     <GradientContainer
@@ -42,9 +43,9 @@ const Loading = ({ loadingText }: { loadingText: string }) => {
         justifyContent: "center",
         alignItems: "center",
       }}>
-      <Container>
+      <Container rpWidth={rpWidth}>
         <Marker width={rpWidth(63)} height={rpWidth(83)} />
-        <LoadingContainer>
+        <LoadingContainer rpWidth={rpWidth}>
           <LoadingView style={{ opacity: value1 }}>
             <Loading1 width={rpWidth(134)} height={rpWidth(32)} />
           </LoadingView>
@@ -56,7 +57,7 @@ const Loading = ({ loadingText }: { loadingText: string }) => {
           </LoadingView>
         </LoadingContainer>
       </Container>
-      <RowContainer>
+      <RowContainer rpWidth={rpWidth}>
         <AnimatedPoints
           color="white"
           value1={value1}

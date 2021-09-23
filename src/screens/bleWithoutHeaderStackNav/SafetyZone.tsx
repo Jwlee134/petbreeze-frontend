@@ -1,9 +1,8 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useContext, useEffect, useMemo } from "react";
 import { Alert, Keyboard, TouchableWithoutFeedback } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import styled from "styled-components/native";
+import styled, { css } from "styled-components/native";
 import Button from "~/components/common/Button";
-import { rpWidth } from "~/styles";
 import FakeMarker from "~/components/safetyZone/FakeMarker";
 import useKeyboard from "~/hooks/useKeyboard";
 import SafetyZoneMap from "~/components/safetyZone/SafetyZoneMap";
@@ -17,14 +16,17 @@ import { SafetyZoneScreenNavigationProp } from "~/types/navigator";
 import SafetyZoneMapBottomSheet from "~/components/safetyZone/SafetyZoneMapBottomSheet";
 import SearchBar from "~/components/safetyZone/SearchBar";
 import { deviceSettingActions } from "~/store/deviceSetting";
+import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 
 const Container = styled.View`
   flex: 1;
 `;
 
-const BackButton = styled.TouchableOpacity`
-  width: ${rpWidth(44)}px;
-  height: ${rpWidth(44)}px;
+const BackButton = styled.TouchableOpacity<{ rpWidth: RpWidth }>`
+  ${({ rpWidth }) => css`
+    width: ${rpWidth(44)}px;
+    height: ${rpWidth(44)}px;
+  `}
   position: absolute;
   left: 0;
   z-index: 1;
@@ -37,6 +39,7 @@ const SafetyZone = ({
 }: {
   navigation: SafetyZoneScreenNavigationProp;
 }) => {
+  const { rpWidth } = useContext(DimensionsContext);
   const { top, bottom } = useSafeAreaInsets();
   const { keyboardHeight } = useKeyboard();
 
@@ -120,6 +123,7 @@ const SafetyZone = ({
         ) : (
           <>
             <BackButton
+              rpWidth={rpWidth}
               onPress={() =>
                 dispatch(
                   deviceSettingActions.setSafetyZone({

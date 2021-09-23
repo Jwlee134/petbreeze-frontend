@@ -1,9 +1,15 @@
-import React, { ReactNode, useEffect, useRef, useState } from "react";
+import React, {
+  ReactNode,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import {
   RectButton,
   Swipeable as Container,
 } from "react-native-gesture-handler";
-import { rpWidth } from "~/styles";
+import { DimensionsContext } from "~/context/DimensionsContext";
 import palette from "~/styles/palette";
 
 interface IProps {
@@ -21,6 +27,7 @@ const Swipeable = ({
   animate = false,
   enableRightActions,
 }: IProps) => {
+  const { rpWidth } = useContext(DimensionsContext);
   const swipeableRef = useRef<Container>(null);
   const [hide, setHide] = useState(false);
 
