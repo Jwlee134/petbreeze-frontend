@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components/native";
 
-import Shield from "~/assets/svg/init/permission/shield.svg";
-import Bell from "~/assets/svg/init/permission/bell.svg";
-import Location from "~/assets/svg/init/permission/location.svg";
-import Bluetooth from "~/assets/svg/init/permission/bluetooth.svg";
-import Gallery from "~/assets/svg/init/permission/gallery.svg";
+import Shield from "~/assets/svg/permissions/shield.svg";
+import Bell from "~/assets/svg/permissions/bell.svg";
+import Location from "~/assets/svg/permissions/location.svg";
+import Bluetooth from "~/assets/svg/permissions/bluetooth.svg";
+import Gallery from "~/assets/svg/permissions/gallery.svg";
 import {
   check,
   openSettings,

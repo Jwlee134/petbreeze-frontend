@@ -13,6 +13,7 @@ import { formActions } from "~/store/form";
 import palette from "~/styles/palette";
 import Plus from "~/assets/svg/plus-circle-blue.svg";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
+import { Share } from "react-native";
 
 const PaddingContainer = styled.View<{ rpWidth: RpWidth }>`
   ${({ rpWidth }) => css`
@@ -60,6 +61,12 @@ const EmergencyMissingSecondPage = () => {
       showCropGuidelines: false,
     }).then(image => {
       dispatch(formActions.setPhotos([...photos, image]));
+    });
+  };
+
+  const handleSubmit = () => {
+    Share.share({
+      message: "https://87dc-14-36-38-134.ngrok.io/lost/1",
     });
   };
 
@@ -145,7 +152,9 @@ const EmergencyMissingSecondPage = () => {
           </>
         ) : null}
       </PhotoContainer>
-      <Button useCommonMarginBottom>확인</Button>
+      <Button useCommonMarginBottom onPress={handleSubmit}>
+        확인
+      </Button>
     </KeyboardAwareScrollContainer>
   );
 };

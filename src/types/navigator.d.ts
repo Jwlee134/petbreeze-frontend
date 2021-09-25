@@ -53,6 +53,7 @@ export type LoggedInNavParamList = {
     data: IDevice;
   };
   UpdateWiFi: undefined;
+  DeviceAlert: undefined;
 };
 export type PermissionsScreenNavigationProp = CompositeNavigationProp<
   StackNavigationProp<LoggedInNavParamList, "Permissions">,

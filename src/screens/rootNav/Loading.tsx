@@ -4,6 +4,7 @@ import LoadingComponent from "~/components/common/Loading";
 import { navigatorActions } from "~/store/navigator";
 import { LoadingScreenProps } from "~/types/navigator";
 import { isIos } from "~/utils";
+import messaging from "@react-native-firebase/messaging";
 
 const Loading = ({
   navigation,
@@ -15,16 +16,19 @@ const Loading = ({
 
   useEffect(() => {
     if (previousRouteName === "Auth") {
-      setTimeout(() => {
-        dispatch(
-          navigatorActions.setInitialRoute({
-            initialLoggedInNavRouteName: isIos
-              ? "Permissions"
-              : "BleRootStackNav",
-          }),
-        );
-        navigation.replace("LoggedInNav");
-      }, 5000);
+      messaging()
+        .getToken()
+        .then(token => {
+          console.log(token);
+          dispatch(
+            navigatorActions.setInitialRoute({
+              initialLoggedInNavRouteName: isIos
+                ? "Permissions"
+                : "BleRootStackNav",
+            }),
+          );
+          navigation.replace("LoggedInNav");
+        });
     }
   }, []);
 

@@ -19,6 +19,7 @@ import UpdateProfile from "~/screens/loggedInNav/UpdateProfile";
 import EmergencyMissingStackNav from "./EmergencyMissingStackNav";
 import BleRootStackNav from "./BleRootStackNav";
 import UpdateWiFi from "~/screens/loggedInNav/UpdateWiFi";
+import DeviceAlert from "~/screens/loggedInNav/DeviceAlert";
 
 const Stack = createStackNavigator<LoggedInNavParamList>();
 
@@ -32,16 +33,6 @@ const LoggedInNav = ({ navigation, route }: LoggedInNavScreenProps) => {
   const initialRouteName = useAppSelector(
     state => state.navigator.initialLoggedInNavRouteName,
   );
-  /* const [isLoading, setIsLoading] = useState(true);
-  const [initialRoute, setInitialRoute] = useState("BottomTabNav");
-
-  useEffect(() => {
-    const { coords } = store.getState().storage.walk;
-    if (coords.length) {
-      setInitialRoute("WalkMap");
-    }
-    setIsLoading(false);
-  }, []);
 
   useEffect(() => {
     const unsubscribe = messaging().onMessage(async remoteMessage => {
@@ -55,25 +46,8 @@ const LoggedInNav = ({ navigation, route }: LoggedInNavScreenProps) => {
       );
     });
 
-    messaging()
-      .getInitialNotification()
-      .then(remoteMessage => {
-        if (remoteMessage) {
-          console.log(
-            "Notification caused app to open from quit state:",
-            remoteMessage,
-          );
-        }
-      });
-
-    messaging()
-      .getToken()
-      .then(value => console.log("Token: ", value));
-
     return unsubscribe;
   }, []);
-
-  if (isLoading) return null; */
 
   return (
     <Stack.Navigator
@@ -122,6 +96,11 @@ const LoggedInNav = ({ navigation, route }: LoggedInNavScreenProps) => {
         options={{
           header: props => <CustomHeader {...props}>프로필 수정</CustomHeader>,
         }}
+      />
+      <Stack.Screen
+        name="DeviceAlert"
+        component={DeviceAlert}
+        options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );

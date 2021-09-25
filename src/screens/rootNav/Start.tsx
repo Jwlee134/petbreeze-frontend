@@ -5,13 +5,14 @@ import Footprint from "~/assets/svg/footprint/footprint-app-icon-blue.svg";
 import AppName from "~/assets/svg/app-name.svg";
 import { Animated } from "react-native";
 import { StartScreenNavigationProp } from "~/types/navigator";
-import { store } from "~/store";
 import { useDispatch } from "react-redux";
-import { navigatorActions } from "~/store/navigator";
 import useAnimatedSequence from "~/hooks/useAnimatedSequence";
 import * as SecureStore from "expo-secure-store";
 import { isIos } from "~/utils";
 import { DimensionsContext } from "~/context/DimensionsContext";
+import messaging from "@react-native-firebase/messaging";
+import setInitialRoute from "~/utils/setInitialRoute";
+import { navigatorActions } from "~/store/navigator";
 
 const Container = styled.View`
   flex: 1;
@@ -33,56 +34,26 @@ const Start = ({ navigation }: { navigation: StartScreenNavigationProp }) => {
       navigation.replace("Auth");
     }
     if (renderAuth === false) {
-      const {
-        init: { isPermissionAllowed, isInitialized },
-        device: {
-          isDeviceRegistered,
-          isSafetyZoneRegistered,
-          isProfileRegistered,
-        },
-      } = store.getState().storage;
-
-      if (!isPermissionAllowed) {
-        dispatch(
-          navigatorActions.setInitialRoute({
-            initialLoggedInNavRouteName: "Permissions",
-          }),
-        );
-        navigation.replace("LoggedInNav");
-        return;
-      }
-      if (isDeviceRegistered) {
-        if (!isSafetyZoneRegistered) {
-          dispatch(
-            navigatorActions.setInitialRoute({
-              initialLoggedInNavRouteName: "BleRootStackNav",
-              initialBleWithHeaderStackNavRouteName: "PreSafetyZone",
-            }),
+      messaging()
+        .getInitialNotification()
+        .then(remoteMessage => {
+          console.log(
+            "Notification caused app to open from quit state:",
+            remoteMessage,
           );
+          if (remoteMessage) {
+            if (remoteMessage.notification?.title === "Test") {
+              dispatch(
+                navigatorActions.setInitialRoute({
+                  initialLoggedInNavRouteName: "DeviceAlert",
+                }),
+              );
+            }
+          } else {
+            setInitialRoute();
+          }
           navigation.replace("LoggedInNav");
-          return;
-        }
-        if (!isProfileRegistered) {
-          dispatch(
-            navigatorActions.setInitialRoute({
-              initialLoggedInNavRouteName: "BleRootStackNav",
-              initialBleWithHeaderStackNavRouteName: "RegisterProfileFirst",
-            }),
-          );
-          navigation.replace("LoggedInNav");
-          return;
-        }
-      }
-      if (!isInitialized) {
-        dispatch(
-          navigatorActions.setInitialRoute({
-            initialLoggedInNavRouteName: "BleRootStackNav",
-          }),
-        );
-        navigation.replace("LoggedInNav");
-        return;
-      }
-      navigation.replace("LoggedInNav");
+        });
     }
   };
 
