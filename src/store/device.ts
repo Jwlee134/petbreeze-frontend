@@ -72,7 +72,7 @@ const initialState: IDevice[] = [
     phoneNumber: "01040318103",
     etc: "하하",
   },
-  /* {
+  {
     id: "dedd",
     profile_image: require("~/assets/image/test.jpg"),
     name: "막둥이4",
@@ -113,7 +113,7 @@ const initialState: IDevice[] = [
     weight: 5,
     phoneNumber: "01040318103",
     etc: "하하",
-  }, */
+  },
 ];
 
 const device = createSlice({

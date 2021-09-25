@@ -7,7 +7,6 @@ import Modal from "react-native-modal";
 import IosStyleBottomModal from "../modal/IosStyleBottomModal";
 import HomeBottomModal from "../modal/HomeBottomModal";
 import { ScrollView } from "react-native";
-import LinearGradient from "react-native-linear-gradient";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 
 interface IPressable {
@@ -17,31 +16,33 @@ interface IPressable {
 }
 
 const Pressable = styled.Pressable<IPressable>`
+  position: absolute;
+  bottom: ${({ rpWidth }) => rpWidth(40)}px;
   ${({ index, deviceLength, rpWidth }) => {
     switch (deviceLength) {
       case 1:
         return css`
-          position: absolute;
-          bottom: 0;
           align-self: center;
-          margin-bottom: ${rpWidth(24)}px;
         `;
       case 2:
         return css`
-          position: absolute;
-          bottom: 0;
           margin-left: -${rpWidth(45)}px;
+          ${index === 0 ? { left: "33%" } : { left: "66%" }}
+        `;
+      case 3:
+        return css`
+          align-self: center;
           ${index === 0
-            ? {
-                left: "33%",
-              }
-            : {
-                left: "66%",
-              }}
+            ? { left: "15%" }
+            : index === 1
+            ? {}
+            : { right: "15%" }};
         `;
       default:
         return css`
-          margin: 0px ${rpWidth(8)}px;
+          position: relative;
+          bottom: 0;
+          margin: 0px ${rpWidth(10)}px;
         `;
     }
   }}
@@ -51,7 +52,7 @@ const DeviceList = () => {
   const deviceList = useAppSelector(state => state.device);
   const { open, close, modalProps } = useModal();
   const [clickedId, setClickedId] = useState("");
-  const { rpWidth, width } = useContext(DimensionsContext);
+  const { rpWidth, width, isTablet } = useContext(DimensionsContext);
 
   const device = useMemo(() => {
     return deviceList[deviceList.findIndex(device => device.id === clickedId)];
@@ -59,7 +60,7 @@ const DeviceList = () => {
 
   return (
     <>
-      {deviceList.length < 3 ? (
+      {deviceList.length < 4 ? (
         deviceList.map((device, i) => (
           <Pressable
             rpWidth={rpWidth}
@@ -71,45 +72,50 @@ const DeviceList = () => {
               open();
             }}>
             <DeviceAvatarCircle
-              circleWidth={90}
-              lineWidth={7}
+              circleWidth={deviceList.length > 2 ? 70 : 90}
+              lineWidth={deviceList.length > 2 ? 5 : 7}
               battery={device.battery}
             />
           </Pressable>
         ))
       ) : (
-        <>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={{
-              position: "absolute",
-              bottom: 0,
-              marginBottom: rpWidth(36),
-            }}
-            contentContainerStyle={{
-              width: width - rpWidth(80),
-            }}>
-            {deviceList.map((device, i) => (
-              <Pressable
-                rpWidth={rpWidth}
-                key={device.id}
-                style={{
-                  ...(i === 0 && { marginLeft: rpWidth(16) }),
-                }}
-                onLongPress={() => {
-                  setClickedId(device.id);
-                  open();
-                }}>
-                <DeviceAvatarCircle
-                  circleWidth={70}
-                  lineWidth={5}
-                  battery={device.battery}
-                />
-              </Pressable>
-            ))}
-          </ScrollView>
-        </>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={{
+            position: "absolute",
+            bottom: 0,
+            marginBottom: rpWidth(40),
+          }}
+          contentContainerStyle={{
+            minWidth: isTablet ? 0 : width,
+            ...(isTablet &&
+              deviceList.length < 6 && {
+                paddingLeft: rpWidth(10),
+              }),
+            paddingHorizontal: !isTablet
+              ? width * 0.15
+              : deviceList.length > 5
+              ? width * 0.09
+              : 0,
+          }}>
+          {deviceList.map(device => (
+            <Pressable
+              rpWidth={rpWidth}
+              key={device.id}
+              onLongPress={() => {
+                setClickedId(device.id);
+                open();
+              }}>
+              <DeviceAvatarCircle
+                preventRpHeight
+                circleWidth={70}
+                lineWidth={5}
+                battery={device.battery}
+              />
+            </Pressable>
+          ))}
+        </ScrollView>
       )}
       <Modal {...modalProps({ type: "bottom" })}>
         <IosStyleBottomModal
