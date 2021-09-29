@@ -15,8 +15,8 @@ const FirstIntro = () => {
     <GradientContainer isBlackStatusBar>
       <IntroContainer rpWidth={rpWidth} topInset={top} spaceBetween>
         <View style={{ paddingHorizontal: rpWidth(22) }}>
-          <MyText color="white" fontSize={24}>
-            반려동물 실종은
+          <MyText fontWeight="light" color="white" fontSize={24}>
+            반려동물 실종,
           </MyText>
           <MyText
             fontWeight="bold"
@@ -27,11 +27,7 @@ const FirstIntro = () => {
             }}>
             가까이 있는 문제입니다.
           </MyText>
-          <MyText
-            fontWeight="light"
-            fontSize={16}
-            color="white"
-            style={{ opacity: 0.7 }}>
+          <MyText fontSize={16} color="white" style={{ opacity: 0.7 }}>
             리드줄을 놓친 틈에,{"\n"}잠깐 문이 열린 틈에,{"\n"}반려동물 실종은
             예기치 못한 순간에 일어납니다.
           </MyText>

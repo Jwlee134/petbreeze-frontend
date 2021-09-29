@@ -1,67 +1,63 @@
 import { useNavigation } from "@react-navigation/core";
 import React, { useContext } from "react";
 import { View } from "react-native";
+import LinearGradient from "react-native-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useDispatch } from "react-redux";
 import styled from "styled-components/native";
 import MyText from "~/components/common/MyText";
-import { DimensionsContext } from "~/context/DimensionsContext";
+import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import { storageActions } from "~/store/storage";
 import palette from "~/styles/palette";
 import { IntroScreenNavigationProp } from "~/types/navigator";
-import { isAndroid } from "~/utils";
 import Button from "../common/Button";
 import { IntroContainer } from "./styles";
 
-const BackgroundImage = styled.Image`
-  position: absolute;
-  right: 0;
-  width: 100%;
+const ImageContainer = styled.View`
+  flex: 1;
+  align-items: center;
+  justify-content: center;
 `;
 
-const Phone = styled.Image`
-  position: absolute;
+const Image = styled.Image<{ rpWidth: RpWidth; isTablet: boolean }>`
+  max-width: ${({ rpWidth, isTablet }) =>
+    isTablet ? `${rpWidth(320)}px` : "90%"};
+  width: 100%;
 `;
 
 const ThirdIntro = () => {
   const navigation = useNavigation<IntroScreenNavigationProp>();
   const dispatch = useDispatch();
   const { top, bottom } = useSafeAreaInsets();
-  const { isTablet, rpHeight, rpWidth } = useContext(DimensionsContext);
+  const { isTablet, rpWidth } = useContext(DimensionsContext);
 
   return (
     <>
-      <BackgroundImage
-        style={{
-          height: rpHeight(isAndroid ? 543 : 577),
-        }}
-        source={require("~/assets/image/intro/background-wave.png")}
-        resizeMode="stretch"
-      />
       <IntroContainer rpWidth={rpWidth} topInset={top} spaceBetween>
-        <View style={{ marginLeft: rpWidth(25) }}>
-          <MyText fontSize={18} color={palette.blue_7b}>
-            펫브리즈 반려동물 트래커를 통해
+        <View style={{ marginLeft: rpWidth(32) }}>
+          <MyText fontWeight="light" fontSize={24} color={palette.blue_7b_80}>
+            펫브리즈와 함께
           </MyText>
-          <MyText fontWeight="bold" fontSize={18} color={palette.blue_7b}>
-            말못하는 가족의 안전을 지켜주세요!
+          <MyText fontWeight="bold" fontSize={24} color={palette.blue_7b_80}>
+            확실하게 안전을 챙기세요!
           </MyText>
         </View>
-        <Phone
-          source={require("~/assets/image/intro/phone-mockup.png")}
-          resizeMode="contain"
-          fadeDuration={0}
-          style={{
-            top: rpHeight(172),
-            left: !isTablet ? 0 : "auto",
-            right: isTablet ? 0 : "auto",
-            width: rpWidth(491),
-            height: rpHeight(369),
-          }}
-        />
+        <ImageContainer>
+          <Image
+            isTablet={isTablet}
+            source={require("~/assets/image/intro/phone.png")}
+            rpWidth={rpWidth}
+            resizeMode="contain"
+            fadeDuration={0}
+          />
+        </ImageContainer>
         <Button
+          backgroundColor="white"
+          fontColor={palette.blue_7b}
           style={{
             marginBottom: rpWidth(94) + bottom,
+            borderWidth: 2,
+            borderColor: palette.blue_7b_90,
           }}
           onPress={() => {
             navigation.replace("Start");
@@ -71,7 +67,7 @@ const ThirdIntro = () => {
               }),
             ); */
           }}>
-          어디개와 함께하기
+          시작하기
         </Button>
       </IntroContainer>
     </>

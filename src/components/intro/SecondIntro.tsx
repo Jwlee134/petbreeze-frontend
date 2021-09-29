@@ -3,6 +3,7 @@ import styled, { css } from "styled-components/native";
 import MyText from "~/components/common/MyText";
 
 import SharePeople from "~/assets/svg/intro/share-people.svg";
+import ShareFamily from "~/assets/svg/intro/share-family.svg";
 import FootpringPath from "~/assets/svg/intro/footprint-path.svg";
 import PhoneVibrate from "~/assets/svg/intro/phone-vibrate.svg";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -11,83 +12,101 @@ import { View } from "react-native";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 
 const IconContainer = styled.View<{ isLast?: boolean; rpWidth: RpWidth }>`
-  flex-direction: row;
   ${({ rpWidth, isLast }) => css`
-    margin-left: ${rpWidth(13)}px;
-    margin-bottom: ${!isLast ? rpWidth(52) : 0}px;
+    margin-bottom: ${!isLast ? rpWidth(33) : 0}px;
+    margin-left: ${rpWidth(15)}px;
   `}
-  align-items: center;
 `;
 
 const SvgContainer = styled.View<{ rpWidth: RpWidth }>`
-  width: ${({ rpWidth }) => rpWidth(110)}px;
+  flex-direction: row;
+  align-items: center;
 `;
 
-const TextContainer = styled.View`
-  justify-content: center;
+const Svg = styled.View<{ rpWidth: RpWidth }>`
+  width: ${({ rpWidth }) => rpWidth(67)}px;
 `;
 
 const SecondIntro = () => {
   const { top } = useSafeAreaInsets();
-  const { rpHeight, rpWidth } = useContext(DimensionsContext);
+  const { rpWidth } = useContext(DimensionsContext);
 
   return (
     <IntroContainer rpWidth={rpWidth} topInset={top}>
-      <View style={{ paddingHorizontal: rpWidth(22) }}>
-        <MyText fontSize={24}>펫브리즈</MyText>
+      <View style={{ paddingHorizontal: rpWidth(32) }}>
+        <MyText fontWeight="light" fontSize={24}>
+          반려동물 전용 트래커와
+        </MyText>
         <MyText
           fontWeight="bold"
           fontSize={24}
-          style={{ marginBottom: rpWidth(91) }}>
-          트래커와 함께라면?
+          style={{ marginBottom: rpWidth(58) }}>
+          ‘어디개’ 가 함께라면?
         </MyText>
         <IconContainer rpWidth={rpWidth}>
           <SvgContainer rpWidth={rpWidth}>
-            <SharePeople width={rpWidth(55)} height={rpWidth(63)} />
+            <Svg rpWidth={rpWidth}>
+              <PhoneVibrate width={rpWidth(36)} height={rpWidth(39)} />
+            </Svg>
+            <MyText fontWeight="medium" fontSize={18}>
+              안심존 이탈 알림
+            </MyText>
           </SvgContainer>
-          <TextContainer>
-            <MyText
-              fontWeight="medium"
-              fontSize={18}
-              style={{ marginBottom: rpWidth(7) }}>
-              간편한 공유
-            </MyText>
-            <MyText fontSize={14} style={{ opacity: 0.7 }}>
-              가족 구성원끼리 앱을 공유하고{"\n"}함께 관리할 수 있어요.
-            </MyText>
-          </TextContainer>
+          <MyText
+            fontSize={12}
+            color="rgba(0, 0, 0, 0.5)"
+            style={{ marginLeft: rpWidth(67) }}>
+            반려동물이 지정된 안심구역을{"\n"}이탈할 시 알림을 전송해드립니다.
+          </MyText>
         </IconContainer>
         <IconContainer rpWidth={rpWidth}>
           <SvgContainer rpWidth={rpWidth}>
-            <FootpringPath width={rpWidth(62)} height={rpWidth(62)} />
+            <Svg rpWidth={rpWidth}>
+              <SharePeople width={rpWidth(34)} height={rpWidth(39)} />
+            </Svg>
+            <MyText fontWeight="medium" fontSize={18}>
+              실종시 위치 간편공유
+            </MyText>
           </SvgContainer>
-          <TextContainer>
-            <MyText
-              fontWeight="medium"
-              fontSize={18}
-              style={{ marginBottom: rpWidth(7) }}>
-              위치 확인
-            </MyText>
-            <MyText fontSize={14} style={{ opacity: 0.7 }}>
-              반려견이 펫시팅 중 지정된 장소에{"\n"}안전하게 있는지 확인하세요.
-            </MyText>
-          </TextContainer>
+          <MyText
+            fontSize={12}
+            color="rgba(0, 0, 0, 0.5)"
+            style={{ marginLeft: rpWidth(67) }}>
+            위급 시 앱 설치 없이 링크를 통해{"\n"}간편하게 도움을 요청할 수
+            있습니다.
+          </MyText>
         </IconContainer>
-        <IconContainer rpWidth={rpWidth} isLast>
+        <IconContainer rpWidth={rpWidth}>
           <SvgContainer rpWidth={rpWidth}>
-            <PhoneVibrate width={rpWidth(56)} height={rpWidth(60)} />
+            <Svg rpWidth={rpWidth}>
+              <FootpringPath width={rpWidth(37)} height={rpWidth(42)} />
+            </Svg>
+            <MyText fontWeight="medium" fontSize={18}>
+              산책 자동기록 기능
+            </MyText>
           </SvgContainer>
-          <TextContainer>
-            <MyText
-              fontWeight="medium"
-              fontSize={18}
-              style={{ marginBottom: rpHeight(7) }}>
-              안심존 이탈 알림
+          <MyText
+            fontSize={12}
+            color="rgba(0, 0, 0, 0.5)"
+            style={{ marginLeft: rpWidth(67) }}>
+            외출을 감지하여 산책시작 푸쉬알림을{"\n"}전송해드립니다.
+          </MyText>
+        </IconContainer>
+        <IconContainer rpWidth={rpWidth}>
+          <SvgContainer rpWidth={rpWidth}>
+            <Svg rpWidth={rpWidth}>
+              <ShareFamily width={rpWidth(30)} height={rpWidth(39)} />
+            </Svg>
+            <MyText fontWeight="medium" fontSize={18}>
+              가족 구성원간 공유
             </MyText>
-            <MyText fontSize={14} style={{ opacity: 0.7 }}>
-              반려견이 안심구역을 보호자 없이{"\n"}이탈하면 알림이 전송됩니다.
-            </MyText>
-          </TextContainer>
+          </SvgContainer>
+          <MyText
+            fontSize={12}
+            color="rgba(0, 0, 0, 0.5)"
+            style={{ marginLeft: rpWidth(67) }}>
+            가족 구성원과 산책기록, 반려동물 위치{"\n"}등을 공유할 수 있습니다.
+          </MyText>
         </IconContainer>
       </View>
     </IntroContainer>
