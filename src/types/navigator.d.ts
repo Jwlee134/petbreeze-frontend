@@ -45,13 +45,13 @@ export type LoggedInNavParamList = {
   BottomTabNav: undefined;
   BleRootStackNav: undefined;
   WalkMap: undefined;
-  DeleteAccount: undefined;
   UpdateProfile: {
     data: IDevice;
   };
   EmergencyMissingStackNav: {
     data: IDevice;
   };
+  DeleteAccountStackNav: undefined;
   UpdateWiFi: undefined;
   DeviceAlert: undefined;
 };
@@ -63,10 +63,70 @@ export type WalkMapScreenNavigationProp = CompositeNavigationProp<
   StackNavigationProp<LoggedInNavParamList, "WalkMap">,
   StackNavigationProp<RootNavParamList>
 >;
+export type EmergencyMissingStackNavScreenProps = CompositeScreenProps<
+  StackScreenProps<LoggedInNavParamList, "EmergencyMissingStackNav">,
+  StackScreenProps<RootNavParamList>
+>;
 export type UpdateWiFiScreenNavigationProp = CompositeNavigationProp<
   StackNavigationProp<LoggedInNavParamList, "UpdateWiFi">,
   StackNavigationProp<RootNavParamList>
 >;
+
+export type EmergencyMissingStackNavParamList = {
+  EmergencyMissingFirstPage: {
+    device: IDevice;
+  };
+  EmergencyMissingSecondPage: undefined;
+};
+export type EmergencyMissingFirstPageScreenNavigationProp =
+  CompositeNavigationProp<
+    StackNavigationProp<
+      EmergencyMissingStackNavParamList,
+      "EmergencyMissingFirstPage"
+    >,
+    CompositeNavigationProp<
+      StackNavigationProp<LoggedInNavParamList>,
+      StackNavigationProp<RootNavParamList>
+    >
+  >;
+export type EmergencyMissingSecondPageScreenNavigationProp =
+  CompositeNavigationProp<
+    StackNavigationProp<
+      EmergencyMissingStackNavParamList,
+      "EmergencyMissingSecondPage"
+    >,
+    CompositeNavigationProp<
+      StackNavigationProp<LoggedInNavParamList>,
+      StackNavigationProp<RootNavParamList>
+    >
+  >;
+
+export type DeleteAccountStackNavParamList = {
+  DeleteAccountFirstPage: undefined;
+  DeleteAccountSecondPage: undefined;
+};
+export type DeleteAccountFirstPageScreenNavigationProp =
+  CompositeNavigationProp<
+    StackNavigationProp<
+      DeleteAccountStackNavParamList,
+      "DeleteAccountFirstPage"
+    >,
+    CompositeNavigationProp<
+      StackNavigationProp<LoggedInNavParamList>,
+      StackNavigationProp<RootNavParamList>
+    >
+  >;
+export type DeleteAccountSecondPageScreenNavigationProp =
+  CompositeNavigationProp<
+    StackNavigationProp<
+      DeleteAccountStackNavParamList,
+      "DeleteAccountSecondPage"
+    >,
+    CompositeNavigationProp<
+      StackNavigationProp<LoggedInNavParamList>,
+      StackNavigationProp<RootNavParamList>
+    >
+  >;
 
 export type BleRootStackNavParamList = {
   BleWithHeaderStackNav: undefined;

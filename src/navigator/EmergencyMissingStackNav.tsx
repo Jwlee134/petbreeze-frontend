@@ -7,8 +7,12 @@ import React from "react";
 import CustomHeader from "~/components/navigator/CustomHeader";
 import EmergencyMissingFirstPage from "~/screens/emergencyMissingStackNav/EmergencyMissingFirstPage";
 import EmergencyMissingSecondPage from "~/screens/emergencyMissingStackNav/EmergencyMissingSecondPage";
+import {
+  EmergencyMissingStackNavParamList,
+  EmergencyMissingStackNavScreenProps,
+} from "~/types/navigator";
 
-const Stack = createStackNavigator();
+const Stack = createStackNavigator<EmergencyMissingStackNavParamList>();
 
 const forFade = ({ current }: StackCardInterpolationProps) => ({
   cardStyle: {
@@ -16,7 +20,10 @@ const forFade = ({ current }: StackCardInterpolationProps) => ({
   },
 });
 
-const EmergencyMissingStackNav = ({ navigation, route }) => {
+const EmergencyMissingStackNav = ({
+  navigation,
+  route,
+}: EmergencyMissingStackNavScreenProps) => {
   const currentRouteName = getFocusedRouteNameFromRoute(route);
 
   return (
@@ -41,7 +48,7 @@ const EmergencyMissingStackNav = ({ navigation, route }) => {
         }}>
         <Stack.Screen
           name="EmergencyMissingFirstPage"
-          initialParams={{ device: route.params.device }}
+          initialParams={{ device: route.params.data }}
           component={EmergencyMissingFirstPage}
         />
         <Stack.Screen

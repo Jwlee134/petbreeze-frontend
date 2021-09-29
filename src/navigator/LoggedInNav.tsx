@@ -20,6 +20,7 @@ import EmergencyMissingStackNav from "./EmergencyMissingStackNav";
 import BleRootStackNav from "./BleRootStackNav";
 import UpdateWiFi from "~/screens/loggedInNav/UpdateWiFi";
 import DeviceAlert from "~/screens/loggedInNav/DeviceAlert";
+import DeleteAccountStackNav from "./DeleteAccountStackNav";
 
 const Stack = createStackNavigator<LoggedInNavParamList>();
 
@@ -75,6 +76,13 @@ const LoggedInNav = ({ navigation, route }: LoggedInNavScreenProps) => {
         name="EmergencyMissingStackNav"
         component={EmergencyMissingStackNav}
         options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="DeleteAccountStackNav"
+        component={DeleteAccountStackNav}
+        options={{
+          header: props => <CustomHeader {...props}>탈퇴하기</CustomHeader>,
+        }}
       />
       <Stack.Screen
         name="WalkMap"

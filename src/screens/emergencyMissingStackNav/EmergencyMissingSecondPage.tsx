@@ -14,6 +14,7 @@ import palette from "~/styles/palette";
 import Plus from "~/assets/svg/plus-circle-blue.svg";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import { Share } from "react-native";
+import { EmergencyMissingSecondPageScreenNavigationProp } from "~/types/navigator";
 
 const PaddingContainer = styled.View<{ rpWidth: RpWidth }>`
   ${({ rpWidth }) => css`
@@ -44,7 +45,11 @@ const Photo = styled.Image`
 
 const lostTimeArr: ["오전", "오후"] = ["오전", "오후"];
 
-const EmergencyMissingSecondPage = () => {
+const EmergencyMissingSecondPage = ({
+  navigation,
+}: {
+  navigation: EmergencyMissingSecondPageScreenNavigationProp;
+}) => {
   const { lostHour, lostMinute, lostPlace, lostTime, message, photos } =
     useAppSelector(state => state.form);
   const dispatch = useDispatch();

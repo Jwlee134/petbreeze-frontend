@@ -9,6 +9,7 @@ import SelectableButton from "~/components/common/SelectableButton";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import { useAppSelector } from "~/store";
 import { formActions } from "~/store/form";
+import { EmergencyMissingFirstPageScreenNavigationProp } from "~/types/navigator";
 
 const Avatar = styled.Image<{ rpWidth: RpWidth }>`
   ${({ rpWidth }) => css`
@@ -29,7 +30,11 @@ const RowContainer = styled.View`
   flex-direction: row;
 `;
 
-const EmergencyMissingFirstPage = ({ navigation }) => {
+const EmergencyMissingFirstPage = ({
+  navigation,
+}: {
+  navigation: EmergencyMissingFirstPageScreenNavigationProp;
+}) => {
   const { name, breed, hasTag, characteristic } = useAppSelector(
     state => state.form,
   );
