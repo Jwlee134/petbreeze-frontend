@@ -5,11 +5,9 @@ import {
   KeyboardAvoidingView,
   TextInput,
   TouchableWithoutFeedback,
-  View,
 } from "react-native";
 import styled from "styled-components/native";
 import GradientContainer from "~/components/common/container/GradientContainer";
-import { AuthScreenNavigationProp } from "~/types/navigator";
 import Footprint from "~/assets/svg/footprint/footprint-app-icon-blue.svg";
 import AppName from "~/assets/svg/app-name.svg";
 import useAnimatedSequence from "~/hooks/useAnimatedSequence";
@@ -18,13 +16,16 @@ import Input from "~/components/common/Input";
 import { isIos } from "~/utils";
 import { DimensionsContext } from "~/context/DimensionsContext";
 
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import SocialLogin from "~/components/auth/SocialLogin";
+import Policies from "~/components/auth/Policies";
+
 const TopContainer = styled.View`
   flex: 1;
 `;
 
 const BottomContainer = styled(Animated.View)`
   flex: 1;
-  justify-content: center;
 `;
 
 const LogoContainer = styled(Animated.View)`
@@ -33,40 +34,69 @@ const LogoContainer = styled(Animated.View)`
   align-self: center;
 `;
 
-const Auth = ({ navigation }: { navigation: AuthScreenNavigationProp }) => {
+const InputContainer = styled(Animated.View)``;
+
+const BtnContainer = styled(Animated.View)`
+  flex-direction: row;
+  justify-content: center;
+`;
+
+const TextContainer = styled(Animated.View)`
+  align-items: center;
+  position: absolute;
+  text-align: center;
+  width: 100%;
+`;
+
+const Auth = () => {
   const { rpHeight, rpWidth } = useContext(DimensionsContext);
+  const { bottom } = useSafeAreaInsets();
   const [slideTop, opacity] = useAnimatedSequence({
     numOfValues: 2,
     delayAfterMount: 200,
   });
 
-  const translateY = slideTop.interpolate({
+  const translateYLogo = slideTop.interpolate({
     inputRange: [0, 1],
     outputRange: [rpHeight(isIos ? 262 : 218), rpHeight(84)],
   });
 
-  const scale = slideTop.interpolate({
+  const scaleLogo = slideTop.interpolate({
     inputRange: [0, 1],
     outputRange: [1, 0.6],
   });
 
   const ref = useRef<TextInput>(null);
   const [name, setName] = useState("");
+  const [showBtn, setShowBtn] = useState(false);
+  const value = useRef(new Animated.Value(0)).current;
+
+  const translateYInput = value.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, -rpHeight(86)],
+  });
 
   useEffect(() => {
-    if (ref.current) {
+    if (showBtn) {
+      Animated.timing(value, {
+        toValue: 1,
+        duration: 200,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [showBtn]);
+
+  useEffect(() => {
+    if (ref.current && !showBtn) {
       setTimeout(() => {
         ref.current?.focus();
       }, 600);
     }
-  }, [ref.current]);
+  }, [ref.current, showBtn]);
 
   const handleSubmit = () => {
     if (!name) return;
-    Keyboard.dismiss();
-    navigation.replace("Loading", {
-      previousRouteName: "Auth",
-    });
+    setShowBtn(true);
   };
 
   return (
@@ -78,7 +108,10 @@ const Auth = ({ navigation }: { navigation: AuthScreenNavigationProp }) => {
           <TopContainer>
             <LogoContainer
               style={{
-                transform: [{ translateY }, { scale }],
+                transform: [
+                  { translateY: translateYLogo },
+                  { scale: scaleLogo },
+                ],
               }}>
               <Footprint
                 style={{ marginBottom: rpHeight(38) }}
@@ -88,15 +121,25 @@ const Auth = ({ navigation }: { navigation: AuthScreenNavigationProp }) => {
               <AppName width={rpWidth(137)} height={rpHeight(47)} />
             </LogoContainer>
           </TopContainer>
-          <BottomContainer style={{ opacity }}>
-            <MyText
-              style={{ textAlign: "center", marginBottom: rpHeight(34) }}
-              color="white"
-              fontSize={20}
-              fontWeight="light">
-              반갑습니다 :){"\n"}내 이름을 설정해주세요.
-            </MyText>
-            <View style={{ paddingHorizontal: rpWidth(50) }}>
+          <BottomContainer
+            style={{
+              opacity,
+              justifyContent: showBtn ? "flex-start" : "center",
+            }}>
+            {!showBtn ? (
+              <MyText
+                style={{ textAlign: "center", marginBottom: rpHeight(34) }}
+                color="white"
+                fontSize={20}
+                fontWeight="light">
+                반갑습니다 :){"\n"}내 이름을 설정해주세요.
+              </MyText>
+            ) : null}
+            <InputContainer
+              style={{
+                paddingHorizontal: rpWidth(50),
+                transform: [{ translateY: translateYInput }],
+              }}>
               <Input
                 ref={ref}
                 isWhiteBorder
@@ -104,8 +147,23 @@ const Auth = ({ navigation }: { navigation: AuthScreenNavigationProp }) => {
                 onChangeText={text => setName(text)}
                 textAlign="center"
                 onSubmitEditing={handleSubmit}
+                editable={showBtn ? false : true}
               />
-            </View>
+            </InputContainer>
+            {showBtn ? (
+              <>
+                <BtnContainer style={{ opacity: value }}>
+                  <SocialLogin />
+                </BtnContainer>
+                <TextContainer
+                  style={{
+                    bottom: rpWidth(34) + bottom,
+                    opacity: value,
+                  }}>
+                  <Policies />
+                </TextContainer>
+              </>
+            ) : null}
           </BottomContainer>
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>

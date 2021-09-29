@@ -9,27 +9,25 @@ import messaging from "@react-native-firebase/messaging";
 const Loading = ({
   navigation,
   route: {
-    params: { previousRouteName },
+    params: { data },
   },
 }: LoadingScreenProps) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (previousRouteName === "Auth") {
-      messaging()
-        .getToken()
-        .then(token => {
-          console.log(token);
-          dispatch(
-            navigatorActions.setInitialRoute({
-              initialLoggedInNavRouteName: isIos
-                ? "Permissions"
-                : "BleRootStackNav",
-            }),
-          );
-          navigation.replace("LoggedInNav");
-        });
-    }
+    messaging()
+      .getToken()
+      .then(token => {
+        console.log(token);
+        dispatch(
+          navigatorActions.setInitialRoute({
+            initialLoggedInNavRouteName: isIos
+              ? "Permissions"
+              : "BleRootStackNav",
+          }),
+        );
+        navigation.replace("LoggedInNav");
+      });
   }, []);
 
   return <LoadingComponent loadingText="Loading" />;

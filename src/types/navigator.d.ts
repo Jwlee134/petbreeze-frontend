@@ -15,7 +15,7 @@ export type RootNavParamList = {
   Auth: undefined;
   LoggedInNav: undefined;
   Loading: {
-    previousRouteName: string;
+    data: any;
   };
 };
 export type FirmwareUpdateScreenNavigationProp = StackNavigationProp<
@@ -273,6 +273,16 @@ export type SharedStackNavParamList = {
 };
 export type HomeScreenNavigationProp = CompositeNavigationProp<
   StackNavigationProp<SharedStackNavParamList, "Home">,
+  CompositeNavigationProp<
+    BottomTabNavigationProp<BottomTabParamList>,
+    CompositeNavigationProp<
+      StackNavigationProp<LoggedInNavParamList>,
+      StackNavigationProp<RootNavParamList>
+    >
+  >
+>;
+export type NotificationScreenNavigationProp = CompositeNavigationProp<
+  StackNavigationProp<SharedStackNavParamList, "Notification">,
   CompositeNavigationProp<
     BottomTabNavigationProp<BottomTabParamList>,
     CompositeNavigationProp<
