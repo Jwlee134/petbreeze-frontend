@@ -13,6 +13,7 @@ export interface IDevice {
   weight: number;
   phoneNumber: string;
   etc: string;
+  emergency?: boolean;
 }
 
 const initialState: IDevice[] = [
@@ -29,6 +30,7 @@ const initialState: IDevice[] = [
     weight: 5,
     phoneNumber: "01040318103",
     etc: "하하",
+    emergency: true,
   },
   {
     id: "bbbb",

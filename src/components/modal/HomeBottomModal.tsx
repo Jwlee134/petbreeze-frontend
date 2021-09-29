@@ -44,6 +44,7 @@ const HomeBottomModal = ({ device, close }: IProps) => {
           circleWidth={90}
           lineWidth={7}
           battery={device.battery}
+          highlightOnEmergency={device.emergency}
         />
       </AvatarContainer>
       <Button rpWidth={rpWidth}>

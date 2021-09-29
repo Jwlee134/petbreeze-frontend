@@ -19,6 +19,7 @@ interface IProps {
   onAnimatedFinish?: () => void;
   numOfValues: number;
   dependencies?: any[];
+  startAnimation?: boolean;
 }
 
 const useAnimatedSequence = ({
@@ -39,6 +40,7 @@ const useAnimatedSequence = ({
   onAnimatedFinish,
   numOfValues,
   dependencies,
+  startAnimation = true,
 }: IProps) => {
   const valueArr = Array.from(
     { length: numOfValues },
@@ -103,24 +105,26 @@ const useAnimatedSequence = ({
     const delayOnMountSequence = (main: Animated.CompositeAnimation) =>
       Animated.sequence([Animated.delay(delayAfterMount), main]);
 
-    if (loop) {
-      if (shouldDelayOnMount) {
-        delayOnMountSequence(Animated.loop(sequence())).start();
+    if (startAnimation) {
+      if (loop) {
+        if (shouldDelayOnMount) {
+          delayOnMountSequence(Animated.loop(sequence())).start();
+        } else {
+          Animated.loop(sequence()).start();
+        }
       } else {
-        Animated.loop(sequence()).start();
-      }
-    } else {
-      if (shouldDelayOnMount) {
-        delayOnMountSequence(sequence()).start(() => {
-          if (onAnimatedFinish) onAnimatedFinish();
-        });
-      } else {
-        sequence().start(() => {
-          if (onAnimatedFinish) onAnimatedFinish();
-        });
+        if (shouldDelayOnMount) {
+          delayOnMountSequence(sequence()).start(() => {
+            if (onAnimatedFinish) onAnimatedFinish();
+          });
+        } else {
+          sequence().start(() => {
+            if (onAnimatedFinish) onAnimatedFinish();
+          });
+        }
       }
     }
-  }, [loop, ...(dependencies ? dependencies : [])]);
+  }, [loop, startAnimation, ...(dependencies ? dependencies : [])]);
 
   return valueArr;
 };

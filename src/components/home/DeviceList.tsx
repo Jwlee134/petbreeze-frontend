@@ -75,6 +75,7 @@ const DeviceList = () => {
               circleWidth={deviceList.length > 2 ? 70 : 90}
               lineWidth={deviceList.length > 2 ? 5 : 7}
               battery={device.battery}
+              highlightOnEmergency={device.emergency}
             />
           </Pressable>
         ))
@@ -85,7 +86,8 @@ const DeviceList = () => {
           style={{
             position: "absolute",
             bottom: 0,
-            marginBottom: rpWidth(40),
+            marginBottom: rpWidth(30),
+            height: rpWidth(95),
           }}
           contentContainerStyle={{
             minWidth: isTablet ? 0 : width,
@@ -98,6 +100,7 @@ const DeviceList = () => {
               : deviceList.length > 5
               ? width * 0.09
               : 0,
+            alignItems: "center",
           }}>
           {deviceList.map(device => (
             <Pressable
@@ -112,6 +115,7 @@ const DeviceList = () => {
                 circleWidth={70}
                 lineWidth={5}
                 battery={device.battery}
+                highlightOnEmergency={device.emergency}
               />
             </Pressable>
           ))}
