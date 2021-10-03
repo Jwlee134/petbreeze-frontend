@@ -7,7 +7,6 @@ platform :ios, '11.0'
 target 'Petbreeze' do
   use_unimodules!
   pod 'Firebase/Analytics'
-  pod 'MQTTClient'
   config = use_native_modules!
 
   use_react_native!(
