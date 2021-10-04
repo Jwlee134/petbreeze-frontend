@@ -41,5 +41,12 @@ export default () => {
         initialLoggedInNavRouteName: "BleRootStackNav",
       }),
     );
+  } else {
+    store.dispatch(
+      navigatorActions.setInitialRoute({
+        initialLoggedInNavRouteName: "BottomTabNav",
+        initialBottomTabNavRouteName: "HomeTab",
+      }),
+    );
   }
 };
