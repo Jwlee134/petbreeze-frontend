@@ -12,7 +12,7 @@ import { Alert, View } from "react-native";
 import useBottomSheet from "~/hooks/useBottomSheet";
 import { WalkMapScreenNavigationProp } from "~/types/navigator";
 import MyText from "../common/MyText";
-import DeviceAvatarCircle from "../common/DeviceAvatarCircle";
+import AnimatedCircularProgress from "../common/AnimatedCircularProgress";
 import { useNavigation } from "@react-navigation/native";
 import backgroundTracking from "~/utils/backgroundTracking";
 import { navigatorActions } from "~/store/navigator";
@@ -129,7 +129,7 @@ const WalkBottomSheet = ({
       ) : null}
       {isStopped && (
         <View style={{ marginVertical: rpWidth(19) }}>
-          <DeviceAvatarCircle
+          <AnimatedCircularProgress
             lineWidth={10}
             circleWidth={70}
             battery={devices[0].battery}

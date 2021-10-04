@@ -7,7 +7,7 @@ import { IDevice } from "~/store/device";
 import { formActions } from "~/store/form";
 import palette from "~/styles/palette";
 import { HomeScreenNavigationProp } from "~/types/navigator";
-import DeviceAvatarCircle from "../common/DeviceAvatarCircle";
+import AnimatedCircularProgress from "../common/AnimatedCircularProgress";
 import Divider from "../common/Divider";
 import MyText from "../common/MyText";
 
@@ -40,7 +40,7 @@ const HomeBottomModal = ({ device, close }: IProps) => {
   return (
     <>
       <AvatarContainer rpWidth={rpWidth}>
-        <DeviceAvatarCircle
+        <AnimatedCircularProgress
           circleWidth={90}
           lineWidth={7}
           battery={device.battery}

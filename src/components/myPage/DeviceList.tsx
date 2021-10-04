@@ -1,11 +1,9 @@
 import { useNavigation } from "@react-navigation/core";
 import React, { useContext } from "react";
 import { TouchableOpacity, View } from "react-native";
-import LinearGradient from "react-native-linear-gradient";
 import styled, { css } from "styled-components/native";
 import { useAppSelector } from "~/store";
 import { MyPageScreenNavigationProp } from "~/types/navigator";
-import DeviceAvatarCircle from "../common/DeviceAvatarCircle";
 import MyText from "../common/MyText";
 import Footprint from "~/assets/svg/tab/footprint-outline.svg";
 import { useDispatch } from "react-redux";
@@ -37,6 +35,14 @@ const Svg = styled.View<{ rpWidth: RpWidth }>`
   `}
 `;
 
+const Image = styled.Image<{ rpWidth: RpWidth }>`
+  ${({ rpWidth }) => css`
+    width: ${rpWidth(70, true)}px;
+    height: ${rpWidth(70, true)}px;
+    border-radius: ${rpWidth(35, true)}px;
+  `}
+`;
+
 const DeviceList = () => {
   const devices = useAppSelector(state => state.device);
   const navigation = useNavigation<MyPageScreenNavigationProp>();
@@ -46,72 +52,41 @@ const DeviceList = () => {
   return (
     <View>
       {devices.length ? (
-        <>
-          {devices.length > 3 ? (
-            <LinearGradient
-              pointerEvents="none"
-              colors={["#FFFFFF", "#FFFFFF00"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
+        <DeviceContainer
+          rpWidth={rpWidth}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{
+            ...(devices.length < 4
+              ? {
+                  flexGrow: 1,
+                  justifyContent: "center",
+                }
+              : {
+                  paddingHorizontal: width * 0.25,
+                }),
+          }}>
+          {devices.map((device, i) => (
+            <AvatarButton
               style={{
-                position: "absolute",
-                left: 0,
-                width: rpWidth(70),
-                height: "100%",
-                zIndex: 1,
+                marginHorizontal: width * 0.07,
+                ...(i === 0 && { marginLeft: 0 }),
+                ...(i === devices.length - 1 && { marginRight: 0 }),
               }}
-            />
-          ) : null}
-          <DeviceContainer
-            rpWidth={rpWidth}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{
-              ...(devices.length < 4
-                ? {
-                    flexGrow: 1,
-                    justifyContent: "center",
-                  }
-                : {
-                    paddingHorizontal: width * 0.25,
-                  }),
-            }}>
-            {devices.map((device, i) => (
-              <AvatarButton
-                style={{
-                  marginHorizontal: width * 0.07,
-                  ...(i === 0 && { marginLeft: 0 }),
-                  ...(i === devices.length - 1 && { marginRight: 0 }),
-                }}
-                onPress={() => {
-                  navigation.navigate("DeviceSetting", {
-                    data: device,
-                  });
-                }}
-                key={device.id}>
-                <DeviceAvatarCircle preventRpHeight />
-                <MyText style={{ marginTop: rpWidth(15) }}>
-                  {device.name}
-                </MyText>
-              </AvatarButton>
-            ))}
-          </DeviceContainer>
-          {devices.length > 3 ? (
-            <LinearGradient
-              pointerEvents="none"
-              colors={["#FFFFFF00", "#FFFFFF"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={{
-                position: "absolute",
-                right: 0,
-                width: rpWidth(70),
-                height: "100%",
-                zIndex: 1,
+              onPress={() => {
+                navigation.navigate("DeviceSetting", {
+                  data: device,
+                });
               }}
-            />
-          ) : null}
-        </>
+              key={device.id}>
+              <Image
+                rpWidth={rpWidth}
+                source={require("~/assets/image/test.jpg")}
+              />
+              <MyText style={{ marginTop: rpWidth(15) }}>{device.name}</MyText>
+            </AvatarButton>
+          ))}
+        </DeviceContainer>
       ) : (
         <TouchableOpacity
           onPress={() => {

@@ -2,7 +2,7 @@ import React, { useContext, useMemo, useState } from "react";
 import styled, { css } from "styled-components/native";
 import useModal from "~/hooks/useModal";
 import { useAppSelector } from "~/store";
-import DeviceAvatarCircle from "../common/DeviceAvatarCircle";
+import AnimatedCircularProgress from "../common/AnimatedCircularProgress";
 import Modal from "react-native-modal";
 import IosStyleBottomModal from "../modal/IosStyleBottomModal";
 import HomeBottomModal from "../modal/HomeBottomModal";
@@ -71,7 +71,7 @@ const DeviceList = () => {
               setClickedId(device.id);
               open();
             }}>
-            <DeviceAvatarCircle
+            <AnimatedCircularProgress
               circleWidth={deviceList.length > 2 ? 70 : 90}
               lineWidth={deviceList.length > 2 ? 5 : 7}
               battery={device.battery}
@@ -110,7 +110,7 @@ const DeviceList = () => {
                 setClickedId(device.id);
                 open();
               }}>
-              <DeviceAvatarCircle
+              <AnimatedCircularProgress
                 preventRpHeight
                 circleWidth={70}
                 lineWidth={5}

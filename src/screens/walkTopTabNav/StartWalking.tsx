@@ -14,7 +14,7 @@ import { navigatorActions } from "~/store/navigator";
 import MyText from "~/components/common/MyText";
 import Dog from "~/assets/svg/dog/dog-with-device.svg";
 import palette from "~/styles/palette";
-import DeviceAvatarCircle from "~/components/common/DeviceAvatarCircle";
+import AnimatedCircularProgress from "~/components/common/AnimatedCircularProgress";
 import { DimensionsContext } from "~/context/DimensionsContext";
 
 const Container = styled.View`
@@ -103,7 +103,7 @@ const StartWalking = ({
               }}
               selected={selected.includes(item.id)}>
               <RowContainer>
-                <DeviceAvatarCircle
+                <AnimatedCircularProgress
                   isBackgroundTransparent
                   lineWidth={2}
                   circleWidth={70}

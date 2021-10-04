@@ -3,7 +3,7 @@ import styled from "styled-components/native";
 import { DimensionsContext } from "~/context/DimensionsContext";
 import { IDevice } from "~/store/device";
 import palette from "~/styles/palette";
-import DeviceAvatarCircle from "../common/DeviceAvatarCircle";
+import AnimatedCircularProgress from "../common/AnimatedCircularProgress";
 import MyText from "../common/MyText";
 
 const RowContainer = styled.View`
@@ -22,7 +22,7 @@ const DeviceSettingListItem = ({ device }: { device: IDevice }) => {
         marginRight: rpWidth(25),
       }}>
       <RowContainer>
-        <DeviceAvatarCircle
+        <AnimatedCircularProgress
           lineWidth={2}
           circleWidth={70}
           battery={device.battery}

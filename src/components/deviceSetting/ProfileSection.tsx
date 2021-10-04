@@ -1,6 +1,5 @@
 import React, { useContext } from "react";
 import styled, { css } from "styled-components/native";
-import DeviceAvatarCircle from "../common/DeviceAvatarCircle";
 import Pencil from "~/assets/svg/myPage/pencil.svg";
 import Divider from "../common/Divider";
 import { TouchableOpacity } from "react-native";
@@ -17,6 +16,14 @@ const Container = styled.View<{ rpWidth: RpWidth }>`
   `}
 `;
 
+const Image = styled.Image<{ rpWidth: RpWidth }>`
+  ${({ rpWidth }) => css`
+    width: ${rpWidth(70)}px;
+    height: ${rpWidth(70)}px;
+    border-radius: ${rpWidth(35)}px;
+  `}
+`;
+
 const ProfileSection = ({ data }: { data: IDevice }) => {
   const navigation = useNavigation();
   const { rpWidth } = useContext(DimensionsContext);
@@ -29,7 +36,7 @@ const ProfileSection = ({ data }: { data: IDevice }) => {
             data,
           })
         }>
-        <DeviceAvatarCircle />
+        <Image rpWidth={rpWidth} source={require("~/assets/image/test.jpg")} />
         <Pencil
           width={rpWidth(28)}
           height={rpWidth(28)}

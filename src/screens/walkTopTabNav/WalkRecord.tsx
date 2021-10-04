@@ -3,7 +3,7 @@ import { ScrollView, View } from "react-native";
 import deviceApi from "~/api/device";
 import walkApi from "~/api/walk";
 import Calendar from "~/components/common/Calendar";
-import DeviceAvatarCircle from "~/components/common/DeviceAvatarCircle";
+import AnimatedCircularProgress from "~/components/common/AnimatedCircularProgress";
 import ListItem from "~/components/common/ListItem";
 import MyText from "~/components/common/MyText";
 import { useAppSelector } from "~/store";
@@ -77,7 +77,7 @@ const WalkRecord = ({
             })
           }>
           <RowContainer>
-            <DeviceAvatarCircle
+            <AnimatedCircularProgress
               isBackgroundTransparent
               lineWidth={2}
               circleWidth={70}

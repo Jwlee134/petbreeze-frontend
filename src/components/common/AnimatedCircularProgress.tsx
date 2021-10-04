@@ -1,6 +1,6 @@
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useContext } from "react";
 import styled, { css } from "styled-components/native";
-import { AnimatedCircularProgress } from "react-native-circular-progress";
+import { AnimatedCircularProgress as RNCircularProgress } from "react-native-circular-progress";
 import palette from "~/styles/palette";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import { Animated, View } from "react-native";
@@ -8,9 +8,9 @@ import Icon from "~/assets/svg/exclamation/exclamation-mark-white.svg";
 import useAnimatedSequence from "~/hooks/useAnimatedSequence";
 
 interface IProps {
-  battery?: number;
-  lineWidth?: number;
-  circleWidth?: number;
+  battery: number;
+  lineWidth: number;
+  circleWidth: number;
   avatar: string;
   isInModal?: boolean;
   isBackgroundTransparent?: boolean;
@@ -51,7 +51,7 @@ const Alert = styled(Animated.View)<{ width: number }>`
   `}
 `;
 
-const DeviceAvatarCircle = ({
+const AnimatedCircularProgress = ({
   battery,
   lineWidth,
   circleWidth,
@@ -86,50 +86,42 @@ const DeviceAvatarCircle = ({
           <Icon width={rpWidth(7)} height={rpWidth(36)} />
         </Alert>
       ) : null}
-      {battery !== undefined && circleWidth && lineWidth ? (
-        <AnimatedCircularProgress
-          size={rpWidth(circleWidth)}
-          width={lineWidth < 3 ? lineWidth : rpWidth(lineWidth)}
-          fill={battery}
-          prefill={battery}
-          tintColor={
-            battery > 25 ? `${palette.blue_7b}E6` : `${palette.red_f0}E6`
-          }
-          backgroundColor={
-            isBackgroundTransparent
-              ? "transparent"
-              : battery > 25
-              ? `${palette.blue_7b}33`
-              : `${palette.red_f0}33`
-          }
-          lineCap="round"
-          rotation={0}
-          style={{
-            ...(isInModal && {
-              position: "absolute",
-              top: -rpWidth(45),
-              left: "50%",
-              marginLeft: -rpWidth(45),
-            }),
-          }}>
-          {() => (
-            <Image
-              rpWidth={rpWidth}
-              preventRpHeight={preventRpHeight}
-              circleWidth={circleWidth - lineWidth}
-              source={require("~/assets/image/test.jpg")}
-            />
-          )}
-        </AnimatedCircularProgress>
-      ) : (
-        <Image
-          rpWidth={rpWidth}
-          preventRpHeight={preventRpHeight}
-          source={require("~/assets/image/test.jpg")}
-        />
-      )}
+      <RNCircularProgress
+        size={rpWidth(circleWidth)}
+        width={lineWidth < 3 ? lineWidth : rpWidth(lineWidth)}
+        fill={battery}
+        prefill={battery}
+        tintColor={
+          battery > 25 ? `${palette.blue_7b}E6` : `${palette.red_f0}E6`
+        }
+        backgroundColor={
+          isBackgroundTransparent
+            ? "transparent"
+            : battery > 25
+            ? `${palette.blue_7b}33`
+            : `${palette.red_f0}33`
+        }
+        lineCap="round"
+        rotation={0}
+        style={{
+          ...(isInModal && {
+            position: "absolute",
+            top: -rpWidth(45),
+            left: "50%",
+            marginLeft: -rpWidth(45),
+          }),
+        }}>
+        {() => (
+          <Image
+            rpWidth={rpWidth}
+            preventRpHeight={preventRpHeight}
+            circleWidth={circleWidth - lineWidth}
+            source={require("~/assets/image/test.jpg")}
+          />
+        )}
+      </RNCircularProgress>
     </View>
   );
 };
 
-export default DeviceAvatarCircle;
+export default AnimatedCircularProgress;
