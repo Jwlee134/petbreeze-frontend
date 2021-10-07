@@ -1,13 +1,23 @@
 import React, { useContext } from "react";
+import { Animated, KeyboardAvoidingView } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useDispatch } from "react-redux";
 import styled, { css } from "styled-components/native";
 import Button from "~/components/common/Button";
 import Input from "~/components/common/Input";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
-import useBottomSheet from "~/hooks/useBottomSheet";
 import { useAppSelector } from "~/store";
 import { deviceSettingActions } from "~/store/deviceSetting";
+import { isIos } from "~/utils";
+import ShadowContainer from "../common/container/ShadowContainer";
 import ScrollPicker from "../common/ScrollPicker";
+
+const Container = styled(Animated.View)<{ rpWidth: RpWidth }>`
+  background-color: white;
+  border-top-left-radius: 25px;
+  border-top-right-radius: 25px;
+  padding-bottom: ${({ rpWidth }) => rpWidth(32)}px;
+`;
 
 const RowContainer = styled.View<{ rpWidth: RpWidth }>`
   flex-direction: row;
@@ -21,25 +31,39 @@ const InputContainer = styled.View`
   width: 43%;
 `;
 
+const HandleContainer = styled.View<{ rpWidth: RpWidth }>`
+  height: ${({ rpWidth }) => rpWidth(36)}px;
+  align-items: center;
+`;
+
+const Handle = styled.View<{ rpWidth: RpWidth }>`
+  ${({ rpWidth }) => css`
+    width: ${rpWidth(29)}px;
+    height: ${rpWidth(3)}px;
+    margin-top: ${rpWidth(8)}px;
+  `}
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 100px;
+`;
+
 const data = ["10m", "20m", "30m", "50m", "100m"];
 
-const SafetyZoneMapBottomSheet = ({ snapPoints }: { snapPoints: number[] }) => {
-  const { BottomSheetComponent } = useBottomSheet();
+const SafetyZoneMapBottomSheet = ({
+  value,
+  height,
+}: {
+  value: Animated.AnimatedInterpolation;
+  height: number;
+}) => {
   const { rpWidth } = useContext(DimensionsContext);
 
-  const name = useAppSelector(
-    state => state.deviceSetting.safetyZone.draft.name,
-  );
-  const radius = useAppSelector(
-    state => state.deviceSetting.safetyZone.draft.radius,
-  );
-  const isSubmitting = useAppSelector(
-    state => state.deviceSetting.safetyZone.isSubmitting,
-  );
-  const fromDeviceSetting = useAppSelector(
-    state => state.deviceSetting.safetyZone.fromDeviceSetting,
-  );
+  const {
+    draft: { name, radius },
+    isSubmitting,
+    fromDeviceSetting,
+  } = useAppSelector(state => state.deviceSetting.safetyZone);
   const dispatch = useDispatch();
+  const { bottom } = useSafeAreaInsets();
 
   const handleFinish = () => {
     dispatch(
@@ -50,50 +74,57 @@ const SafetyZoneMapBottomSheet = ({ snapPoints }: { snapPoints: number[] }) => {
   };
 
   return (
-    <BottomSheetComponent
-      enableContentPanningGesture={false}
-      enableHandlePanningGesture={false}
-      enableFlashScrollableIndicatorOnExpand={false}
-      enableOverDrag={false}
-      animateOnMount
-      snapPoints={snapPoints}
-      index={0}>
-      <RowContainer rpWidth={rpWidth}>
-        <InputContainer style={{ marginRight: "13%" }}>
-          <Input
-            value={name}
-            placeholder="안심존 이름"
-            onChangeText={text =>
-              dispatch(
-                deviceSettingActions.setSafetyZone({
-                  draft: { name: text },
-                }),
-              )
-            }
-          />
-        </InputContainer>
-        <InputContainer style={{ alignItems: "center" }}>
-          <ScrollPicker
-            data={data}
-            onChange={index =>
-              dispatch(
-                deviceSettingActions.setSafetyZone({
-                  draft: { radius: parseInt(data[index]) },
-                }),
-              )
-            }
-            width={rpWidth(88)}
-            height={rpWidth(39)}
-            selectedIndex={data.findIndex(item => item === `${radius}m`)}
-          />
-        </InputContainer>
-      </RowContainer>
-      <Button
-        /* disabled={!name || !radius} */ isLoading={isSubmitting}
-        onPress={handleFinish}>
-        {fromDeviceSetting ? "확인" : "다음"}
-      </Button>
-    </BottomSheetComponent>
+    <KeyboardAvoidingView
+      behavior={isIos ? "padding" : undefined}
+      keyboardVerticalOffset={-rpWidth(85) - bottom}>
+      <ShadowContainer shadowOpacity={0.15} shadowRadius={10}>
+        <Container
+          rpWidth={rpWidth}
+          style={{
+            transform: [{ translateY: value }],
+            height,
+          }}>
+          <HandleContainer rpWidth={rpWidth}>
+            <Handle rpWidth={rpWidth} />
+          </HandleContainer>
+          <RowContainer rpWidth={rpWidth}>
+            <InputContainer style={{ marginRight: "13%" }}>
+              <Input
+                value={name}
+                placeholder="안심존 이름"
+                onChangeText={text =>
+                  dispatch(
+                    deviceSettingActions.setSafetyZone({
+                      draft: { name: text },
+                    }),
+                  )
+                }
+              />
+            </InputContainer>
+            <InputContainer style={{ alignItems: "center" }}>
+              <ScrollPicker
+                data={data}
+                onChange={index =>
+                  dispatch(
+                    deviceSettingActions.setSafetyZone({
+                      draft: { radius: parseInt(data[index]) },
+                    }),
+                  )
+                }
+                width={rpWidth(88)}
+                height={rpWidth(39)}
+                selectedIndex={data.findIndex(item => item === `${radius}m`)}
+              />
+            </InputContainer>
+          </RowContainer>
+          <Button
+            /* disabled={!name || !radius} */ isLoading={isSubmitting}
+            onPress={handleFinish}>
+            {fromDeviceSetting ? "확인" : "다음"}
+          </Button>
+        </Container>
+      </ShadowContainer>
+    </KeyboardAvoidingView>
   );
 };
 

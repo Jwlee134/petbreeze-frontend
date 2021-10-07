@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { StyleProp, TouchableOpacityProps, ViewStyle } from "react-native";
 import styled, { css } from "styled-components/native";
-import ShadowContainer from "./container/ShadowContainer";
+import ShadowContainer from "../common/container/ShadowContainer";
 
 import MyLocation from "~/assets/svg/common/my-location.svg";
 import Footprint from "~/assets/svg/common/footprint.svg";
@@ -23,7 +23,7 @@ const Container = styled.TouchableOpacity<{ rpWidth: RpWidth }>`
   align-items: center;
 `;
 
-const MapFloatingCircle = ({ icon, style, ...props }: IProps) => {
+const MapButton = ({ icon, style, ...props }: IProps) => {
   const { rpHeight, rpWidth } = useContext(DimensionsContext);
 
   return (
@@ -39,4 +39,4 @@ const MapFloatingCircle = ({ icon, style, ...props }: IProps) => {
   );
 };
 
-export default MapFloatingCircle;
+export default MapButton;

@@ -42,6 +42,7 @@ const KeyboardAwareScrollContainer = ({
 
   return (
     <KeyboardAwareScrollView
+      keyboardShouldPersistTaps="handled"
       contentContainerStyle={{
         ...(isSpaceBetween && { flexGrow: 1, justifyContent: "space-between" }),
       }}

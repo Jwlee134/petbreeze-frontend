@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import styled from "styled-components/native";
 import Timer from "./Timer";
 import Distance from "./Distance";
@@ -9,7 +9,7 @@ import { useAppSelector } from "~/store";
 import Button from "../common/Button";
 
 import { Alert, View } from "react-native";
-import useBottomSheet from "~/hooks/useBottomSheet";
+import Sheet from "@gorhom/bottom-sheet";
 import { WalkMapScreenNavigationProp } from "~/types/navigator";
 import MyText from "../common/MyText";
 import AnimatedCircularProgress from "../common/AnimatedCircularProgress";
@@ -17,6 +17,7 @@ import { useNavigation } from "@react-navigation/native";
 import backgroundTracking from "~/utils/backgroundTracking";
 import { navigatorActions } from "~/store/navigator";
 import { DimensionsContext } from "~/context/DimensionsContext";
+import BottomSheet from "../common/BottomSheet";
 
 interface IProps {
   handleFinish: () => Promise<void>;
@@ -41,8 +42,7 @@ const WalkBottomSheet = ({
   const dispatch = useDispatch();
   const devices = useAppSelector(state => state.device);
   const navigation = useNavigation<WalkMapScreenNavigationProp>();
-
-  const { BottomSheetComponent, sheetRef } = useBottomSheet();
+  const sheetRef = useRef<Sheet>(null);
 
   const handleStop = async () => {
     dispatch(
@@ -112,7 +112,8 @@ const WalkBottomSheet = ({
   }, []);
 
   return (
-    <BottomSheetComponent
+    <BottomSheet
+      ref={bottomSheetRef}
       onChange={handleChange}
       index={1}
       snapPoints={snapPoints}>
@@ -146,7 +147,7 @@ const WalkBottomSheet = ({
           산책 종료
         </Button>
       )}
-    </BottomSheetComponent>
+    </BottomSheet>
   );
 };
 

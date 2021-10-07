@@ -4,6 +4,8 @@ export default {
   blue_7b: "#7B13FF",
   blue_7b_90: "#7B13FFE6",
   blue_7b_80: "#7B13FFCC",
+  blue_6e_50: "#6E41E280",
+  blue_6e_20: "#6E41E233",
   red_f0: "#F00043",
   red_f0_55: "#F000438C",
   gray_c4: "#C4C4C4",

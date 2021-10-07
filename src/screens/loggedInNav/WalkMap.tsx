@@ -1,11 +1,8 @@
-import React, { useContext, useMemo } from "react";
-import useMap from "~/hooks/useMap";
+import React, { useContext, useMemo, useRef } from "react";
 import { WalkMapScreenNavigationProp } from "~/types/navigator";
-import { StyleSheet } from "react-native";
 import Path from "~/components/walk/Path";
 import { store, useAppSelector } from "~/store";
 import WalkBottomSheet from "~/components/walk/WalkBottomSheet";
-import MapFloatingCircle from "~/components/common/MapFloatingCircle";
 import walkApi from "~/api/walk";
 import { storageActions } from "~/store/storage";
 import { useDispatch } from "react-redux";
@@ -13,18 +10,21 @@ import { useState } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { navigatorActions } from "~/store/navigator";
 import { DimensionsContext } from "~/context/DimensionsContext";
+import MapButton from "~/components/map/MapButton";
+import Map from "~/components/map/Map";
+import NaverMapView from "react-native-nmap";
 
 const WalkMap = ({
   navigation,
 }: {
   navigation: WalkMapScreenNavigationProp;
 }) => {
-  const { Map, mapRef } = useMap();
   const [trigger] = walkApi.usePostWalkMutation();
   const dispatch = useDispatch();
   const isStopped = useAppSelector(state => state.storage.walk.isStopped);
   const { bottom } = useSafeAreaInsets();
   const { rpWidth } = useContext(DimensionsContext);
+  const mapRef = useRef<NaverMapView>(null);
 
   const animateToMyLocation = () => {
     const coords = store.getState().storage.walk.coords;
@@ -78,7 +78,6 @@ const WalkMap = ({
   return (
     <>
       <Map
-        style={StyleSheet.absoluteFill}
         mapPadding={{
           bottom: snapPoints[index] + (!bottom ? rpWidth(34) : 0),
         }}>
@@ -86,7 +85,7 @@ const WalkMap = ({
       </Map>
       {!isStopped && (
         <>
-          <MapFloatingCircle
+          <MapButton
             style={{
               position: "absolute",
               top: rpWidth(26),
@@ -94,7 +93,7 @@ const WalkMap = ({
             }}
             icon="footprint"
           />
-          <MapFloatingCircle
+          <MapButton
             style={{
               position: "absolute",
               top: rpWidth(86),

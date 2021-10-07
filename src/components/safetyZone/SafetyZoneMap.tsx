@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useMemo, useRef } from "react";
-import { Animated, Easing, Keyboard, StyleSheet } from "react-native";
-import { Circle } from "react-native-nmap";
-import useMap from "~/hooks/useMap";
+import { Animated, Keyboard, StyleSheet } from "react-native";
+import NaverMapView, { Circle, Marker } from "react-native-nmap";
 import { getLeftRightPointsOfCircle } from "~/utils";
 
 import { useDispatch } from "react-redux";
@@ -15,38 +14,33 @@ import { deviceSettingActions } from "~/store/deviceSetting";
 import { bleActions } from "~/store/ble";
 import { storageActions } from "~/store/storage";
 import { DimensionsContext } from "~/context/DimensionsContext";
+import Map from "../map/Map";
+import palette from "~/styles/palette";
+import CameraRoll from "@react-native-community/cameraroll";
 
 interface IProps {
-  snapPoints: number[];
+  value: Animated.AnimatedInterpolation;
   mapPadding: {
     top: number;
     bottom: number;
   };
 }
 
-const SafetyZoneMap = ({ snapPoints, mapPadding }: IProps) => {
+const SafetyZoneMap = ({ value, mapPadding }: IProps) => {
   const navigation = useNavigation<SafetyZoneScreenNavigationProp>();
-  const circleRef = useRef<Circle>(null);
-  const { Map, mapRef } = useMap();
-  const value = useRef(new Animated.Value(0)).current;
-  const viewShotRef = useRef<ViewShot>(null);
   const { rpWidth } = useContext(DimensionsContext);
 
-  const step2 = useAppSelector(state => state.deviceSetting.safetyZone.step2);
-  const coord = useAppSelector(
-    state => state.deviceSetting.safetyZone.draft.coord,
-  );
-  const radius = useAppSelector(
-    state => state.deviceSetting.safetyZone.draft.radius,
-  );
-  const animateCamera = useAppSelector(
-    state => state.deviceSetting.safetyZone.animateCamera,
-  );
-  const isSubmitting = useAppSelector(
-    state => state.deviceSetting.safetyZone.isSubmitting,
-  );
+  const {
+    step2,
+    draft: { coord, radius },
+    animateCamera,
+    isSubmitting,
+  } = useAppSelector(state => state.deviceSetting.safetyZone);
   const status = useAppSelector(state => state.ble.status);
   const dispatch = useDispatch();
+
+  const mapRef = useRef<NaverMapView>(null);
+  const viewShotRef = useRef<ViewShot>(null);
 
   useEffect(() => {
     if (animateCamera && coord.latitude && coord.longitude) {
@@ -74,58 +68,40 @@ const SafetyZoneMap = ({ snapPoints, mapPadding }: IProps) => {
     mapRef.current.animateToTwoCoordinates(coordsArr[0], coordsArr[1]);
   }, [mapRef, radius, step2]);
 
-  const exp = (t: number) => {
-    return Math.min(Math.max(0, Math.pow(2, 10 * (t - 1))), 1);
-  };
-
-  const marginBottom = value.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, snapPoints[0] - rpWidth(46)],
-  });
-
-  useEffect(() => {
-    Animated.timing(value, {
-      toValue: !step2 ? 0 : 1,
-      duration: 500,
-      useNativeDriver: false,
-      easing: Easing.out(exp),
-    }).start();
-  }, [step2, snapPoints]);
-
   useEffect(() => {
     if (isSubmitting && viewShotRef.current) {
       viewShotRef.current?.capture().then(uri => {
-        const {
-          draft: { name, addr },
-          fromDeviceSetting,
-        } = store.getState().deviceSetting.safetyZone;
-
-        if (fromDeviceSetting) {
-          dispatch(
-            deviceSettingActions.updateSafetyZoneResult({
-              name,
-              addr,
-              image: uri,
-              coord: { latitude: coord.latitude, longitude: coord.longitude },
-              radius,
-            }),
-          );
-          navigation.goBack();
-        } else {
-          dispatch(bleActions.setStatus("sendingSafetyZone"));
-          /* dispatch(
-            storageActions.setDevice({
-              isSafetyZoneRegistered: true,
-              safetyZoneName: name,
-            }),
-          ); */
-          /* dispatch(
-            navigatorActions.setInitialRoute({
-              initialBleWithHeaderStackNavRouteName: "RegisterProfileFirst",
-            }),
-          );
-          navigation.replace("BleWithHeaderStackNav"); */
-        }
+        CameraRoll.save(uri, { album: "어디개" });
+        // const {
+        //   draft: { name, addr },
+        //   fromDeviceSetting,
+        // } = store.getState().deviceSetting.safetyZone;
+        // if (fromDeviceSetting) {
+        //   dispatch(
+        //     deviceSettingActions.updateSafetyZoneResult({
+        //       name,
+        //       addr,
+        //       image: uri,
+        //       coord: { latitude: coord.latitude, longitude: coord.longitude },
+        //       radius,
+        //     }),
+        //   );
+        //   navigation.goBack();
+        // } else {
+        //   dispatch(bleActions.setStatus("sendingSafetyZone"));
+        //   // dispatch(
+        //   //   storageActions.setDevice({
+        //   //     isSafetyZoneRegistered: true,
+        //   //     safetyZoneName: name,
+        //   //   }),
+        //   // );
+        //   //  dispatch(
+        //   //   navigatorActions.setInitialRoute({
+        //   //     initialBleWithHeaderStackNavRouteName: "RegisterProfileFirst",
+        //   //   }),
+        //   // );
+        //   // navigation.replace("BleWithHeaderStackNav");
+        // }
       });
     }
   }, [isSubmitting, viewShotRef.current]);
@@ -144,12 +120,11 @@ const SafetyZoneMap = ({ snapPoints, mapPadding }: IProps) => {
       style={{
         ...(StyleSheet.absoluteFill as object),
         zIndex: 0,
-        marginTop: -rpWidth(46),
-        marginBottom,
+        transform: [{ translateY: value }],
       }}>
       <ViewShot ref={viewShotRef} style={StyleSheet.absoluteFill as object}>
         <Map
-          style={StyleSheet.absoluteFill}
+          ref={mapRef}
           onCameraChange={({ latitude, longitude }) => {
             dispatch(
               deviceSettingActions.setSafetyZone({
@@ -162,17 +137,16 @@ const SafetyZoneMap = ({ snapPoints, mapPadding }: IProps) => {
           rotateGesturesEnabled={false}
           zoomGesturesEnabled={!step2}>
           {coord.latitude && coord.longitude && radius ? (
-            <>
-              <Circle
-                ref={circleRef}
-                coordinate={{
-                  latitude: coord.latitude,
-                  longitude: coord.longitude,
-                }}
-                radius={radius}
-                color="rgba(255,0,0,0.3)"
-              />
-            </>
+            <Circle
+              coordinate={{
+                latitude: coord.latitude,
+                longitude: coord.longitude,
+              }}
+              radius={radius}
+              color={palette.blue_6e_20}
+              outlineColor={palette.blue_6e_50}
+              outlineWidth={1}
+            />
           ) : null}
         </Map>
       </ViewShot>

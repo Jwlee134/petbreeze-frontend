@@ -1,10 +1,6 @@
-import React, { useContext, useRef } from "react";
-import BottomSheet, {
-  BottomSheetProps,
-  BottomSheetView,
-} from "@gorhom/bottom-sheet";
+import React, { ForwardedRef, forwardRef, useContext } from "react";
+import Sheet, { BottomSheetProps, BottomSheetView } from "@gorhom/bottom-sheet";
 import styled, { css } from "styled-components/native";
-import { useCallback } from "react";
 import ShadowContainer from "~/components/common/container/ShadowContainer";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 
@@ -30,14 +26,13 @@ const BackgroundContainer = styled.View`
 
 interface IProps extends BottomSheetProps {}
 
-const useBottomSheet = () => {
-  const sheetRef = useRef<BottomSheet>(null);
-  const { rpWidth } = useContext(DimensionsContext);
+const BottomSheet = forwardRef(
+  ({ children, ...props }: IProps, ref: ForwardedRef<Sheet>) => {
+    const { rpWidth } = useContext(DimensionsContext);
 
-  const BottomSheetComponent = useCallback(
-    ({ children, ...props }: IProps) => (
-      <BottomSheet
-        ref={sheetRef}
+    return (
+      <Sheet
+        ref={ref}
         backgroundComponent={({ style }) => (
           <ShadowContainer shadowOpacity={0.15} shadowRadius={10} style={style}>
             <BackgroundContainer style={style} />
@@ -50,12 +45,9 @@ const useBottomSheet = () => {
         )}
         {...props}>
         <BottomSheetView>{children}</BottomSheetView>
-      </BottomSheet>
-    ),
-    [],
-  );
+      </Sheet>
+    );
+  },
+);
 
-  return { BottomSheetComponent, sheetRef };
-};
-
-export default useBottomSheet;
+export default BottomSheet;
