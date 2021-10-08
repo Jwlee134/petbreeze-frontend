@@ -5,9 +5,9 @@ import { storageActions } from "~/store/storage";
 import { getDistanceBetween2Points } from ".";
 
 const options = {
-  taskName: "Example",
+  taskName: "walk",
   taskTitle: "어디개",
-  taskDesc: "산책 중입니다...",
+  taskDesc: "산책 중입니다.",
   taskIcon: {
     name: "ic_launcher",
     type: "mipmap",
@@ -21,15 +21,16 @@ const setCoords = () =>
     const id = Geolocation.watchPosition(
       pos => {
         const { latitude, longitude } = pos.coords;
-        console.log(latitude, longitude);
+        const lat = parseFloat(latitude.toFixed(6));
+        const lng = parseFloat(longitude.toFixed(6));
 
-        const coords = store.getState().storage.walk.coords;
+        const { coords } = store.getState().storage.walk;
 
         if (coords.length === 0) {
           store.dispatch(
             storageActions.setCoords({
-              latitude: Number(latitude.toFixed(6)),
-              longitude: Number(longitude.toFixed(6)),
+              latitude: lat,
+              longitude: lng,
             }),
           );
         } else {
@@ -42,8 +43,8 @@ const setCoords = () =>
           if (distanceBetweenCoords > 9) {
             store.dispatch(
               storageActions.setCoords({
-                latitude: Number(latitude.toFixed(6)),
-                longitude: Number(longitude.toFixed(6)),
+                latitude: lat,
+                longitude: lng,
               }),
             );
             store.dispatch(

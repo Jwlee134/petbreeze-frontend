@@ -21,6 +21,7 @@ import BleRootStackNav from "./BleRootStackNav";
 import UpdateWiFi from "~/screens/loggedInNav/UpdateWiFi";
 import DeviceAlert from "~/screens/loggedInNav/DeviceAlert";
 import DeleteAccountStackNav from "./DeleteAccountStackNav";
+import WalkContextProvider from "~/context/WalkContext";
 
 const Stack = createStackNavigator<LoggedInNavParamList>();
 
@@ -84,13 +85,13 @@ const LoggedInNav = ({ navigation, route }: LoggedInNavScreenProps) => {
           header: props => <CustomHeader {...props}>탈퇴하기</CustomHeader>,
         }}
       />
-      <Stack.Screen
-        name="WalkMap"
-        component={WalkMap}
-        options={{
-          header: props => <CustomHeader {...props}>산책하기</CustomHeader>,
-        }}
-      />
+      <Stack.Screen name="WalkMap" options={{ headerShown: false }}>
+        {() => (
+          <WalkContextProvider>
+            <WalkMap />
+          </WalkContextProvider>
+        )}
+      </Stack.Screen>
       <Stack.Screen
         name="UpdateWiFi"
         component={UpdateWiFi}

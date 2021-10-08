@@ -3,7 +3,7 @@ import styled, { css } from "styled-components/native";
 import { AnimatedCircularProgress as RNCircularProgress } from "react-native-circular-progress";
 import palette from "~/styles/palette";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
-import { Animated, View } from "react-native";
+import { Animated, StyleProp, View, ViewStyle } from "react-native";
 import Icon from "~/assets/svg/exclamation/exclamation-mark-white.svg";
 import useAnimatedSequence from "~/hooks/useAnimatedSequence";
 
@@ -16,6 +16,7 @@ interface IProps {
   isBackgroundTransparent?: boolean;
   preventRpHeight?: boolean;
   highlightOnEmergency?: boolean;
+  style?: StyleProp<ViewStyle>;
 }
 
 interface Image {
@@ -60,6 +61,7 @@ const AnimatedCircularProgress = ({
   isInModal = false,
   preventRpHeight = false,
   highlightOnEmergency = false,
+  style,
 }: IProps) => {
   const { rpWidth } = useContext(DimensionsContext);
   const [value] = useAnimatedSequence({
@@ -78,7 +80,7 @@ const AnimatedCircularProgress = ({
   });
 
   return (
-    <View>
+    <View style={style}>
       {highlightOnEmergency ? (
         <Alert
           style={{ transform: [{ scale }] }}

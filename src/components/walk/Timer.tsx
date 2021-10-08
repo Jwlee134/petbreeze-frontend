@@ -1,7 +1,6 @@
 import React, { useContext } from "react";
 import { useAppSelector } from "~/store";
 import TimerSVG from "~/assets/svg/walk/timer.svg";
-import TimerGraySVG from "~/assets/svg/walk/timer-gray.svg";
 import MyText from "../common/MyText";
 import styled from "styled-components/native";
 import { useState } from "react";
@@ -20,7 +19,6 @@ const RowContainer = styled.View`
 
 const Timer = () => {
   const isWalking = useAppSelector(state => state.storage.walk.isWalking);
-  const isStopped = useAppSelector(state => state.storage.walk.isStopped);
   const startTime = useAppSelector(state => state.storage.walk.startTime);
   const currentPauseTime = useAppSelector(
     state => state.storage.walk.currentPauseTime,
@@ -76,35 +74,21 @@ const Timer = () => {
       runTimer();
     } else {
       clearTimer();
-    }
-    return () => clearTimer();
-  }, [isWalking, duration]);
-
-  useEffect(() => {
-    if (isStopped) {
       dispatch(
         storageActions.setWalk({
           duration,
         }),
       );
     }
-  }, [isStopped]);
+  }, [isWalking, duration]);
 
   return (
     <RowContainer>
-      {isStopped ? (
-        <TimerGraySVG
-          width={rpWidth(22)}
-          height={rpHeight(27)}
-          style={{ marginRight: rpWidth(17) }}
-        />
-      ) : (
-        <TimerSVG
-          width={rpWidth(22)}
-          height={rpHeight(27)}
-          style={{ marginRight: rpWidth(17) }}
-        />
-      )}
+      <TimerSVG
+        width={rpWidth(22)}
+        height={rpHeight(27)}
+        style={{ marginRight: rpWidth(17) }}
+      />
       <MyText fontSize={18} color="rgba(0, 0, 0, 0.5)">
         {hour < 10 ? `${hour}` : hour} : {min < 10 ? `0${min}` : min} :{" "}
         {sec < 10 ? `0${sec}` : sec}

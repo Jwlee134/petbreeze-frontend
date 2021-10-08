@@ -2,12 +2,17 @@ import { useContext, useState } from "react";
 import { Dimensions, Keyboard } from "react-native";
 import { ModalProps } from "react-native-modal";
 import { DimensionsContext } from "~/context/DimensionsContext";
+import { bottomModalOutTiming, centerModalOutTiming } from "~/styles/constants";
 
-const { width, height } = Dimensions.get("screen");
+const { height } = Dimensions.get("screen");
+
+interface IModalProps extends Partial<ModalProps> {
+  type: "bottom" | "center";
+}
 
 const useModal = () => {
   const [isModalVisible, setModalVisible] = useState(false);
-  const { rpWidth } = useContext(DimensionsContext);
+  const { rpWidth, width } = useContext(DimensionsContext);
 
   const open = () => {
     Keyboard.dismiss();
@@ -20,16 +25,17 @@ const useModal = () => {
 
   const modalProps = ({
     type,
-  }: {
-    type: "bottom" | "center";
-  }): Partial<ModalProps> => ({
+    ...props
+  }: IModalProps): Partial<ModalProps> => ({
     isVisible: isModalVisible,
     backdropTransitionOutTiming: 0,
     onBackdropPress: close,
     onBackButtonPress: close,
     backdropOpacity: 0.5,
-    animationInTiming: type === "bottom" ? 400 : 200,
-    animationOutTiming: type === "bottom" ? 400 : 200,
+    animationInTiming:
+      type === "bottom" ? bottomModalOutTiming : centerModalOutTiming,
+    animationOutTiming:
+      type === "bottom" ? bottomModalOutTiming : centerModalOutTiming,
     animationIn: type === "bottom" ? "slideInUp" : "fadeIn",
     animationOut: type === "bottom" ? "slideOutDown" : "fadeOut",
     deviceWidth: width,
@@ -43,6 +49,7 @@ const useModal = () => {
         ? { justifyContent: "flex-end" }
         : { alignItems: "center", marginHorizontal: rpWidth(16) }),
     },
+    ...props,
   });
 
   return {

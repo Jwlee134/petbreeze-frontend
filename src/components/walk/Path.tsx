@@ -1,23 +1,16 @@
 import React, { useContext } from "react";
 import { useEffect } from "react";
-import NaverMapView, { Path as Polyline, Marker } from "react-native-nmap";
-import { useDispatch } from "react-redux";
+import { Path as Polyline, Marker } from "react-native-nmap";
 import { DimensionsContext } from "~/context/DimensionsContext";
+import { WalkContext } from "~/context/WalkContext";
 import { delta } from "~/staticData";
-import { store, useAppSelector } from "~/store";
-import { storageActions } from "~/store/storage";
+import { useAppSelector } from "~/store";
 import palette from "~/styles/palette";
 
-const Path = ({
-  mapRef,
-}: //   deviceIds,
-{
-  mapRef: React.RefObject<NaverMapView>;
-  //   deviceIds: string[];
-}) => {
+const Path = ({ showEntirePath }: { showEntirePath: boolean }) => {
   const coords = useAppSelector(state => state.storage.walk.coords);
-  const dispatch = useDispatch();
   const { rpWidth } = useContext(DimensionsContext);
+  const { mapRef } = useContext(WalkContext);
 
   useEffect(() => {
     if (!mapRef.current) return;
@@ -45,33 +38,62 @@ const Path = ({
         latitudeDelta: delta,
         longitudeDelta: delta,
       });
-      // dispatch(storageActions.setSelectedDeviceId(deviceIds));
     }
   }, [mapRef, coords]);
 
   if (coords.length) {
     return (
       <>
-        <Marker
-          coordinate={{
-            latitude: coords[coords.length - 1][0],
-            longitude: coords[coords.length - 1][1],
-          }}
-          image={require("~/assets/image/walk/my-location.png")}
-          width={rpWidth(38)}
-          height={rpWidth(38)}
-          anchor={{
-            x: 0.5,
-            y: 0.5,
-          }}
-        />
+        {!showEntirePath ? (
+          <Marker
+            coordinate={{
+              latitude: coords[coords.length - 1][0],
+              longitude: coords[coords.length - 1][1],
+            }}
+            image={require("~/assets/image/footprint-marker.png")}
+            width={rpWidth(41)}
+            height={rpWidth(57)}
+            anchor={{
+              x: 0.5,
+              y: 1,
+            }}
+          />
+        ) : (
+          <>
+            {coords.length > 1 ? (
+              <Marker
+                coordinate={{ latitude: coords[0][0], longitude: coords[0][1] }}
+                image={require("~/assets/image/walk/walk-start.png")}
+                width={rpWidth(20)}
+                height={rpWidth(20)}
+                anchor={{
+                  x: 0.5,
+                  y: 0.5,
+                }}
+              />
+            ) : null}
+            <Marker
+              coordinate={{
+                latitude: coords[coords.length - 1][0],
+                longitude: coords[coords.length - 1][1],
+              }}
+              image={require("~/assets/image/walk/walk-end.png")}
+              width={rpWidth(20)}
+              height={rpWidth(20)}
+              anchor={{
+                x: 0.5,
+                y: 0.5,
+              }}
+            />
+          </>
+        )}
         {coords.length > 1 && (
           <Polyline
             coordinates={coords.map(coord => ({
               latitude: coord[0],
               longitude: coord[1],
             }))}
-            color={`${palette.blue_7b}B3`}
+            color={palette.blue_7b_80}
             outlineWidth={0}
             width={5}
           />

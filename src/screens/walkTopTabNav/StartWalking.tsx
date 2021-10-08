@@ -56,10 +56,6 @@ const StartWalking = ({
         dispatch(
           storageActions.setWalk({
             selectedDeviceId: selected,
-          }),
-        );
-        dispatch(
-          storageActions.setWalk({
             isStopped: false,
           }),
         );

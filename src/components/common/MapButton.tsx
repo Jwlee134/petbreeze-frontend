@@ -1,11 +1,12 @@
 import React, { useContext } from "react";
 import { StyleProp, TouchableOpacityProps, ViewStyle } from "react-native";
 import styled, { css } from "styled-components/native";
-import ShadowContainer from "../common/container/ShadowContainer";
+import ShadowContainer from "./container/ShadowContainer";
 
 import MyLocation from "~/assets/svg/common/my-location.svg";
 import Footprint from "~/assets/svg/common/footprint.svg";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
+import { mapButtonSize } from "~/styles/constants";
 
 interface IProps extends TouchableOpacityProps {
   icon: "myLocation" | "footprint";
@@ -14,9 +15,9 @@ interface IProps extends TouchableOpacityProps {
 
 const Container = styled.TouchableOpacity<{ rpWidth: RpWidth }>`
   ${({ rpWidth }) => css`
-    width: ${rpWidth(48)}px;
-    height: ${rpWidth(48)}px;
-    border-radius: ${rpWidth(24)}px;
+    width: ${rpWidth(mapButtonSize)}px;
+    height: ${rpWidth(mapButtonSize)}px;
+    border-radius: ${rpWidth(mapButtonSize / 2)}px;
   `}
   background-color: white;
   justify-content: center;

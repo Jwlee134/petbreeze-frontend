@@ -1,113 +1,139 @@
-import React, { useContext, useMemo, useRef } from "react";
-import { WalkMapScreenNavigationProp } from "~/types/navigator";
+import React, { useContext, useEffect, useMemo, useRef } from "react";
 import Path from "~/components/walk/Path";
 import { store, useAppSelector } from "~/store";
 import WalkBottomSheet from "~/components/walk/WalkBottomSheet";
-import walkApi from "~/api/walk";
-import { storageActions } from "~/store/storage";
-import { useDispatch } from "react-redux";
 import { useState } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { navigatorActions } from "~/store/navigator";
 import { DimensionsContext } from "~/context/DimensionsContext";
-import MapButton from "~/components/map/MapButton";
-import Map from "~/components/map/Map";
-import NaverMapView from "react-native-nmap";
+import { Animated, StyleSheet } from "react-native";
+import MapButtons from "~/components/walk/MapButtons";
+import {
+  bottomSheetHandleHeight,
+  customHeaderHeight,
+} from "~/styles/constants";
+import WalkMapHeader from "~/components/walk/WalkMapHeader";
+import { getDistanceBetween2Points, isIos } from "~/utils";
+import { delta } from "~/staticData";
+import { WalkContext } from "~/context/WalkContext";
 
-const WalkMap = ({
-  navigation,
-}: {
-  navigation: WalkMapScreenNavigationProp;
-}) => {
-  const [trigger] = walkApi.usePostWalkMutation();
-  const dispatch = useDispatch();
+const WalkMap = () => {
   const isStopped = useAppSelector(state => state.storage.walk.isStopped);
-  const { bottom } = useSafeAreaInsets();
+  const { top, bottom } = useSafeAreaInsets();
   const { rpWidth } = useContext(DimensionsContext);
-  const mapRef = useRef<NaverMapView>(null);
 
-  const animateToMyLocation = () => {
-    const coords = store.getState().storage.walk.coords;
-    if (!coords.length) return;
-    mapRef.current?.animateToCoordinate({
-      latitude: coords[coords.length - 1][0],
-      longitude: coords[coords.length - 1][1],
-    });
-  };
-
-  const handleFinish = async () => {
-    const { startTime, duration, meter, coords, selectedDeviceId } =
-      store.getState().storage.walk;
-    dispatch(storageActions.setWalk(null));
-    dispatch(
-      navigatorActions.setInitialRoute({
-        initialBottomTabNavRouteName: "WalkTab",
-      }),
-    );
-    navigation.replace("BottomTabNav");
-    // const promise = selectedDeviceId.map(id =>
-    //   trigger({
-    //     deviceId: id,
-    //     start_date_time: new Date(startTime),
-    //     walking_time: duration,
-    //     distance: meter,
-    //     coordinates: coords,
-    //   }),
-    // );
-    // Promise.all(promise).then(() => {
-    //   dispatch(storageActions.clearWalk());
-    //   navigation.replace("BottomTabNav", {
-    //     initialRoute: "WalkTab",
-    //   });
-    // });
-  };
-
-  const snapPoints = useMemo(() => {
-    if (isStopped) {
-      return [rpWidth(262 + bottom), rpWidth(262 + bottom)];
-    } else {
-      // index 0은 원래 높이 89 - 핸들 높이 36, 1은 원래 높이 238 - 핸들 높이 36
-      return [rpWidth(54), rpWidth(202)];
-    }
-  }, [isStopped]);
+  const { Map, ViewShot, mapRef } = useContext(WalkContext);
 
   const [index, setIndex] = useState(1);
+  const [showEntirePath, setShowEntirePath] = useState(false);
+  const marginBottom = useRef(new Animated.Value(0)).current;
+  const opacity = useRef(new Animated.Value(0)).current;
 
   const handleBottomSheetChange = (index: number) => setIndex(index);
 
+  const snapPoints = useMemo(() => {
+    if (isStopped) {
+      return [rpWidth(316) + bottom - bottomSheetHandleHeight];
+    } else {
+      return [
+        rpWidth(92 - bottomSheetHandleHeight),
+        rpWidth(238 - bottomSheetHandleHeight),
+      ];
+    }
+  }, [isStopped]);
+
+  const mapPadding = useMemo(
+    () => ({
+      top: isStopped
+        ? bottomSheetHandleHeight
+        : (isIos ? 0 : top) + rpWidth(customHeaderHeight),
+      bottom: isStopped
+        ? bottomSheetHandleHeight
+        : snapPoints[index] + (!bottom ? rpWidth(34) : 0),
+    }),
+    [isStopped, index],
+  );
+
+  const marginBottomInterpolate = marginBottom.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, snapPoints[0]],
+  });
+
+  useEffect(() => {
+    if (isStopped) {
+      Animated.timing(marginBottom, {
+        toValue: 1,
+        useNativeDriver: false,
+        duration: 400,
+      }).start(() => {
+        setShowEntirePath(true);
+      });
+    }
+  }, [isStopped]);
+
+  useEffect(() => {
+    if (showEntirePath) {
+      const { coords } = store.getState().storage.walk;
+
+      const maxLat = Math.max(...coords.map(coord => coord[0]));
+      const maxLng = Math.max(...coords.map(coord => coord[1]));
+      const minLat = Math.min(...coords.map(coord => coord[0]));
+      const minLng = Math.min(...coords.map(coord => coord[1]));
+
+      const distance = getDistanceBetween2Points(
+        maxLat,
+        maxLng,
+        minLat,
+        minLng,
+      );
+
+      if (coords.length === 1) {
+        mapRef.current?.animateToRegion({
+          latitude: coords[0][0],
+          longitude: coords[0][1],
+          latitudeDelta: delta,
+          longitudeDelta: delta,
+        });
+      } else {
+        mapRef.current?.animateToTwoCoordinates(
+          { latitude: maxLat, longitude: maxLng + distance / 100000 },
+          { latitude: minLat, longitude: minLng - distance / 100000 },
+        );
+      }
+      Animated.timing(opacity, {
+        toValue: 0.15,
+        useNativeDriver: true,
+        duration: 400,
+      }).start();
+    }
+  }, [showEntirePath]);
+
   return (
     <>
-      <Map
-        mapPadding={{
-          bottom: snapPoints[index] + (!bottom ? rpWidth(34) : 0),
+      <Animated.View
+        style={{
+          ...(StyleSheet.absoluteFill as object),
+          marginBottom: marginBottomInterpolate,
         }}>
-        <Path mapRef={mapRef} /* deviceIds={deviceId} */ />
-      </Map>
-      {!isStopped && (
-        <>
-          <MapButton
-            style={{
-              position: "absolute",
-              top: rpWidth(26),
-              right: rpWidth(16),
-            }}
-            icon="footprint"
-          />
-          <MapButton
-            style={{
-              position: "absolute",
-              top: rpWidth(86),
-              right: rpWidth(16),
-            }}
-            icon="myLocation"
-            onPress={animateToMyLocation}
-          />
-        </>
+        <ViewShot>
+          <Map mapPadding={mapPadding}>
+            <Path showEntirePath={showEntirePath} />
+          </Map>
+        </ViewShot>
+      </Animated.View>
+      <WalkMapHeader />
+      {!isStopped && <MapButtons />}
+      {isStopped && (
+        <Animated.View
+          style={{
+            opacity,
+            ...(StyleSheet.absoluteFill as object),
+            backgroundColor: "black",
+          }}
+        />
       )}
       <WalkBottomSheet
         snapPoints={snapPoints}
         handleChange={handleBottomSheetChange}
-        handleFinish={handleFinish}
       />
     </>
   );

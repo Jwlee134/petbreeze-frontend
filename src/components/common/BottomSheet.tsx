@@ -3,9 +3,10 @@ import Sheet, { BottomSheetProps, BottomSheetView } from "@gorhom/bottom-sheet";
 import styled, { css } from "styled-components/native";
 import ShadowContainer from "~/components/common/container/ShadowContainer";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
+import { bottomSheetHandleHeight } from "~/styles/constants";
 
 const HandleContainer = styled.View<{ rpWidth: RpWidth }>`
-  height: ${({ rpWidth }) => rpWidth(36)}px;
+  height: ${({ rpWidth }) => rpWidth(bottomSheetHandleHeight)}px;
   align-items: center;
 `;
 
