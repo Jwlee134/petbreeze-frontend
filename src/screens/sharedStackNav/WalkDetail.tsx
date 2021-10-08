@@ -1,20 +1,17 @@
-import React, { useContext } from "react";
-import { FlatList, Text, View } from "react-native";
+import React, { useContext, useMemo } from "react";
 import styled, { css } from "styled-components/native";
 import MyText from "~/components/common/MyText";
 import { useAppSelector } from "~/store";
 import { WalkDetailScreenProps } from "~/types/navigator";
-import CalendarStrip from "react-native-calendar-strip";
 import palette from "~/styles/palette";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
+import Divider from "~/components/common/Divider";
+import { CalendarList, LocaleConfig } from "react-native-calendars";
+import { days, months } from "~/staticData";
+import { isAndroid } from "~/utils";
 
-const TopContainer = styled.View<{ rpWidth: RpWidth }>`
+const TopContainer = styled.View`
   align-items: center;
-  border-bottom-color: rgba(0, 0, 0, 0.03);
-  ${({ rpWidth }) =>
-    css`
-      border-bottom-width: ${rpWidth(4)}px;
-    `}
 `;
 
 const Image = styled.Image<{ rpWidth: RpWidth }>`
@@ -27,145 +24,121 @@ const Image = styled.Image<{ rpWidth: RpWidth }>`
   `}
 `;
 
-const locale = {
-  months: "1월_2월_3월_4월_5월_6월_7월_8월_9월_10월_11월_12월".split("_"),
-  monthsShort: "1월_2월_3월_4월_5월_6월_7월_8월_9월_10월_11월_12월".split("_"),
-  weekdays: "일요일_월요일_화요일_수요일_목요일_금요일_토요일".split("_"),
-  weekdaysShort: "일_월_화_수_목_금_토".split("_"),
-  weekdaysMin: "일_월_화_수_목_금_토".split("_"),
-  longDateFormat: {
-    LT: "A h:mm",
-    LTS: "A h:mm:ss",
-    L: "YYYY.MM.DD.",
-    LL: "YYYY년 MMMM D일",
-    LLL: "YYYY년 MMMM D일 A h:mm",
-    LLLL: "YYYY년 MMMM D일 dddd A h:mm",
-    l: "YYYY.MM.DD.",
-    ll: "YYYY년 MMMM D일",
-    lll: "YYYY년 MMMM D일 A h:mm",
-    llll: "YYYY년 MMMM D일 dddd A h:mm",
-  },
-  calendar: {
-    sameDay: "오늘 LT",
-    nextDay: "내일 LT",
-    nextWeek: "dddd LT",
-    lastDay: "어제 LT",
-    lastWeek: "지난주 dddd LT",
-    sameElse: "L",
-  },
-  relativeTime: {
-    future: "%s 후",
-    past: "%s 전",
-    s: "몇 초",
-    ss: "%d초",
-    m: "1분",
-    mm: "%d분",
-    h: "한 시간",
-    hh: "%d시간",
-    d: "하루",
-    dd: "%d일",
-    M: "한 달",
-    MM: "%d달",
-    y: "일 년",
-    yy: "%d년",
-  },
-  dayOfMonthOrdinalParse: /\d{1,2}(일|월|주)/,
-  ordinal: function (number, period) {
-    switch (period) {
-      case "d":
-      case "D":
-      case "DDD":
-        return number + "일";
-      case "M":
-        return number + "월";
-      case "w":
-      case "W":
-        return number + "주";
-      default:
-        return number;
-    }
-  },
-  meridiemParse: /오전|오후/,
-  isPM: function (token) {
-    return token === "오후";
-  },
-  meridiem: function (hour, minute, isUpper) {
-    return hour < 12 ? "오전" : "오후";
-  },
+LocaleConfig.locales["ko"] = {
+  monthNames: months,
+  monthNamesShort: months,
+  dayNames: days,
+  dayNamesShort: days,
+  today: "오늘",
 };
+LocaleConfig.defaultLocale = "ko";
 
 const WalkDetail = ({ navigation, route }: WalkDetailScreenProps) => {
   const devices = useAppSelector(state => state.device);
-  const data = devices.find(device => device.id === route.params.id);
-  const { rpWidth } = useContext(DimensionsContext);
+  const data = devices.find(device => device.id === 1);
+  const { rpWidth, isTablet } = useContext(DimensionsContext);
 
-  console.log(data);
+  /*   const MarkingDots = useMemo(() => {
+    const obj: {
+      [date: string]: { dots: { key: string; color: string }[] };
+    } = {};
+    const dateArr = data.walk_id_list.map(data => {
+      const date = new Date(data.start_date_time);
+      const year = date.getFullYear();
+      const month = date.getMonth() + 1;
+      const day = date.getDate();
+      return {
+        id: data.id,
+        date: `${year}-${month}-${day}`,
+      };
+    });
+    dateArr.forEach(data => {
+      if (obj[data.date]) {
+        obj[data.date].dots.push({
+          key: data.id,
+          color: palette.blue_7b,
+        });
+      } else {
+        obj[data.date] = {
+          dots: [
+            {
+              key: data.id,
+              color: palette.blue_7b,
+            },
+          ],
+        };
+      }
+    });
+    return obj;
+  }, [data]); */
 
   return (
     <>
-      <TopContainer rpWidth={rpWidth}>
+      <TopContainer>
         <Image rpWidth={rpWidth} source={require("~/assets/image/test.jpg")} />
         <MyText style={{ marginBottom: rpWidth(19) }} fontWeight="medium">
-          {data?.name}
+          하하하
         </MyText>
       </TopContainer>
-      {/* <FlatList
-        showsVerticalScrollIndicator={false}
-        ListHeaderComponent={() => (
-          <CalendarStrip
-            scrollerPaging
-            locale={{
-              name: "ko",
-              config: locale,
-            }}
-            iconStyle={{
-              display: "none",
-            }}
-            calendarHeaderStyle={{ display: "none" }}
-            scrollable
-            dateNameStyle={{
-              fontFamily: "NotoSansKR-Regular",
-              includeFontPadding: false,
-              fontSize: rpWidth(12),
-              color: "black",
-            }}
-            dateNumberStyle={{
-              fontWeight: "400",
+      <Divider isHairline={false} />
+      <CalendarList
+        monthFormat="M월"
+        pagingEnabled
+        horizontal
+        futureScrollRange={0}
+        markedDates={{
+          "2021-10-05": {
+            dots: [
+              { key: "1", color: palette.blue_7b },
+              { key: "2", color: palette.blue_7b },
+            ],
+          },
+          "2021-10-06": { dots: [{ key: "1", color: palette.blue_7b }] },
+        }}
+        theme={{
+          // @ts-ignore
+          "stylesheet.calendar.header": {
+            monthText: {
+              margin: rpWidth(37),
               fontFamily: "NotoSansKR-Medium",
+              fontSize: rpWidth(18),
+              color: palette.blue_7b,
               includeFontPadding: false,
-              fontSize: rpWidth(16),
-              color: "black",
-            }}
-            highlightDateNameStyle={{
+            },
+            dayHeader: {
               fontFamily: "NotoSansKR-Regular",
-              includeFontPadding: false,
               fontSize: rpWidth(12),
-              color: "white",
-            }}
-            highlightDateNumberStyle={{
-              fontWeight: "400",
-              fontFamily: "NotoSansKR-Medium",
+              color: "rgba(0, 0, 0, 0.8)",
               includeFontPadding: false,
+            },
+          },
+          "stylesheet.day.basic": {
+            base: {
+              width: rpWidth(32),
+              height: rpWidth(32),
+              alignItems: "center",
+            },
+            text: {
+              marginTop: isAndroid ? rpWidth(4) : rpWidth(6),
+              fontFamily: "NotoSansKR-Regular",
               fontSize: rpWidth(16),
-              color: "white",
-            }}
-            style={{
-              height: rpWidth(54),
-            }}
-            daySelectionAnimation={{
-              type: "background",
-              duration: 200,
-              highlightColor: palette.blue_7b,
-            }}
-          />
-        )}
-        data={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
-        renderItem={({ item }) => (
-          <View style={{ height: 100, borderBottomWidth: 1 }}>
-            <Text>{item}</Text>
-          </View>
-        )}
-      /> */}
+              color: "rgba(0, 0, 0, 0.8)",
+              includeFontPadding: false,
+            },
+          },
+          "stylesheet.dot": {
+            dot: {
+              width: isTablet ? rpWidth(4) : 4,
+              height: isTablet ? rpWidth(4) : 4,
+              marginTop: 1,
+              marginHorizontal: isTablet ? 2 : 1,
+              borderRadius: isTablet ? rpWidth(2) : 2,
+              opacity: 0,
+            },
+          },
+        }}
+        markingType="multi-dot"
+      />
     </>
   );
 };
