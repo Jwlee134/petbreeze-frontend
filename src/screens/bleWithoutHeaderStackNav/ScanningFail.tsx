@@ -9,7 +9,7 @@ import MyText from "~/components/common/MyText";
 import { bleActions } from "~/store/ble";
 import { ScanningFailScreenNavigationProp } from "~/types/navigator";
 import Exclamation from "~/assets/svg/exclamation/exclamation-mark-white.svg";
-import ParagraphWithCheckCircle from "~/components/common/ParagraphWithCheckCircle";
+import ParagraphWithCheckCircle from "~/components/ble/ParagraphWithCheckCircle";
 import { useAppSelector } from "~/store";
 import { DimensionsContext } from "~/context/DimensionsContext";
 

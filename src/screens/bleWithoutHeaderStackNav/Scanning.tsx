@@ -75,8 +75,9 @@ const Scanning = ({
   });
 
   useEffect(() => {
-    if (status === "scanningFail") navigation.replace("ScanningFail");
-    if (status === "scanningSuccess") navigation.replace("Success");
+    if (status === "scanningFail" || status === "connectingFail")
+      navigation.replace("ScanningFail");
+    if (status === "connected") navigation.replace("Success");
   }, [status]);
 
   return (

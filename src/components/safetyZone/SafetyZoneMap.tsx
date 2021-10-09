@@ -14,7 +14,7 @@ import { deviceSettingActions } from "~/store/deviceSetting";
 import { bleActions } from "~/store/ble";
 import { storageActions } from "~/store/storage";
 import { DimensionsContext } from "~/context/DimensionsContext";
-import Map from "../map/Map";
+import Map from "../common/Map";
 import palette from "~/styles/palette";
 import CameraRoll from "@react-native-community/cameraroll";
 

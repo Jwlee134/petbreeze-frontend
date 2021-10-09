@@ -65,7 +65,9 @@ const RegisterProfileFirst = ({
           <RowContainer>
             <Input
               value={birthYear}
-              onChangeText={text => dispatch(formActions.setBirthYear(text))}
+              onChangeText={text =>
+                dispatch(formActions.setBirthYear(text.replace(/[^0-9]/g, "")))
+              }
               keyboardType="number-pad"
               textAlign="center"
               containerStyle={{
@@ -77,7 +79,9 @@ const RegisterProfileFirst = ({
             />
             <Input
               value={birthMonth}
-              onChangeText={text => dispatch(formActions.setBirthMonth(text))}
+              onChangeText={text =>
+                dispatch(formActions.setBirthMonth(text.replace(/[^0-9]/g, "")))
+              }
               keyboardType="number-pad"
               textAlign="center"
               containerStyle={{
@@ -89,7 +93,9 @@ const RegisterProfileFirst = ({
             />
             <Input
               value={birthDay}
-              onChangeText={text => dispatch(formActions.setBirthDay(text))}
+              onChangeText={text =>
+                dispatch(formActions.setBirthDay(text.replace(/[^0-9]/g, "")))
+              }
               keyboardType="number-pad"
               textAlign="center"
               containerStyle={{

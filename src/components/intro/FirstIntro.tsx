@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import Dog from "~/assets/svg/dog/dog-question-mark.svg";
 import MyText from "~/components/common/MyText";
 import { View } from "react-native";

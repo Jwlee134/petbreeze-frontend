@@ -27,6 +27,7 @@ const WiFiForm = ({
   );
   const dispatch = useDispatch();
   const { rpWidth } = useContext(DimensionsContext);
+  const disconnected = useAppSelector(state => state.ble.disconnected);
 
   useEffect(() => {
     WifiManager.getCurrentWifiSSID().then(ssid => {
@@ -50,6 +51,7 @@ const WiFiForm = ({
           <InputTitle>WiFi 이름</InputTitle>
           <Input
             value={name}
+            maxLength={31}
             onChangeText={text =>
               dispatch(
                 deviceSettingActions.setWifi({
@@ -61,6 +63,7 @@ const WiFiForm = ({
           <InputTitle>암호</InputTitle>
           <Input
             value={password}
+            maxLength={63}
             onChangeText={text =>
               dispatch(
                 deviceSettingActions.setWifi({
@@ -72,16 +75,21 @@ const WiFiForm = ({
         </View>
         <View>
           <Button
-            disabled={!name || !password}
+            disabled={!name || (!!password && password.length < 8)}
             onPress={() => {
-              dispatch(navigatorActions.setLoadingText("연결 확인중"));
-              dispatch(
-                navigatorActions.setInitialRoute({
-                  initialBleWithoutHeaderStackNavRouteName: "BleLoading",
-                }),
-              );
-              navigation.replace("BleWithoutHeaderStackNav");
-              dispatch(bleActions.setStatus("connectingToWifi"));
+              if (disconnected) {
+                /* api 요청만 */
+                console.log("api 요청 보내기");
+              } else {
+                dispatch(bleActions.setStatus("connectingToWifi"));
+                dispatch(navigatorActions.setLoadingText("연결 확인중"));
+                dispatch(
+                  navigatorActions.setInitialRoute({
+                    initialBleWithoutHeaderStackNavRouteName: "BleLoading",
+                  }),
+                );
+                navigation.replace("BleWithoutHeaderStackNav");
+              }
             }}
             style={{
               marginBottom: rpWidth(12),

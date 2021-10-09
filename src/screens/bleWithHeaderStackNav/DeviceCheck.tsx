@@ -54,7 +54,7 @@ const DeviceCheck = ({
             marginBottom: rpWidth(12),
           }}
           onPress={() => {
-            navigation.navigate("ChargingCheck");
+            navigation.replace("ChargingCheck");
           }}
           delay={400}>
           네, 있습니다.
@@ -64,7 +64,7 @@ const DeviceCheck = ({
           fontColor="rgba(0, 0, 0, 0.5)"
           useCommonMarginBottom
           onPress={() => {
-            /* dispatch(storageActions.setInit("init")); */
+            dispatch(storageActions.setInit("init"));
             dispatch(
               navigatorActions.setInitialRoute({
                 initialLoggedInNavRouteName: "BottomTabNav",

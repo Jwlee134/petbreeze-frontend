@@ -32,7 +32,7 @@ const Success = ({
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (status === "scanningSuccess") {
+    if (status === "connected") {
       setTimeout(() => {
         dispatch(navigatorActions.setLoadingText("Loading"));
         navigation.replace("BleLoading");
@@ -68,7 +68,7 @@ const Success = ({
     }
   }, [status]);
 
-  if (status === "scanningSuccess") {
+  if (status === "connected") {
     return (
       <>
         <TopContainer>

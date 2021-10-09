@@ -2,7 +2,7 @@ import {
   BottomTabNavigationProp,
   BottomTabScreenProps,
 } from "@react-navigation/bottom-tabs";
-import { CompositeNavigationProp } from "@react-navigation/core";
+import { CompositeNavigationProp, RouteProp } from "@react-navigation/core";
 import { MaterialTopTabNavigationProp } from "@react-navigation/material-top-tabs";
 import { CompositeScreenProps } from "@react-navigation/native";
 import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
@@ -132,15 +132,14 @@ export type BleRootStackNavParamList = {
   BleWithHeaderStackNav: undefined;
   BleWithoutHeaderStackNav: undefined;
 };
-export type BleWithHeaderStackNavScreenProps = CompositeScreenProps<
-  StackScreenProps<BleRootStackNavParamList, "BleWithHeaderStackNav">,
-  CompositeScreenProps<
-    StackScreenProps<LoggedInNavParamList>,
-    StackScreenProps<RootNavParamList>
-  >
+export type BleWithHeaderStackNavScreenRouteProp = RouteProp<
+  BleRootStackNavParamList,
+  "BleWithHeaderStackNav"
 >;
+export type BleWithHeaderStackNavScreenNavigationProp =
+  StackNavigationProp<BleWithHeaderStackNavParamList>;
 
-export type BleWithHeaderStackeNavParamList = {
+export type BleWithHeaderStackNavParamList = {
   DeviceCheck: undefined;
   ChargingCheck: undefined;
   PreWiFiForm: undefined;
@@ -150,7 +149,7 @@ export type BleWithHeaderStackeNavParamList = {
   RegisterProfileSecond: undefined;
 };
 export type DeviceCheckScreenNavigationProp = CompositeNavigationProp<
-  StackNavigationProp<BleWithHeaderStackeNavParamList, "DeviceCheck">,
+  StackNavigationProp<BleWithHeaderStackNavParamList, "DeviceCheck">,
   CompositeNavigationProp<
     StackNavigationProp<BleRootStackNavParamList>,
     CompositeNavigationProp<
@@ -160,7 +159,7 @@ export type DeviceCheckScreenNavigationProp = CompositeNavigationProp<
   >
 >;
 export type ChargingCheckScreenNavigationProp = CompositeNavigationProp<
-  StackNavigationProp<BleWithHeaderStackeNavParamList, "ChargingCheck">,
+  StackNavigationProp<BleWithHeaderStackNavParamList, "ChargingCheck">,
   CompositeNavigationProp<
     StackNavigationProp<BleRootStackNavParamList>,
     CompositeNavigationProp<
@@ -170,7 +169,7 @@ export type ChargingCheckScreenNavigationProp = CompositeNavigationProp<
   >
 >;
 export type PreWiFiFormScreenNavigationProp = CompositeNavigationProp<
-  StackNavigationProp<BleWithHeaderStackeNavParamList, "PreWiFiForm">,
+  StackNavigationProp<BleWithHeaderStackNavParamList, "PreWiFiForm">,
   CompositeNavigationProp<
     StackNavigationProp<BleRootStackNavParamList>,
     CompositeNavigationProp<
@@ -180,7 +179,7 @@ export type PreWiFiFormScreenNavigationProp = CompositeNavigationProp<
   >
 >;
 export type WiFiFormScreenNavigationProp = CompositeNavigationProp<
-  StackNavigationProp<BleWithHeaderStackeNavParamList, "WiFiForm">,
+  StackNavigationProp<BleWithHeaderStackNavParamList, "WiFiForm">,
   CompositeNavigationProp<
     StackNavigationProp<BleRootStackNavParamList>,
     CompositeNavigationProp<
@@ -190,7 +189,7 @@ export type WiFiFormScreenNavigationProp = CompositeNavigationProp<
   >
 >;
 export type PreSafetyZoneScreenNavigationProp = CompositeNavigationProp<
-  StackNavigationProp<BleWithHeaderStackeNavParamList, "PreSafetyZone">,
+  StackNavigationProp<BleWithHeaderStackNavParamList, "PreSafetyZone">,
   CompositeNavigationProp<
     StackNavigationProp<BleRootStackNavParamList>,
     CompositeNavigationProp<
@@ -200,7 +199,7 @@ export type PreSafetyZoneScreenNavigationProp = CompositeNavigationProp<
   >
 >;
 export type RegisterProfileFirstScreenNavigationProp = CompositeNavigationProp<
-  StackNavigationProp<BleWithHeaderStackeNavParamList, "RegisterProfileFirst">,
+  StackNavigationProp<BleWithHeaderStackNavParamList, "RegisterProfileFirst">,
   CompositeNavigationProp<
     StackNavigationProp<BleRootStackNavParamList>,
     CompositeNavigationProp<
@@ -210,7 +209,7 @@ export type RegisterProfileFirstScreenNavigationProp = CompositeNavigationProp<
   >
 >;
 export type RegisterProfileSecondScreenNavigationProp = CompositeNavigationProp<
-  StackNavigationProp<BleWithHeaderStackeNavParamList, "RegisterProfileSecond">,
+  StackNavigationProp<BleWithHeaderStackNavParamList, "RegisterProfileSecond">,
   CompositeNavigationProp<
     StackNavigationProp<BleRootStackNavParamList>,
     CompositeNavigationProp<

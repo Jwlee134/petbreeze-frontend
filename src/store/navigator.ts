@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
   BleRootStackNavParamList,
-  BleWithHeaderStackeNavParamList,
+  BleWithHeaderStackNavParamList,
   BleWithoutHeaderStackNavParamList,
   BottomTabParamList,
   LoggedInNavParamList,
@@ -12,7 +12,7 @@ import {
 interface IState {
   initialLoggedInNavRouteName: keyof LoggedInNavParamList;
   initialBleRootStackNavRouteName: keyof BleRootStackNavParamList;
-  initialBleWithHeaderStackNavRouteName: keyof BleWithHeaderStackeNavParamList;
+  initialBleWithHeaderStackNavRouteName: keyof BleWithHeaderStackNavParamList;
   initialBleWithoutHeaderStackNavRouteName: keyof BleWithoutHeaderStackNavParamList;
   initialBottomTabNavRouteName: keyof BottomTabParamList;
   initialSharedStackNavRouteName: keyof SharedStackNavParamList;

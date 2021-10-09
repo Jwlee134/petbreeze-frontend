@@ -4,7 +4,7 @@ import styled from "styled-components/native";
 import WiFi from "~/assets/svg/wifi/wifi-blue.svg";
 import Button from "~/components/common/Button";
 import MyText from "~/components/common/MyText";
-import ParagraphWithCheckCircle from "~/components/common/ParagraphWithCheckCircle";
+import ParagraphWithCheckCircle from "~/components/ble/ParagraphWithCheckCircle";
 import useModal from "~/hooks/useModal";
 import { PreWiFiFormScreenNavigationProp } from "~/types/navigator";
 import Modal from "react-native-modal";

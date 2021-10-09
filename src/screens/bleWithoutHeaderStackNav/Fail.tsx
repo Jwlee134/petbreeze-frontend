@@ -38,12 +38,16 @@ const Fail = ({ navigation }: { navigation: FailScreenNavigationProp }) => {
         />
       </TopContainer>
       <BottomContainer>
-        <MyText fontSize={24}>
+        <MyText style={{ textAlign: "center" }} fontSize={24}>
           {status.includes("download")
             ? "다운로드에 실패했어요."
             : status.includes("install")
             ? "펌웨어 설치에 실패했어요."
-            : "WiFi 연결에 실패했어요."}
+            : status === "notificationFail"
+            ? "디바이스를 재부팅하고\n다시 시도해 주세요."
+            : status === "wifiFail"
+            ? "WiFi 연결에 실패했어요."
+            : ""}
         </MyText>
         <View>
           <Button
@@ -52,9 +56,12 @@ const Fail = ({ navigation }: { navigation: FailScreenNavigationProp }) => {
                 navigation.replace("FirmwareProgress");
                 dispatch(bleActions.setStatus("downloadingFirmware"));
               }
-              if (status === "installingFail") {
-                navigation.replace("FirmwareProgress");
-                dispatch(bleActions.setStatus("installingFirmware"));
+              if (
+                status === "installingFail" ||
+                status === "notificationFail"
+              ) {
+                navigation.replace("Scanning");
+                dispatch(bleActions.setStatus("scanning"));
               }
               if (status === "wifiFail") {
                 dispatch(
@@ -79,6 +86,8 @@ const Fail = ({ navigation }: { navigation: FailScreenNavigationProp }) => {
                   }),
                 );
                 navigation.replace("BleWithHeaderStackNav");
+              } else {
+                /* 초기 화면으로 이동 */
               }
             }}
             useCommonMarginBottom

@@ -1,15 +1,16 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export type BleStatus =
-  | "before"
+  | ""
   | "scanning"
-  | "scanningSuccess"
+  | "connected"
   | "downloadingFirmware"
   | "installingFirmware"
   | "200Success"
   | "otaUpdateSuccess"
   | "scanningFail"
   | "connectingFail"
+  | "retrieveSuccess"
   | "retrieveFail"
   | "devEUIFail"
   | "downloadingFail"
@@ -27,12 +28,14 @@ interface IState {
   status: BleStatus;
   progress: number;
   isOtaUpdate: boolean;
+  disconnected: boolean;
 }
 
 const initialState: IState = {
-  status: "before",
+  status: "",
   progress: 0,
   isOtaUpdate: false,
+  disconnected: true,
 };
 
 const ble = createSlice({
@@ -47,6 +50,9 @@ const ble = createSlice({
     },
     setIsOtaUpdate: (state, { payload }: PayloadAction<boolean>) => {
       state.isOtaUpdate = payload;
+    },
+    setDisconnected: (state, { payload }: PayloadAction<boolean>) => {
+      state.disconnected = payload;
     },
   },
 });

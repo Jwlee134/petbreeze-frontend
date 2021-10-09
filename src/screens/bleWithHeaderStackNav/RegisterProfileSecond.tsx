@@ -93,7 +93,9 @@ const RegisterProfileSecond = ({
           <InputTitle>체중</InputTitle>
           <Input
             value={weight}
-            onChangeText={text => dispatch(formActions.setWeight(text))}
+            onChangeText={text =>
+              dispatch(formActions.setWeight(text.replace(/[^0-9]/g, "")))
+            }
             keyboardType="number-pad"
             solidPlaceholderTitle="kg"
             alignLeftSolidPlaceholderWhenFocus

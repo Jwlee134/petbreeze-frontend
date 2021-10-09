@@ -7,8 +7,9 @@ import PreSafetyZone from "~/screens/bleWithHeaderStackNav/PreSafetyZone";
 import DeviceCheck from "~/screens/bleWithHeaderStackNav/DeviceCheck";
 import RegisterProfileFirst from "~/screens/bleWithHeaderStackNav/RegisterProfileFirst";
 import {
-  BleWithHeaderStackeNavParamList,
-  BleWithHeaderStackNavScreenProps,
+  BleWithHeaderStackNavParamList,
+  BleWithHeaderStackNavScreenNavigationProp,
+  BleWithHeaderStackNavScreenRouteProp,
 } from "~/types/navigator";
 import ChargingCheck from "~/screens/bleWithHeaderStackNav/ChargingCheck";
 import CustomHeader from "~/components/navigator/CustomHeader";
@@ -17,8 +18,10 @@ import RegisterProfileSecond from "~/screens/bleWithHeaderStackNav/RegisterProfi
 import PreWiFiForm from "~/screens/bleWithHeaderStackNav/PreWiFiForm";
 import WiFiForm from "~/screens/bleWithHeaderStackNav/WiFiForm";
 import { useAppSelector } from "~/store";
+import { storageActions } from "~/store/storage";
+import { useDispatch } from "react-redux";
 
-const Stack = createStackNavigator<BleWithHeaderStackeNavParamList>();
+const Stack = createStackNavigator<BleWithHeaderStackNavParamList>();
 
 const forFade = ({ current }: StackCardInterpolationProps) => ({
   cardStyle: {
@@ -29,7 +32,10 @@ const forFade = ({ current }: StackCardInterpolationProps) => ({
 const BleWithHeaderStackNav = ({
   navigation,
   route,
-}: BleWithHeaderStackNavScreenProps) => {
+}: {
+  navigation: BleWithHeaderStackNavScreenNavigationProp;
+  route: BleWithHeaderStackNavScreenRouteProp;
+}) => {
   const {
     init: { isInitialized },
     device: { redirectionRouteName },
@@ -38,15 +44,14 @@ const BleWithHeaderStackNav = ({
     state => state.navigator.initialBleWithHeaderStackNavRouteName,
   );
   const routeName = getFocusedRouteNameFromRoute(route) || initialRouteName;
+  const dispatch = useDispatch();
 
   return (
     <>
       <CustomHeader
         disableBackButton={
           (routeName === "DeviceCheck" && !isInitialized) ||
-          routeName === "PreWiFiForm" ||
-          routeName === "PreSafetyZone" ||
-          routeName === "RegisterProfileFirst"
+          routeName === "PreWiFiForm"
         }
         currentPage={
           routeName?.includes("WiFi")
@@ -65,6 +70,11 @@ const BleWithHeaderStackNav = ({
           if (routeName === "ChargingCheck") {
             if (redirectionRouteName) {
               navigation.goBack();
+              dispatch(
+                storageActions.setDevice({
+                  redirectionRouteName: "",
+                }),
+              );
             } else {
               navigation.replace("DeviceCheck");
             }

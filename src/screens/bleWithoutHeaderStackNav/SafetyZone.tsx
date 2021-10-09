@@ -15,7 +15,7 @@ import Arrow from "~/assets/svg/arrow/arrow-left-blue.svg";
 import { useAppSelector } from "~/store";
 import { useDispatch } from "react-redux";
 import Geolocation from "react-native-geolocation-service";
-import MapButton from "~/components/map/MapButton";
+import MapButton from "~/components/common/MapButton";
 import SafetyZoneMapBottomSheet from "~/components/safetyZone/SafetyZoneMapBottomSheet";
 import SearchBar from "~/components/safetyZone/SearchBar";
 import { deviceSettingActions } from "~/store/deviceSetting";

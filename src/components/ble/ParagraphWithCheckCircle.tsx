@@ -3,7 +3,7 @@ import styled, { css } from "styled-components/native";
 import CheckCircleWhiteBackground from "~/assets/svg/check/check-circle-black50.svg";
 import CheckCircleBlueBackground from "~/assets/svg/check/check-circle-white80.svg";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
-import MyText from "./MyText";
+import MyText from "../common/MyText";
 
 const Paragraph = styled.View<{ rpWidth: RpWidth }>`
   flex-direction: row;
