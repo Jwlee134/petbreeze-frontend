@@ -17,7 +17,7 @@ const MapButtons = () => {
   const { mapRef, devices } = useContext(WalkContext);
 
   const animateToMyLocation = () => {
-    const coords = store.getState().storage.walk.coords;
+    const { coords } = store.getState().storage.walk;
     if (!coords.length) return;
     mapRef.current?.animateToCoordinate({
       latitude: coords[coords.length - 1][0],

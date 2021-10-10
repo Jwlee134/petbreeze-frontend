@@ -1,5 +1,4 @@
-import React from "react";
-import { createContext, ReactNode } from "react";
+import React, { createContext, ReactNode } from "react";
 import { useWindowDimensions } from "react-native";
 import { isIphoneX } from "react-native-iphone-x-helper";
 import { isAndroid } from "~/utils";

@@ -2,9 +2,11 @@ module.exports = {
   presets: ["module:metro-react-native-babel-preset"],
   plugins: [
     [
-      "babel-plugin-root-import",
-      { rootPathPrefix: "~", rootPathSuffix: "src" },
+      "module-resolver",
+      {
+        root: ["./src"],
+      },
     ],
-    "react-native-reanimated/plugin", //Reanimated plugin has to be listed last.
+    "react-native-reanimated/plugin",
   ],
 };

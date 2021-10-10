@@ -12,25 +12,6 @@ const useMyLocation = ({ isWalking = false }: { isWalking?: boolean } = {}) => {
 
   const [isTracking, setIsTracking] = useState(false);
 
-  const startTracking = () => {
-    setCoords().then(() => {
-      setIsTracking(true);
-    });
-  };
-
-  const clearTracking = () => {
-    setIsTracking(false);
-    if (trackingId.current !== null) {
-      Geolocation.clearWatch(trackingId.current);
-      trackingId.current = null;
-    } else {
-      const trackingId = store.getState().storage.walk.trackingId;
-      if (trackingId !== null) {
-        Geolocation.clearWatch(trackingId);
-      }
-    }
-  };
-
   const setCoords = () => {
     return new Promise<number>((resolve, reject) => {
       trackingId.current = Geolocation.watchPosition(
@@ -66,6 +47,25 @@ const useMyLocation = ({ isWalking = false }: { isWalking?: boolean } = {}) => {
         },
       );
     });
+  };
+
+  const startTracking = () => {
+    setCoords().then(() => {
+      setIsTracking(true);
+    });
+  };
+
+  const clearTracking = () => {
+    setIsTracking(false);
+    if (trackingId.current !== null) {
+      Geolocation.clearWatch(trackingId.current);
+      trackingId.current = null;
+    } else {
+      const { trackingId } = store.getState().storage.walk;
+      if (trackingId !== null) {
+        Geolocation.clearWatch(trackingId);
+      }
+    }
   };
 
   return {

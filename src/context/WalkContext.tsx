@@ -1,7 +1,6 @@
 import React, { createContext, ReactNode, useCallback, useRef } from "react";
 import { StyleSheet } from "react-native";
 import NaverMapView, { NaverMapViewProps } from "react-native-nmap";
-import ViewShot from "react-native-view-shot";
 import ViewShotComp from "react-native-view-shot";
 import NaverMap from "~/components/common/Map";
 import { useAppSelector } from "~/store";
@@ -14,7 +13,7 @@ interface IMap extends NaverMapViewProps {
 interface IContext {
   mapRef: React.RefObject<NaverMapView>;
   Map: ({ children, ...props }: IMap) => JSX.Element;
-  viewShotRef: React.RefObject<ViewShot>;
+  viewShotRef: React.RefObject<ViewShotComp>;
   ViewShot: ({ children }: { children: ReactNode }) => JSX.Element;
   devices: IDevice[];
 }

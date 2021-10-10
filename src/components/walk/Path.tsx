@@ -1,5 +1,4 @@
-import React, { useContext } from "react";
-import { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { Path as Polyline, Marker } from "react-native-nmap";
 import { DimensionsContext } from "~/context/DimensionsContext";
 import { WalkContext } from "~/context/WalkContext";

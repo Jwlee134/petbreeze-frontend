@@ -1,8 +1,7 @@
-import React, { useContext, useEffect, useMemo, useRef } from "react";
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import Path from "~/components/walk/Path";
 import { store, useAppSelector } from "~/store";
 import WalkBottomSheet from "~/components/walk/WalkBottomSheet";
-import { useState } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { DimensionsContext } from "~/context/DimensionsContext";
 import { Animated, StyleSheet } from "react-native";
@@ -28,17 +27,16 @@ const WalkMap = () => {
   const marginBottom = useRef(new Animated.Value(0)).current;
   const opacity = useRef(new Animated.Value(0)).current;
 
-  const handleBottomSheetChange = (index: number) => setIndex(index);
+  const handleBottomSheetChange = (i: number) => setIndex(i);
 
   const snapPoints = useMemo(() => {
     if (isStopped) {
       return [rpWidth(316) + bottom - bottomSheetHandleHeight];
-    } else {
-      return [
-        rpWidth(92 - bottomSheetHandleHeight),
-        rpWidth(238 - bottomSheetHandleHeight),
-      ];
     }
+    return [
+      rpWidth(92 - bottomSheetHandleHeight),
+      rpWidth(238 - bottomSheetHandleHeight),
+    ];
   }, [isStopped]);
 
   const mapPadding = useMemo(

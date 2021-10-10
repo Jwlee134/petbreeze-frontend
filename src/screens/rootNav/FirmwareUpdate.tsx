@@ -67,6 +67,8 @@ const FirmwareUpdate = ({
         await delay(500);
         CodePush.restartApp();
         break;
+      default:
+        break;
     }
   };
 

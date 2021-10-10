@@ -1,11 +1,8 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { useAppSelector } from "~/store";
 import TimerSVG from "~/assets/svg/walk/timer.svg";
 import MyText from "../common/MyText";
 import styled from "styled-components/native";
-import { useState } from "react";
-import { useEffect } from "react";
-import { useRef } from "react";
 import { useDispatch } from "react-redux";
 import { storageActions } from "~/store/storage";
 import { DimensionsContext } from "~/context/DimensionsContext";

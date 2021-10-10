@@ -92,7 +92,7 @@ export default {
   start: () => BackgroundService.start(backgroundTask, options),
   stop: () =>
     BackgroundService.stop().then(() => {
-      const trackingId = store.getState().storage.walk.trackingId;
+      const { trackingId } = store.getState().storage.walk;
       if (trackingId !== null) {
         Geolocation.clearWatch(trackingId);
       }

@@ -21,7 +21,7 @@ const DeviceSetting = ({
   navigation: DeviceSettingScreenNavigationProp;
 }) => {
   const { rpWidth } = useContext(DimensionsContext);
-  const data = route.params.data;
+  const { data } = route.params;
   const [isEdit, setIsEdit] = useState(false);
 
   const handleSubmit = () => {

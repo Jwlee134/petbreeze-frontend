@@ -52,7 +52,7 @@ const initialState: IStorage = {
   },
   init: {
     isCodePushUpdated: false,
-    isPermissionAllowed: isAndroid ? true : false,
+    isPermissionAllowed: isAndroid,
     isIntroPassed: false,
   },
   device: {
@@ -101,7 +101,7 @@ const storage = createSlice({
       if (payload) {
         state.walk = { ...state.walk, ...payload };
       } else {
-        state.walk = { ...initialState.walk, isStopped: state.walk.isStopped };
+        state.walk = initialState.walk;
       }
     },
     setCoords: (
@@ -111,10 +111,10 @@ const storage = createSlice({
       state.walk.coords.push([payload.latitude, payload.longitude]);
     },
     setTotalPauseDuration: (state, { payload }: PayloadAction<number>) => {
-      state.walk.totalPauseDuration = state.walk.totalPauseDuration + payload;
+      state.walk.totalPauseDuration += payload;
     },
     setMeter: (state, { payload }: PayloadAction<number>) => {
-      state.walk.meter = state.walk.meter + payload;
+      state.walk.meter += payload;
     },
 
     setSafetyZoneSearchHistory: (

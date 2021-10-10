@@ -1,5 +1,4 @@
-import React, { useContext } from "react";
-import { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useDispatch } from "react-redux";
 import styled from "styled-components/native";
@@ -40,6 +39,7 @@ const Success = ({
     }
     if (status === "otaUpdateSuccess") {
       if (isOtaUpdate) {
+        /*  */
       } else {
         /* dispatch(
           storageActions.setDevice({

@@ -140,7 +140,7 @@ const deviceSetting = createSlice({
       state,
       { payload }: PayloadAction<ISafetyZoneDraft>,
     ) => {
-      const currentId = state.safetyZone.currentId;
+      const { currentId } = state.safetyZone;
       const exist = state.safetyZone.result.some(data => data.id === currentId);
       if (exist) {
         state.safetyZone.result = state.safetyZone.result.map(area => {
@@ -154,9 +154,8 @@ const deviceSetting = createSlice({
                 payload.radius,
               ],
             };
-          } else {
-            return area;
           }
+          return area;
         });
       } else {
         state.safetyZone.result.push({
@@ -186,16 +185,15 @@ const deviceSetting = createSlice({
       }
     },
     updateWifiResult: (state, { payload }: PayloadAction<IWifiDraft>) => {
-      const currentId = state.wifi.currentId;
+      const { currentId } = state.wifi;
       const exist = state.wifi.result.some(data => data.id === currentId);
 
       if (exist) {
         state.wifi.result = state.wifi.result.map(data => {
           if (data.id === currentId) {
             return { ...data, ...payload };
-          } else {
-            return data;
           }
+          return data;
         });
       } else {
         state.wifi.result.push({
