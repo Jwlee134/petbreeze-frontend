@@ -5,6 +5,20 @@ import {
   PERMISSIONS,
   request,
 } from "react-native-permissions";
+import { store } from "~/store";
+import { bleActions } from "~/store/ble";
+import { deviceSettingActions } from "~/store/deviceSetting";
+import { formActions } from "~/store/form";
+import { navigatorActions } from "~/store/navigator";
+import { storageActions } from "~/store/storage";
+
+export const resetAll = () => {
+  store.dispatch(bleActions.reset());
+  store.dispatch(deviceSettingActions.reset());
+  store.dispatch(formActions.reset());
+  store.dispatch(navigatorActions.reset());
+  store.dispatch(storageActions.reset());
+};
 
 export const isAndroid = Platform.OS === "android";
 

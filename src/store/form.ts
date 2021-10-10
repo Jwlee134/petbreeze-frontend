@@ -49,10 +49,10 @@ const form = createSlice({
   name: "form",
   initialState,
   reducers: {
-    setDefaultValue: (state, { payload }: PayloadAction<Partial<IForm>>) => {
-      state = { ...state, ...payload };
-      return state;
-    },
+    setDefaultValue: (state, { payload }: PayloadAction<Partial<IForm>>) => ({
+      ...state,
+      ...payload,
+    }),
     setAvatar: (state, { payload }: PayloadAction<Image>) => {
       state.avatar = payload;
     },
@@ -110,9 +110,7 @@ const form = createSlice({
     setWifiPw: (state, { payload }: PayloadAction<string>) => {
       state.wifiPw = payload;
     },
-    initState: state => {
-      state = initialState;
-    },
+    reset: () => initialState,
   },
 });
 

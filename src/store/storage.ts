@@ -5,7 +5,6 @@ interface IInit {
   isCodePushUpdated: boolean;
   isIntroPassed: boolean;
   isPermissionAllowed: boolean;
-  isInitialized: boolean;
 }
 
 interface IDevice {
@@ -55,7 +54,6 @@ const initialState: IStorage = {
     isCodePushUpdated: false,
     isPermissionAllowed: isAndroid ? true : false,
     isIntroPassed: false,
-    isInitialized: false,
   },
   device: {
     isOtaUpdateAvailable: false,
@@ -137,12 +135,17 @@ const storage = createSlice({
         data => data.addr === payload.addr,
       );
       if (!exist) {
+        if (state.history.safetyZoneSearch.length === 10) {
+          state.history.safetyZoneSearch.splice(-1, 1);
+        }
         state.history.safetyZoneSearch = [
           payload,
           ...state.history.safetyZoneSearch,
         ];
       }
     },
+
+    reset: state => ({ ...initialState, init: state.init }),
   },
 });
 

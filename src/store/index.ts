@@ -63,6 +63,6 @@ export const store = configureStore({
 
 export const persister = persistStore(store);
 
-export type RootState = ReturnType<typeof store.getState>;
+export type RootState = ReturnType<typeof rootReducer>;
 
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;

@@ -3,7 +3,7 @@ import { navigatorActions } from "~/store/navigator";
 
 export default () => {
   const {
-    init: { isPermissionAllowed, isInitialized },
+    init: { isPermissionAllowed },
     device: { isDeviceRegistered, isSafetyZoneRegistered, isProfileRegistered },
     walk: { coords },
   } = store.getState().storage;
@@ -35,12 +35,6 @@ export default () => {
         }),
       );
     }
-  } else if (!isInitialized) {
-    store.dispatch(
-      navigatorActions.setInitialRoute({
-        initialLoggedInNavRouteName: "BleRootStackNav",
-      }),
-    );
   } else {
     store.dispatch(
       navigatorActions.setInitialRoute({

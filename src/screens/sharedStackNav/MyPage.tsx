@@ -19,6 +19,9 @@ import useModal from "~/hooks/useModal";
 import Modal from "react-native-modal";
 import CommonCenterModal from "~/components/modal/CommonCenterModal";
 import Divider from "~/components/common/Divider";
+import * as SecureStore from "expo-secure-store";
+import { centerModalOutTiming } from "~/styles/constants";
+import { resetAll } from "~/utils";
 
 const Button = styled.TouchableOpacity<{ isLast?: boolean; rpWidth: RpWidth }>`
   flex-direction: row;
@@ -50,7 +53,7 @@ const MyPage = ({ navigation }: { navigation: MyPageScreenNavigationProp }) => {
     <>
       <ScrollView>
         <DeviceList />
-        <Divider height={4} isHairline={false} />
+        <Divider isHairline={false} />
         <Section rpWidth={rpWidth}>
           <MyText
             style={{
@@ -126,7 +129,7 @@ const MyPage = ({ navigation }: { navigation: MyPageScreenNavigationProp }) => {
             <Arrow width={rpWidth(7)} height={rpWidth(12)} />
           </Button>
         </Section>
-        <Divider height={4} isHairline={false} />
+        <Divider isHairline={false} />
         <Section rpWidth={rpWidth}>
           <Button rpWidth={rpWidth} onPress={open} style={{ paddingTop: 0 }}>
             <MyText>로그아웃</MyText>
@@ -142,7 +145,17 @@ const MyPage = ({ navigation }: { navigation: MyPageScreenNavigationProp }) => {
         <CommonCenterModal
           close={close}
           rightButtonText="로그아웃"
-          onRightButtonPress={() => {}}
+          onRightButtonPress={async () => {
+            await SecureStore.deleteItemAsync("token");
+            resetAll();
+            close();
+            setTimeout(() => {
+              navigation.reset({
+                index: 0,
+                routes: [{ name: "Start" }],
+              });
+            }, centerModalOutTiming);
+          }}
           title="로그아웃 하시나요?"
         />
       </Modal>

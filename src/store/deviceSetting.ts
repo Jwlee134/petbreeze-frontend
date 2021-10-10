@@ -215,6 +215,8 @@ const deviceSetting = createSlice({
         state.profile = initialState.profile;
       }
     },
+
+    reset: () => initialState,
   },
 });
 

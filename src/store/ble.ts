@@ -54,6 +54,7 @@ const ble = createSlice({
     setDisconnected: (state, { payload }: PayloadAction<boolean>) => {
       state.disconnected = payload;
     },
+    reset: () => initialState,
   },
 });
 

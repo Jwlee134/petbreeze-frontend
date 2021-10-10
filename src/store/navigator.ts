@@ -35,13 +35,14 @@ const navigator = createSlice({
   name: "navigator",
   initialState,
   reducers: {
-    setInitialRoute: (state, { payload }: PayloadAction<Partial<IState>>) => {
-      state = { ...state, ...payload };
-      return state;
-    },
+    setInitialRoute: (state, { payload }: PayloadAction<Partial<IState>>) => ({
+      ...state,
+      ...payload,
+    }),
     setLoadingText: (state, { payload }: PayloadAction<string>) => {
       state.loadingText = payload;
     },
+    reset: () => initialState,
   },
 });
 
