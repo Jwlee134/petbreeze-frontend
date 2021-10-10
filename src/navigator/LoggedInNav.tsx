@@ -22,6 +22,7 @@ import UpdateWiFi from "~/screens/loggedInNav/UpdateWiFi";
 import DeviceAlert from "~/screens/loggedInNav/DeviceAlert";
 import DeleteAccountStackNav from "./DeleteAccountStackNav";
 import WalkContextProvider from "~/context/WalkContext";
+import CodePush from "react-native-code-push";
 
 const Stack = createStackNavigator<LoggedInNavParamList>();
 
@@ -37,6 +38,11 @@ const LoggedInNav = ({ navigation, route }: LoggedInNavScreenProps) => {
   );
 
   useEffect(() => {
+    CodePush.sync({
+      checkFrequency: CodePush.CheckFrequency.ON_APP_RESUME,
+      installMode: CodePush.InstallMode.ON_NEXT_RESUME,
+    });
+
     const unsubscribe = messaging().onMessage(async remoteMessage => {
       console.log(remoteMessage);
     });

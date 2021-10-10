@@ -61,4 +61,4 @@ const Points = ({
   );
 };
 
-export default React.memo(Points);
+export default Points;

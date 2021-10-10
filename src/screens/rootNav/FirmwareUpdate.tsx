@@ -3,12 +3,14 @@ import styled from "styled-components/native";
 import CodePush, { DownloadProgress } from "react-native-code-push";
 import { useDispatch } from "react-redux";
 import { storageActions } from "~/store/storage";
-import MyText from "~/components/common/MyText";
+import AnimatedPoints from "~/components/common/AnimatedPoints";
 import FootPrint from "~/assets/svg/footprint/footprint-outline-white.svg";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import GradientContainer from "~/components/common/container/GradientContainer";
 import { FirmwareUpdateScreenNavigationProp } from "~/types/navigator";
 import { DimensionsContext } from "~/context/DimensionsContext";
+import { delay } from "~/utils";
+import useAnimatedSequence from "~/hooks/useAnimatedSequence";
 
 const HalfContainer = styled.View`
   flex: 1;
@@ -22,9 +24,30 @@ const FirmwareUpdate = ({
   const { rpWidth } = useContext(DimensionsContext);
   const [progress, setProgress] = useState(0);
   const dispatch = useDispatch();
+  const [text, setText] = useState("업데이트 확인 중");
 
-  const handleStatus = (status: CodePush.SyncStatus) => {
+  const [point1, point2, point3] = useAnimatedSequence({
+    numOfValues: 3,
+    loop: true,
+    delayAfterMount: 600,
+    firstDuration: 400,
+    delayAfterFirst: 800,
+    secondDuration: 400,
+    delayAfterSecond: 800,
+    thirdDuration: 400,
+    delayAfterThird: 800,
+    resetDuration: 400,
+    delayAfterReset: 800,
+  });
+
+  const handleStatus = async (status: CodePush.SyncStatus) => {
     switch (status) {
+      case CodePush.SyncStatus.DOWNLOADING_PACKAGE:
+        setText("업데이트 다운로드 중");
+        break;
+      case CodePush.SyncStatus.INSTALLING_UPDATE:
+        setText("업데이트 설치 중");
+        break;
       case CodePush.SyncStatus.UP_TO_DATE:
         setProgress(100);
         dispatch(
@@ -32,20 +55,17 @@ const FirmwareUpdate = ({
             isCodePushUpdated: true,
           }),
         );
-        setTimeout(() => {
-          navigation.navigate("Start");
-        }, 500);
+        await delay(500);
+        navigation.navigate("Start");
+        break;
       case CodePush.SyncStatus.UPDATE_INSTALLED:
         dispatch(
           storageActions.setInit({
             isCodePushUpdated: true,
           }),
         );
-        setTimeout(() => {
-          CodePush.restartApp();
-        }, 500);
-        break;
-      default:
+        await delay(500);
+        CodePush.restartApp();
         break;
     }
   };
@@ -57,11 +77,7 @@ const FirmwareUpdate = ({
   };
 
   useEffect(() => {
-    //if (!isCodePushUpdated) {
     CodePush.sync({}, handleStatus, handleDownloadProgress);
-    /* } else {
-      CodePush.sync();
-    } */
   }, []);
 
   return (
@@ -81,9 +97,14 @@ const FirmwareUpdate = ({
         </AnimatedCircularProgress>
       </HalfContainer>
       <HalfContainer>
-        <MyText fontSize={24} color="white">
-          업데이트 중
-        </MyText>
+        <AnimatedPoints
+          value1={point1}
+          value2={point2}
+          value3={point3}
+          text={text}
+          fontSize={24}
+          color="white"
+        />
       </HalfContainer>
     </GradientContainer>
   );

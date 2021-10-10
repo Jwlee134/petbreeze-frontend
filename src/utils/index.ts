@@ -20,6 +20,9 @@ export const resetAll = () => {
   store.dispatch(storageActions.reset());
 };
 
+export const delay = async (sec: number) =>
+  await new Promise<void>(resolve => setTimeout(resolve, sec));
+
 export const isAndroid = Platform.OS === "android";
 
 export const isIos = Platform.OS === "ios";
