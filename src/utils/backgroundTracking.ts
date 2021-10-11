@@ -16,15 +16,26 @@ const options = {
   linkingURI: "petbreeze://walk/map",
 };
 
+const stopWatching = () => {
+  const { trackingId } = store.getState().storage.walk;
+  if (trackingId !== null) {
+    Geolocation.clearWatch(trackingId);
+    store.dispatch(
+      storageActions.setWalk({
+        trackingId: null,
+      }),
+    );
+  }
+};
+
 const setCoords = () =>
   new Promise<number>((resolve, reject) => {
     const id = Geolocation.watchPosition(
       pos => {
+        const { coords } = store.getState().storage.walk;
         const { latitude, longitude } = pos.coords;
         const lat = parseFloat(latitude.toFixed(6));
         const lng = parseFloat(longitude.toFixed(6));
-
-        const { coords } = store.getState().storage.walk;
 
         if (coords.length === 0) {
           store.dispatch(
@@ -71,6 +82,7 @@ const backgroundTask = async () => {
   await new Promise<void>(() => {
     setCoords()
       .then(trackingId => {
+        stopWatching();
         store.dispatch(
           storageActions.setWalk({
             trackingId,
@@ -92,10 +104,7 @@ export default {
   start: () => BackgroundService.start(backgroundTask, options),
   stop: () =>
     BackgroundService.stop().then(() => {
-      const { trackingId } = store.getState().storage.walk;
-      if (trackingId !== null) {
-        Geolocation.clearWatch(trackingId);
-      }
+      stopWatching();
     }),
   isRunning: () => BackgroundService.isRunning(),
 };

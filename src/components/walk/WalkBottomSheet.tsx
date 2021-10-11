@@ -9,6 +9,7 @@ import { useAppSelector } from "~/store";
 import backgroundTracking from "~/utils/backgroundTracking";
 import BottomSheet from "../common/BottomSheet";
 import Result from "./Result";
+import { isIos } from "~/utils";
 
 interface IProps {
   handleChange: (index: number) => void;
@@ -22,6 +23,7 @@ const RowContainer = styled.View`
 
 const WalkBottomSheet = ({ handleChange, snapPoints }: IProps) => {
   const isWalking = useAppSelector(state => state.storage.walk.isWalking);
+  const startTime = useAppSelector(state => state.storage.walk.startTime);
   const isStopped = useAppSelector(state => state.storage.walk.isStopped);
   const dispatch = useDispatch();
 
@@ -37,13 +39,16 @@ const WalkBottomSheet = ({ handleChange, snapPoints }: IProps) => {
   useEffect(() => {
     const init = async () => {
       if (backgroundTracking.isRunning()) return;
+      if (isIos && startTime && !isWalking) return; // iOS에서 산책 일시중지 후 어플 껐다가 다시 접속 시 start() 방지
       await backgroundTracking.start();
-      dispatch(
-        storageActions.setWalk({
-          isWalking: true,
-          startTime: new Date().toISOString(),
-        }),
-      );
+      if (!startTime) {
+        dispatch(
+          storageActions.setWalk({
+            isWalking: true,
+            startTime: new Date().toISOString(),
+          }),
+        );
+      }
     };
     init();
   }, []);
