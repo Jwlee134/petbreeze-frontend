@@ -4,7 +4,9 @@ module.exports = {
     [
       "module-resolver",
       {
-        root: ["./src"],
+        alias: {
+          "~": "./src",
+        },
       },
     ],
     "react-native-reanimated/plugin",
