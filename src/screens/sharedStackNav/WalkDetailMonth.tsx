@@ -2,7 +2,7 @@ import React, { useContext, useMemo } from "react";
 import styled, { css } from "styled-components/native";
 import MyText from "~/components/common/MyText";
 import { useAppSelector } from "~/store";
-import { WalkDetailScreenProps } from "~/types/navigator";
+import { WalkDetailMonthScreenProps } from "~/types/navigator";
 import palette from "~/styles/palette";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import Divider from "~/components/common/Divider";
@@ -33,9 +33,9 @@ LocaleConfig.locales["ko"] = {
 };
 LocaleConfig.defaultLocale = "ko";
 
-const WalkDetail = ({ navigation, route }: WalkDetailScreenProps) => {
+const WalkDetailMonth = ({ navigation, route }: WalkDetailMonthScreenProps) => {
   const devices = useAppSelector(state => state.device);
-  const data = devices.find(device => device.id === 1);
+  const data = devices.find(device => device.id === route.params.id);
   const { rpWidth, isTablet } = useContext(DimensionsContext);
 
   /*   const MarkingDots = useMemo(() => {
@@ -77,11 +77,17 @@ const WalkDetail = ({ navigation, route }: WalkDetailScreenProps) => {
       <TopContainer>
         <Image rpWidth={rpWidth} source={require("~/assets/image/test.jpg")} />
         <MyText style={{ marginBottom: rpWidth(19) }} fontWeight="medium">
-          하하하
+          {data?.name}
         </MyText>
       </TopContainer>
       <Divider isHairline={false} />
       <CalendarList
+        onDayPress={day => {
+          navigation.navigate("WalkDetailDay", {
+            id: data.id,
+            date: `${day.month}월 ${day.day}일`,
+          });
+        }}
         monthFormat="M월"
         pagingEnabled
         horizontal
@@ -143,4 +149,4 @@ const WalkDetail = ({ navigation, route }: WalkDetailScreenProps) => {
   );
 };
 
-export default WalkDetail;
+export default WalkDetailMonth;

@@ -1,7 +1,6 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import styled from "styled-components/native";
 import { StartWalkingScreenNavigationProp } from "~/types/navigator";
-import { useState } from "react";
 import deviceApi from "~/api/device";
 import { useDispatch } from "react-redux";
 import { storageActions } from "~/store/storage";
@@ -56,7 +55,6 @@ const StartWalking = ({
         dispatch(
           storageActions.setWalk({
             selectedDeviceId: selected,
-            isStopped: false,
           }),
         );
         dispatch(

@@ -2,9 +2,12 @@ import {
   BottomTabNavigationProp,
   BottomTabScreenProps,
 } from "@react-navigation/bottom-tabs";
-import { CompositeNavigationProp, RouteProp } from "@react-navigation/core";
+import {
+  CompositeNavigationProp,
+  CompositeScreenProps,
+  RouteProp,
+} from "@react-navigation/native";
 import { MaterialTopTabNavigationProp } from "@react-navigation/material-top-tabs";
-import { CompositeScreenProps } from "@react-navigation/native";
 import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
 import { IDevice } from "~/store/device";
 
@@ -322,8 +325,12 @@ export type SharedStackNavParamList = {
   WalkTopTabNav: undefined;
   Notification: undefined;
   MyPage: undefined;
-  WalkDetail: {
+  WalkDetailMonth: {
     id: string;
+  };
+  WalkDetailDay: {
+    id: string;
+    date: string;
   };
   DeviceSetting: {
     data: IDevice;
@@ -360,8 +367,8 @@ export type MyPageScreenNavigationProp = CompositeNavigationProp<
     >
   >
 >;
-export type WalkDetailScreenProps = CompositeScreenProps<
-  StackScreenProps<SharedStackNavParamList, "WalkDetail">,
+export type WalkDetailMonthScreenProps = CompositeScreenProps<
+  StackScreenProps<SharedStackNavParamList, "WalkDetailMonth">,
   CompositeScreenProps<
     BottomTabScreenProps<BottomTabParamList>,
     CompositeScreenProps<
@@ -369,6 +376,20 @@ export type WalkDetailScreenProps = CompositeScreenProps<
       StackScreenProps<RootNavParamList>
     >
   >
+>;
+export type WalkDetailDayScreenProps = CompositeScreenProps<
+  StackScreenProps<SharedStackNavParamList, "WalkDetailDay">,
+  CompositeScreenProps<
+    BottomTabScreenProps<BottomTabParamList>,
+    CompositeScreenProps<
+      StackScreenProps<LoggedInNavParamList>,
+      StackScreenProps<RootNavParamList>
+    >
+  >
+>;
+export type WalkDetailDayScreenRouteProp = RouteProp<
+  SharedStackNavParamList,
+  "WalkDetailDay"
 >;
 export type DeviceSettingListScreenNavigationProp = CompositeNavigationProp<
   StackNavigationProp<SharedStackNavParamList, "DeviceSettingList">,

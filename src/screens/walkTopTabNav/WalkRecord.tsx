@@ -36,7 +36,7 @@ const WalkRecord = ({
         <ListItem
           key={item.id}
           onPress={() =>
-            navigation.navigate("WalkDetail", {
+            navigation.navigate("WalkDetailMonth", {
               id: item.id,
             })
           }>
