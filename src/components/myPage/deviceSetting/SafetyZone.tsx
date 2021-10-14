@@ -1,9 +1,9 @@
 import React, { useContext } from "react";
 import styled, { css } from "styled-components/native";
-import MyText from "../common/MyText";
+import MyText from "../../common/MyText";
 
-import Swipeable from "../common/Swipeable";
-import ListItem from "../common/ListItem";
+import Swipeable from "../../common/Swipeable";
+import ListItem from "../../common/ListItem";
 import Trashcan from "~/assets/svg/trashcan.svg";
 import DeviceSettingSection from "./DeviceSettingSection";
 import { useNavigation } from "@react-navigation/core";

@@ -1,8 +1,8 @@
 import React, { useContext, useState } from "react";
 import styled from "styled-components/native";
-import MyText from "../common/MyText";
+import MyText from "../../common/MyText";
 import Location from "~/assets/svg/myPage/location.svg";
-import ScrollPicker from "../common/ScrollPicker";
+import ScrollPicker from "../../common/ScrollPicker";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 
 const RowContainer = styled.View`
@@ -17,6 +17,7 @@ const SvgContainer = styled.View<{ rpWidth: RpWidth }>`
 
 const Container = styled(RowContainer)<{ rpWidth: RpWidth }>`
   height: ${({ rpWidth }) => rpWidth(79)}px;
+  padding: ${({ rpWidth }) => `0px ${rpWidth(16)}px`};
   justify-content: space-between;
 `;
 
@@ -40,6 +41,7 @@ const LocationInfoCollectionPeriod = () => {
         onChange={index => setSelectedIndex(index)}
         width={rpWidth(88)}
         height={rpWidth(36)}
+        style={{ marginRight: rpWidth(16) }}
       />
     </Container>
   );

@@ -18,7 +18,7 @@ export interface Notification {
   id: number;
 }
 
-interface NotificationSettings {
+export interface NotificationSettings {
   low_battery_notification: boolean;
   exit_notification: boolean;
   start_walk_notification: boolean;
@@ -90,14 +90,40 @@ const userApi = api.injectEndpoints({
       }),
     }),
 
-    updateNotificationSettings: builder.mutation<NotificationSettings, string>({
-      query: firebaseToken => ({
+    updateNotificationSettings: builder.mutation<
+      NotificationSettings,
+      {
+        firebaseToken: string;
+        body: NotificationSettings;
+      }
+    >({
+      query: ({ firebaseToken, body }) => ({
         url: "/accounts/setting/push-noti/",
         method: "PUT",
         headers: {
           "firebase-registration-token": firebaseToken,
         },
+        body,
       }),
+      onQueryStarted: async (
+        { firebaseToken, body },
+        { dispatch, queryFulfilled },
+      ) => {
+        const putResult = dispatch(
+          userApi.util.updateQueryData(
+            "getNofiticationSettings",
+            firebaseToken,
+            draft => {
+              Object.assign(draft, body);
+            },
+          ),
+        );
+        try {
+          await queryFulfilled;
+        } catch {
+          putResult.undo();
+        }
+      },
     }),
 
     getNickname: builder.query<{ nickname: string }, void>({

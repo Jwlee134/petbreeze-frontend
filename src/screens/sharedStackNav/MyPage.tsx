@@ -110,7 +110,11 @@ const MyPage = ({ navigation }: { navigation: MyPageScreenNavigationProp }) => {
             </RowContainer>
             <Arrow width={rpWidth(7)} height={rpWidth(12)} />
           </Button>
-          <Button rpWidth={rpWidth} onPress={() => {}}>
+          <Button
+            rpWidth={rpWidth}
+            onPress={() => {
+              navigation.navigate("NotificationSetting");
+            }}>
             <RowContainer>
               <SvgContainer rpWidth={rpWidth}>
                 <Bell width={rpWidth(17)} height={rpWidth(21)} />

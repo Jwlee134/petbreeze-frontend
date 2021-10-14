@@ -1,10 +1,10 @@
 import React, { ReactNode, useContext } from "react";
 import styled, { css } from "styled-components/native";
-import MyText from "../common/MyText";
+import MyText from "../../common/MyText";
 import Shield from "~/assets/svg/myPage/shield.svg";
 import WiFiIcon from "~/assets/svg/wifi/wifi-black.svg";
 import Plus from "~/assets/svg/plus-circle-blue.svg";
-import Dissolve from "../common/Dissolve";
+import Dissolve from "../../common/Dissolve";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 
 interface IProps {

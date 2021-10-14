@@ -327,6 +327,7 @@ export type SharedStackNavParamList = {
   WalkTopTabNav: undefined;
   Notification: undefined;
   MyPage: undefined;
+  NotificationSetting: undefined;
   WalkDetailMonth: {
     id: string;
   };

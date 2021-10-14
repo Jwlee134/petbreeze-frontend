@@ -1,9 +1,9 @@
 import React, { useContext } from "react";
 import styled, { css } from "styled-components/native";
 import Pencil from "~/assets/svg/myPage/pencil.svg";
-import Divider from "../common/Divider";
+import Divider from "../../common/Divider";
 import { TouchableOpacity } from "react-native";
-import MyText from "../common/MyText";
+import MyText from "../../common/MyText";
 import { IDevice } from "~/store/device";
 import { useNavigation } from "@react-navigation/core";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
