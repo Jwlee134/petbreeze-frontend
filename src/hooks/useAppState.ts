@@ -15,7 +15,7 @@ const useAppState = () => {
     };
   }, []);
 
-  return { appState };
+  return appState;
 };
 
 export default useAppState;

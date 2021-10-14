@@ -2,7 +2,7 @@ import React, { useContext, useEffect } from "react";
 import { Path as Polyline, Marker } from "react-native-nmap";
 import { DimensionsContext } from "~/context/DimensionsContext";
 import { WalkContext } from "~/context/WalkContext";
-import { delta } from "~/staticData";
+import { delta } from "~/constants";
 import { useAppSelector } from "~/store";
 import palette from "~/styles/palette";
 

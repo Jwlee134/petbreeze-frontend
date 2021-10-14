@@ -1,16 +1,17 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import styled from "styled-components/native";
 
 import { HomeScreenNavigationProp } from "~/types/navigator";
-import { useAppSelector } from "~/store";
-import useMap from "~/hooks/useMap";
-import useMyLocation from "~/hooks/useMyLocation";
-
-import { StyleSheet } from "react-native";
 
 import DeviceList from "~/components/home/DeviceList";
-import MapFloatingCircle from "~/components/common/MapFloatingCircle";
-import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
+import { DimensionsContext } from "~/context/DimensionsContext";
+import MapButton from "~/components/common/MapButton";
+import Map from "~/components/common/Map";
+import NaverMapView, { Marker } from "react-native-nmap";
+import Geolocation from "react-native-geolocation-service";
+import { useIsFocused } from "@react-navigation/native";
+import useAppState from "~/hooks/useAppState";
+import { delta } from "~/constants";
 
 const Container = styled.View`
   flex: 1;
@@ -18,16 +19,77 @@ const Container = styled.View`
 `;
 
 const Home = ({ navigation }: { navigation: HomeScreenNavigationProp }) => {
-  const { Map, mapRef } = useMap();
-  const { isTracking, startTracking, clearTracking } = useMyLocation();
   const { rpWidth } = useContext(DimensionsContext);
+  const mapRef = useRef<NaverMapView>(null);
+  const trackingId = useRef<number | null>(null);
+  const isFocused = useIsFocused();
+  const appState = useAppState();
+
+  const [coords, setCoords] = useState({ latitude: 0, longitude: 0 });
+  const [isCameraMoved, setIsCameraMoved] = useState(true);
+
+  const animateToMyLocation = () => {
+    mapRef.current?.animateToRegion({
+      latitude: coords.latitude,
+      longitude: coords.longitude,
+      latitudeDelta: delta,
+      longitudeDelta: delta,
+    });
+    setIsCameraMoved(true);
+  };
+
+  const handleMyLocation = () => {
+    setIsCameraMoved(false);
+    if (trackingId.current !== null) {
+      animateToMyLocation();
+    } else {
+      trackingId.current = Geolocation.watchPosition(
+        ({ coords }) => {
+          setCoords(coords);
+        },
+        err => {
+          console.log(err);
+        },
+        {
+          enableHighAccuracy: true,
+          distanceFilter: 5,
+        },
+      );
+    }
+  };
+
+  useEffect(() => {
+    if (!isCameraMoved && coords.latitude) animateToMyLocation();
+  }, [coords, isCameraMoved]);
+
+  useEffect(() => {
+    if (!isFocused || appState === "background") {
+      if (trackingId.current !== null) {
+        Geolocation.clearWatch(trackingId.current);
+        trackingId.current = null;
+        setCoords({ latitude: 0, longitude: 0 });
+      }
+    }
+  }, [isFocused, appState]);
 
   return (
     <>
       <Container>
-        <Map style={StyleSheet.absoluteFill} />
+        <Map ref={mapRef}>
+          {coords.latitude ? (
+            <Marker
+              coordinate={coords}
+              image={require("~/assets/image/my-location-marker.png")}
+              width={rpWidth(100)}
+              height={rpWidth(100)}
+              anchor={{ x: 0.5, y: 0.5 }}
+            />
+          ) : null}
+        </Map>
         <DeviceList />
-        <MapFloatingCircle
+        <MapButton
+          onPress={handleMyLocation}
+          icon="myLocation"
           style={{
             marginBottom: rpWidth(157),
             alignSelf: "flex-end",

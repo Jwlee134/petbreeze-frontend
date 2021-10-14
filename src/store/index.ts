@@ -16,7 +16,6 @@ import ble from "./ble";
 import form from "./form";
 import deviceSetting from "./deviceSetting";
 import storage from "./storage";
-import map from "./map";
 import device from "./device";
 import navigator from "./navigator";
 
@@ -27,7 +26,6 @@ const rootReducer = combineReducers({
   form,
   deviceSetting,
   storage,
-  map,
   device,
   navigator,
   [api.reducerPath]: api.reducer,

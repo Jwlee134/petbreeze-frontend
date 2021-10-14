@@ -14,7 +14,7 @@ const BottomTabNav = () => {
   const initialRouteName = useAppSelector(
     state => state.navigator.initialBottomTabNavRouteName,
   );
-  const { appState } = useAppState();
+  const appState = useAppState();
   const { data, refetch } = userApi.useGetNumOfNewNotificationsQuery();
 
   useEffect(() => {

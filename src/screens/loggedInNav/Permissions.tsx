@@ -75,7 +75,7 @@ const Permissions = ({
     state => state.storage.init.isPermissionAllowed,
   );
   const dispatch = useDispatch();
-  const { appState } = useAppState();
+  const appState = useAppState();
   const { bottom } = useSafeAreaInsets();
   const [textWidth, setTextWidth] = useState(0);
 
@@ -104,11 +104,7 @@ const Permissions = ({
       PERMISSIONS.IOS.PHOTO_LIBRARY,
       PERMISSIONS.IOS.CAMERA,
     ]).then(() => {
-      /*  dispatch(
-        storageActions.setInit({
-          isPermissionAllowed: true,
-        }),
-      ); */
+      dispatch(storageActions.setInit({ isPermissionAllowed: true }));
       navigation.replace("BleRootStackNav");
     });
   };
@@ -237,13 +233,13 @@ const Permissions = ({
             </SvgContainer>
             <TextContainer rpWidth={rpWidth}>
               <MyText fontWeight="medium" fontSize={16}>
-                갤러리
+                카메라 및 갤러리
               </MyText>
               <MyText
                 fontWeight="light"
                 fontSize={14}
                 color="rgba(0, 0, 0, 0.5)">
-                반려동물 프로필 사진 설정
+                프로필 사진, 산책 중 촬영 등
               </MyText>
             </TextContainer>
           </PermissionContainer>
