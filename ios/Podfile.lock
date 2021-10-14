@@ -470,18 +470,18 @@ PODS:
     - React-Core
   - react-native-cameraroll (4.0.4):
     - React-Core
-  - react-native-fbsdk-next (4.3.0):
+  - react-native-fbsdk-next (4.6.0):
     - React-Core
-    - react-native-fbsdk-next/Core (= 4.3.0)
-    - react-native-fbsdk-next/Login (= 4.3.0)
-    - react-native-fbsdk-next/Share (= 4.3.0)
-  - react-native-fbsdk-next/Core (4.3.0):
+    - react-native-fbsdk-next/Core (= 4.6.0)
+    - react-native-fbsdk-next/Login (= 4.6.0)
+    - react-native-fbsdk-next/Share (= 4.6.0)
+  - react-native-fbsdk-next/Core (4.6.0):
     - FBSDKCoreKit (~> 9.3)
     - React-Core
-  - react-native-fbsdk-next/Login (4.3.0):
+  - react-native-fbsdk-next/Login (4.6.0):
     - FBSDKLoginKit (~> 9.3)
     - React-Core
-  - react-native-fbsdk-next/Share (4.3.0):
+  - react-native-fbsdk-next/Share (4.6.0):
     - FBSDKShareKit (~> 9.3)
     - React-Core
   - react-native-flipper (0.114.1):
@@ -976,7 +976,7 @@ SPEC CHECKSUMS:
   react-native-background-actions: 5acd5851ac2d3bb8b1c39fcc9332abe45977fd04
   react-native-ble-manager: fe313716f5edd2f406ec2a48a2c2ef5a0daeb5f3
   react-native-cameraroll: 88f4e62d9ecd0e1f253abe4f685474f2ea14bfa2
-  react-native-fbsdk-next: 19e974b071047b7ed1dad86a9dc3fe77dff76b8c
+  react-native-fbsdk-next: a0dd8905af573ec4d21b7bc398423ccaa2ce2b07
   react-native-flipper: 2f940282062135dfdd3ad2114d73e3b3be190f18
   react-native-geolocation-service: 32e50a2e4e4518b51b829fdfe137562a672d95d2
   react-native-nmap: cfcc5402746040494c544ea90a6062f49505acdf

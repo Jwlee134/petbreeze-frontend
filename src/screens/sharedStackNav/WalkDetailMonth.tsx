@@ -7,7 +7,7 @@ import palette from "~/styles/palette";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import Divider from "~/components/common/Divider";
 import { CalendarList, LocaleConfig } from "react-native-calendars";
-import { days, months } from "~/staticData";
+import { days, months } from "~/constants";
 import { isAndroid } from "~/utils";
 
 const TopContainer = styled.View`

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import {
   createStackNavigator,
   StackCardInterpolationProps,
@@ -7,7 +7,7 @@ import {
 import BottomTabNav from "./BottomTabNav";
 import WalkMap from "~/screens/loggedInNav/WalkMap";
 import CustomHeader from "~/components/navigator/CustomHeader";
-import { store, useAppSelector } from "~/store";
+import { useAppSelector } from "~/store";
 
 import messaging from "@react-native-firebase/messaging";
 import Permissions from "~/screens/loggedInNav/Permissions";
@@ -23,6 +23,9 @@ import DeviceAlert from "~/screens/loggedInNav/DeviceAlert";
 import DeleteAccountStackNav from "./DeleteAccountStackNav";
 import WalkContextProvider from "~/context/WalkContext";
 import CodePush from "react-native-code-push";
+import userApi from "~/api/user";
+import { useDispatch } from "react-redux";
+import Toast from "react-native-toast-message";
 
 const Stack = createStackNavigator<LoggedInNavParamList>();
 
@@ -36,6 +39,9 @@ const LoggedInNav = ({ navigation, route }: LoggedInNavScreenProps) => {
   const initialRouteName = useAppSelector(
     state => state.navigator.initialLoggedInNavRouteName,
   );
+  const dispatch = useDispatch();
+
+  const [postRead] = userApi.useReadNotificationsMutation();
 
   useEffect(() => {
     CodePush.sync({
@@ -44,10 +50,34 @@ const LoggedInNav = ({ navigation, route }: LoggedInNavScreenProps) => {
     });
 
     const unsubscribe = messaging().onMessage(async remoteMessage => {
+      const isNotificationTab =
+        navigation.getState().routes[0].state?.routes[0].state?.index === 2;
+      // 토스트 클릭 시 알림 탭이 아니라면 읽음 요청 후 새로운 알림 수 revalidate
+      Toast.show({
+        type: "notification",
+        text1: remoteMessage.notification?.title,
+        text2: remoteMessage.notification?.body,
+        onPress: async () => {
+          Toast.hide();
+          if (!isNotificationTab) {
+            await postRead([1]);
+            dispatch(
+              userApi.util.invalidateTags([
+                { type: "Notification", id: "NEW" },
+              ]),
+            );
+          }
+        },
+      });
+      dispatch(
+        userApi.util.invalidateTags([{ type: "Notification", id: "NEW" }]),
+      );
+
       console.log(remoteMessage);
     });
 
-    messaging().onNotificationOpenedApp(remoteMessage => {
+    messaging().onNotificationOpenedApp(async remoteMessage => {
+      // 백그라운드에 있을 때 알림 클릭해서 앱 다시 연 경우
       console.log(
         "Notification caused app to open from background state:",
         remoteMessage,

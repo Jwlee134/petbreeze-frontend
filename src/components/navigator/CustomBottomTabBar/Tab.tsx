@@ -27,10 +27,17 @@ const Point = styled.View<{ rpWidth: RpWidth }>`
   `}
 `;
 
-const Tab = ({ isFocused, name }: { isFocused: boolean; name: string }) => {
+const Tab = ({
+  isFocused,
+  name,
+  newNotifExists,
+}: {
+  isFocused: boolean;
+  name: string;
+  newNotifExists: boolean;
+}) => {
   const { rpWidth } = useContext(DimensionsContext);
   const { bottom } = useSafeAreaInsets();
-  const [showPoint, setShowPoint] = useState(true);
 
   const Icon = () => {
     switch (name) {
@@ -65,7 +72,7 @@ const Tab = ({ isFocused, name }: { isFocused: boolean; name: string }) => {
 
   return (
     <Container style={{ marginBottom: bottom }}>
-      {showPoint && name === "NotificationTab" ? (
+      {newNotifExists && name === "NotificationTab" && !isFocused ? (
         <Point rpWidth={rpWidth} />
       ) : null}
       {Icon()}

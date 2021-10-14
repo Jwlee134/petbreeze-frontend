@@ -18,7 +18,9 @@ export type RootNavParamList = {
   Auth: undefined;
   LoggedInNav: undefined;
   Loading: {
-    data: any;
+    token: string;
+    userID?: string;
+    nickname: string;
   };
 };
 export type FirmwareUpdateScreenNavigationProp = StackNavigationProp<

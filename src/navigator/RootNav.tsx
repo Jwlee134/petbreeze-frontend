@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { store, useAppSelector } from "~/store";
+import React, { useContext, useEffect, useMemo } from "react";
+import { useAppSelector } from "~/store";
 import LoggedInNav from "./LoggedInNav";
 import { StatusBar } from "react-native";
 
@@ -14,6 +14,11 @@ import { RootNavParamList } from "~/types/navigator";
 import Intro from "~/screens/rootNav/Intro";
 import Auth from "~/screens/rootNav/Auth";
 import Loading from "~/screens/rootNav/Loading";
+import Toast, { BaseToast, ToastShowOptions } from "react-native-toast-message";
+import palette from "~/styles/palette";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { DimensionsContext } from "~/context/DimensionsContext";
+import { isAndroid } from "~/utils";
 
 const Stack = createStackNavigator<RootNavParamList>();
 
@@ -24,8 +29,50 @@ const forFade = ({ current }: StackCardInterpolationProps) => ({
 });
 
 const RootNav = () => {
-  const isPermissionAllowed = useAppSelector(
-    state => state.storage.init.isPermissionAllowed,
+  const { isCodePushUpdated, isIntroPassed, isPermissionAllowed } =
+    useAppSelector(state => state.storage.init);
+  const { rpWidth } = useContext(DimensionsContext);
+  const { top } = useSafeAreaInsets();
+
+  const toastConfig = useMemo(
+    () => ({
+      notification: ({ ...rest }: ToastShowOptions) => (
+        <BaseToast
+          {...rest}
+          style={{
+            borderLeftColor: palette.blue_7b_90,
+            borderLeftWidth: rpWidth(7),
+            height: "auto",
+            marginTop: top / 2,
+          }}
+          contentContainerStyle={{
+            paddingLeft: rpWidth(14),
+            paddingVertical: rpWidth(10),
+            height: "auto",
+          }}
+          text1Style={{
+            ...(isAndroid && { fontWeight: "normal" }),
+            fontSize: rpWidth(15),
+            fontFamily: "NotoSansKR-Bold",
+            includeFontPadding: false,
+          }}
+          text2Style={{
+            fontSize: rpWidth(15),
+            fontFamily: "NotoSansKR-Regular",
+            includeFontPadding: false,
+          }}
+          trailingIconContainerStyle={{
+            width: rpWidth(40),
+          }}
+          trailingIconStyle={{
+            width: rpWidth(10),
+            height: rpWidth(10),
+          }}
+          onTrailingIconPress={Toast.hide}
+        />
+      ),
+    }),
+    [],
   );
 
   useEffect(() => {
@@ -49,8 +96,6 @@ const RootNav = () => {
           headerShown: false,
         }}
         initialRouteName={(() => {
-          const { isCodePushUpdated, isIntroPassed } =
-            store.getState().storage.init;
           if (!isCodePushUpdated) {
             return "FirmwareUpdate";
           }
@@ -66,6 +111,7 @@ const RootNav = () => {
         <Stack.Screen name="LoggedInNav" component={LoggedInNav} />
         <Stack.Screen name="Loading" component={Loading} />
       </Stack.Navigator>
+      <Toast config={toastConfig} ref={ref => Toast.setRef(ref)} />
     </>
   );
 };

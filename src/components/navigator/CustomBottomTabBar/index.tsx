@@ -10,7 +10,8 @@ const CustomBottomTabBar = ({
   state,
   descriptors,
   navigation,
-}: BottomTabBarProps) => {
+  newNotifExists,
+}: BottomTabBarProps & { newNotifExists: boolean }) => {
   const { bottom } = useSafeAreaInsets();
   const { rpWidth } = useContext(DimensionsContext);
 
@@ -55,7 +56,11 @@ const CustomBottomTabBar = ({
               alignItems: "center",
               justifyContent: "center",
             }}>
-            <Tab isFocused={isFocused} name={route.name} />
+            <Tab
+              isFocused={isFocused}
+              name={route.name}
+              newNotifExists={newNotifExists}
+            />
           </TouchableOpacity>
         );
       })}

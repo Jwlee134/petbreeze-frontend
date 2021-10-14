@@ -1,16 +1,14 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import styled, { css } from "styled-components/native";
 
 import { LoginManager, AccessToken } from "react-native-fbsdk-next";
 import { login } from "@react-native-seoul/kakao-login";
-import messaging from "@react-native-firebase/messaging";
 
 import KakaoIcon from "~/assets/svg/auth/kakao.svg";
 import FbIcon from "~/assets/svg/auth/fb.svg";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
-import { useNavigation } from "@react-navigation/core";
+import { useNavigation } from "@react-navigation/native";
 import { AuthScreenNavigationProp } from "~/types/navigator";
-import authApi from "~/api/auth";
 
 const AuthButton = styled.TouchableOpacity<{ rpWidth: RpWidth }>`
   justify-content: center;
@@ -22,57 +20,39 @@ const AuthButton = styled.TouchableOpacity<{ rpWidth: RpWidth }>`
   `}
 `;
 
-const SocialLogin = () => {
+const SocialLogin = ({ name }: { name: string }) => {
   const navigation = useNavigation<AuthScreenNavigationProp>();
   const { rpWidth } = useContext(DimensionsContext);
-  const [getFacebookUser, facebookUser] = authApi.useLazyFacebookLoginQuery();
-  const [getKakaoUser, kakaoUser] = authApi.useLazyKakaoLoginQuery();
 
   const handleKakaoLogin = async () => {
-    login().then(token => {
-      getKakaoUser(token.accessToken);
-    });
+    try {
+      const { accessToken } = await login();
+      navigation.replace("Loading", {
+        token: accessToken,
+        nickname: name,
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  useEffect(() => {
-    console.log(kakaoUser);
-    if (kakaoUser.data) {
-      navigation.replace("Loading", {
-        data: kakaoUser.data,
-      });
+  const handleFbLogin = async () => {
+    try {
+      await LoginManager.logInWithPermissions(["public_profile", "openid"]);
+      const data = await AccessToken.getCurrentAccessToken();
+      if (data) {
+        const token = data.accessToken;
+        const id = data.userID;
+        navigation.replace("Loading", {
+          token,
+          userID: id,
+          nickname: name,
+        });
+      }
+    } catch (error) {
+      console.log(error);
     }
-    if (kakaoUser.error) {
-      console.log("Failed to login");
-    }
-  }, [kakaoUser]);
-
-  const handleFbLogin = () => {
-    LoginManager.logInWithPermissions(["public_profile", "openid"]).then(() => {
-      AccessToken.getCurrentAccessToken().then(data => {
-        if (data) {
-          const token = data.accessToken;
-          const id = data.userID;
-          getFacebookUser({ token, id });
-        }
-      });
-    });
   };
-
-  useEffect(() => {
-    console.log(facebookUser);
-    if (facebookUser.data) {
-      navigation.replace("Loading", {
-        data: facebookUser.data,
-      });
-    }
-    if (facebookUser.error) {
-      console.log("Failed to login");
-    }
-  }, [facebookUser]);
-
-  /*    messaging()
-      .getToken()
-      .then(token => console.log("FCM Token: ", token));  */
 
   return (
     <>

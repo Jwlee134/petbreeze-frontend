@@ -1,18 +1,18 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { RootState } from "~/store";
+import * as SecureStore from "expo-secure-store";
 
 const api = createApi({
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://52.78.28.201/wheredog-api",
-    prepareHeaders: (headers, { getState }) => {
-      const token = (getState() as RootState).storage.user.token;
+    baseUrl: "http://3.36.100.60/wheredog-api",
+    prepareHeaders: async headers => {
+      const token = await SecureStore.getItemAsync("token");
       if (token) {
         headers.set("Authorization", `Token ${token}`);
       }
       return headers;
     },
   }),
-  tagTypes: ["Device", "SharedDevice", "Walk"],
+  tagTypes: ["Device", "SharedDevice", "Walk", "Notification"],
   endpoints: () => ({}),
 });
 

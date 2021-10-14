@@ -67,6 +67,7 @@ const Auth = () => {
   });
 
   const ref = useRef<TextInput>(null);
+  const timeout = useRef<NodeJS.Timeout>();
   const [name, setName] = useState("");
   const [showBtn, setShowBtn] = useState(false);
   const value = useRef(new Animated.Value(0)).current;
@@ -88,14 +89,20 @@ const Auth = () => {
 
   useEffect(() => {
     if (ref.current && !showBtn) {
-      setTimeout(() => {
+      timeout.current = setTimeout(() => {
         ref.current?.focus();
       }, 600);
     }
-  }, [ref.current, showBtn]);
+    return () => {
+      if (timeout.current) {
+        clearTimeout(timeout.current);
+      }
+    };
+  }, [ref.current, timeout.current, showBtn]);
 
   const handleSubmit = () => {
     if (!name) return;
+    Keyboard.dismiss();
     setShowBtn(true);
   };
 
@@ -147,13 +154,13 @@ const Auth = () => {
                 onChangeText={text => setName(text)}
                 textAlign="center"
                 onSubmitEditing={handleSubmit}
-                editable={showBtn ? false : true}
+                editable={!showBtn}
               />
             </InputContainer>
             {showBtn ? (
               <>
                 <BtnContainer style={{ opacity: value }}>
-                  <SocialLogin />
+                  <SocialLogin name={name} />
                 </BtnContainer>
                 <TextContainer
                   style={{

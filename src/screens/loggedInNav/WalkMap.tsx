@@ -12,7 +12,7 @@ import {
 } from "~/styles/constants";
 import WalkMapHeader from "~/components/walk/WalkMapHeader";
 import { getDistanceBetween2Points, isIos } from "~/utils";
-import { delta } from "~/staticData";
+import { delta } from "~/constants";
 import { WalkContext } from "~/context/WalkContext";
 
 const WalkMap = () => {
