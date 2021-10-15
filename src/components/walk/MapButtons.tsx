@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { FlatList, ScrollView } from "react-native";
+import { FlatList } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { DimensionsContext } from "~/context/DimensionsContext";
 import { WalkContext } from "~/context/WalkContext";

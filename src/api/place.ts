@@ -18,8 +18,17 @@ export const getAddress = async (
   return format;
 };
 
-export const getPlaceByKeyword = async (query: string) => {
-  const { data } = await axios.get(
-    `https://dapi.kakao.com/v2/local/search/keyword.json?query=${query}`,
-  );
+export const getAddressByCoord = async (
+  lat: number,
+  lng: number,
+): Promise<string | null> => {
+  const { data } = await axios({
+    url: `https://dapi.kakao.com/v2/local/geo/coord2address.json?x=${lng}&y=${lat}`,
+    method: "get",
+    headers: {
+      Authorization: "KakaoAK 704232ad1ac022f18910fdbe94b68a36",
+    },
+  });
+  const name = data.documents[0]?.address?.address_name;
+  return name || null;
 };

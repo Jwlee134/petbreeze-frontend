@@ -16,6 +16,8 @@ module.exports = {
   plugins: ["react", "@typescript-eslint"],
   rules: {
     "no-use-before-define": "off",
+    "no-unused-vars": "off", // 아래와 중복 제거
+    "@typescript-eslint/no-unused-vars": "warn", // 사용안한 변수는 경고
     "@typescript-eslint/no-use-before-define": ["warn"], // 선언하기 전에 사용한다면 경고
     "no-param-reassign": "off", // 변수 재할당 허용
     "global-require": "off", // 함수 내에서 require 사용가능

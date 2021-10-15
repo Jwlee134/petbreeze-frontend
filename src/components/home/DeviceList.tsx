@@ -1,86 +1,90 @@
-import React, { useContext, useMemo, useState } from "react";
-import styled, { css } from "styled-components/native";
-import useModal from "~/hooks/useModal";
+import React, {
+  memo,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useAppSelector } from "~/store";
-import AnimatedCircularProgress from "../common/AnimatedCircularProgress";
+import { Animated } from "react-native";
+import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
+import HomeAvatar from "./HomeAvatar";
 import Modal from "react-native-modal";
+import useModal from "~/hooks/useModal";
 import IosStyleBottomModal from "../modal/IosStyleBottomModal";
 import HomeBottomModal from "../modal/HomeBottomModal";
-import { ScrollView } from "react-native";
-import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
+import styled from "styled-components/native";
+import MyText from "../common/MyText";
+import palette from "~/styles/palette";
 
-interface IPressable {
-  index?: number;
-  deviceLength?: number;
-  rpWidth: RpWidth;
-}
-
-const Pressable = styled.Pressable<IPressable>`
+const Address = styled(Animated.View)<{ rpWidth: RpWidth }>`
+  height: ${({ rpWidth }) => rpWidth(41)}px;
+  background-color: ${palette.blue_7b_80};
   position: absolute;
-  bottom: ${({ rpWidth }) => rpWidth(40)}px;
-  ${({ index, deviceLength, rpWidth }) => {
-    switch (deviceLength) {
-      case 1:
-        return css`
-          align-self: center;
-        `;
-      case 2:
-        return css`
-          margin-left: -${rpWidth(45)}px;
-          ${index === 0 ? { left: "33%" } : { left: "66%" }}
-        `;
-      case 3:
-        return css`
-          align-self: center;
-          ${index === 0
-            ? { left: "15%" }
-            : index === 1
-            ? {}
-            : { right: "15%" }};
-        `;
-      default:
-        return css`
-          position: relative;
-          bottom: 0;
-          margin: 0px ${rpWidth(10)}px;
-        `;
-    }
-  }}
+  bottom: 0;
+  right: 0;
+  left: 0;
+  justify-content: center;
+  align-items: center;
 `;
 
 const DeviceList = () => {
-  const deviceList = useAppSelector(state => state.device);
-  const { open, close, modalProps } = useModal();
-  const [clickedId, setClickedId] = useState("");
+  const devices = useAppSelector(state => state.device);
+  const address = useAppSelector(state => state.common.home.address);
+  const value = useRef(new Animated.Value(0)).current;
+
   const { rpWidth, width, isTablet } = useContext(DimensionsContext);
 
-  const device = useMemo(() => {
-    return deviceList[deviceList.findIndex(device => device.id === clickedId)];
-  }, [clickedId]);
+  const { open, close, modalProps } = useModal();
+  const [clickedId, setClickedId] = useState("");
+
+  const device = useMemo(
+    () => devices[devices.findIndex(device => device.id === clickedId)],
+    [clickedId],
+  );
+
+  const onAvatarLongPress = useCallback((id: string) => {
+    setClickedId(id);
+    open();
+  }, []);
+
+  const translateYAvatar = value.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, -rpWidth(41)],
+  });
+
+  const translateY = value.interpolate({
+    inputRange: [0, 1],
+    outputRange: [rpWidth(41), 0],
+  });
+
+  useEffect(() => {
+    Animated.timing(value, {
+      toValue: address ? 1 : 0,
+      useNativeDriver: true,
+      duration: 200,
+    }).start();
+  }, [address]);
 
   return (
     <>
-      {deviceList.length < 4 ? (
-        deviceList.map((device, i) => (
-          <Pressable
-            rpWidth={rpWidth}
+      {devices.length < 4 ? (
+        devices.map((device, i) => (
+          <HomeAvatar
             key={device.id}
+            device={device}
             index={i}
-            deviceLength={deviceList.length}
-            onLongPress={() => {
-              setClickedId(device.id);
-              open();
-            }}>
-            <AnimatedCircularProgress
-              circleWidth={deviceList.length > 2 ? 70 : 90}
-              lineWidth={deviceList.length > 2 ? 5 : 7}
-              battery={device.battery}
-              highlightOnEmergency={device.emergency}
-            />
-          </Pressable>
+            length={devices.length}
+            onAvatarLongPress={onAvatarLongPress}
+            style={{
+              transform: [{ translateY: translateYAvatar }],
+            }}
+          />
         ))
       ) : (
-        <ScrollView
+        <Animated.ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
           style={{
@@ -88,49 +92,44 @@ const DeviceList = () => {
             bottom: 0,
             marginBottom: rpWidth(30),
             height: rpWidth(95),
+            transform: [{ translateY: translateYAvatar }],
           }}
           contentContainerStyle={{
             minWidth: isTablet ? 0 : width,
             ...(isTablet &&
-              deviceList.length < 6 && {
+              devices.length < 6 && {
                 paddingLeft: rpWidth(10),
               }),
             paddingHorizontal: !isTablet
               ? width * 0.15
-              : deviceList.length > 5
+              : devices.length > 5
               ? width * 0.09
               : 0,
             alignItems: "center",
           }}>
-          {deviceList.map(device => (
-            <Pressable
-              rpWidth={rpWidth}
+          {devices.map((device, i) => (
+            <HomeAvatar
               key={device.id}
-              onLongPress={() => {
-                setClickedId(device.id);
-                open();
-              }}>
-              <AnimatedCircularProgress
-                preventRpHeight
-                circleWidth={70}
-                lineWidth={5}
-                battery={device.battery}
-                highlightOnEmergency={device.emergency}
-              />
-            </Pressable>
+              device={device}
+              index={i}
+              length={devices.length}
+              onAvatarLongPress={onAvatarLongPress}
+            />
           ))}
-        </ScrollView>
+        </Animated.ScrollView>
       )}
       <Modal {...modalProps({ type: "bottom" })}>
-        <IosStyleBottomModal
-          title={device?.name}
-          titleHeight={rpWidth(41)}
-          close={close}>
+        <IosStyleBottomModal title={device?.name} close={close}>
           <HomeBottomModal close={close} device={device} />
         </IosStyleBottomModal>
       </Modal>
+      <Address rpWidth={rpWidth} style={{ transform: [{ translateY }] }}>
+        <MyText fontWeight="medium" fontSize={14} color="white">
+          {address}
+        </MyText>
+      </Address>
     </>
   );
 };
 
-export default DeviceList;
+export default memo(DeviceList);

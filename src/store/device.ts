@@ -14,6 +14,8 @@ export interface IDevice {
   phoneNumber: string;
   etc: string;
   emergency?: boolean;
+  latitude: number;
+  longitude: number;
 }
 
 const initialState: IDevice[] = [
@@ -31,8 +33,10 @@ const initialState: IDevice[] = [
     phoneNumber: "01040318103",
     etc: "하하",
     emergency: true,
+    latitude: 37.359559,
+    longitude: 127.106989,
   },
-  /* {
+  /*{
     id: "bbbb",
     profile_image: require("~/assets/image/test.jpg"),
     name: "막둥이2",

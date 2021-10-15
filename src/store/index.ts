@@ -18,6 +18,7 @@ import deviceSetting from "./deviceSetting";
 import storage from "./storage";
 import device from "./device";
 import navigator from "./navigator";
+import common from "./common";
 
 import api from "~/api";
 
@@ -28,6 +29,7 @@ const rootReducer = combineReducers({
   storage,
   device,
   navigator,
+  common,
   [api.reducerPath]: api.reducer,
 });
 
