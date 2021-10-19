@@ -7,18 +7,8 @@ interface IInit {
   isPermissionAllowed: boolean;
 }
 
-interface IDevice {
-  isOtaUpdateAvailable: boolean;
-  isDeviceRegistered: boolean;
-  isSafetyZoneRegistered: boolean;
-  isProfileRegistered: boolean;
-  deviceId: string;
-  safetyZoneName: string;
-  redirectionRouteName: "StartWalking" | "MyPage" | "";
-}
-
 interface IWalk {
-  selectedDeviceId: string[];
+  selectedDeviceId: number[];
   trackingId: number | null;
   duration: number;
   coords: number[][];
@@ -40,7 +30,6 @@ interface IStorage {
     longitude: number;
   };
   init: IInit;
-  device: IDevice;
   walk: IWalk;
   history: IHistory;
 }
@@ -54,15 +43,6 @@ const initialState: IStorage = {
     isCodePushUpdated: false,
     isPermissionAllowed: isAndroid,
     isIntroPassed: false,
-  },
-  device: {
-    isOtaUpdateAvailable: false,
-    isDeviceRegistered: false,
-    isSafetyZoneRegistered: false,
-    isProfileRegistered: false,
-    deviceId: "1",
-    safetyZoneName: "",
-    redirectionRouteName: "",
   },
   walk: {
     selectedDeviceId: [],
@@ -87,14 +67,6 @@ const storage = createSlice({
   reducers: {
     setInit: (state, { payload }: PayloadAction<Partial<IInit>>) => {
       state.init = { ...state.init, ...payload };
-    },
-
-    setDevice: (state, { payload }: PayloadAction<Partial<IDevice> | null>) => {
-      if (payload) {
-        state.device = { ...state.device, ...payload };
-      } else {
-        state.device = initialState.device;
-      }
     },
 
     setWalk: (state, { payload }: PayloadAction<Partial<IWalk> | null>) => {

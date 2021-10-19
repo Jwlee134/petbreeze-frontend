@@ -85,9 +85,11 @@ const Fail = ({ navigation }: { navigation: FailScreenNavigationProp }) => {
                     initialBleWithHeaderStackNavRouteName: "PreSafetyZone",
                   }),
                 );
-                navigation.replace("BleWithHeaderStackNav");
+              }
+              if (navigation.canGoBack()) {
+                navigation.goBack();
               } else {
-                /* 초기 화면으로 이동 */
+                navigation.replace("BleWithHeaderStackNav");
               }
             }}
             useCommonMarginBottom

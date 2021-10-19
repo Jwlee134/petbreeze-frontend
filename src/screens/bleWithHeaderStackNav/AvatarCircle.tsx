@@ -5,7 +5,6 @@ import FootprintOutline from "~/assets/svg/tab/footprint-outline.svg";
 import PlusCircle from "~/assets/svg/plus-circle-blue.svg";
 import ImagePicker from "react-native-image-crop-picker";
 import { useDispatch } from "react-redux";
-import { formActions } from "~/store/form";
 import palette from "~/styles/palette";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 

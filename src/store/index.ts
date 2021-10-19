@@ -13,10 +13,8 @@ import {
 } from "redux-persist";
 
 import ble from "./ble";
-import form from "./form";
 import deviceSetting from "./deviceSetting";
 import storage from "./storage";
-import device from "./device";
 import navigator from "./navigator";
 import common from "./common";
 
@@ -24,10 +22,8 @@ import api from "~/api";
 
 const rootReducer = combineReducers({
   ble,
-  form,
   deviceSetting,
   storage,
-  device,
   navigator,
   common,
   [api.reducerPath]: api.reducer,

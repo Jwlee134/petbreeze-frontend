@@ -12,7 +12,7 @@ const api = createApi({
       return headers;
     },
   }),
-  tagTypes: ["Device", "SharedDevice", "Walk", "Notification"],
+  tagTypes: ["Device", "Walk", "Notification"],
   endpoints: () => ({}),
 });
 

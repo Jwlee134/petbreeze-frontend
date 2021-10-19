@@ -2,9 +2,8 @@ import { useNavigation } from "@react-navigation/native";
 import React, { useContext } from "react";
 import { useDispatch } from "react-redux";
 import styled, { css } from "styled-components/native";
+import { Device } from "~/api/device";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
-import { IDevice } from "~/store/device";
-import { formActions } from "~/store/form";
 import palette from "~/styles/palette";
 import { HomeScreenNavigationProp } from "~/types/navigator";
 import AnimatedCircularProgress from "../common/AnimatedCircularProgress";
@@ -12,7 +11,7 @@ import Divider from "../common/Divider";
 import MyText from "../common/MyText";
 
 interface IProps {
-  device: IDevice;
+  device: Device;
   close: () => void;
 }
 
@@ -44,7 +43,8 @@ const HomeBottomModal = ({ device, close }: IProps) => {
           circleWidth={90}
           lineWidth={7}
           battery={device.battery}
-          highlightOnEmergency={device.emergency}
+          highlightOnEmergency={device.is_missed}
+          avatar={device.profile_image}
         />
       </AvatarContainer>
       <Button rpWidth={rpWidth}>
@@ -56,7 +56,7 @@ const HomeBottomModal = ({ device, close }: IProps) => {
         onPress={() => {
           close();
           navigation.navigate("DeviceSetting", {
-            data: device,
+            deviceID: device.id,
           });
         }}>
         <MyText color={palette.blue_7b}>기기설정</MyText>
@@ -66,13 +66,13 @@ const HomeBottomModal = ({ device, close }: IProps) => {
         rpWidth={rpWidth}
         onPress={() => {
           close();
-          dispatch(
+          /* dispatch(
             formActions.setDefaultValue({
               name: device.name,
               breed: device.breed,
               characteristic: device.etc,
             }),
-          );
+          ); */
           navigation.navigate("EmergencyMissingStackNav", {
             device,
           });

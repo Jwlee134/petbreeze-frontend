@@ -3,14 +3,14 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 interface ISafetyZoneResult {
   id: number;
   name: string;
-  addr: string;
-  image: string;
+  address: string;
   data: number[];
+  image: string;
 }
 
 interface ISafetyZoneDraft {
   name: string;
-  addr: string;
+  address: string;
   image: string;
   coord: {
     latitude: number;
@@ -31,8 +31,8 @@ interface ISafetyZone<T> {
 }
 
 interface IWifiDraft {
-  name: string;
-  password: string;
+  ssid: string;
+  pw: string;
 }
 
 interface IWifiResult extends IWifiDraft {
@@ -51,10 +51,9 @@ interface IProfile {
   birthYear: string;
   birthMonth: string;
   birthDay: string;
-  gender: string;
-  breed: string;
+  sex: string;
+  species: string;
   weight: string;
-  characteristic: string;
 }
 
 interface IState {
@@ -63,6 +62,9 @@ interface IState {
   wifi: IWifi<IWifiDraft>;
   profile: IProfile;
 }
+
+const numOfArea = 3;
+const numOfWiFi = 5;
 
 const initialState: IState = {
   locationInfoCollectionPeriod: 0,
@@ -73,10 +75,16 @@ const initialState: IState = {
     isSubmitting: false,
     fromDeviceSetting: false,
     currentId: 0,
-    result: [],
+    result: Array.from({ length: numOfArea }, (v, i) => ({
+      id: i,
+      name: "",
+      address: "",
+      image: "",
+      data: [0, 0, 0],
+    })),
     draft: {
       name: "",
-      addr: "",
+      address: "",
       image: "",
       coord: {
         latitude: 0,
@@ -87,10 +95,14 @@ const initialState: IState = {
   },
   wifi: {
     currentId: 0,
-    result: [],
+    result: Array.from({ length: numOfWiFi }, (v, i) => ({
+      id: i,
+      ssid: "",
+      pw: "",
+    })),
     draft: {
-      name: "",
-      password: "",
+      ssid: "",
+      pw: "",
     },
   },
   profile: {
@@ -99,10 +111,9 @@ const initialState: IState = {
     birthYear: "",
     birthMonth: "",
     birthDay: "",
-    gender: "",
-    breed: "",
+    sex: "",
+    species: "",
     weight: "",
-    characteristic: "",
   },
 };
 
@@ -141,33 +152,33 @@ const deviceSetting = createSlice({
       { payload }: PayloadAction<ISafetyZoneDraft>,
     ) => {
       const { currentId } = state.safetyZone;
-      const exist = state.safetyZone.result.some(data => data.id === currentId);
-      if (exist) {
-        state.safetyZone.result = state.safetyZone.result.map(area => {
-          if (area.id === currentId) {
-            return {
-              ...area,
-              ...payload,
-              data: [
-                payload.coord.latitude,
-                payload.coord.longitude,
-                payload.radius,
-              ],
-            };
-          }
-          return area;
-        });
-      } else {
-        state.safetyZone.result.push({
-          id: state.safetyZone.result.length + 1,
-          ...payload,
-          data: [
-            payload.coord.latitude,
-            payload.coord.longitude,
-            payload.radius,
-          ],
-        });
-      }
+      const {
+        name,
+        address,
+        coord: { latitude, longitude },
+        image,
+        radius,
+      } = payload;
+      state.safetyZone.result = state.safetyZone.result.filter(
+        data => data.id !== currentId,
+      );
+      state.safetyZone.result.push({
+        ...{
+          id: currentId,
+          name,
+          address,
+          image,
+          data: [latitude, longitude, radius],
+        },
+      });
+    },
+    deleteSafetyZone: (state, { payload }: PayloadAction<number>) => {
+      state.safetyZone.result = state.safetyZone.result.map(area => {
+        if (area.id === payload) {
+          return { ...area, name: "", address: "", data: [0, 0, 0], image: "" };
+        }
+        return area;
+      });
     },
 
     setWifi: (
@@ -186,21 +197,18 @@ const deviceSetting = createSlice({
     },
     updateWifiResult: (state, { payload }: PayloadAction<IWifiDraft>) => {
       const { currentId } = state.wifi;
-      const exist = state.wifi.result.some(data => data.id === currentId);
-
-      if (exist) {
-        state.wifi.result = state.wifi.result.map(data => {
-          if (data.id === currentId) {
-            return { ...data, ...payload };
-          }
-          return data;
-        });
-      } else {
-        state.wifi.result.push({
-          id: state.wifi.result.length + 1,
-          ...payload,
-        });
-      }
+      state.wifi.result = state.wifi.result.filter(
+        data => data.id !== currentId,
+      );
+      state.wifi.result.push({ ...{ id: currentId, ...payload } });
+    },
+    deleteWiFi: (state, { payload }: PayloadAction<number>) => {
+      state.wifi.result = state.wifi.result.map(wifi => {
+        if (wifi.id === payload) {
+          return { ...wifi, ssid: "", pw: "" };
+        }
+        return wifi;
+      });
     },
 
     setProfile: (

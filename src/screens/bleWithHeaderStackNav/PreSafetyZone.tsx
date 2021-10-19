@@ -103,7 +103,7 @@ const PreSafetyZone = ({
                 initialBleWithoutHeaderStackNavRouteName: "SafetyZone",
               }),
             );
-            navigation.replace("BleWithoutHeaderStackNav");
+            navigation.navigate("BleWithoutHeaderStackNav");
           }}>
           다음
         </Button>

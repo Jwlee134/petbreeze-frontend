@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import styled, { css } from "styled-components/native";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
-import { store } from "~/store";
+import { store, useAppSelector } from "~/store";
 import AnimatedCircularProgress from "../common/AnimatedCircularProgress";
 import Button from "../common/Button";
 import MyText from "../common/MyText";
@@ -14,8 +14,9 @@ import CameraRoll from "@react-native-community/cameraroll";
 import { useDispatch } from "react-redux";
 import { storageActions } from "~/store/storage";
 import { navigatorActions } from "~/store/navigator";
-import { useNavigation } from "@react-navigation/core";
+import { useNavigation } from "@react-navigation/native";
 import { WalkMapScreenNavigationProp } from "~/types/navigator";
+import { formatWalkDistance } from "~/utils";
 
 const Container = styled.View`
   align-items: center;
@@ -57,25 +58,26 @@ const Result = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation<WalkMapScreenNavigationProp>();
 
-  const { startTime, duration, meter } = store.getState().storage.walk;
+  const { startTime, duration, meter, coords, selectedDeviceId } =
+    useAppSelector(state => state.storage.walk);
 
   const hour = Math.floor(duration / 3600) % 60;
   const min = Math.floor(duration / 60) % 60;
   const sec = Math.floor(duration) % 60;
 
   const handleFinish = async () => {
-    const { startTime, duration, meter, coords, selectedDeviceId } =
-      store.getState().storage.walk;
     if (viewShotRef?.current) {
       const uri = await viewShotRef.current?.capture();
       CameraRoll.save(uri, { album: "어디개" });
     }
-    dispatch(storageActions.setWalk(null));
     dispatch(
       navigatorActions.setInitialRoute({
         initialBottomTabNavRouteName: "WalkTab",
       }),
     );
+    setTimeout(() => {
+      dispatch(storageActions.setWalk(null));
+    }, 200);
     navigation.replace("BottomTabNav");
     // const promise = selectedDeviceId.map(id =>
     //   trigger({
@@ -154,9 +156,7 @@ const Result = () => {
             style={{ marginRight: rpWidth(17) }}
           />
           <MyText fontSize={18} color="rgba(0, 0, 0, 0.5)">
-            {meter < 1000
-              ? `${meter}m`
-              : `${String(meter / 1000).substring(0, 4)}km`}
+            {formatWalkDistance(meter)}
           </MyText>
         </RowContainer>
       </SvgContainer>

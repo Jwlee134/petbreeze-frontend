@@ -10,6 +10,7 @@ import { PreWiFiFormScreenNavigationProp } from "~/types/navigator";
 import Modal from "react-native-modal";
 import CommonCenterModal from "~/components/modal/CommonCenterModal";
 import { DimensionsContext } from "~/context/DimensionsContext";
+import { centerModalOutTiming } from "~/styles/constants";
 
 const TopContainer = styled.View`
   flex: 1;
@@ -75,8 +76,8 @@ const PreWiFiForm = ({
           onRightButtonPress={() => {
             close();
             setTimeout(() => {
-              navigation.replace("PreSafetyZone");
-            }, 200);
+              navigation.navigate("PreSafetyZone");
+            }, centerModalOutTiming);
           }}
           title="잠깐!"
           description={`와이파이 미등록 시,\n배터리 소모가 크게 증가할 수 있습니다.`}

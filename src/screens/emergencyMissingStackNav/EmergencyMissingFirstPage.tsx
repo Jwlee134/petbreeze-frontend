@@ -8,7 +8,6 @@ import InputTitle from "~/components/common/InputTitle";
 import SelectableButton from "~/components/common/SelectableButton";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import { useAppSelector } from "~/store";
-import { formActions } from "~/store/form";
 import { EmergencyMissingFirstPageScreenNavigationProp } from "~/types/navigator";
 
 const Avatar = styled.Image<{ rpWidth: RpWidth }>`

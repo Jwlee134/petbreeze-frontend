@@ -76,7 +76,7 @@ const userApi = api.injectEndpoints({
       }),
     }),
 
-    getNumOfNewNotifications: builder.query<number, void>({
+    getNumOfNewNotifications: builder.query<{ count: number }, void>({
       query: () => "/accounts/push-noti/check-new/",
       providesTags: () => [{ type: "Notification", id: "NEW" }],
     }),

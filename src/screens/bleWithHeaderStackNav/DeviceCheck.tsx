@@ -4,10 +4,8 @@ import styled from "styled-components/native";
 
 import Device from "~/assets/svg/device/device.svg";
 import Button from "~/components/common/Button";
-import { storageActions } from "~/store/storage";
 import MyText from "~/components/common/MyText";
 import SafeAreaContainer from "~/components/common/container/SafeAreaContainer";
-import { useAppSelector } from "~/store";
 import { DeviceCheckScreenNavigationProp } from "~/types/navigator";
 import { navigatorActions } from "~/store/navigator";
 import { DimensionsContext } from "~/context/DimensionsContext";
@@ -28,9 +26,6 @@ const DeviceCheck = ({
 }: {
   navigation: DeviceCheckScreenNavigationProp;
 }) => {
-  const isInitialized = useAppSelector(
-    state => state.storage.init.isInitialized,
-  );
   const dispatch = useDispatch();
   const { rpHeight, rpWidth } = useContext(DimensionsContext);
 
@@ -45,7 +40,7 @@ const DeviceCheck = ({
             textAlign: "center",
           }}>
           디바이스가{"\n"}
-          {isInitialized ? "가까이 있나요?" : "있으신가요?"}
+          있으신가요?
         </MyText>
       </TopContainer>
       <BottomContainer>
@@ -54,7 +49,7 @@ const DeviceCheck = ({
             marginBottom: rpWidth(12),
           }}
           onPress={() => {
-            navigation.replace("ChargingCheck");
+            navigation.navigate("ChargingCheck");
           }}
           delay={400}>
           네, 있습니다.
@@ -64,7 +59,6 @@ const DeviceCheck = ({
           fontColor="rgba(0, 0, 0, 0.5)"
           useCommonMarginBottom
           onPress={() => {
-            dispatch(storageActions.setInit("init"));
             dispatch(
               navigatorActions.setInitialRoute({
                 initialLoggedInNavRouteName: "BottomTabNav",

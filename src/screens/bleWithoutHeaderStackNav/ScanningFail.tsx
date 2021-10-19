@@ -10,7 +10,6 @@ import { bleActions } from "~/store/ble";
 import { ScanningFailScreenNavigationProp } from "~/types/navigator";
 import Exclamation from "~/assets/svg/exclamation/exclamation-mark-white.svg";
 import ParagraphWithCheckCircle from "~/components/ble/ParagraphWithCheckCircle";
-import { useAppSelector } from "~/store";
 import { DimensionsContext } from "~/context/DimensionsContext";
 
 const TopContainer = styled.View`
@@ -31,9 +30,6 @@ const ScanningFail = ({
 }) => {
   const { top } = useSafeAreaInsets();
   const dispatch = useDispatch();
-  const isInitialized = useAppSelector(
-    state => state.storage.init.isInitialized,
-  );
   const { rpWidth } = useContext(DimensionsContext);
 
   return (
@@ -79,7 +75,13 @@ const ScanningFail = ({
             다시 시도
           </Button>
           <Button
-            onPress={() => navigation.replace("BleWithHeaderStackNav")}
+            onPress={() => {
+              if (navigation.canGoBack()) {
+                navigation.goBack();
+              } else {
+                navigation.replace("BleWithHeaderStackNav");
+              }
+            }}
             useCommonMarginBottom
             useBottomInset
             backgroundColor="transparent"

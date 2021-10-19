@@ -7,7 +7,6 @@ import SuccessLottie from "~/components/lottie/Success";
 import { DimensionsContext } from "~/context/DimensionsContext";
 import { useAppSelector } from "~/store";
 import { navigatorActions } from "~/store/navigator";
-import { storageActions } from "~/store/storage";
 import { SuccessScreenNavigationProp } from "~/types/navigator";
 
 const TopContainer = styled.View`
@@ -41,11 +40,6 @@ const Success = ({
       if (isOtaUpdate) {
         /*  */
       } else {
-        /* dispatch(
-          storageActions.setDevice({
-            isDeviceRegistered: true,
-          }),
-        ); */
         setTimeout(() => {
           dispatch(
             navigatorActions.setInitialRoute({

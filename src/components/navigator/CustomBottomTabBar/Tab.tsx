@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import styled, { css } from "styled-components/native";
 
 import Home from "~/assets/svg/tab/home.svg";

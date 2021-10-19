@@ -8,7 +8,6 @@ import Input from "~/components/common/Input";
 import InputTitle from "~/components/common/InputTitle";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import { useAppSelector } from "~/store";
-import { formActions } from "~/store/form";
 import { navigatorActions } from "~/store/navigator";
 import { RegisterProfileSecondScreenNavigationProp } from "~/types/navigator";
 import { isIos } from "~/utils";
@@ -74,7 +73,7 @@ const RegisterProfileSecond = ({
         initialBleWithoutHeaderStackNavRouteName: "Completion",
       }),
     );
-    navigation.replace("BleWithoutHeaderStackNav");
+    navigation.navigate("BleWithoutHeaderStackNav");
   };
 
   return (

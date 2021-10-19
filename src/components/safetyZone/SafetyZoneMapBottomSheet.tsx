@@ -118,7 +118,8 @@ const SafetyZoneMapBottomSheet = ({
             </InputContainer>
           </RowContainer>
           <Button
-            /* disabled={!name || !radius} */ isLoading={isSubmitting}
+            disabled={!name || !radius}
+            isLoading={isSubmitting}
             onPress={handleFinish}>
             {fromDeviceSetting ? "확인" : "다음"}
           </Button>

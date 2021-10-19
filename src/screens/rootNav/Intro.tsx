@@ -63,16 +63,11 @@ const Intro = ({ navigation }: { navigation: IntroScreenNavigationProp }) => {
         }}
         onPress={() => {
           dispatch(
-            navigatorActions.setInitialRoute({
-              initialLoggedInNavRouteName: "BleRootStackNav",
-            }),
-          );
-          navigation.replace("LoggedInNav");
-          /* dispatch(
             storageActions.setInit({
               isIntroPassed: true,
             }),
-          ); */
+          );
+          navigation.replace("Start");
         }}>
         <MyText fontWeight="medium" fontSize={14} style={{ color }}>
           건너뛰기

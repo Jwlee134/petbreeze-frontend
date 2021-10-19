@@ -2,8 +2,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { NativeEventEmitter, NativeModules } from "react-native";
 
 import BleManager, { Peripheral } from "react-native-ble-manager";
-const BleManagerModule = NativeModules.BleManager;
-const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
 
 import deviceApi from "~/api/device";
 import { bytesToString, stringToBytes, isAndroid, isIos } from "~/utils";
@@ -13,6 +11,9 @@ import { decode } from "base64-arraybuffer";
 import { store, useAppSelector } from "~/store";
 import { useDispatch } from "react-redux";
 import { bleActions } from "~/store/ble";
+
+const BleManagerModule = NativeModules.BleManager;
+const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
 
 const interval = 512;
 
@@ -175,7 +176,7 @@ const useBleMaganer = () => {
   const downloadFirmware = useCallback(async () => {
     const downloadResumable = new FileSystem.DownloadResumable(
       `https://next-bnb-jw.s3.ap-northeast-2.amazonaws.com/Release.bin`,
-      FileSystem.cacheDirectory + "Release.bin",
+      `${FileSystem.cacheDirectory}Release.bin`,
       {},
       downloadProgress => {
         const progress = Math.floor(
@@ -346,36 +347,54 @@ const useBleMaganer = () => {
   useEffect(() => {
     console.log(status);
     if (status === "scanning") {
-      scanPeripheral();
+      // scanPeripheral();
+      setTimeout(() => {
+        dispatch(bleActions.setStatus("connected"));
+      }, 1000);
     }
     if (status === "connected") {
-      setTimeout(() => {
+      /* setTimeout(() => {
         getPeripheralData();
-      }, 1700);
+      }, 1700); */
+      setTimeout(() => {
+        dispatch(bleActions.setStatus("retrieveSuccess"));
+      }, 2700);
     }
     if (status === "retrieveSuccess") {
-      if (isOtaUpdate) {
+      /* if (isOtaUpdate) {
         startNotification("OTA");
       } else {
         handleReadDevEUI();
-      }
+      } */
+      setTimeout(() => {
+        dispatch(bleActions.setStatus("downloadingFirmware"));
+      }, 1000);
     }
     if (status === "downloadingFirmware") {
-      downloadFirmware();
+      // downloadFirmware();
+      setTimeout(() => {
+        dispatch(bleActions.setStatus("installingFirmware"));
+      }, 1000);
     }
     if (status === "installingFirmware") {
-      installFirmware();
+      // installFirmware();
+      setTimeout(() => {
+        dispatch(bleActions.setStatus("otaUpdateSuccess"));
+      }, 1000);
     }
     if (status === "otaUpdateSuccess") {
-      setTimeout(() => {
+      /* setTimeout(() => {
         stopNotification("OTA");
-      }, 500);
+      }, 500); */
     }
     if (status === "connectingToWifi") {
-      sendWifi();
+      // sendWifi();
+      setTimeout(() => {
+        dispatch(bleActions.setStatus("wifiSuccess"));
+      }, 1000);
     }
     if (status === "sendingSafetyZone") {
-      sendSafetyZone();
+      // sendSafetyZone();
     }
   }, [status]);
 

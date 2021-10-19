@@ -23,7 +23,7 @@ interface IState {
 const initialState: IState = {
   initialLoggedInNavRouteName: "BottomTabNav",
   initialBleRootStackNavRouteName: "BleWithHeaderStackNav",
-  initialBleWithHeaderStackNavRouteName: "DeviceCheck",
+  initialBleWithHeaderStackNavRouteName: "ChargingCheck",
   initialBleWithoutHeaderStackNavRouteName: "Scanning",
   initialBottomTabNavRouteName: "HomeTab",
   initialSharedStackNavRouteName: "Home",

@@ -6,6 +6,7 @@ import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import { Animated, StyleProp, View, ViewStyle } from "react-native";
 import Icon from "~/assets/svg/exclamation/exclamation-mark-white.svg";
 import useAnimatedSequence from "~/hooks/useAnimatedSequence";
+import { noAvatar } from "~/constants";
 
 interface IProps {
   battery: number;
@@ -63,6 +64,7 @@ const AnimatedCircularProgress = ({
   highlightOnEmergency = false,
   style,
 }: IProps) => {
+  const batteryValue = battery || 0;
   const { rpWidth } = useContext(DimensionsContext);
   const [value] = useAnimatedSequence({
     numOfValues: 1,
@@ -91,10 +93,10 @@ const AnimatedCircularProgress = ({
       <RNCircularProgress
         size={rpWidth(circleWidth)}
         width={lineWidth < 3 ? lineWidth : rpWidth(lineWidth)}
-        fill={battery}
-        prefill={battery}
+        fill={batteryValue}
+        prefill={batteryValue}
         tintColor={
-          battery > 25 ? `${palette.blue_7b}E6` : `${palette.red_f0}E6`
+          batteryValue > 25 ? `${palette.blue_7b}E6` : `${palette.red_f0}E6`
         }
         backgroundColor={
           isBackgroundTransparent
@@ -118,7 +120,7 @@ const AnimatedCircularProgress = ({
             rpWidth={rpWidth}
             preventRpHeight={preventRpHeight}
             circleWidth={circleWidth - lineWidth}
-            source={require("~/assets/image/test.jpg")}
+            source={avatar ? { uri: avatar } : noAvatar}
           />
         )}
       </RNCircularProgress>

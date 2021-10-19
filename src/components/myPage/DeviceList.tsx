@@ -1,15 +1,13 @@
-import { useNavigation } from "@react-navigation/core";
+import { useNavigation } from "@react-navigation/native";
 import React, { useContext } from "react";
 import { TouchableOpacity, View } from "react-native";
 import styled, { css } from "styled-components/native";
-import { useAppSelector } from "~/store";
 import { MyPageScreenNavigationProp } from "~/types/navigator";
 import MyText from "../common/MyText";
 import Footprint from "~/assets/svg/tab/footprint-outline.svg";
-import { useDispatch } from "react-redux";
-import { storageActions } from "~/store/storage";
-import { navigatorActions } from "~/store/navigator";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
+import { Device } from "~/api/device";
+import { noAvatar, noName } from "~/constants";
 
 const DeviceContainer = styled.ScrollView<{ rpWidth: RpWidth }>`
   ${({ rpWidth }) => css`
@@ -43,21 +41,19 @@ const Image = styled.Image<{ rpWidth: RpWidth }>`
   `}
 `;
 
-const DeviceList = () => {
-  const devices = useAppSelector(state => state.device);
+const DeviceList = ({ deviceList }: { deviceList: Device[] | undefined }) => {
   const navigation = useNavigation<MyPageScreenNavigationProp>();
-  const dispatch = useDispatch();
   const { rpWidth, width } = useContext(DimensionsContext);
 
   return (
     <View>
-      {devices.length ? (
+      {deviceList?.length ? (
         <DeviceContainer
           rpWidth={rpWidth}
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{
-            ...(devices.length < 4
+            ...(deviceList?.length < 4
               ? {
                   flexGrow: 1,
                   justifyContent: "center",
@@ -66,40 +62,36 @@ const DeviceList = () => {
                   paddingHorizontal: width * 0.25,
                 }),
           }}>
-          {devices.map((device, i) => (
+          {deviceList?.map((device, i) => (
             <AvatarButton
               style={{
                 marginHorizontal: width * 0.07,
                 ...(i === 0 && { marginLeft: 0 }),
-                ...(i === devices.length - 1 && { marginRight: 0 }),
+                ...(i === deviceList?.length - 1 && { marginRight: 0 }),
               }}
               onPress={() => {
                 navigation.navigate("DeviceSetting", {
-                  data: device,
+                  deviceID: device.id,
                 });
               }}
               key={device.id}>
               <Image
                 rpWidth={rpWidth}
-                source={require("~/assets/image/test.jpg")}
+                source={
+                  device.profile_image
+                    ? { uri: device.profile_image }
+                    : noAvatar
+                }
               />
-              <MyText style={{ marginTop: rpWidth(15) }}>{device.name}</MyText>
+              <MyText style={{ marginTop: rpWidth(15) }}>
+                {device.name || noName}
+              </MyText>
             </AvatarButton>
           ))}
         </DeviceContainer>
       ) : (
         <TouchableOpacity
           onPress={() => {
-            dispatch(
-              storageActions.setDevice({
-                redirectionRouteName: "MyPage",
-              }),
-            );
-            dispatch(
-              navigatorActions.setInitialRoute({
-                initialBleWithHeaderStackNavRouteName: "ChargingCheck",
-              }),
-            );
             navigation.navigate("BleRootStackNav");
           }}
           style={{ alignItems: "center" }}>
@@ -110,7 +102,7 @@ const DeviceList = () => {
             style={{ marginBottom: rpWidth(21) }}
             fontWeight="light"
             color="rgba(0, 0, 0, 0.3)">
-            디바이스를 등록해주세요
+            디바이스를 등록해주세요.
           </MyText>
         </TouchableOpacity>
       )}

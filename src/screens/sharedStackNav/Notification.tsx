@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useContext, useEffect } from "react";
 import { NotificationScreenNavigationProp } from "~/types/navigator";
 import styled, { css } from "styled-components/native";
 
@@ -9,10 +9,8 @@ import Divider from "~/components/common/Divider";
 import NotificationItem from "~/components/notification/NotificationItem";
 import userApi from "~/api/user";
 import { useIsFocused } from "@react-navigation/native";
-import { store, useAppSelector } from "~/store";
-import { PatchCollection } from "@reduxjs/toolkit/dist/query/core/buildThunks";
-import { useDispatch } from "react-redux";
-import { queryActions } from "~/store/query";
+import { store } from "~/store";
+import { DeviceContext } from "~/context/DeviceContext";
 
 const Container = styled.ScrollView`
   flex: 1;

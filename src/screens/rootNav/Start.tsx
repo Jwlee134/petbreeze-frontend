@@ -14,6 +14,7 @@ import messaging from "@react-native-firebase/messaging";
 import setInitialRoute from "~/utils/setInitialRoute";
 import { navigatorActions } from "~/store/navigator";
 import userApi from "~/api/user";
+import { secureItems } from "~/constants";
 
 const Container = styled.View`
   flex: 1;
@@ -31,7 +32,7 @@ const Start = ({ navigation }: { navigation: StartScreenNavigationProp }) => {
   const [handleRead] = userApi.useReadNotificationsMutation();
 
   const onAnimatedFinish = async () => {
-    const token = await SecureStore.getItemAsync("token");
+    const token = await SecureStore.getItemAsync(secureItems.token);
     if (token) {
       console.log(`🔐 Here's your value 🔐 \n + ${token}`);
 

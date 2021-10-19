@@ -8,20 +8,40 @@ import {
 import { store } from "~/store";
 import { bleActions } from "~/store/ble";
 import { deviceSettingActions } from "~/store/deviceSetting";
-import { formActions } from "~/store/form";
 import { navigatorActions } from "~/store/navigator";
 import { storageActions } from "~/store/storage";
 
 export const resetAll = () => {
   store.dispatch(bleActions.reset());
   store.dispatch(deviceSettingActions.reset());
-  store.dispatch(formActions.reset());
   store.dispatch(navigatorActions.reset());
   store.dispatch(storageActions.reset());
 };
 
-export const delay = async (sec: number) =>
-  await new Promise<void>(resolve => setTimeout(resolve, sec));
+export const formatWalkTime = (time: number) => {
+  return `${
+    time < 60
+      ? `${time}분`
+      : `${Math.floor(time / 60)}시간 ${
+          time % 60 === 0 ? "" : `${time % 60}분`
+        }`
+  }`;
+};
+
+export const formatWalkDistance = (distance: number) => {
+  return `${
+    distance < 1000
+      ? `${distance}m`
+      : `${Math.floor(distance / 1000)}${
+          distance % 1000 === 0 || (distance % 1000).toString().length < 3
+            ? ""
+            : `.${(distance % 1000).toString().substr(0, 1)}`
+        }km`
+  }`;
+};
+
+export const delay = (sec: number) =>
+  new Promise<void>(resolve => setTimeout(resolve, sec));
 
 export const isAndroid = Platform.OS === "android";
 
@@ -50,13 +70,13 @@ export const getLeftRightPointsOfCircle = (
 
   return [
     {
-      latitude: latitude,
+      latitude,
       longitude: lng0 - radius / 100000,
-    }, //left
+    }, // left
     {
-      latitude: latitude,
+      latitude,
       longitude: lng1 + radius / 100000,
-    }, //right
+    }, // right
   ];
 };
 
@@ -104,6 +124,8 @@ export const permissionCheck = (type: "location" | "gallery" | "bluetooth") => {
           : PERMISSIONS.IOS.PHOTO_LIBRARY;
       case "bluetooth":
         return PERMISSIONS.IOS.BLUETOOTH_PERIPHERAL;
+      default:
+        break;
     }
   };
   const permissionName = () => {
@@ -114,6 +136,8 @@ export const permissionCheck = (type: "location" | "gallery" | "bluetooth") => {
         return isAndroid ? "저장소 접근" : "사진 접근";
       case "bluetooth":
         return "블루투스 사용";
+      default:
+        break;
     }
   };
 

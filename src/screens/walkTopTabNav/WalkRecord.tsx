@@ -1,29 +1,19 @@
-import React, { useState, useContext } from "react";
-import { ScrollView, View } from "react-native";
-import AnimatedCircularProgress from "~/components/common/AnimatedCircularProgress";
+import React, { useContext } from "react";
+import { ScrollView } from "react-native";
 import ListItem from "~/components/common/ListItem";
-import MyText from "~/components/common/MyText";
-import { useAppSelector } from "~/store";
-import palette from "~/styles/palette";
 import { WalkRecordScreenNavigationProp } from "~/types/navigator";
-import styled from "styled-components/native";
 import { DimensionsContext } from "~/context/DimensionsContext";
-
-const RowContainer = styled.View`
-  flex-direction: row;
-  align-items: center;
-`;
+import { Device } from "~/api/device";
+import WalkDeviceListItem from "~/components/walk/WalkDeviceListItem";
 
 const WalkRecord = ({
   navigation,
+  deviceList,
 }: {
   navigation: WalkRecordScreenNavigationProp;
+  deviceList: Device[];
 }) => {
-  const { rpWidth, rpHeight } = useContext(DimensionsContext);
-  const devices = useAppSelector(state => state.device);
-
-  const [selectedDeviceId, setSelectedDeviceId] = useState("");
-  const [loading, setLoading] = useState(false);
+  const { rpHeight } = useContext(DimensionsContext);
 
   return (
     <ScrollView
@@ -32,42 +22,17 @@ const WalkRecord = ({
         flexGrow: 1,
       }}
       showsVerticalScrollIndicator={false}>
-      {devices.map(item => (
+      {deviceList.map(device => (
         <ListItem
-          key={item.id}
+          key={device.id}
           onPress={() =>
             navigation.navigate("WalkDetailMonth", {
-              id: item.id,
+              deviceID: device.id,
+              avatar: device.profile_image,
+              name: device.name,
             })
           }>
-          <RowContainer>
-            <AnimatedCircularProgress
-              isBackgroundTransparent
-              lineWidth={2}
-              circleWidth={70}
-              battery={item.battery}
-            />
-            <View
-              style={{
-                marginLeft: rpWidth(26),
-              }}>
-              <RowContainer>
-                <MyText fontWeight="medium">{item.name}</MyText>
-                <MyText
-                  fontSize={12}
-                  color={palette.blue_7b}
-                  style={{ marginLeft: rpWidth(12) }}>
-                  {item.battery}%
-                </MyText>
-              </RowContainer>
-              <MyText
-                style={{ marginTop: rpWidth(5) }}
-                fontSize={12}
-                color="rgba(0, 0, 0, 0.5)">
-                마지막 산책
-              </MyText>
-            </View>
-          </RowContainer>
+          <WalkDeviceListItem device={device} />
         </ListItem>
       ))}
     </ScrollView>

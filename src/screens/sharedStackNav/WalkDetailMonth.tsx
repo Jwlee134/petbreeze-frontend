@@ -1,14 +1,14 @@
-import React, { useContext, useMemo } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styled, { css } from "styled-components/native";
 import MyText from "~/components/common/MyText";
-import { useAppSelector } from "~/store";
 import { WalkDetailMonthScreenProps } from "~/types/navigator";
 import palette from "~/styles/palette";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import Divider from "~/components/common/Divider";
 import { CalendarList, LocaleConfig } from "react-native-calendars";
-import { days, months } from "~/constants";
+import { days, months, noAvatar, noName } from "~/constants";
 import { isAndroid } from "~/utils";
+import deviceApi from "~/api/device";
 
 const TopContainer = styled.View`
   align-items: center;
@@ -33,74 +33,86 @@ LocaleConfig.locales["ko"] = {
 };
 LocaleConfig.defaultLocale = "ko";
 
-const WalkDetailMonth = ({ navigation, route }: WalkDetailMonthScreenProps) => {
-  const devices = useAppSelector(state => state.device);
-  const data = devices.find(device => device.id === route.params.id);
+const WalkDetailMonth = ({
+  navigation,
+  route: {
+    params: { deviceID, avatar, name },
+  },
+}: WalkDetailMonthScreenProps) => {
+  const [date, setDate] = useState({
+    year: new Date().getFullYear(),
+    month: new Date().getMonth() + 1,
+  });
+  const [dateObj, setDateObj] = useState<{
+    [date: string]: { dots: { key: string; color: string }[] };
+  }>({});
+  const { data, refetch } = deviceApi.useGetMonthlyWalkRecordQuery({
+    deviceID,
+    year: date.year,
+    month: date.month,
+  });
   const { rpWidth, isTablet } = useContext(DimensionsContext);
 
-  /*   const MarkingDots = useMemo(() => {
-    const obj: {
-      [date: string]: { dots: { key: string; color: string }[] };
-    } = {};
-    const dateArr = data.walk_id_list.map(data => {
-      const date = new Date(data.start_date_time);
-      const year = date.getFullYear();
-      const month = date.getMonth() + 1;
-      const day = date.getDate();
-      return {
-        id: data.id,
-        date: `${year}-${month}-${day}`,
-      };
-    });
-    dateArr.forEach(data => {
-      if (obj[data.date]) {
-        obj[data.date].dots.push({
-          key: data.id,
-          color: palette.blue_7b,
-        });
-      } else {
-        obj[data.date] = {
-          dots: [
-            {
-              key: data.id,
-              color: palette.blue_7b,
-            },
-          ],
-        };
+  useEffect(() => {
+    refetch();
+  }, []);
+
+  useEffect(() => {
+    if (!data?.day_count.length) return;
+    // 날짜 배열 아래와 같이 생성
+    //  [["2021-10-16", 0], ["2021-10-17", 0], ["2021-10-17", 1]]
+    const obj = { ...dateObj };
+    const dateArr = data.day_count
+      .map(({ date, count }) => {
+        const arr: string[][] = [];
+        for (let i = 0; i < count; i++) {
+          arr.push([date, i.toString()]);
+        }
+        return arr;
+      })
+      .flat();
+
+    dateArr.forEach(date => {
+      // 날짜 key가 없으면 새로 생성
+      if (!obj[date[0]]) {
+        obj[date[0]] = { dots: [{ key: date[1], color: palette.blue_7b }] };
+        // 날짜 key가 있는데 dots 배열에 같은 키가 없으면 push
+      } else if (!obj[date[0]].dots.some(item => item.key === date[1])) {
+        obj[date[0]].dots.push({ key: date[1], color: palette.blue_7b });
       }
     });
-    return obj;
-  }, [data]); */
+    setDateObj(obj);
+  }, [data]);
+
+  useEffect(() => {
+    console.log(dateObj);
+  }, [dateObj]);
 
   return (
     <>
       <TopContainer>
-        <Image rpWidth={rpWidth} source={require("~/assets/image/test.jpg")} />
+        <Image rpWidth={rpWidth} source={avatar ? { uri: avatar } : noAvatar} />
         <MyText style={{ marginBottom: rpWidth(19) }} fontWeight="medium">
-          {data?.name}
+          {name || noName}
         </MyText>
       </TopContainer>
       <Divider isHairline={false} />
       <CalendarList
+        onVisibleMonthsChange={months => {
+          setDate({ year: months[0].year, month: months[0].month });
+        }}
         onDayPress={day => {
           navigation.navigate("WalkDetailDay", {
-            id: data.id,
-            date: `${day.month}월 ${day.day}일`,
+            deviceID,
+            avatar,
+            date: day.dateString,
           });
         }}
         monthFormat="M월"
         pagingEnabled
         horizontal
         futureScrollRange={0}
-        markedDates={{
-          "2021-10-05": {
-            dots: [
-              { key: "1", color: palette.blue_7b },
-              { key: "2", color: palette.blue_7b },
-            ],
-          },
-          "2021-10-06": { dots: [{ key: "1", color: palette.blue_7b }] },
-        }}
+        markedDates={dateObj}
         theme={{
           // @ts-ignore
           "stylesheet.calendar.header": {

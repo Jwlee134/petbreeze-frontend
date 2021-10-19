@@ -1,54 +1,37 @@
 import React, { useContext, useState } from "react";
 import styled from "styled-components/native";
 import { StartWalkingScreenNavigationProp } from "~/types/navigator";
-import deviceApi from "~/api/device";
+import { Device } from "~/api/device";
 import { useDispatch } from "react-redux";
 import { storageActions } from "~/store/storage";
 import { permissionCheck } from "~/utils";
 import Button from "~/components/common/Button";
-import { useAppSelector } from "~/store";
 import { ScrollView, View } from "react-native";
 import ListItem from "~/components/common/ListItem";
 import { navigatorActions } from "~/store/navigator";
 import MyText from "~/components/common/MyText";
 import Dog from "~/assets/svg/dog/dog-with-device.svg";
-import palette from "~/styles/palette";
-import AnimatedCircularProgress from "~/components/common/AnimatedCircularProgress";
 import { DimensionsContext } from "~/context/DimensionsContext";
+import WalkDeviceListItem from "~/components/walk/WalkDeviceListItem";
 
 const Container = styled.View`
   flex: 1;
   justify-content: space-between;
 `;
 
-const RowContainer = styled.View`
-  flex-direction: row;
-  align-items: center;
-`;
-
 const StartWalking = ({
   navigation,
+  deviceList,
 }: {
   navigation: StartWalkingScreenNavigationProp;
+  deviceList: Device[];
 }) => {
   const { rpHeight, rpWidth } = useContext(DimensionsContext);
-  const [selected, setSelected] = useState<string[]>([]);
+  const [selected, setSelected] = useState<number[]>([]);
   const dispatch = useDispatch();
-  // const { data: devices } = deviceApi.useGetDeviceListQuery();
-  const devices = useAppSelector(state => state.device);
 
   const handleStart = () => {
     if (!selected.length) {
-      dispatch(
-        navigatorActions.setInitialRoute({
-          initialBleWithHeaderStackNavRouteName: "ChargingCheck",
-        }),
-      );
-      dispatch(
-        storageActions.setDevice({
-          redirectionRouteName: "StartWalking",
-        }),
-      );
       navigation.navigate("BleRootStackNav");
     } else {
       permissionCheck("location").then(() => {
@@ -69,58 +52,34 @@ const StartWalking = ({
 
   return (
     <Container>
-      {devices && devices.length ? (
+      {deviceList && deviceList.length ? (
         <ScrollView
           contentContainerStyle={{
             paddingTop: rpHeight(31),
             flexGrow: 1,
           }}
           showsVerticalScrollIndicator={false}>
-          {devices.map(item => (
+          {deviceList.map(device => (
             <ListItem
-              key={item.id}
+              key={device.id}
               isIconArrow={false}
               onPress={() => {
                 const selectedArr = [...selected];
                 const isSelected = selectedArr.some(
-                  selectedItem => selectedItem === item.id,
+                  selectedItem => selectedItem === device.id,
                 );
                 if (isSelected) {
                   setSelected(
                     selectedArr.filter(
-                      selectedItem => selectedItem !== item.id,
+                      selectedItem => selectedItem !== device.id,
                     ),
                   );
                 } else {
-                  setSelected([...selectedArr, item.id]);
+                  setSelected([...selectedArr, device.id]);
                 }
               }}
-              selected={selected.includes(item.id)}>
-              <RowContainer>
-                <AnimatedCircularProgress
-                  isBackgroundTransparent
-                  lineWidth={2}
-                  circleWidth={70}
-                  battery={item.battery}
-                />
-                <View style={{ marginLeft: rpWidth(26) }}>
-                  <RowContainer>
-                    <MyText fontWeight="medium">{item.name}</MyText>
-                    <MyText
-                      fontSize={12}
-                      color={palette.blue_7b}
-                      style={{ marginLeft: rpWidth(12) }}>
-                      {item.battery}%
-                    </MyText>
-                  </RowContainer>
-                  <MyText
-                    style={{ marginTop: rpWidth(5) }}
-                    fontSize={12}
-                    color="rgba(0, 0, 0, 0.5)">
-                    마지막 산책
-                  </MyText>
-                </View>
-              </RowContainer>
+              selected={selected.includes(device.id)}>
+              <WalkDeviceListItem device={device} />
             </ListItem>
           ))}
         </ScrollView>
@@ -158,9 +117,9 @@ const StartWalking = ({
           bottom: rpWidth(67),
           alignSelf: "center",
         }}
-        disabled={devices.length !== 0 && !selected.length}
+        disabled={deviceList?.length !== 0 && !selected.length}
         onPress={handleStart}>
-        {devices.length ? "선택 완료" : "등록"}
+        {deviceList?.length ? "선택 완료" : "등록"}
       </Button>
     </Container>
   );

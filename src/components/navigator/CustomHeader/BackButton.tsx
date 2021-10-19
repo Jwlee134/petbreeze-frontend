@@ -35,7 +35,6 @@ const BackButton = ({
         onPress={() => {
           if (onBackButtonPress) {
             onBackButtonPress();
-            return;
           } else if (navigation) navigation.goBack();
         }}>
         <Arrow width={rpWidth(13)} height={rpWidth(21)} />

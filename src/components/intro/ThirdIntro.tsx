@@ -1,7 +1,6 @@
-import { useNavigation } from "@react-navigation/core";
+import { useNavigation } from "@react-navigation/native";
 import React, { useContext } from "react";
 import { View } from "react-native";
-import LinearGradient from "react-native-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useDispatch } from "react-redux";
 import styled from "styled-components/native";
@@ -60,12 +59,12 @@ const ThirdIntro = () => {
             borderColor: palette.blue_7b_90,
           }}
           onPress={() => {
-            navigation.replace("Start");
-            /* dispatch(
+            dispatch(
               storageActions.setInit({
                 isIntroPassed: true,
               }),
-            ); */
+            );
+            navigation.replace("Start");
           }}>
           시작하기
         </Button>

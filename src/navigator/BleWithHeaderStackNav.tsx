@@ -13,13 +13,11 @@ import {
 } from "~/types/navigator";
 import ChargingCheck from "~/screens/bleWithHeaderStackNav/ChargingCheck";
 import CustomHeader from "~/components/navigator/CustomHeader";
-import { getFocusedRouteNameFromRoute } from "@react-navigation/core";
+import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 import RegisterProfileSecond from "~/screens/bleWithHeaderStackNav/RegisterProfileSecond";
 import PreWiFiForm from "~/screens/bleWithHeaderStackNav/PreWiFiForm";
 import WiFiForm from "~/screens/bleWithHeaderStackNav/WiFiForm";
 import { useAppSelector } from "~/store";
-import { storageActions } from "~/store/storage";
-import { useDispatch } from "react-redux";
 
 const Stack = createStackNavigator<BleWithHeaderStackNavParamList>();
 
@@ -36,22 +34,16 @@ const BleWithHeaderStackNav = ({
   navigation: BleWithHeaderStackNavScreenNavigationProp;
   route: BleWithHeaderStackNavScreenRouteProp;
 }) => {
-  const {
-    init: { isInitialized },
-    device: { redirectionRouteName },
-  } = useAppSelector(state => state.storage);
   const initialRouteName = useAppSelector(
     state => state.navigator.initialBleWithHeaderStackNavRouteName,
   );
   const routeName = getFocusedRouteNameFromRoute(route) || initialRouteName;
-  const dispatch = useDispatch();
 
   return (
     <>
       <CustomHeader
         disableBackButton={
-          (routeName === "DeviceCheck" && !isInitialized) ||
-          routeName === "PreWiFiForm"
+          routeName === "DeviceCheck" || routeName === "PreWiFiForm"
         }
         currentPage={
           routeName?.includes("WiFi")
@@ -67,21 +59,10 @@ const BleWithHeaderStackNav = ({
         totalPage={4}
         navigation={navigation}
         onBackButtonPress={() => {
-          if (routeName === "ChargingCheck") {
-            if (redirectionRouteName) {
-              navigation.goBack();
-              dispatch(
-                storageActions.setDevice({
-                  redirectionRouteName: "",
-                }),
-              );
-            } else {
-              navigation.replace("DeviceCheck");
-            }
-          }
           if (routeName === "WiFiForm") navigation.replace("PreWiFiForm");
-          if (routeName === "RegisterProfileSecond")
+          else if (routeName === "RegisterProfileSecond")
             navigation.replace("RegisterProfileFirst");
+          else navigation.goBack();
         }}
       />
       <Stack.Navigator

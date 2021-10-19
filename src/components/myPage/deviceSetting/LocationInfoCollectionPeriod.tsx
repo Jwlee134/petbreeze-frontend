@@ -21,10 +21,10 @@ const Container = styled(RowContainer)<{ rpWidth: RpWidth }>`
   justify-content: space-between;
 `;
 
-const data = ["1분", "2분", "3분", "5분", "10분", "30분"];
+const data = ["5분", "10분", "30분"];
 
 const LocationInfoCollectionPeriod = () => {
-  const [selectedIndex, setSelectedIndex] = useState(3);
+  const [selectedIndex, setSelectedIndex] = useState(0);
   const { rpWidth } = useContext(DimensionsContext);
 
   return (

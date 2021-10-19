@@ -11,7 +11,6 @@ import { Animated, View } from "react-native";
 import useAnimatedSequence from "~/hooks/useAnimatedSequence";
 import { CompletionScreenNavigationProp } from "~/types/navigator";
 import { useDispatch } from "react-redux";
-import { storageActions } from "~/store/storage";
 import { navigatorActions } from "~/store/navigator";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 
@@ -39,14 +38,9 @@ const Completion = ({
 }: {
   navigation: CompletionScreenNavigationProp;
 }) => {
-  const {
-    init: { isInitialized },
-    device: { redirectionRouteName },
-  } = useAppSelector(state => state.storage);
   const { name, deviceName, breed, birthYear, gender } = useAppSelector(
     state => state.form,
   );
-  const { name: safetyZoneName } = useAppSelector(state => state.safetyZone);
   const dispatch = useDispatch();
   const { rpWidth } = useContext(DimensionsContext);
 
@@ -55,15 +49,20 @@ const Completion = ({
     delayAfterMount: 800,
     onAnimatedFinish: () => {
       setTimeout(() => {
-        if (redirectionRouteName) {
-        } else {
-          dispatch(
-            navigatorActions.setInitialRoute({
-              initialLoggedInNavRouteName: "BottomTabNav",
-            }),
-          );
-          navigation.replace("LoggedInNav");
-        }
+        dispatch(
+          navigatorActions.setInitialRoute({
+            initialLoggedInNavRouteName: "BottomTabNav",
+            ...(redirectionRouteName && redirectionRouteName === "MyPage"
+              ? { initialBottomTabNavRouteName: "MyPageTab" }
+              : {
+                  initialBottomTabNavRouteName: "WalkTab",
+                }),
+          }),
+        );
+        navigation.reset({
+          index: 0,
+          routes: [{ name: "LoggedInNav" }],
+        });
       }, 800);
     },
   });
@@ -72,13 +71,6 @@ const Completion = ({
     inputRange: [0, 1],
     outputRange: [rpWidth(1000), 0],
   });
-
-  useEffect(() => {
-    /* if (!isInitialized) {
-     dispatch(storageActions.setInit("init")); 
-    }
-    dispatch(storageActions.initDeviceRegistrationStep())  */
-  }, []);
 
   return (
     <SafeAreaContainer>
@@ -142,7 +134,7 @@ const Completion = ({
               color="rgba(0, 0, 0, 0.5)">
               안심존
             </MyText>
-            <MyText style={{ width: rpWidth(100) }}>{safetyZoneName}</MyText>
+            <MyText style={{ width: rpWidth(100) }}>내 안심존</MyText>
           </RowContainer>
         </View>
         <MyText

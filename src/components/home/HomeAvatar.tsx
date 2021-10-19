@@ -2,6 +2,7 @@ import React, { memo, useContext } from "react";
 import { Animated, ViewStyle } from "react-native";
 import { useDispatch } from "react-redux";
 import styled, { css } from "styled-components/native";
+import { Device } from "~/api/device";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import { commonActions } from "~/store/common";
 import AnimatedCircularProgress from "../common/AnimatedCircularProgress";
@@ -9,8 +10,9 @@ import AnimatedCircularProgress from "../common/AnimatedCircularProgress";
 interface IProps {
   index: number;
   length: number;
-  onAvatarLongPress: (id: string) => void;
+  onAvatarLongPress: (id: number) => void;
   style?: Animated.AnimatedProps<ViewStyle>;
+  device: Device;
 }
 
 interface IPressable {
@@ -71,19 +73,20 @@ const HomeAvatar = ({
         index={index}
         onPress={() => {
           dispatch(commonActions.setIsDeviceMoved(false));
-          dispatch(
+          /* dispatch(
             commonActions.setDeviceCoord({
               latitude: device.latitude,
               longitude: device.longitude,
             }),
-          );
+          ); */
         }}>
         <AnimatedCircularProgress
+          avatar={device.profile_image}
           preventRpHeight
           circleWidth={length > 2 ? 70 : 90}
           lineWidth={length > 2 ? 5 : 7}
           battery={device.battery}
-          highlightOnEmergency={device.emergency}
+          highlightOnEmergency={device.is_missed}
         />
       </Pressable>
     </Animated.View>

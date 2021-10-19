@@ -15,6 +15,7 @@ import { useAppSelector } from "~/store";
 import { deviceSettingActions } from "~/store/deviceSetting";
 import WifiManager from "react-native-wifi-reborn";
 import { DimensionsContext } from "~/context/DimensionsContext";
+import { centerModalOutTiming } from "~/styles/constants";
 
 const WiFiForm = ({
   navigation,
@@ -22,9 +23,7 @@ const WiFiForm = ({
   navigation: WiFiFormScreenNavigationProp;
 }) => {
   const { open, close, modalProps } = useModal();
-  const { name, password } = useAppSelector(
-    state => state.deviceSetting.wifi.draft,
-  );
+  const { ssid, pw } = useAppSelector(state => state.deviceSetting.wifi.draft);
   const dispatch = useDispatch();
   const { rpWidth } = useContext(DimensionsContext);
   const disconnected = useAppSelector(state => state.ble.disconnected);
@@ -33,7 +32,7 @@ const WiFiForm = ({
     WifiManager.getCurrentWifiSSID().then(ssid => {
       dispatch(
         deviceSettingActions.setWifi({
-          draft: { name: ssid },
+          draft: { ssid },
         }),
       );
     });
@@ -50,24 +49,24 @@ const WiFiForm = ({
           }}>
           <InputTitle>WiFi 이름</InputTitle>
           <Input
-            value={name}
+            value={ssid}
             maxLength={31}
             onChangeText={text =>
               dispatch(
                 deviceSettingActions.setWifi({
-                  draft: { name: text },
+                  draft: { ssid: text },
                 }),
               )
             }
           />
           <InputTitle>암호</InputTitle>
           <Input
-            value={password}
+            value={pw}
             maxLength={63}
             onChangeText={text =>
               dispatch(
                 deviceSettingActions.setWifi({
-                  draft: { password: text },
+                  draft: { pw: text },
                 }),
               )
             }
@@ -75,11 +74,15 @@ const WiFiForm = ({
         </View>
         <View>
           <Button
-            disabled={!name || (!!password && password.length < 8)}
+            disabled={!ssid || (!!pw && pw.length < 8)}
             onPress={() => {
               if (disconnected) {
-                /* api 요청만 */
-                console.log("api 요청 보내기");
+                dispatch(
+                  navigatorActions.setInitialRoute({
+                    initialBleWithoutHeaderStackNavRouteName: "BleLoading",
+                  }),
+                );
+                navigation.navigate("BleWithoutHeaderStackNav");
               } else {
                 dispatch(bleActions.setStatus("connectingToWifi"));
                 dispatch(navigatorActions.setLoadingText("연결 확인중"));
@@ -88,7 +91,7 @@ const WiFiForm = ({
                     initialBleWithoutHeaderStackNavRouteName: "BleLoading",
                   }),
                 );
-                navigation.replace("BleWithoutHeaderStackNav");
+                navigation.navigate("BleWithoutHeaderStackNav");
               }
             }}
             style={{
@@ -111,8 +114,8 @@ const WiFiForm = ({
           onRightButtonPress={() => {
             close();
             setTimeout(() => {
-              navigation.replace("PreSafetyZone");
-            }, 200);
+              navigation.navigate("PreSafetyZone");
+            }, centerModalOutTiming);
           }}
           title="잠깐!"
           description={`와이파이 미등록 시,\n배터리 소모가 크게 증가할 수 있습니다.`}

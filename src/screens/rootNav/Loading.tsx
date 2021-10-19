@@ -8,6 +8,7 @@ import messaging from "@react-native-firebase/messaging";
 import * as SecureStore from "expo-secure-store";
 import { useAppSelector } from "~/store";
 import userApi from "~/api/user";
+import { secureItems } from "~/constants";
 
 const Loading = ({
   navigation,
@@ -28,9 +29,9 @@ const Loading = ({
       userID: number,
     ) => {
       await Promise.all([
-        SecureStore.setItemAsync("token", token),
-        SecureStore.setItemAsync("firebaseToken", firebaseToken),
-        SecureStore.setItemAsync("userID", userID.toString()),
+        SecureStore.setItemAsync(secureItems.token, token),
+        SecureStore.setItemAsync(secureItems.firebaseToken, firebaseToken),
+        SecureStore.setItemAsync(secureItems.userID, userID.toString()),
       ]);
     };
 
@@ -58,6 +59,7 @@ const Loading = ({
 
         dispatch(
           navigatorActions.setInitialRoute({
+            initialBleWithHeaderStackNavRouteName: "DeviceCheck",
             initialLoggedInNavRouteName:
               isIos && !isPermissionAllowed ? "Permissions" : "BleRootStackNav",
           }),

@@ -9,9 +9,12 @@ import WalkTopTabNav from "./WalkTopTabNav";
 import CustomHeader from "~/components/navigator/CustomHeader";
 import DeviceSetting from "~/screens/sharedStackNav/DeviceSetting";
 import MyPage from "~/screens/sharedStackNav/MyPage";
-import WalkDetail from "~/screens/sharedStackNav/WalkDetail";
+import WalkDetailMonth from "~/screens/sharedStackNav/WalkDetailMonth";
 import DeviceSettingList from "~/screens/sharedStackNav/DeviceSettingList";
 import { useAppSelector } from "~/store";
+import WalkDetailDay from "~/screens/sharedStackNav/WalkDetailDay";
+import { WalkDetailDayScreenRouteProp } from "~/types/navigator";
+import NotificationSetting from "~/screens/sharedStackNav/NotificationSetting";
 
 const Stack = createStackNavigator();
 
@@ -79,10 +82,31 @@ const SharedStackNav = ({ screenName }: { screenName: string }) => {
         />
       )}
       <Stack.Screen
-        name="WalkDetail"
-        component={WalkDetail}
+        name="WalkDetailMonth"
+        component={WalkDetailMonth}
         options={{
           header: props => <CustomHeader {...props}>산책기록</CustomHeader>,
+        }}
+      />
+      <Stack.Screen
+        name="WalkDetailDay"
+        component={WalkDetailDay}
+        options={{
+          header: props => (
+            <CustomHeader {...props}>
+              {`${(props.route as WalkDetailDayScreenRouteProp).params.date
+                .split("-")
+                .splice(1)
+                .join("월 ")}일`}
+            </CustomHeader>
+          ),
+        }}
+      />
+      <Stack.Screen
+        name="NotificationSetting"
+        component={NotificationSetting}
+        options={{
+          header: props => <CustomHeader {...props}>알림설정</CustomHeader>,
         }}
       />
       <Stack.Screen

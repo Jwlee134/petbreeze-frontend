@@ -30,6 +30,7 @@ const Dissolve = ({
 
   return (
     <Animated.View
+      pointerEvents={!isChildrenVisible ? "none" : undefined}
       style={{
         opacity: value,
         ...(style as object),

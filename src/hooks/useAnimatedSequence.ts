@@ -39,7 +39,7 @@ const useAnimatedSequence = ({
   useNativeDriverOnThird = true,
   onAnimatedFinish,
   numOfValues,
-  dependencies,
+  dependencies = [],
   startAnimation = true,
 }: IProps) => {
   const valueArr = Array.from(
@@ -47,61 +47,61 @@ const useAnimatedSequence = ({
     () => useRef(new Animated.Value(0)).current,
   );
 
-  useEffect(() => {
-    const sequence = () =>
-      Animated.sequence([
-        ...valueArr
-          .map((value, index) => [
-            Animated.timing(value, {
-              toValue: 1,
-              duration:
-                index === 0
-                  ? firstDuration
-                  : index === 1
-                  ? secondDuration
-                  : thirdDuration,
-              useNativeDriver:
-                index === 0
-                  ? useNativeDriverOnFirst
-                  : index === 1
-                  ? useNativeDriverOnSecond
-                  : useNativeDriverOnThird,
-            }),
-            ...(loop
-              ? [
-                  Animated.delay(
-                    index === 0
-                      ? delayAfterFirst
-                      : index === 1
-                      ? delayAfterSecond
-                      : delayAfterThird,
-                  ),
-                ]
-              : index === 2
-              ? []
-              : [
-                  Animated.delay(
-                    index === 0 ? delayAfterFirst : delayAfterSecond,
-                  ),
-                ]),
-          ])
-          .flat(),
-        ...(loop
-          ? [
-              Animated.parallel(
-                valueArr.map(value =>
-                  Animated.timing(value, {
-                    toValue: 0,
-                    duration: resetDuration,
-                    useNativeDriver: true,
-                  }),
+  const sequence = () =>
+    Animated.sequence([
+      ...valueArr
+        .map((value, index) => [
+          Animated.timing(value, {
+            toValue: 1,
+            duration:
+              index === 0
+                ? firstDuration
+                : index === 1
+                ? secondDuration
+                : thirdDuration,
+            useNativeDriver:
+              index === 0
+                ? useNativeDriverOnFirst
+                : index === 1
+                ? useNativeDriverOnSecond
+                : useNativeDriverOnThird,
+          }),
+          ...(loop
+            ? [
+                Animated.delay(
+                  index === 0
+                    ? delayAfterFirst
+                    : index === 1
+                    ? delayAfterSecond
+                    : delayAfterThird,
                 ),
+              ]
+            : index === 2
+            ? []
+            : [
+                Animated.delay(
+                  index === 0 ? delayAfterFirst : delayAfterSecond,
+                ),
+              ]),
+        ])
+        .flat(),
+      ...(loop
+        ? [
+            Animated.parallel(
+              valueArr.map(value =>
+                Animated.timing(value, {
+                  toValue: 0,
+                  duration: resetDuration,
+                  useNativeDriver: true,
+                }),
               ),
-              Animated.delay(delayAfterReset),
-            ]
-          : []),
-      ]);
+            ),
+            Animated.delay(delayAfterReset),
+          ]
+        : []),
+    ]);
 
+  useEffect(() => {
     const delayOnMountSequence = (main: Animated.CompositeAnimation) =>
       Animated.sequence([Animated.delay(delayAfterMount), main]);
 
@@ -124,7 +124,7 @@ const useAnimatedSequence = ({
         }
       }
     }
-  }, [loop, startAnimation, ...(dependencies ? dependencies : [])]);
+  }, [loop, startAnimation, ...dependencies]);
 
   return valueArr;
 };

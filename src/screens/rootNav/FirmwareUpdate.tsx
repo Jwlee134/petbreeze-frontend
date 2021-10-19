@@ -56,7 +56,7 @@ const FirmwareUpdate = ({
           }),
         );
         await delay(500);
-        navigation.navigate("Start");
+        navigation.replace("Intro");
         break;
       case CodePush.SyncStatus.UPDATE_INSTALLED:
         dispatch(

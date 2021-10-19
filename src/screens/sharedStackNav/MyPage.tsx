@@ -1,18 +1,13 @@
 import React, { useContext } from "react";
 import { ScrollView } from "react-native";
-import { useDispatch } from "react-redux";
 import MyText from "~/components/common/MyText";
-import { useAppSelector } from "~/store";
 import styled from "styled-components/native";
 
 import Setting from "~/assets/svg/myPage/setting.svg";
 import Plus from "~/assets/svg/myPage/circle-plus.svg";
 import Bell from "~/assets/svg/myPage/bell.svg";
-import People from "~/assets/svg/myPage/people.svg";
 import Arrow from "~/assets/svg/arrow/arrow-right-gray.svg";
 import { MyPageScreenNavigationProp } from "~/types/navigator";
-import { storageActions } from "~/store/storage";
-import { navigatorActions } from "~/store/navigator";
 import DeviceList from "~/components/myPage/DeviceList";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import useModal from "~/hooks/useModal";
@@ -22,6 +17,8 @@ import Divider from "~/components/common/Divider";
 import * as SecureStore from "expo-secure-store";
 import { centerModalOutTiming } from "~/styles/constants";
 import { resetAll } from "~/utils";
+import { secureItems } from "~/constants";
+import useDevice from "~/hooks/useDevice";
 
 const Button = styled.TouchableOpacity<{ isLast?: boolean; rpWidth: RpWidth }>`
   flex-direction: row;
@@ -44,15 +41,14 @@ const Section = styled.View<{ rpWidth: RpWidth }>`
 `;
 
 const MyPage = ({ navigation }: { navigation: MyPageScreenNavigationProp }) => {
-  const dispatch = useDispatch();
-  const devices = useAppSelector(state => state.device);
+  const deviceList = useDevice();
   const { rpWidth } = useContext(DimensionsContext);
   const { open, close, modalProps } = useModal();
 
   return (
     <>
       <ScrollView>
-        <DeviceList />
+        <DeviceList deviceList={deviceList} />
         <Divider isHairline={false} />
         <Section rpWidth={rpWidth}>
           <MyText
@@ -65,17 +61,13 @@ const MyPage = ({ navigation }: { navigation: MyPageScreenNavigationProp }) => {
           </MyText>
           <Button
             rpWidth={rpWidth}
-            disabled={!devices.length}
+            disabled={!deviceList?.length}
             onPress={() => {
-              if (devices.length === 1) {
-                navigation.navigate("DeviceSetting", {
-                  data: devices[0],
-                });
-              } else {
-                navigation.navigate("DeviceSettingList");
-              }
+              navigation.navigate("DeviceSettingList", {
+                deviceList,
+              });
             }}>
-            <RowContainer style={{ opacity: !devices.length ? 0.2 : 1 }}>
+            <RowContainer style={{ opacity: !deviceList?.length ? 0.2 : 1 }}>
               <SvgContainer rpWidth={rpWidth}>
                 <Setting width={rpWidth(19)} height={rpWidth(20)} />
               </SvgContainer>
@@ -84,22 +76,12 @@ const MyPage = ({ navigation }: { navigation: MyPageScreenNavigationProp }) => {
             <Arrow
               width={rpWidth(7)}
               height={rpWidth(12)}
-              style={{ opacity: !devices.length ? 0.5 : 1 }}
+              style={{ opacity: !deviceList?.length ? 0.5 : 1 }}
             />
           </Button>
           <Button
             rpWidth={rpWidth}
             onPress={() => {
-              dispatch(
-                storageActions.setDevice({
-                  redirectionRouteName: "MyPage",
-                }),
-              );
-              dispatch(
-                navigatorActions.setInitialRoute({
-                  initialBleWithHeaderStackNavRouteName: "ChargingCheck",
-                }),
-              );
               navigation.navigate("BleRootStackNav");
             }}>
             <RowContainer>
@@ -123,15 +105,6 @@ const MyPage = ({ navigation }: { navigation: MyPageScreenNavigationProp }) => {
             </RowContainer>
             <Arrow width={rpWidth(7)} height={rpWidth(12)} />
           </Button>
-          <Button rpWidth={rpWidth} isLast onPress={() => {}}>
-            <RowContainer>
-              <SvgContainer rpWidth={rpWidth}>
-                <People width={rpWidth(20)} height={rpWidth(19)} />
-              </SvgContainer>
-              <MyText>가족관리</MyText>
-            </RowContainer>
-            <Arrow width={rpWidth(7)} height={rpWidth(12)} />
-          </Button>
         </Section>
         <Divider isHairline={false} />
         <Section rpWidth={rpWidth}>
@@ -150,7 +123,11 @@ const MyPage = ({ navigation }: { navigation: MyPageScreenNavigationProp }) => {
           close={close}
           rightButtonText="로그아웃"
           onRightButtonPress={async () => {
-            await SecureStore.deleteItemAsync("token");
+            await Promise.all(
+              Object.values(secureItems).map(item =>
+                SecureStore.deleteItemAsync(item),
+              ),
+            );
             resetAll();
             close();
             setTimeout(() => {

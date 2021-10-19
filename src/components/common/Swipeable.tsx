@@ -1,33 +1,24 @@
-import React, {
-  ReactNode,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import {
-  RectButton,
-  Swipeable as Container,
-} from "react-native-gesture-handler";
-import { DimensionsContext } from "~/context/DimensionsContext";
-import palette from "~/styles/palette";
+import React, { ReactNode, useEffect, useRef, useState } from "react";
+import { StyleProp, ViewStyle } from "react-native";
+import { Swipeable as Container } from "react-native-gesture-handler";
 
 interface IProps {
   children: ReactNode;
-  RightButtonIcon: () => JSX.Element;
-  onRightButtonPress: () => void;
   animate?: boolean;
   enableRightActions?: boolean;
+  RenderRightActions: () => JSX.Element;
+  style?: StyleProp<ViewStyle>;
+  rightThreshold?: number;
 }
 
 const Swipeable = ({
   children,
-  RightButtonIcon,
-  onRightButtonPress,
   animate = false,
   enableRightActions,
+  RenderRightActions,
+  rightThreshold,
+  style,
 }: IProps) => {
-  const { rpWidth } = useContext(DimensionsContext);
   const swipeableRef = useRef<Container>(null);
   const [hide, setHide] = useState(false);
 
@@ -62,25 +53,13 @@ const Swipeable = ({
     };
   }, [enableRightActions]);
 
-  const renderRightActions = () => (
-    <RectButton
-      style={{
-        backgroundColor: palette.red_f0,
-        width: rpWidth(72),
-        height: "100%",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-      onPress={onRightButtonPress}>
-      <RightButtonIcon />
-    </RectButton>
-  );
-
   return (
     <Container
+      containerStyle={style}
       friction={2}
       ref={swipeableRef}
-      renderRightActions={!hide ? renderRightActions : () => <></>}>
+      rightThreshold={rightThreshold || undefined}
+      renderRightActions={!hide ? () => <RenderRightActions /> : () => <></>}>
       {children}
     </Container>
   );

@@ -1,28 +1,55 @@
-import React, { useContext, useState } from "react";
-import styled from "styled-components/native";
+import React, { useContext, useEffect, useState } from "react";
 import { ScrollView, TouchableOpacity, View } from "react-native";
 import MyText from "~/components/common/MyText";
 
-import LocationInfoCollectionPeriod from "~/components/deviceSetting/LocationInfoCollectionPeriod";
-import SafetyZone from "~/components/deviceSetting/SafetyZone";
-import { DeviceSettingScreenNavigationProp } from "~/types/navigator";
+import LocationInfoCollectionPeriod from "~/components/myPage/deviceSetting/LocationInfoCollectionPeriod";
+import SafetyZone from "~/components/myPage/deviceSetting/SafetyZone";
+import { DeviceSettingScreenProps } from "~/types/navigator";
 import Divider from "~/components/common/Divider";
 import CustomHeader from "~/components/navigator/CustomHeader";
 import palette from "~/styles/palette";
-import WiFi from "~/components/deviceSetting/WiFi";
-import ProfileSection from "~/components/deviceSetting/ProfileSection";
-import { store, useAppSelector } from "~/store";
+import WiFi from "~/components/myPage/deviceSetting/WiFi";
+import ProfileSection from "~/components/myPage/deviceSetting/ProfileSection";
+import { store } from "~/store";
 import { DimensionsContext } from "~/context/DimensionsContext";
+import deviceApi from "~/api/device";
+import { useDispatch } from "react-redux";
+import { deviceSettingActions } from "~/store/deviceSetting";
+import Family from "~/components/myPage/deviceSetting/Family";
 
 const DeviceSetting = ({
   navigation,
-  route,
-}: {
-  navigation: DeviceSettingScreenNavigationProp;
-}) => {
+  route: {
+    params: { deviceID },
+  },
+}: DeviceSettingScreenProps) => {
   const { rpWidth } = useContext(DimensionsContext);
-  const { data } = route.params;
   const [isEdit, setIsEdit] = useState(false);
+  const { data: settings } = deviceApi.useGetDeviceSettingQuery(deviceID);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (!settings) return;
+    if (settings.Period) {
+      dispatch(
+        deviceSettingActions.setLocationInfoCollectionPeriod(settings.Period),
+      );
+    }
+    if (settings.Area.length) {
+      dispatch(
+        deviceSettingActions.setSafetyZone({
+          result: settings.Area,
+        }),
+      );
+    }
+    if (settings.WiFi.length) {
+      dispatch(
+        deviceSettingActions.setWifi({
+          result: settings.WiFi,
+        }),
+      );
+    }
+  }, [settings]);
 
   const handleSubmit = () => {
     const {
@@ -57,19 +84,21 @@ const DeviceSetting = ({
           flexGrow: 1,
           paddingBottom: rpWidth(35),
         }}>
-        <ProfileSection data={data} />
+        <ProfileSection deviceID={deviceID} />
         <Divider isHairline={false} />
-        <View style={{ paddingHorizontal: rpWidth(16) }}>
-          <LocationInfoCollectionPeriod />
-        </View>
+        <LocationInfoCollectionPeriod />
         <View style={{ paddingHorizontal: rpWidth(16) }}>
           <Divider />
         </View>
         <SafetyZone isEdit={isEdit} />
         <View style={{ paddingHorizontal: rpWidth(16) }}>
-          <Divider style={{ marginTop: rpWidth(35) }} />
+          <Divider />
         </View>
         <WiFi isEdit={isEdit} />
+        <View style={{ paddingHorizontal: rpWidth(16) }}>
+          <Divider />
+        </View>
+        <Family isEdit={isEdit} deviceID={deviceID} />
       </ScrollView>
     </>
   );

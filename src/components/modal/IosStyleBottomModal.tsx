@@ -11,7 +11,7 @@ interface IProps {
   children: ReactNode;
   close: () => void;
   title?: string;
-  titleHeight?: number;
+  closeButtonText?: string;
 }
 
 const Container = styled.View<{ rpWidth: RpWidth }>`
@@ -37,7 +37,7 @@ const IosStyleBottomModal = ({
   children,
   close,
   title,
-  titleHeight,
+  closeButtonText = "취소",
 }: IProps) => {
   const { rpWidth, width } = useContext(DimensionsContext);
 
@@ -69,7 +69,7 @@ const IosStyleBottomModal = ({
         }}
         backgroundColor="white"
         fontColor={palette.blue_7b}>
-        취소
+        {closeButtonText}
       </Button>
     </Container>
   );

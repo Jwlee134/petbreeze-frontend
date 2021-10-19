@@ -9,7 +9,7 @@ import {
 } from "@react-navigation/native";
 import { MaterialTopTabNavigationProp } from "@react-navigation/material-top-tabs";
 import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
-import { IDevice } from "~/store/device";
+import { Device, DeviceProfile } from "~/api/device";
 
 export type RootNavParamList = {
   FirmwareUpdate: undefined;
@@ -51,10 +51,10 @@ export type LoggedInNavParamList = {
   BleRootStackNav: undefined;
   WalkMap: undefined;
   UpdateProfile: {
-    data: IDevice;
+    data: DeviceProfile;
   };
   EmergencyMissingStackNav: {
-    data: IDevice;
+    data: Device;
   };
   DeleteAccountStackNav: undefined;
   UpdateWiFi: undefined;
@@ -79,7 +79,7 @@ export type UpdateWiFiScreenNavigationProp = CompositeNavigationProp<
 
 export type EmergencyMissingStackNavParamList = {
   EmergencyMissingFirstPage: {
-    device: IDevice;
+    device: Device;
   };
   EmergencyMissingSecondPage: undefined;
 };
@@ -329,16 +329,21 @@ export type SharedStackNavParamList = {
   MyPage: undefined;
   NotificationSetting: undefined;
   WalkDetailMonth: {
-    id: string;
+    deviceID: number;
+    avatar: string;
+    name: string;
   };
   WalkDetailDay: {
-    id: string;
+    deviceID: number;
+    avatar: string;
     date: string;
   };
   DeviceSetting: {
-    data: IDevice;
+    deviceID: number;
   };
-  DeviceSettingList: undefined;
+  DeviceSettingList: {
+    deviceList: Device[] | undefined;
+  };
 };
 export type HomeScreenNavigationProp = CompositeNavigationProp<
   StackNavigationProp<SharedStackNavParamList, "Home">,
@@ -390,17 +395,13 @@ export type WalkDetailDayScreenProps = CompositeScreenProps<
     >
   >
 >;
-export type WalkDetailDayScreenRouteProp = RouteProp<
-  SharedStackNavParamList,
-  "WalkDetailDay"
->;
-export type DeviceSettingListScreenNavigationProp = CompositeNavigationProp<
-  StackNavigationProp<SharedStackNavParamList, "DeviceSettingList">,
-  CompositeNavigationProp<
-    BottomTabNavigationProp<BottomTabParamList>,
-    CompositeNavigationProp<
-      StackNavigationProp<LoggedInNavParamList>,
-      StackNavigationProp<RootNavParamList>
+export type DeviceSettingListScreenProps = CompositeScreenProps<
+  StackScreenProps<SharedStackNavParamList, "DeviceSettingList">,
+  CompositeScreenProps<
+    BottomTabScreenProps<BottomTabParamList>,
+    CompositeScreenProps<
+      StackScreenProps<LoggedInNavParamList>,
+      StackScreenProps<RootNavParamList>
     >
   >
 >;
@@ -413,6 +414,20 @@ export type DeviceSettingScreenNavigationProp = CompositeNavigationProp<
       StackNavigationProp<RootNavParamList>
     >
   >
+>;
+export type DeviceSettingScreenProps = CompositeScreenProps<
+  StackScreenProps<SharedStackNavParamList, "DeviceSetting">,
+  CompositeScreenProps<
+    BottomTabScreenProps<BottomTabParamList>,
+    CompositeScreenProps<
+      StackScreenProps<LoggedInNavParamList>,
+      StackScreenProps<RootNavParamList>
+    >
+  >
+>;
+export type WalkDetailDayScreenRouteProp = RouteProp<
+  SharedStackNavParamList,
+  "WalkDetailDay"
 >;
 
 export type WalkTopTabParamList = {

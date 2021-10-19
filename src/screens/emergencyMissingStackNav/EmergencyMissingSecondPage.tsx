@@ -9,7 +9,6 @@ import InputTitle from "~/components/common/InputTitle";
 import MyText from "~/components/common/MyText";
 import ScrollPicker from "~/components/common/ScrollPicker";
 import { useAppSelector } from "~/store";
-import { formActions } from "~/store/form";
 import palette from "~/styles/palette";
 import Plus from "~/assets/svg/plus-circle-blue.svg";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";

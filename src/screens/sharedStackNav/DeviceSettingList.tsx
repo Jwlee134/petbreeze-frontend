@@ -2,21 +2,19 @@ import React, { useContext, useState } from "react";
 import { ScrollView, TouchableOpacity } from "react-native";
 import MyText from "~/components/common/MyText";
 import CustomHeader from "~/components/navigator/CustomHeader";
-import { useAppSelector } from "~/store";
 import palette from "~/styles/palette";
-import { DeviceSettingListScreenNavigationProp } from "~/types/navigator";
+import { DeviceSettingListScreenProps } from "~/types/navigator";
 import Swipeable from "~/components/common/Swipeable";
-import Trashcan from "~/assets/svg/trashcan.svg";
+import Bye from "~/assets/svg/myPage/bye.svg";
 import ListItem from "~/components/common/ListItem";
-import DeviceSettingListItem from "~/components/deviceSetting/DeviceSettingListItem";
+import DeviceSettingListItem from "~/components/myPage/deviceSetting/DeviceSettingListItem";
 import { DimensionsContext } from "~/context/DimensionsContext";
+import SwipeableButton from "~/components/common/SwipeableButton";
 
 const DeviceSettingList = ({
   navigation,
-}: {
-  navigation: DeviceSettingListScreenNavigationProp;
-}) => {
-  const devices = useAppSelector(state => state.device);
+  route,
+}: DeviceSettingListScreenProps) => {
   const [isEdit, setIsEdit] = useState(false);
   const { rpWidth } = useContext(DimensionsContext);
 
@@ -36,17 +34,20 @@ const DeviceSettingList = ({
           paddingVertical: rpWidth(25),
           flexGrow: 1,
         }}>
-        {devices.map((device, i) => (
+        {route.params.deviceList?.map((device, i) => (
           <Swipeable
             animate={i === 0 && isEdit}
             key={device.id}
-            onRightButtonPress={() => {}}
-            RightButtonIcon={() => <Trashcan />}
+            RenderRightActions={() => (
+              <SwipeableButton backgroundColor="red" onPress={() => {}}>
+                <Bye width={rpWidth(44)} height={rpWidth(38)} />
+              </SwipeableButton>
+            )}
             enableRightActions={isEdit}>
             <ListItem
               onPress={() =>
                 navigation.navigate("DeviceSetting", {
-                  data: device,
+                  deviceID: device.id,
                 })
               }>
               <DeviceSettingListItem device={device} />

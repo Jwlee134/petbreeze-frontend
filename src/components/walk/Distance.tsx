@@ -4,6 +4,7 @@ import { useAppSelector } from "~/store";
 import MyText from "../common/MyText";
 import Path from "~/assets/svg/walk/path.svg";
 import { DimensionsContext } from "~/context/DimensionsContext";
+import { formatWalkDistance } from "~/utils";
 
 const RowContainer = styled.View`
   flex-direction: row;
@@ -24,9 +25,7 @@ const Distance = () => {
         style={{ marginRight: rpWidth(17) }}
       />
       <MyText fontSize={18} color="rgba(0, 0, 0, 0.5)">
-        {meter < 1000
-          ? `${meter}m`
-          : `${String(meter / 1000).substring(0, 4)}km`}
+        {formatWalkDistance(meter)}
       </MyText>
     </RowContainer>
   );

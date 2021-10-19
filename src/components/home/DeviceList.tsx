@@ -18,6 +18,8 @@ import HomeBottomModal from "../modal/HomeBottomModal";
 import styled from "styled-components/native";
 import MyText from "../common/MyText";
 import palette from "~/styles/palette";
+import useDevice from "~/hooks/useDevice";
+import { noName } from "~/constants";
 
 const Address = styled(Animated.View)<{ rpWidth: RpWidth }>`
   height: ${({ rpWidth }) => rpWidth(41)}px;
@@ -31,21 +33,24 @@ const Address = styled(Animated.View)<{ rpWidth: RpWidth }>`
 `;
 
 const DeviceList = () => {
-  const devices = useAppSelector(state => state.device);
+  const deviceList = useDevice();
   const address = useAppSelector(state => state.common.home.address);
   const value = useRef(new Animated.Value(0)).current;
 
   const { rpWidth, width, isTablet } = useContext(DimensionsContext);
 
   const { open, close, modalProps } = useModal();
-  const [clickedId, setClickedId] = useState("");
+  const [clickedId, setClickedId] = useState(0);
 
   const device = useMemo(
-    () => devices[devices.findIndex(device => device.id === clickedId)],
+    () =>
+      deviceList?.length
+        ? deviceList[deviceList.findIndex(device => device.id === clickedId)]
+        : null,
     [clickedId],
   );
 
-  const onAvatarLongPress = useCallback((id: string) => {
+  const onAvatarLongPress = useCallback((id: number) => {
     setClickedId(id);
     open();
   }, []);
@@ -68,15 +73,17 @@ const DeviceList = () => {
     }).start();
   }, [address]);
 
+  if (!deviceList || !deviceList.length) return null;
+
   return (
     <>
-      {devices.length < 4 ? (
-        devices.map((device, i) => (
+      {deviceList.length < 4 ? (
+        deviceList.map((device, i) => (
           <HomeAvatar
             key={device.id}
             device={device}
             index={i}
-            length={devices.length}
+            length={deviceList.length}
             onAvatarLongPress={onAvatarLongPress}
             style={{
               transform: [{ translateY: translateYAvatar }],
@@ -97,31 +104,35 @@ const DeviceList = () => {
           contentContainerStyle={{
             minWidth: isTablet ? 0 : width,
             ...(isTablet &&
-              devices.length < 6 && {
+              deviceList.length < 6 && {
                 paddingLeft: rpWidth(10),
               }),
             paddingHorizontal: !isTablet
               ? width * 0.15
-              : devices.length > 5
+              : deviceList.length > 5
               ? width * 0.09
               : 0,
             alignItems: "center",
           }}>
-          {devices.map((device, i) => (
+          {deviceList.map((device, i) => (
             <HomeAvatar
               key={device.id}
               device={device}
               index={i}
-              length={devices.length}
+              length={deviceList.length}
               onAvatarLongPress={onAvatarLongPress}
             />
           ))}
         </Animated.ScrollView>
       )}
       <Modal {...modalProps({ type: "bottom" })}>
-        <IosStyleBottomModal title={device?.name} close={close}>
-          <HomeBottomModal close={close} device={device} />
-        </IosStyleBottomModal>
+        {device ? (
+          <IosStyleBottomModal title={device.name || noName} close={close}>
+            <HomeBottomModal close={close} device={device} />
+          </IosStyleBottomModal>
+        ) : (
+          <></>
+        )}
       </Modal>
       <Address rpWidth={rpWidth} style={{ transform: [{ translateY }] }}>
         <MyText fontWeight="medium" fontSize={14} color="white">

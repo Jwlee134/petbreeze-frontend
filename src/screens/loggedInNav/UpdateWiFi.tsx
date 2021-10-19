@@ -1,7 +1,6 @@
 import React, { useContext, useEffect } from "react";
 import { View } from "react-native";
 import { useDispatch } from "react-redux";
-import styled from "styled-components/native";
 import WiFi from "~/assets/svg/wifi/wifi-blue.svg";
 import Button from "~/components/common/Button";
 import KeyboardAwareScrollContainer from "~/components/common/container/KeyboardAwareScrollContainer";
@@ -17,9 +16,7 @@ const UpdateWiFi = ({
 }: {
   navigation: UpdateWiFiScreenNavigationProp;
 }) => {
-  const { name, password } = useAppSelector(
-    state => state.deviceSetting.wifi.draft,
-  );
+  const { ssid, pw } = useAppSelector(state => state.deviceSetting.wifi.draft);
   const dispatch = useDispatch();
   const { rpWidth } = useContext(DimensionsContext);
 
@@ -43,22 +40,24 @@ const UpdateWiFi = ({
         />
         <InputTitle>WiFi 이름</InputTitle>
         <Input
-          value={name}
+          value={ssid}
+          maxLength={31}
           onChangeText={text =>
             dispatch(
               deviceSettingActions.setWifi({
-                draft: { name: text },
+                draft: { ssid: text },
               }),
             )
           }
         />
         <InputTitle>암호</InputTitle>
         <Input
-          value={password}
+          value={pw}
+          maxLength={63}
           onChangeText={text =>
             dispatch(
               deviceSettingActions.setWifi({
-                draft: { password: text },
+                draft: { pw: text },
               }),
             )
           }
@@ -68,13 +67,13 @@ const UpdateWiFi = ({
         onPress={() => {
           dispatch(
             deviceSettingActions.updateWifiResult({
-              name,
-              password,
+              ssid,
+              pw,
             }),
           );
           navigation.goBack();
         }}
-        disabled={!name || !password}
+        disabled={!ssid || (!!pw && pw.length < 8)}
         useCommonMarginBottom>
         확인
       </Button>

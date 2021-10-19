@@ -1,5 +1,5 @@
-import React, { useContext } from "react";
-import { ScrollView, View } from "react-native";
+import React, { Fragment, useContext } from "react";
+import { FlatList, ScrollView, View } from "react-native";
 import styled, { css } from "styled-components/native";
 import MyText from "~/components/common/MyText";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
@@ -9,6 +9,9 @@ import { WalkDetailDayScreenProps } from "~/types/navigator";
 import Timer from "~/assets/svg/walk/timer.svg";
 import Path from "~/assets/svg/walk/path.svg";
 import Divider from "~/components/common/Divider";
+import deviceApi from "~/api/device";
+import { formatWalkDistance, formatWalkTime } from "~/utils";
+import { noAvatar } from "~/constants";
 
 const Container = styled.View<{ rpWidth: RpWidth }>`
   ${({ rpWidth }) => css`
@@ -48,42 +51,53 @@ const Map = styled.Image`
   height: 100%;
 `;
 
-const data = [
-  {
-    avatarUrl: require("~/assets/image/test.jpg"),
-    name: "엄마",
-    time: "10:30 ~ 11:00",
-    duration: "30분",
-    distance: "1.5km",
-    photo: require("~/assets/image/test.jpg"),
+const WalkDetailDay = ({
+  navigation,
+  route: {
+    params: { deviceID, date, avatar },
   },
-  {
-    avatarUrl: require("~/assets/image/test.jpg"),
-    name: "엄마",
-    time: "10:30 ~ 11:00",
-    duration: "30분",
-    distance: "1.5km",
-    photo: require("~/assets/image/test.jpg"),
-  },
-];
-
-const WalkDetailDay = ({ navigation, route }: WalkDetailDayScreenProps) => {
+}: WalkDetailDayScreenProps) => {
   const { rpWidth, width } = useContext(DimensionsContext);
+  const { data } = deviceApi.useGetDailyWalkRecordQuery({
+    deviceID,
+    date,
+  });
+
+  const formatPeriod = (from: string, duration: number) => {
+    const formatFrom = new Date(from);
+    const formatTo = new Date(new Date(from).getTime() + duration * 60000);
+
+    return `${formatFrom.getHours()}:${
+      formatFrom.getMinutes() < 10
+        ? `0${formatFrom.getMinutes()}`
+        : formatFrom.getMinutes()
+    } ~ ${formatTo.getHours()}:${
+      formatTo.getMinutes() < 10
+        ? `0${formatTo.getMinutes()}`
+        : formatTo.getMinutes()
+    }`;
+  };
 
   return (
-    <ScrollView>
-      {data.map((item, index) => (
-        <>
-          <Container rpWidth={rpWidth} key={index}>
+    <FlatList
+      data={data}
+      renderItem={({ item, index }) => (
+        <Fragment key={item.id}>
+          <Container rpWidth={rpWidth}>
             <RowContainer style={{ paddingHorizontal: rpWidth(32) }}>
-              <Avatar rpWidth={rpWidth} source={item.avatarUrl} />
+              <Avatar
+                rpWidth={rpWidth}
+                source={avatar ? { uri: avatar } : noAvatar}
+              />
               <View>
                 <MyText
                   color={palette.blue_7b}
                   style={{ marginBottom: rpWidth(5) }}>
-                  {item.name}
+                  {item.handler__nickname}
                 </MyText>
-                <MyText color="rgba(0, 0, 0, 0.5)">{item.time}</MyText>
+                <MyText color="rgba(0, 0, 0, 0.5)">
+                  {formatPeriod(item.start_date_time, item.time)}
+                </MyText>
               </View>
             </RowContainer>
             <SvgContainer rpWidth={rpWidth}>
@@ -94,7 +108,7 @@ const WalkDetailDay = ({ navigation, route }: WalkDetailDayScreenProps) => {
                   style={{ marginRight: rpWidth(17) }}
                 />
                 <MyText color={palette.blue_7b} fontSize={24}>
-                  {item.duration}
+                  {formatWalkTime(item.time)}
                 </MyText>
               </RowContainer>
               <RowContainer>
@@ -104,22 +118,26 @@ const WalkDetailDay = ({ navigation, route }: WalkDetailDayScreenProps) => {
                   style={{ marginRight: rpWidth(17) }}
                 />
                 <MyText color={palette.blue_7b} fontSize={24}>
-                  {item.distance}
+                  {formatWalkDistance(item.distance)}
                 </MyText>
               </RowContainer>
             </SvgContainer>
             <MapContainer rpWidth={rpWidth} style={{ height: width * 0.66 }}>
-              <Map source={item.avatarUrl} />
+              <Map source={{ uri: item.path_image }} />
             </MapContainer>
           </Container>
-          {data.length > 1 && index !== data.length - 1 ? (
+          {data && data.length > 1 && index !== data.length - 1 ? (
             <Divider
               style={{ width: width - rpWidth(34), alignSelf: "center" }}
             />
           ) : null}
-        </>
-      ))}
-    </ScrollView>
+        </Fragment>
+      )}
+      onViewableItemsChanged={item => {
+        console.log(item.viewableItems);
+      }}
+      viewabilityConfig={{ viewAreaCoveragePercentThreshold: 95 }}
+    />
   );
 };
 

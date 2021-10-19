@@ -1,4 +1,4 @@
-import { getFocusedRouteNameFromRoute } from "@react-navigation/core";
+import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 import {
   createStackNavigator,
   StackCardInterpolationProps,

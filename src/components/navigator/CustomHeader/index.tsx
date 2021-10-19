@@ -3,12 +3,13 @@ import React, { ReactNode, useContext } from "react";
 import styled from "styled-components/native";
 import MyText from "../../common/MyText";
 
-import { Animated } from "react-native";
+import { Animated, StyleProp, ViewStyle } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import BackButton from "./BackButton";
 import PageIndicator from "./PageIndicator";
 import PageCount from "./PageCount";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
+import { customHeaderHeight } from "~/styles/constants";
 
 interface IProps extends Partial<StackHeaderProps> {
   children?: ReactNode;
@@ -17,12 +18,14 @@ interface IProps extends Partial<StackHeaderProps> {
   currentPage?: number;
   totalPage?: number;
   RightButton?: () => JSX.Element;
+  style?: StyleProp<ViewStyle>;
 }
 
 const Container = styled(Animated.View)`
   justify-content: center;
   align-items: center;
   flex-direction: row;
+  background-color: white;
 `;
 
 const RightButtonContainer = styled.View<{ rpWidth: RpWidth }>`
@@ -40,6 +43,7 @@ const CustomHeader = ({
   currentPage = 0,
   totalPage = 0,
   RightButton,
+  style,
 }: IProps) => {
   const { top } = useSafeAreaInsets();
   const { rpWidth } = useContext(DimensionsContext);
@@ -50,7 +54,8 @@ const CustomHeader = ({
       <Container
         style={{
           marginTop: navigation ? top : 0,
-          height: rpWidth(44),
+          height: rpWidth(customHeaderHeight),
+          ...(style as object),
         }}>
         <>
           <BackButton

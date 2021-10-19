@@ -1,7 +1,8 @@
 import React, { useContext } from "react";
 import styled from "styled-components/native";
+import { Device } from "~/api/device";
+import { noName } from "~/constants";
 import { DimensionsContext } from "~/context/DimensionsContext";
-import { IDevice } from "~/store/device";
 import palette from "~/styles/palette";
 import AnimatedCircularProgress from "../../common/AnimatedCircularProgress";
 import MyText from "../../common/MyText";
@@ -11,7 +12,7 @@ const RowContainer = styled.View`
   align-items: center;
 `;
 
-const DeviceSettingListItem = ({ device }: { device: IDevice }) => {
+const DeviceSettingListItem = ({ device }: { device: Device }) => {
   const { rpWidth } = useContext(DimensionsContext);
 
   return (
@@ -26,6 +27,7 @@ const DeviceSettingListItem = ({ device }: { device: IDevice }) => {
           lineWidth={2}
           circleWidth={70}
           battery={device.battery}
+          avatar={device.profile_image}
         />
         <MyText
           style={{
@@ -33,15 +35,15 @@ const DeviceSettingListItem = ({ device }: { device: IDevice }) => {
             marginRight: rpWidth(13),
           }}
           fontWeight="medium">
-          {device.name}
+          {device.name || noName}
         </MyText>
         <MyText color={palette.blue_7b} fontSize={14}>
-          {device.battery}%
+          {device.battery || 0}%
         </MyText>
       </RowContainer>
-      <MyText fontSize={14} color="rgba(0, 0, 0, 0.5)">
+      {/* <MyText fontSize={14} color="rgba(0, 0, 0, 0.5)">
         5분
-      </MyText>
+      </MyText> */}
     </RowContainer>
   );
 };

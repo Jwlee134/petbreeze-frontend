@@ -8,7 +8,7 @@ import MyText from "~/components/common/MyText";
 import Shield from "~/assets/svg/myPage/shield.svg";
 import Battery from "~/assets/svg/myPage/battery.svg";
 import Wifi from "~/assets/svg/myPage/lost-wifi.svg";
-import Pencil from "~/assets/svg/myPage/pencil.svg";
+import Pencil from "~/assets/svg/myPage/pencil-noti.svg";
 import Check from "~/assets/svg/myPage/check.svg";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import Divider from "~/components/common/Divider";
@@ -29,7 +29,7 @@ const RowContainer = styled.View`
 const Item = styled(RowContainer)<{ rpWidth: RpWidth; isLast?: boolean }>`
   justify-content: space-between;
   ${({ rpWidth, isLast }) => css`
-    margin-bottom: ${isLast ? 0 : rpWidth(22)}px; ;
+    margin-bottom: ${isLast ? 0 : rpWidth(22)}px;
   `}
 `;
 

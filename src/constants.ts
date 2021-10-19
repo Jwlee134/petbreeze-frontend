@@ -16,3 +16,12 @@ export const months = [
 export const days = ["일", "월", "화", "수", "목", "금", "토"];
 
 export const delta = 0.003;
+
+export const secureItems = {
+  token: "token",
+  firebaseToken: "firebaseToken",
+  userID: "userID",
+} as const;
+
+export const noName = "익명";
+export const noAvatar = require("~/assets/image/default-avatar.png");

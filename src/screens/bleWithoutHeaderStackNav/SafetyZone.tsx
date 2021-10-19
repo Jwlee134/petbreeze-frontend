@@ -98,7 +98,12 @@ const SafetyZone = () => {
 
   useEffect(() => {
     return () => {
-      dispatch(deviceSettingActions.setSafetyZone(null));
+      dispatch(
+        deviceSettingActions.setSafetyZone({
+          isSubmitting: false,
+          step2: false,
+        }),
+      );
     };
   }, []);
 

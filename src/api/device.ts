@@ -1,116 +1,145 @@
 import api, { providesList } from ".";
 
-interface IDevice {
-  id: string;
+export interface Device {
+  id: number;
   name: string;
   profile_image: string;
-  location_info_collection_period: number;
+  collection_period: number;
   battery: number;
   firmware_version: string;
+  is_missed: boolean;
 }
 
-interface ISharedDevice {
-  key: string;
-  device_id: string;
-  expiry_time: string;
+interface EmergencyMissingThumbnail {
+  image1_thumbnail: string;
+  image2_thumbnail: string;
+  image3_thumbnail: string;
+  image4_thumbnail: string;
 }
 
-interface ISafetyZone {
-  safety_zone_1_name?: string;
-  safety_zone_1_coordinate?: {
-    type: "point";
+interface EmergencyMissingForm {
+  missing_datetime: string;
+  missing_location: string;
+  characteristic: string;
+  message: string;
+}
+
+interface EmergencyMissing
+  extends EmergencyMissingForm,
+    EmergencyMissingThumbnail {
+  device_name: string;
+  device_species: string;
+  emergency_key: string;
+}
+
+interface DeviceCoord {
+  date_time: string;
+  coordinate: {
+    type: "Point";
     coordinates: number[];
   };
-  safety_zone_1_radius?: number;
-  safety_zone_2_name?: string;
-  safety_zone_2_coordinate?: {
-    type: "point";
-    coordinates: number[];
-  };
-  safety_zone_2_radius?: number;
-  safety_zone_3_name?: string;
-  safety_zone_3_coordinate?: {
-    type: "point";
-    coordinates?: number[];
-  };
-  safety_zone_3_radius?: number;
 }
 
-interface IDeviceProfileBody {
+interface DeviceMember {
+  user_id: number;
+  nickname: string;
+}
+
+interface DeviceMembers {
+  owner_id: number;
+  members: DeviceMember[];
+}
+
+interface DeviceProfileBody {
   name: string;
-  age: number;
-  variety: string;
+  birthdate: string;
+  sex: boolean;
+  species: string;
   weight: number;
-  contact_number1: string;
-  contact_number2: string | null;
-  precaution: string;
+  characteristic: number;
 }
 
-interface IDeviceProfile extends IDeviceProfileBody {
+export interface DeviceProfile extends DeviceProfileBody {
   profile_image: string;
+}
+
+interface DeviceSetting {
+  Period: number;
+  Area: {
+    id: number;
+    name: string;
+    address: string;
+    data: number[];
+    image: string;
+  }[];
+  WiFi: { id: number; ssid: string; pw: string }[];
+}
+
+interface SafetyZoneThumbnail<T> {
+  safety_area_0_thumbnail: T;
+  safety_area_1_thumbnail: T;
+  safety_area_2_thumbnail: T;
+}
+
+interface DailyWalkRecord {
+  id: number;
+  start_date_time: string;
+  time: number;
+  distance: number;
+  handler__nickname: string;
+  path_image: string;
+}
+
+interface MonthlyWalkRecord {
+  summary: {
+    total_time: string;
+    total_distance: number;
+    count: number;
+  };
+  day_count: { date: string; count: number }[];
+}
+
+interface WalkBody {
+  start_date_time: string;
+  time: number;
+  distance: number;
+  travel_path: {
+    type: "MultiPoint";
+    coordinates: number[][];
+  };
 }
 
 const deviceApi = api.injectEndpoints({
   endpoints: builder => ({
-    getDeviceList: builder.query<IDevice[], void>({
-      query: () => "/device/",
+    getDeviceList: builder.query<Device[], void>({
+      query: () => "/devices/",
       providesTags: result => providesList(result, "Device"),
     }),
 
-    postDevice: builder.mutation<{ detail: string; device_id: string }, string>(
+    postDevice: builder.mutation<{ detail: string; device_id: number }, string>(
       {
-        query: devEUI => ({
+        query: IMEInumber => ({
           url: "/device/",
           method: "POST",
-          headers: {
-            devEUI,
+          body: {
+            IMEInumber,
           },
         }),
-        invalidatesTags: (result, error) =>
-          !error ? [{ type: "Device", id: "LIST" }] : [],
+        invalidatesTags: () => [{ type: "Device", id: "LIST" }],
       },
     ),
 
-    postDeviceSharingPermission: builder.mutation<
-      ISharedDevice,
-      { device_id: string; duration: number }
-    >({
-      query: ({ device_id, duration }) => ({
-        url: `/device/share/${device_id}/?expire-hours=${duration}`,
-        method: "POST",
-      }),
-    }),
-
-    getSharedDeviceList: builder.query<IDevice[], void>({
-      query: () => "/device/shared/",
-      providesTags: result => providesList(result, "SharedDevice"),
-    }),
-
-    postSharedDevice: builder.mutation<void, string>({
-      query: sharing_key => ({
-        url: "/device/shared/",
-        method: "POST",
-        header: {
-          "sharing-key": sharing_key,
-        },
-      }),
-      invalidatesTags: (result, error) =>
-        !error ? [{ type: "SharedDevice", id: "LIST" }] : [],
-    }),
-
-    deleteDevice: builder.mutation<void, string>({
-      query: deviceId => ({
-        url: `/device/${deviceId}/`,
+    deleteDevice: builder.mutation<void, number>({
+      query: deviceID => ({
+        url: `/devices/${deviceID}`,
         method: "DELETE",
       }),
-      onQueryStarted: async (deviceId, { dispatch, queryFulfilled }) => {
+      invalidatesTags: () => [{ type: "Device", id: "LIST" }],
+      onQueryStarted: async (deviceID, { dispatch, queryFulfilled }) => {
         const deleteResult = dispatch(
-          deviceApi.util.updateQueryData("getDeviceList", undefined, draft => {
-            draft.splice(
-              draft.findIndex(device => device.id === deviceId),
-              1,
-            );
-          }),
+          deviceApi.util.updateQueryData("getDeviceList", undefined, draft =>
+            draft.filter(device => device.id !== deviceID),
+          ),
         );
         try {
           await queryFulfilled;
@@ -120,101 +149,166 @@ const deviceApi = api.injectEndpoints({
       },
     }),
 
-    getLocationCollectionInterval: builder.query<
-      {
-        location_info_collection_period: number;
-      },
-      string
-    >({
-      query: deviceId => `/device/${deviceId}/collection-period/`,
-    }),
-
-    updateLocationCollectionInterval: builder.mutation<
-      {
-        location_info_collection_period: number;
-      },
-      {
-        deviceId: string;
-        interval: number;
-      }
-    >({
-      query: ({ deviceId, interval }) => ({
-        url: `/device/${deviceId}/collection-period/`,
-        method: "PUT",
-        body: {
-          location_info_collection_period: interval,
-        },
+    getEmergencyMissing: builder.query<EmergencyMissing, number>({
+      query: deviceID => ({
+        url: `/devices/${deviceID}/emergency/`,
+        method: "GET",
       }),
-      onQueryStarted: async (
-        { deviceId, interval },
-        { dispatch, queryFulfilled },
-      ) => {
-        const putResult = dispatch(
-          deviceApi.util.updateQueryData(
-            "getLocationCollectionInterval",
-            deviceId,
-            draft => {
-              draft.location_info_collection_period = interval;
-            },
-          ),
-        );
-        try {
-          await queryFulfilled;
-        } catch {
-          putResult.undo();
-        }
-      },
     }),
 
-    getDeviceProfile: builder.query<IDeviceProfile, string>({
-      query: deviceId => `/device/${deviceId}/profile/`,
-      providesTags: (result, error, deviceId) => [
-        { type: "Device", id: deviceId },
-      ],
-    }),
-
-    updateDeviceProfile: builder.mutation<
-      IDeviceProfile,
-      {
-        deviceId: string;
-        body: IDeviceProfileBody;
-      }
+    postEmergencyMissing: builder.mutation<
+      EmergencyMissing,
+      { deviceID: number; body: EmergencyMissingForm }
     >({
-      query: ({ deviceId, body }) => ({
-        url: `/device/${deviceId}/profile/`,
+      query: ({ deviceID, body }) => ({
+        url: `/devices/${deviceID}/emergency/`,
+        method: "POST",
+        body,
+      }),
+    }),
+
+    updateEmergencyMissing: builder.mutation<
+      EmergencyMissing,
+      { deviceID: number; body: EmergencyMissing }
+    >({
+      query: ({ deviceID, body }) => ({
+        url: `/devices/${deviceID}/emergency/`,
         method: "PUT",
         body,
       }),
+    }),
+
+    patchEmergencyMissingPhoto: builder.mutation<
+      EmergencyMissingThumbnail,
+      { deviceID: number; body: EmergencyMissingThumbnail }
+    >({
+      query: ({ deviceID, body }) => ({
+        url: `/devices/${deviceID}/emergency/`,
+        headers: {
+          "content-type": "multipart/form-data",
+        },
+        method: "PATCH",
+        body,
+      }),
+    }),
+
+    deleteEmergencyMissing: builder.mutation<void, number>({
+      query: deviceID => ({
+        url: `/devices/${deviceID}/emergency/`,
+        method: "DELETE",
+      }),
+    }),
+
+    getDeviceCoord: builder.query<DeviceCoord, number>({
+      query: deviceID => ({
+        url: `/devices/${deviceID}/location/`,
+        method: "GET",
+      }),
+    }),
+
+    getDeviceMembers: builder.query<DeviceMembers, number>({
+      query: deviceID => ({
+        url: `/devices/${deviceID}/members/`,
+        method: "GET",
+      }),
+      providesTags: () => [{ type: "Device", id: "MEMBER" }],
+    }),
+
+    deleteDeviceMember: builder.mutation<
+      { members: DeviceMember[] },
+      { deviceID: number; userID: number }
+    >({
+      query: ({ deviceID, userID }) => ({
+        url: `/devices/${deviceID}/members/${userID}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: () => [{ type: "Device", id: "MEMBER" }],
       onQueryStarted: async (
-        { deviceId, body },
+        { deviceID, userID },
         { dispatch, queryFulfilled },
       ) => {
-        const putResult = dispatch(
+        const deleteResult = dispatch(
           deviceApi.util.updateQueryData(
-            "getDeviceProfile",
-            deviceId,
+            "getDeviceMembers",
+            deviceID,
             draft => {
-              Object.assign(draft, body);
+              draft.members = draft.members.filter(
+                member => member.user_id !== userID,
+              );
             },
           ),
         );
         try {
           await queryFulfilled;
-        } catch {
+        } catch (error) {
+          deleteResult.undo();
+        }
+      },
+    }),
+
+    updateDeviceOwner: builder.mutation<
+      { current_owner: number },
+      { deviceID: number; userID: number }
+    >({
+      query: ({ deviceID, userID }) => ({
+        url: `/devices/${deviceID}/owner/`,
+        method: "PUT",
+        body: {
+          user_id: userID,
+        },
+      }),
+      invalidatesTags: () => [{ type: "Device", id: "MEMBER" }],
+      onQueryStarted: async (
+        { deviceID, userID },
+        { dispatch, queryFulfilled },
+      ) => {
+        const putResult = dispatch(
+          deviceApi.util.updateQueryData(
+            "getDeviceMembers",
+            deviceID,
+            draft => {
+              draft.owner_id = userID;
+            },
+          ),
+        );
+        try {
+          await queryFulfilled;
+        } catch (error) {
           putResult.undo();
         }
       },
     }),
 
-    updateDeviceProfileAvatar: builder.mutation<
+    getDeviceProfile: builder.query<DeviceProfile, number>({
+      query: deviceID => ({
+        url: `/devices/${deviceID}/profile/`,
+        method: "GET",
+      }),
+    }),
+
+    updateDeviceProfile: builder.mutation<
       void,
       {
-        deviceId: string;
+        deviceID: number;
+        body: DeviceProfileBody;
+      }
+    >({
+      query: ({ deviceID, body }) => ({
+        url: `/devices/${deviceID}/profile/`,
+        method: "PUT",
+        body,
+      }),
+    }),
+
+    updateDeviceProfileAvatar: builder.mutation<
+      { profile_image: string },
+      {
+        deviceID: number;
         avatar: FormData;
       }
     >({
-      query: ({ deviceId, avatar }) => ({
-        url: `/device/${deviceId}/profile/`,
+      query: ({ deviceID, avatar }) => ({
+        url: `/device/${deviceID}/profile/`,
         method: "PATCH",
         headers: {
           "content-type": "multipart/form-data",
@@ -223,56 +317,102 @@ const deviceApi = api.injectEndpoints({
           profile_image: avatar,
         },
       }),
+    }),
+
+    getDeviceSetting: builder.query<DeviceSetting, number>({
+      query: deviceID => ({
+        url: `/devices/${deviceID}/setting/`,
+        method: "GET",
+      }),
+    }),
+
+    updateDeviceSetting: builder.mutation<DeviceSetting, DeviceSetting>({
+      query: deviceID => ({
+        url: `/devices/${deviceID}/setting/`,
+        method: "PUT",
+      }),
+    }),
+
+    updateSafetyZoneThumbnail: builder.mutation<
+      SafetyZoneThumbnail<string>,
+      { deviceID: number; body: SafetyZoneThumbnail<FormData> }
+    >({
+      query: ({ deviceID, body }) => ({
+        url: `/devices/${deviceID}/setting/`,
+        method: "PATCH",
+        body,
+      }),
+    }),
+
+    getDailyWalkRecord: builder.query<
+      DailyWalkRecord[],
+      { deviceID: number; date: string }
+    >({
+      query: ({ deviceID, date }) => ({
+        url: `/devices/${deviceID}/walks/?date=${date}`,
+        method: "GET",
+      }),
+      providesTags: result => providesList(result, "Walk"),
+    }),
+
+    getMonthlyWalkRecord: builder.query<
+      MonthlyWalkRecord,
+      { deviceID: number; year: number; month: number }
+    >({
+      query: ({ deviceID, year, month }) => ({
+        url: `/devices/${deviceID}/walks/summary/?year=${year}&month=${month}`,
+        method: "GET",
+      }),
+    }),
+
+    postWalk: builder.mutation<void, { deviceID: string; body: WalkBody }>({
+      query: ({ deviceID, body }) => ({
+        url: `/devices/${deviceID}/walks/`,
+        method: "POST",
+        body,
+      }),
+    }),
+
+    patchWalkThumbnail: builder.mutation<
+      { path_image: string },
+      { path_image: FormData; walkID: number; deviceID: number }
+    >({
+      query: ({ path_image, walkID, deviceID }) => ({
+        url: `/devices/${deviceID}/walks/${walkID}/`,
+        method: "PATCH",
+        headers: {
+          "content-type": "multipart/form-data",
+        },
+        body: {
+          path_image,
+        },
+      }),
+    }),
+
+    deleteWalkRecord: builder.mutation<
+      void,
+      { deviceID: number; walkID: number; date: string }
+    >({
+      query: ({ deviceID, walkID }) => ({
+        url: `/devices/${deviceID}/walks/${walkID}/`,
+        method: "DELETE",
+      }),
+      invalidatesTags: () => [{ type: "Walk", id: "LIST" }],
       onQueryStarted: async (
-        { deviceId, avatar },
+        { deviceID, walkID, date },
         { dispatch, queryFulfilled },
       ) => {
-        const patchResult = dispatch(
+        const deleteResult = dispatch(
           deviceApi.util.updateQueryData(
-            "getDeviceProfile",
-            deviceId,
-            draft => {
-              Object.assign(draft, { profile_image: avatar });
-            },
+            "getDailyWalkRecord",
+            { deviceID, date },
+            draft => draft.filter(walk => walk.id !== walkID),
           ),
         );
         try {
           await queryFulfilled;
         } catch {
-          patchResult.undo();
-        }
-      },
-    }),
-
-    getSafetyZone: builder.query<ISafetyZone, string>({
-      query: deviceId => `/device/${deviceId}/safety-zone/`,
-    }),
-
-    updateSafetyZone: builder.mutation<
-      ISafetyZone,
-      {
-        deviceId: string;
-        body: ISafetyZone;
-      }
-    >({
-      query: ({ deviceId, body }) => ({
-        url: `/device/${deviceId}/safety-zone/`,
-        method: "PUT",
-        body,
-      }),
-      onQueryStarted: async (
-        { deviceId, body },
-        { dispatch, queryFulfilled },
-      ) => {
-        const putResult = dispatch(
-          deviceApi.util.updateQueryData("getSafetyZone", deviceId, draft => {
-            Object.assign(draft, body);
-          }),
-        );
-        try {
-          await queryFulfilled;
-        } catch {
-          putResult.undo();
+          deleteResult.undo();
         }
       },
     }),

@@ -4,7 +4,6 @@ import { navigatorActions } from "~/store/navigator";
 export default () => {
   const {
     init: { isPermissionAllowed },
-    device: { isDeviceRegistered, isSafetyZoneRegistered, isProfileRegistered },
     walk: { coords },
   } = store.getState().storage;
   if (!isPermissionAllowed) {
@@ -19,22 +18,6 @@ export default () => {
         initialLoggedInNavRouteName: "WalkMap",
       }),
     );
-  } else if (isDeviceRegistered) {
-    if (!isSafetyZoneRegistered) {
-      store.dispatch(
-        navigatorActions.setInitialRoute({
-          initialLoggedInNavRouteName: "BleRootStackNav",
-          initialBleWithHeaderStackNavRouteName: "PreSafetyZone",
-        }),
-      );
-    } else if (!isProfileRegistered) {
-      store.dispatch(
-        navigatorActions.setInitialRoute({
-          initialLoggedInNavRouteName: "BleRootStackNav",
-          initialBleWithHeaderStackNavRouteName: "RegisterProfileFirst",
-        }),
-      );
-    }
   } else {
     store.dispatch(
       navigatorActions.setInitialRoute({

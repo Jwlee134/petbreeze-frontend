@@ -10,7 +10,6 @@ import MyText from "~/components/common/MyText";
 import SelectableButton from "~/components/common/SelectableButton";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import { useAppSelector } from "~/store";
-import { formActions } from "~/store/form";
 import { RegisterProfileFirstScreenNavigationProp } from "~/types/navigator";
 import AvatarCircle from "./AvatarCircle";
 
