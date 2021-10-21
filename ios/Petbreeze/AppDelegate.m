@@ -2,7 +2,8 @@
 #import "RNFBMessagingModule.h"
 #import "AppDelegate.h"
 #import <CodePush/CodePush.h>
-
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
+#import <React/RCTLinkingManager.h>
 #import <RNKakaoLogins.h>
 
 #if RCT_DEV
@@ -104,9 +105,15 @@ self.moduleRegistryAdapter = [[UMModuleRegistryAdapter alloc] initWithModuleRegi
 - (BOOL)application:(UIApplication *)app
      openURL:(NSURL *)url
      options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
- if([RNKakaoLogins isKakaoTalkLoginUrl:url]) {
+  if([RNKakaoLogins isKakaoTalkLoginUrl:url]) {
     return [RNKakaoLogins handleOpenUrl: url];
- }
+  }
+  if ([[FBSDKApplicationDelegate sharedInstance] application:app openURL:url options:options]) {
+    return YES;
+  }
+  if ([RCTLinkingManager application:app openURL:url options:options]) {
+    return YES;
+  }
 
  return NO;
 }
