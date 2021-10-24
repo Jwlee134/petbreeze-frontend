@@ -4,8 +4,8 @@ import React, {
   useContext,
   useEffect,
   useRef,
+  useState,
 } from "react";
-import { useState } from "react";
 import {
   Animated,
   StyleProp,
@@ -19,7 +19,6 @@ import palette from "~/styles/palette";
 import MyText from "./MyText";
 
 interface IProps extends TextInputProps {
-  title?: string;
   solidPlaceholderTitle?: string;
   alignLeftSolidPlaceholderWhenFocus?: boolean;
   containerStyle?: StyleProp<ViewStyle>;
@@ -66,7 +65,6 @@ const Border = styled(Animated.View)`
 const Input = forwardRef(
   (
     {
-      title,
       solidPlaceholderTitle,
       alignLeftSolidPlaceholderWhenFocus = false,
       containerStyle,

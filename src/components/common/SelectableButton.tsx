@@ -14,6 +14,7 @@ interface IProps extends TouchableOpacityProps {
   selected: boolean;
   children: ReactNode;
   containerStyle?: Animated.AnimatedProps<StyleProp<ViewStyle>>;
+  fontColor?: string;
 }
 
 const Button = styled.TouchableOpacity<{ rpWidth: RpWidth }>`
@@ -37,6 +38,7 @@ const SelectableButton = ({
   selected,
   children,
   containerStyle,
+  fontColor,
   ...props
 }: IProps) => {
   const { rpWidth } = useContext(DimensionsContext);
@@ -63,7 +65,7 @@ const SelectableButton = ({
           borderColor: color,
           ...(containerStyle as object),
         }}>
-        <MyText style={{ color }}>{children}</MyText>
+        <MyText style={{ color: fontColor || color }}>{children}</MyText>
       </Container>
     </Button>
   );

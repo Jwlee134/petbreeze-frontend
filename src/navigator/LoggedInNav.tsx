@@ -26,6 +26,7 @@ import CodePush from "react-native-code-push";
 import userApi from "~/api/user";
 import { useDispatch } from "react-redux";
 import Toast from "react-native-toast-message";
+import UserRequestSuccess from "~/screens/loggedInNav/UserRequestSuccess";
 
 const Stack = createStackNavigator<LoggedInNavParamList>();
 
@@ -145,6 +146,11 @@ const LoggedInNav = ({ navigation, route }: LoggedInNavScreenProps) => {
       <Stack.Screen
         name="DeviceAlert"
         component={DeviceAlert}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="UserRequestSuccess"
+        component={UserRequestSuccess}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

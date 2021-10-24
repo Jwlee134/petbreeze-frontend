@@ -1,5 +1,5 @@
-import React, { useContext } from "react";
-import { View } from "react-native";
+import React, { ReactNode, useContext } from "react";
+import { StyleProp, View, ViewStyle } from "react-native";
 import styled, { css } from "styled-components/native";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import palette from "~/styles/palette";
@@ -7,11 +7,13 @@ import Divider from "../common/Divider";
 import MyText from "../common/MyText";
 
 interface IProps {
-  title: string;
+  title?: string;
   description?: string;
   onRightButtonPress: () => void;
   rightButtonText: string;
   close: () => void;
+  children?: ReactNode;
+  style?: StyleProp<ViewStyle>;
 }
 
 const Container = styled.View<{ rpWidth: RpWidth }>`
@@ -37,14 +39,18 @@ const CommonCenterModal = ({
   onRightButtonPress,
   rightButtonText,
   close,
+  children,
+  style,
 }: IProps) => {
   const { rpWidth } = useContext(DimensionsContext);
 
   return (
-    <Container rpWidth={rpWidth}>
-      <MyText style={{ marginVertical: rpWidth(27) }} fontWeight="medium">
-        {title}
-      </MyText>
+    <Container rpWidth={rpWidth} style={style}>
+      {title ? (
+        <MyText style={{ marginVertical: rpWidth(27) }} fontWeight="medium">
+          {title}
+        </MyText>
+      ) : null}
       {description ? (
         <MyText
           style={{ textAlign: "center", marginBottom: rpWidth(27) }}
@@ -52,6 +58,7 @@ const CommonCenterModal = ({
           {description}
         </MyText>
       ) : null}
+      {children || null}
       <Divider />
       <View style={{ flexDirection: "row" }}>
         <Button rpWidth={rpWidth} onPress={close}>

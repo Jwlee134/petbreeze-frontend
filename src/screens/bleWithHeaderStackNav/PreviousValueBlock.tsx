@@ -32,9 +32,10 @@ const Block = styled.View<{ rpWidth: RpWidth }>`
 `;
 
 const PreviousValueBlock = () => {
-  const name = useAppSelector(state => state.form.name);
-  const birthYear = useAppSelector(state => state.form.birthYear);
-  const gender = useAppSelector(state => state.form.gender);
+  const name = useAppSelector(state => state.deviceSetting.profile.name);
+  const birthYear = useAppSelector(
+    state => state.deviceSetting.profile.birthYear,
+  );
   const { rpWidth } = useContext(DimensionsContext);
 
   return (
@@ -46,9 +47,6 @@ const PreviousValueBlock = () => {
         <MyText fontSize={14}>
           {new Date().getFullYear() - Number(birthYear) + 1}살
         </MyText>
-      </Block>
-      <Block rpWidth={rpWidth}>
-        <MyText fontSize={14}>{gender}</MyText>
       </Block>
     </Container>
   );

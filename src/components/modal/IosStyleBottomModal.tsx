@@ -1,5 +1,4 @@
-import React, { useContext } from "react";
-import { ReactNode } from "react";
+import React, { ReactNode, useContext } from "react";
 import styled, { css } from "styled-components/native";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import palette from "~/styles/palette";
