@@ -15,6 +15,7 @@ import { useAppSelector } from "~/store";
 import WalkDetailDay from "~/screens/sharedStackNav/WalkDetailDay";
 import { WalkDetailDayScreenRouteProp } from "~/types/navigator";
 import NotificationSetting from "~/screens/sharedStackNav/NotificationSetting";
+import UpdateNickname from "~/screens/sharedStackNav/UpdateNickname";
 
 const Stack = createStackNavigator();
 
@@ -118,6 +119,13 @@ const SharedStackNav = ({ screenName }: { screenName: string }) => {
         name="DeviceSettingList"
         component={DeviceSettingList}
         options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="UpdateNickname"
+        component={UpdateNickname}
+        options={{
+          header: props => <CustomHeader {...props}>이름변경</CustomHeader>,
+        }}
       />
     </Stack.Navigator>
   );

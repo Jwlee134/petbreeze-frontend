@@ -7,6 +7,7 @@ import Setting from "~/assets/svg/myPage/setting.svg";
 import Plus from "~/assets/svg/myPage/circle-plus.svg";
 import Bell from "~/assets/svg/myPage/bell.svg";
 import Arrow from "~/assets/svg/arrow/arrow-right-gray.svg";
+import Tag from "~/assets/svg/myPage/name-tag.svg";
 import { MyPageScreenNavigationProp } from "~/types/navigator";
 import DeviceList from "~/components/myPage/DeviceList";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
@@ -33,11 +34,13 @@ const RowContainer = styled.View`
 `;
 
 const SvgContainer = styled.View<{ rpWidth: RpWidth }>`
-  width: ${({ rpWidth }) => rpWidth(33)}px;
+  width: ${({ rpWidth }) => rpWidth(49)}px;
+  align-items: center;
 `;
 
 const Section = styled.View<{ rpWidth: RpWidth }>`
-  padding: ${({ rpWidth }) => `${rpWidth(29)}px ${rpWidth(32)}px`};
+  padding: ${({ rpWidth }) =>
+    `${rpWidth(29)}px ${rpWidth(32)}px ${rpWidth(32)}px ${rpWidth(17)}px`};
 `;
 
 const MyPage = ({ navigation }: { navigation: MyPageScreenNavigationProp }) => {
@@ -54,6 +57,7 @@ const MyPage = ({ navigation }: { navigation: MyPageScreenNavigationProp }) => {
           <MyText
             style={{
               marginBottom: rpWidth(6.5),
+              paddingLeft: rpWidth(15),
             }}
             color="rgba(0, 0, 0, 0.3)"
             fontSize={14}>
@@ -63,9 +67,7 @@ const MyPage = ({ navigation }: { navigation: MyPageScreenNavigationProp }) => {
             rpWidth={rpWidth}
             disabled={!deviceList?.length}
             onPress={() => {
-              navigation.navigate("DeviceSettingList", {
-                deviceList,
-              });
+              navigation.navigate("DeviceSettingList");
             }}>
             <RowContainer style={{ opacity: !deviceList?.length ? 0.2 : 1 }}>
               <SvgContainer rpWidth={rpWidth}>
@@ -105,14 +107,31 @@ const MyPage = ({ navigation }: { navigation: MyPageScreenNavigationProp }) => {
             </RowContainer>
             <Arrow width={rpWidth(7)} height={rpWidth(12)} />
           </Button>
+          <Button
+            rpWidth={rpWidth}
+            onPress={() => {
+              navigation.navigate("UpdateNickname");
+            }}>
+            <RowContainer>
+              <SvgContainer rpWidth={rpWidth}>
+                <Tag width={rpWidth(12)} height={rpWidth(19)} />
+              </SvgContainer>
+              <MyText>이름변경</MyText>
+            </RowContainer>
+            <Arrow width={rpWidth(7)} height={rpWidth(12)} />
+          </Button>
         </Section>
         <Divider isHairline={false} />
         <Section rpWidth={rpWidth}>
-          <Button rpWidth={rpWidth} onPress={open} style={{ paddingTop: 0 }}>
+          <Button
+            rpWidth={rpWidth}
+            onPress={open}
+            style={{ paddingTop: 0, paddingLeft: rpWidth(15) }}>
             <MyText>로그아웃</MyText>
           </Button>
           <Button
             rpWidth={rpWidth}
+            style={{ paddingLeft: rpWidth(15) }}
             onPress={() => navigation.navigate("DeleteAccountStackNav")}>
             <MyText color="rgba(0, 0, 0, 0.3)">탈퇴하기</MyText>
           </Button>

@@ -9,7 +9,7 @@ import {
 } from "@react-navigation/native";
 import { MaterialTopTabNavigationProp } from "@react-navigation/material-top-tabs";
 import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
-import { Device, DeviceProfile } from "~/api/device";
+import { Device } from "~/api/device";
 
 export type RootNavParamList = {
   FirmwareUpdate: undefined;
@@ -51,14 +51,17 @@ export type LoggedInNavParamList = {
   BleRootStackNav: undefined;
   WalkMap: undefined;
   UpdateProfile: {
-    data: DeviceProfile;
+    deviceID: number;
   };
   EmergencyMissingStackNav: {
-    data: Device;
+    deviceID: number;
+    name: string;
+    avatar: string;
   };
   DeleteAccountStackNav: undefined;
   UpdateWiFi: undefined;
   DeviceAlert: undefined;
+  UserRequestSuccess: { text: string; key?: string };
 };
 export type PermissionsScreenNavigationProp = CompositeNavigationProp<
   StackNavigationProp<LoggedInNavParamList, "Permissions">,
@@ -68,19 +71,27 @@ export type WalkMapScreenNavigationProp = CompositeNavigationProp<
   StackNavigationProp<LoggedInNavParamList, "WalkMap">,
   StackNavigationProp<RootNavParamList>
 >;
-export type EmergencyMissingStackNavScreenProps = CompositeScreenProps<
-  StackScreenProps<LoggedInNavParamList, "EmergencyMissingStackNav">,
-  StackScreenProps<RootNavParamList>
->;
 export type UpdateWiFiScreenNavigationProp = CompositeNavigationProp<
   StackNavigationProp<LoggedInNavParamList, "UpdateWiFi">,
   StackNavigationProp<RootNavParamList>
 >;
+export type UpdateProfileScreenProps = CompositeScreenProps<
+  StackScreenProps<LoggedInNavParamList, "UpdateProfile">,
+  StackScreenProps<RootNavParamList>
+>;
+export type UserRequestSuccessScreenProps = CompositeScreenProps<
+  StackScreenProps<LoggedInNavParamList, "UserRequestSuccess">,
+  StackScreenProps<RootNavParamList>
+>;
+export type EmergencyMissingStackNavScreenNavigationProp =
+  StackNavigationProp<EmergencyMissingStackNavParamList>;
+export type EmergencyMissingStackNavScreenRouteProp = RouteProp<
+  LoggedInNavParamList,
+  "EmergencyMissingStackNav"
+>;
 
 export type EmergencyMissingStackNavParamList = {
-  EmergencyMissingFirstPage: {
-    device: Device;
-  };
+  EmergencyMissingFirstPage: undefined;
   EmergencyMissingSecondPage: undefined;
 };
 export type EmergencyMissingFirstPageScreenNavigationProp =
@@ -341,9 +352,8 @@ export type SharedStackNavParamList = {
   DeviceSetting: {
     deviceID: number;
   };
-  DeviceSettingList: {
-    deviceList: Device[] | undefined;
-  };
+  DeviceSettingList: undefined;
+  UpdateNickname: undefined;
 };
 export type HomeScreenNavigationProp = CompositeNavigationProp<
   StackNavigationProp<SharedStackNavParamList, "Home">,
@@ -395,18 +405,8 @@ export type WalkDetailDayScreenProps = CompositeScreenProps<
     >
   >
 >;
-export type DeviceSettingListScreenProps = CompositeScreenProps<
-  StackScreenProps<SharedStackNavParamList, "DeviceSettingList">,
-  CompositeScreenProps<
-    BottomTabScreenProps<BottomTabParamList>,
-    CompositeScreenProps<
-      StackScreenProps<LoggedInNavParamList>,
-      StackScreenProps<RootNavParamList>
-    >
-  >
->;
-export type DeviceSettingScreenNavigationProp = CompositeNavigationProp<
-  StackNavigationProp<SharedStackNavParamList, "DeviceSetting">,
+export type DeviceSettingListScreenNavigationProp = CompositeNavigationProp<
+  StackNavigationProp<SharedStackNavParamList, "DeviceSettingList">,
   CompositeNavigationProp<
     BottomTabNavigationProp<BottomTabParamList>,
     CompositeNavigationProp<
