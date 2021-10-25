@@ -6,6 +6,7 @@ import {
   PERMISSIONS,
   request,
 } from "react-native-permissions";
+import Toast from "react-native-toast-message";
 import { store } from "~/store";
 import { bleActions } from "~/store/ble";
 import { deviceSettingActions } from "~/store/deviceSetting";
@@ -159,5 +160,13 @@ export const permissionCheck = (type: "location" | "gallery" | "bluetooth") => {
         });
       }
     });
+  });
+};
+
+export const showLocationError = () => {
+  Toast.show({
+    type: "error",
+    text1: "위치를 불러올 수 없습니다.",
+    text2: "위치가 켜져 있거나 위치 권한이 허용되어 있는지 확인하세요.",
   });
 };

@@ -12,7 +12,7 @@ import { commonActions } from "~/store/common";
 import { getAddressByCoord } from "~/api/place";
 import MyLocationButton from "./MyLocationButton";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { isAndroid } from "~/utils";
+import { isAndroid, showLocationError } from "~/utils";
 
 const HomeMap = () => {
   const mapRef = useRef<NaverMapView>(null);
@@ -54,8 +54,8 @@ const HomeMap = () => {
         ({ coords }) => {
           setCoords(coords);
         },
-        err => {
-          console.log(err);
+        () => {
+          showLocationError();
         },
         {
           enableHighAccuracy: true,

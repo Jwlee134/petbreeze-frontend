@@ -14,13 +14,13 @@ import SafetyZoneMapBottomSheet from "~/components/safetyZone/SafetyZoneMapBotto
 import SearchBar from "~/components/safetyZone/SearchBar";
 import { deviceSettingActions } from "~/store/deviceSetting";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
-import Toast from "react-native-toast-message";
 import {
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
 import Dissolve from "~/components/common/Dissolve";
+import { showLocationError } from "~/utils";
 
 const Container = styled.View`
   flex: 1;
@@ -61,11 +61,7 @@ const SafetyZone = () => {
         );
       },
       () => {
-        Toast.show({
-          type: "error",
-          text1: "위치를 불러올 수 없습니다.",
-          text2: "위치가 켜져 있거나 위치 권한이 허용되어 있는지 확인하세요.",
-        });
+        showLocationError();
       },
       { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
     );
