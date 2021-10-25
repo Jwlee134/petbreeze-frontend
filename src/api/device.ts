@@ -78,7 +78,7 @@ interface DailyWalkRecord {
   start_date_time: string;
   time: number;
   distance: number;
-  handler__nickname: string;
+  handler_nickname: string;
   path_image: string;
 }
 
@@ -427,6 +427,7 @@ const deviceApi = api.injectEndpoints({
         url: `/devices/${deviceID}/walks/summary/?year=${year}&month=${month}`,
         method: "GET",
       }),
+      providesTags: () => [{ type: "Walk", id: "MONTHLY" }],
     }),
 
     postWalk: builder.mutation<
@@ -481,6 +482,7 @@ const deviceApi = api.injectEndpoints({
       },
       invalidatesTags: (result, error, { walkID }) => [
         { type: "Walk", id: walkID },
+        { type: "Walk", id: "MONTHLY" },
       ],
     }),
   }),

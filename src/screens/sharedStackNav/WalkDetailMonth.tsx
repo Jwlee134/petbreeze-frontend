@@ -20,6 +20,7 @@ import Button from "~/components/common/Button";
 import { useDispatch } from "react-redux";
 import { storageActions } from "~/store/storage";
 import { navigatorActions } from "~/store/navigator";
+import { useAppSelector } from "~/store";
 
 const TopContainer = styled.View`
   align-items: center;
@@ -73,23 +74,37 @@ const WalkDetailMonth = ({
   const [dateObj, setDateObj] = useState<{
     [date: string]: { dots: { key: string; color: string }[] };
   }>({});
-  const { data, refetch } = deviceApi.useGetMonthlyWalkRecordQuery({
-    deviceID,
-    year: date.year,
-    month: date.month,
-  });
+  const { data } = deviceApi.useGetMonthlyWalkRecordQuery(
+    {
+      deviceID,
+      year: date.year,
+      month: date.month,
+    },
+    { refetchOnMountOrArgChange: true },
+  );
   const { rpWidth, isTablet } = useContext(DimensionsContext);
   const dispatch = useDispatch();
+  const { date: initialDate } = useAppSelector(
+    state => state.navigator.initialWalkRecordParams,
+  );
 
   useEffect(() => {
-    refetch();
-  }, []);
+    if (initialDate) {
+      const date = new Date(initialDate);
+      console.log(date);
+      navigation.navigate("WalkDetailDay", {
+        deviceID,
+        avatar,
+        date: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
+      });
+    }
+  }, [initialDate]);
 
   useEffect(() => {
     if (!data?.day_count.length) return;
     // 날짜 배열 아래와 같이 생성
     //  [["2021-10-16", 0], ["2021-10-17", 0], ["2021-10-17", 1]]
-    const obj = { ...dateObj };
+    const obj = {};
     const dateArr = data.day_count
       .map(({ date, count }) => {
         const arr: string[][] = [];
@@ -99,7 +114,6 @@ const WalkDetailMonth = ({
         return arr;
       })
       .flat();
-
     dateArr.forEach(date => {
       // 날짜 key가 없으면 새로 생성
       if (!obj[date[0]]) {

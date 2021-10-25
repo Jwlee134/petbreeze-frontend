@@ -9,7 +9,6 @@ import {
 import styled from "styled-components/native";
 import GradientContainer from "~/components/common/container/GradientContainer";
 import Footprint from "~/assets/svg/footprint/footprint-app-icon-blue.svg";
-import AppName from "~/assets/svg/app-name.svg";
 import useAnimatedSequence from "~/hooks/useAnimatedSequence";
 import MyText from "~/components/common/MyText";
 import Input from "~/components/common/Input";
@@ -119,11 +118,13 @@ const Auth = () => {
                 ],
               }}>
               <Footprint
-                style={{ marginBottom: rpHeight(38) }}
+                style={{ marginBottom: rpHeight(26) }}
                 width={rpWidth(60)}
                 height={rpHeight(83)}
               />
-              <AppName width={rpWidth(137)} height={rpHeight(47)} />
+              <MyText fontSize={30} fontWeight="light" color="white">
+                PETBREEZE
+              </MyText>
             </LogoContainer>
           </TopContainer>
           <BottomContainer

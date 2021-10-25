@@ -1,4 +1,4 @@
-import React, { Fragment, useContext, useState } from "react";
+import React, { Fragment, useContext, useEffect, useState } from "react";
 import { FlatList, View } from "react-native";
 import styled, { css } from "styled-components/native";
 import MyText from "~/components/common/MyText";
@@ -15,6 +15,8 @@ import { noAvatar } from "~/constants";
 import Modal from "react-native-modal";
 import useModal from "~/hooks/useModal";
 import IosStyleBottomModal from "~/components/modal/IosStyleBottomModal";
+import { useDispatch } from "react-redux";
+import { navigatorActions } from "~/store/navigator";
 
 const Container = styled.View<{ rpWidth: RpWidth }>`
   ${({ rpWidth }) => css`
@@ -82,6 +84,7 @@ const WalkDetailDay = ({
     deviceID,
     date,
   });
+  const dispatch = useDispatch();
   const [deleteWalk] = deviceApi.useDeleteWalkRecordMutation();
   const { open, close, modalProps } = useModal();
   const [walkID, setWalkID] = useState(0);
@@ -110,6 +113,12 @@ const WalkDetailDay = ({
     }
   };
 
+  useEffect(() => {
+    return () => {
+      dispatch(navigatorActions.setInitialWalkRecordParams(null));
+    };
+  }, []);
+
   return (
     <>
       <FlatList
@@ -131,7 +140,7 @@ const WalkDetailDay = ({
                     <MyText
                       color={palette.blue_7b}
                       style={{ marginBottom: rpWidth(5) }}>
-                      {item.handler__nickname}
+                      {item.handler_nickname}
                     </MyText>
                     <MyText color="rgba(0, 0, 0, 0.5)">
                       {formatPeriod(item.start_date_time, item.time)}
@@ -170,7 +179,7 @@ const WalkDetailDay = ({
                 </RowContainer>
               </SvgContainer>
               <MapContainer rpWidth={rpWidth} style={{ height: width * 0.66 }}>
-                <Map source={{ uri: item.path_image }} />
+                <Map fadeDuration={0} source={{ uri: item.path_image }} />
               </MapContainer>
             </Container>
             {data && data.length > 1 && index !== data.length - 1 ? (

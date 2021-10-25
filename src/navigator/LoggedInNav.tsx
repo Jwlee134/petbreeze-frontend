@@ -27,6 +27,9 @@ import userApi from "~/api/user";
 import { useDispatch } from "react-redux";
 import Toast from "react-native-toast-message";
 import UserRequestSuccess from "~/screens/loggedInNav/UserRequestSuccess";
+import { storageActions } from "~/store/storage";
+import { navigatorActions } from "~/store/navigator";
+import notificationHandler from "~/utils/notificationHandler";
 
 const Stack = createStackNavigator<LoggedInNavParamList>();
 
@@ -59,15 +62,16 @@ const LoggedInNav = ({ navigation, route }: LoggedInNavScreenProps) => {
         text1: remoteMessage.notification?.title,
         text2: remoteMessage.notification?.body,
         onPress: async () => {
+          notificationHandler(remoteMessage, navigation);
           Toast.hide();
-          if (!isNotificationTab) {
+          /* if (!isNotificationTab) {
             await postRead([1]);
             dispatch(
               userApi.util.invalidateTags([
                 { type: "Notification", id: "NEW" },
               ]),
             );
-          }
+          } */
         },
       });
       dispatch(
@@ -83,6 +87,7 @@ const LoggedInNav = ({ navigation, route }: LoggedInNavScreenProps) => {
         "Notification caused app to open from background state:",
         remoteMessage,
       );
+      notificationHandler(remoteMessage, navigation);
     });
 
     return unsubscribe;

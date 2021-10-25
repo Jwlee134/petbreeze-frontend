@@ -2,7 +2,6 @@ import React, { useContext } from "react";
 import styled from "styled-components/native";
 import GradientContainer from "~/components/common/container/GradientContainer";
 import Footprint from "~/assets/svg/footprint/footprint-app-icon-blue.svg";
-import AppName from "~/assets/svg/app-name.svg";
 import { Animated, Linking } from "react-native";
 import { StartScreenNavigationProp } from "~/types/navigator";
 import { useDispatch } from "react-redux";
@@ -15,6 +14,8 @@ import setInitialRoute from "~/utils/setInitialRoute";
 import { navigatorActions } from "~/store/navigator";
 import userApi from "~/api/user";
 import { secureItems } from "~/constants";
+import notificationHandler from "~/utils/notificationHandler";
+import MyText from "~/components/common/MyText";
 
 const Container = styled.View`
   flex: 1;
@@ -55,6 +56,7 @@ const Start = ({ navigation }: { navigation: StartScreenNavigationProp }) => {
         remoteMessage,
       );
       if (remoteMessage) {
+        notificationHandler(remoteMessage, navigation);
         /* if(remoteMessage.data.messageId){
           try {
             await handleRead([remoteMessage.data.messageId]).unwrap()
@@ -62,13 +64,6 @@ const Start = ({ navigation }: { navigation: StartScreenNavigationProp }) => {
             console.log(error)
           }
         } */
-        if (remoteMessage.notification?.title === "Test") {
-          dispatch(
-            navigatorActions.setInitialRoute({
-              initialLoggedInNavRouteName: "DeviceAlert",
-            }),
-          );
-        }
       } else {
         setInitialRoute();
       }
@@ -100,17 +95,17 @@ const Start = ({ navigation }: { navigation: StartScreenNavigationProp }) => {
               opacity: footprint,
               width: rpWidth(60),
               height: rpHeight(83),
-              marginBottom: rpHeight(38),
+              marginBottom: rpHeight(26),
             }}>
             <Footprint width="100%" height="100%" />
           </Animated.View>
           <Animated.View
             style={{
               opacity: appName,
-              width: rpWidth(137),
-              height: rpHeight(47),
             }}>
-            <AppName width="100%" height="100%" />
+            <MyText fontSize={30} fontWeight="light" color="white">
+              PETBREEZE
+            </MyText>
           </Animated.View>
         </LogoContainer>
       </Container>

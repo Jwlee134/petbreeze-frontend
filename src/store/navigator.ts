@@ -17,6 +17,10 @@ interface IState {
   initialBottomTabNavRouteName: keyof BottomTabParamList;
   initialSharedStackNavRouteName: keyof SharedStackNavParamList;
   initialWalkTopTabNavRouteName: keyof WalkTopTabParamList;
+  initialWalkRecordParams: {
+    deviceID: number;
+    date: string;
+  };
   loadingText: string;
 }
 
@@ -28,6 +32,10 @@ const initialState: IState = {
   initialBottomTabNavRouteName: "HomeTab",
   initialSharedStackNavRouteName: "Home",
   initialWalkTopTabNavRouteName: "StartWalking",
+  initialWalkRecordParams: {
+    deviceID: 0,
+    date: "",
+  },
   loadingText: "",
 };
 
@@ -39,6 +47,17 @@ const navigator = createSlice({
       ...state,
       ...payload,
     }),
+    setInitialWalkRecordParams: (
+      state,
+      { payload }: PayloadAction<{ id: number; date: string } | null>,
+    ) => {
+      if (payload) {
+        state.initialWalkRecordParams.deviceID = payload.id;
+        state.initialWalkRecordParams.date = payload.date;
+      } else {
+        state.initialWalkRecordParams = initialState.initialWalkRecordParams;
+      }
+    },
     setLoadingText: (state, { payload }: PayloadAction<string>) => {
       state.loadingText = payload;
     },
