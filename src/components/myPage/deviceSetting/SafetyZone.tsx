@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useRef } from "react";
+import React, { useContext, useMemo } from "react";
 import styled, { css } from "styled-components/native";
 import MyText from "../../common/MyText";
 
@@ -14,7 +14,11 @@ import { useAppSelector } from "~/store";
 import { deviceSettingActions } from "~/store/deviceSetting";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import SwipeableButton from "~/components/common/SwipeableButton";
-import Animated, { EasingNode } from "react-native-reanimated";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 
 const RowContainer = styled.View`
   flex-shrink: 1;
@@ -43,25 +47,24 @@ const SafetyZone = ({ isEdit }: { isEdit: boolean }) => {
   const result = useAppSelector(state => state.deviceSetting.safetyZone.result);
   const { rpWidth } = useContext(DimensionsContext);
 
-  const value1 = useRef(new Animated.Value(0)).current;
+  const itemHeight = rpWidth(99);
+  const listPaddingBottom = rpWidth(35);
 
   const height = useMemo(() => {
     return result.filter(item => item.name).length
-      ? result.filter(item => item.name).length * rpWidth(99) + rpWidth(35)
+      ? result.filter(item => item.name).length * itemHeight + listPaddingBottom
       : 1;
   }, [result.filter(item => item.name).length]);
 
-  const heightInterpolate = value1.interpolate({
-    inputRange: [0, height],
-    outputRange: [0, height],
-  });
+  const heightValue = useSharedValue(height);
 
-  useEffect(() => {
-    Animated.timing(value1, {
-      toValue: height,
-      duration: 200,
-      easing: EasingNode.linear,
-    }).start();
+  const animatedStyle = useAnimatedStyle(() => {
+    heightValue.value = height;
+    return {
+      height: withTiming(heightValue.value, {
+        duration: 200,
+      }),
+    };
   }, [height]);
 
   return (
@@ -87,7 +90,7 @@ const SafetyZone = ({ isEdit }: { isEdit: boolean }) => {
           navigation.navigate("BleRootStackNav");
         }}
       />
-      <Animated.View style={{ height: heightInterpolate }}>
+      <Animated.View style={[animatedStyle]}>
         {result.map(({ id, name, address, data, image }, i) =>
           name ? (
             <Swipeable

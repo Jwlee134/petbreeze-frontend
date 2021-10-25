@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import MyText from "../../common/MyText";
 import Trashcan from "~/assets/svg/trashcan/trashcan-white.svg";
 import ListItem from "../../common/ListItem";
@@ -11,7 +11,11 @@ import { View } from "react-native";
 import { useAppSelector } from "~/store";
 import { deviceSettingActions } from "~/store/deviceSetting";
 import { DimensionsContext } from "~/context/DimensionsContext";
-import Animated, { EasingNode } from "react-native-reanimated";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 import SwipeableButton from "~/components/common/SwipeableButton";
 
 const WiFi = ({ isEdit }: { isEdit: boolean }) => {
@@ -22,25 +26,24 @@ const WiFi = ({ isEdit }: { isEdit: boolean }) => {
 
   const [showList, setShowList] = useState(false);
 
-  const value1 = useRef(new Animated.Value(0)).current;
+  const itemHeight = rpWidth(49);
+  const listPaddingBottom = rpWidth(35);
 
   const height = useMemo(() => {
     return showList && result.filter(item => item.ssid).length
-      ? result.filter(item => item.ssid).length * rpWidth(49) + rpWidth(35)
+      ? result.filter(item => item.ssid).length * itemHeight + listPaddingBottom
       : 1;
   }, [showList, result.filter(item => item.ssid).length]);
 
-  const heightInterpolate = value1.interpolate({
-    inputRange: [0, height],
-    outputRange: [0, height],
-  });
+  const heightValue = useSharedValue(height);
 
-  useEffect(() => {
-    Animated.timing(value1, {
-      toValue: height,
-      duration: 200,
-      easing: EasingNode.linear,
-    }).start();
+  const animatedStyle = useAnimatedStyle(() => {
+    heightValue.value = height;
+    return {
+      height: withTiming(heightValue.value, {
+        duration: 200,
+      }),
+    };
   }, [height]);
 
   useEffect(() => {
@@ -68,10 +71,12 @@ const WiFi = ({ isEdit }: { isEdit: boolean }) => {
         }}
       />
       <Animated.View
-        style={{
-          height: heightInterpolate,
-          overflow: "hidden",
-        }}>
+        style={[
+          {
+            overflow: "hidden",
+          },
+          animatedStyle,
+        ]}>
         {result.map(({ id, pw, ssid }, i) =>
           ssid ? (
             <Animated.View key={id}>

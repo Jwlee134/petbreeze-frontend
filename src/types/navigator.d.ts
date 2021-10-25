@@ -9,7 +9,6 @@ import {
 } from "@react-navigation/native";
 import { MaterialTopTabNavigationProp } from "@react-navigation/material-top-tabs";
 import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
-import { Device } from "~/api/device";
 
 export type RootNavParamList = {
   FirmwareUpdate: undefined;
@@ -425,6 +424,8 @@ export type DeviceSettingScreenProps = CompositeScreenProps<
     >
   >
 >;
+export type DeviceSettingScreenNavigationProp =
+  DeviceSettingScreenProps["navigation"];
 export type WalkDetailDayScreenRouteProp = RouteProp<
   SharedStackNavParamList,
   "WalkDetailDay"

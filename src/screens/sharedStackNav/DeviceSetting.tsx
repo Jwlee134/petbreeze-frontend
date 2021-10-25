@@ -69,6 +69,12 @@ const DeviceSetting = ({
     }
   }, [settings]);
 
+  useEffect(() => {
+    return () => {
+      dispatch(deviceSettingActions.resetResults());
+    };
+  }, []);
+
   const handleSubmit = async () => {
     const {
       locationInfoCollectionPeriod,

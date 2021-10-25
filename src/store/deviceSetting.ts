@@ -239,6 +239,12 @@ const deviceSetting = createSlice({
     },
 
     reset: () => initialState,
+    resetResults: state => {
+      state.locationInfoCollectionPeriod =
+        initialState.locationInfoCollectionPeriod;
+      state.safetyZone.result = initialState.safetyZone.result;
+      state.wifi.result = initialState.wifi.result;
+    },
   },
 });
 

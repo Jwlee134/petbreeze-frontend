@@ -1,5 +1,9 @@
-import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
-import Animated, { EasingNode } from "react-native-reanimated";
+import React, { useContext, useEffect, useMemo, useState } from "react";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 import styled, { css } from "styled-components/native";
 import deviceApi from "~/api/device";
 import MyText from "~/components/common/MyText";
@@ -54,23 +58,21 @@ const Family = ({
     if (isEdit) setShowList(true);
   }, [isEdit]);
 
-  const value1 = useRef(new Animated.Value(0)).current;
+  const itemHeight = rpWidth(49);
 
   const height = useMemo(() => {
-    return showList && data ? data.members.length * rpWidth(49) : 1;
+    return showList && data ? data.members.length * itemHeight : 1;
   }, [showList, data]);
 
-  const heightInterpolate = value1.interpolate({
-    inputRange: [0, height],
-    outputRange: [0, height],
-  });
+  const heightValue = useSharedValue(height);
 
-  useEffect(() => {
-    Animated.timing(value1, {
-      toValue: height,
-      duration: 200,
-      easing: EasingNode.linear,
-    }).start();
+  const animatedStyle = useAnimatedStyle(() => {
+    heightValue.value = height;
+    return {
+      height: withTiming(heightValue.value, {
+        duration: 200,
+      }),
+    };
   }, [height]);
 
   return (
@@ -85,7 +87,7 @@ const Family = ({
           setShowList(!showList);
         }}
       />
-      <Animated.View style={{ height: heightInterpolate, overflow: "hidden" }}>
+      <Animated.View style={[{ overflow: "hidden" }, animatedStyle]}>
         {data?.members.map((member, i) => (
           <Animated.View key={`${member.id}-${i}`}>
             <Swipeable
