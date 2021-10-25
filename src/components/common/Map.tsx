@@ -16,7 +16,7 @@ const Map = forwardRef(
         tiltGesturesEnabled={false}
         useTextureView
         {...props}>
-        {children ? children : null}
+        {children || null}
       </NaverMapView>
     );
   },

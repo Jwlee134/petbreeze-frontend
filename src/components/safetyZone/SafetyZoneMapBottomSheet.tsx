@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
-import { Animated, KeyboardAvoidingView } from "react-native";
+import { KeyboardAvoidingView } from "react-native";
+import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useDispatch } from "react-redux";
 import styled, { css } from "styled-components/native";
@@ -49,15 +50,20 @@ const Handle = styled.View<{ rpWidth: RpWidth }>`
 const data = ["10m", "20m", "30m", "50m", "100m"];
 
 const SafetyZoneMapBottomSheet = ({
-  value,
   height,
+  style,
 }: {
-  value: Animated.AnimatedInterpolation;
   height: number;
+  style: {
+    transform: {
+      translateY: number;
+    }[];
+  };
 }) => {
   const { rpWidth } = useContext(DimensionsContext);
 
   const {
+    step2,
     draft: { name, radius },
     isSubmitting,
     fromDeviceSetting,
@@ -75,15 +81,11 @@ const SafetyZoneMapBottomSheet = ({
 
   return (
     <KeyboardAvoidingView
+      pointerEvents={step2 ? undefined : "none"}
       behavior={isIos ? "padding" : undefined}
       keyboardVerticalOffset={-rpWidth(85) - bottom}>
       <ShadowContainer shadowOpacity={0.15} shadowRadius={10}>
-        <Container
-          rpWidth={rpWidth}
-          style={{
-            transform: [{ translateY: value }],
-            height,
-          }}>
+        <Container rpWidth={rpWidth} style={[{ height }, style]}>
           <HandleContainer rpWidth={rpWidth}>
             <Handle rpWidth={rpWidth} />
           </HandleContainer>
@@ -107,7 +109,7 @@ const SafetyZoneMapBottomSheet = ({
                 onChange={index =>
                   dispatch(
                     deviceSettingActions.setSafetyZone({
-                      draft: { radius: parseInt(data[index]) },
+                      draft: { radius: parseInt(data[index], 10) },
                     }),
                   )
                 }

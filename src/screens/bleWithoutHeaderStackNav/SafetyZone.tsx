@@ -1,11 +1,5 @@
-import React, { useContext, useEffect, useRef } from "react";
-import {
-  Alert,
-  Animated,
-  Easing,
-  Keyboard,
-  TouchableWithoutFeedback,
-} from "react-native";
+import React, { useContext, useEffect } from "react";
+import { Keyboard, TouchableWithoutFeedback } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import styled, { css } from "styled-components/native";
 import Button from "~/components/common/Button";
@@ -20,6 +14,13 @@ import SafetyZoneMapBottomSheet from "~/components/safetyZone/SafetyZoneMapBotto
 import SearchBar from "~/components/safetyZone/SearchBar";
 import { deviceSettingActions } from "~/store/deviceSetting";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
+import Toast from "react-native-toast-message";
+import {
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
+import Dissolve from "~/components/common/Dissolve";
 
 const Container = styled.View`
   flex: 1;
@@ -59,8 +60,12 @@ const SafetyZone = () => {
           }),
         );
       },
-      err => {
-        Alert.alert("알림", "위치를 가져올 수 없습니다.");
+      () => {
+        Toast.show({
+          type: "error",
+          text1: "위치를 불러올 수 없습니다.",
+          text2: "위치가 켜져 있거나 위치 권한이 허용되어 있는지 확인하세요.",
+        });
       },
       { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
     );
@@ -72,28 +77,30 @@ const SafetyZone = () => {
     bottom: rpWidth(82),
   };
 
-  const value = useRef(new Animated.Value(0)).current;
+  const mapMarginBottom = useSharedValue(0);
+  const mapStyle = useAnimatedStyle(() => {
+    mapMarginBottom.value = !step2 ? 0 : bottomSheetHeight - mapPadding.bottom;
+    return {
+      marginBottom: withTiming(mapMarginBottom.value, { duration: 400 }),
+    };
+  }, [step2]);
 
-  const translateYMap = value.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, -bottomSheetHeight + mapPadding.bottom],
-  });
+  const markerMarginBottom = useSharedValue(mapPadding.bottom);
+  const markerStyle = useAnimatedStyle(() => {
+    markerMarginBottom.value = !step2 ? mapPadding.bottom : bottomSheetHeight;
+    return {
+      marginBottom: withTiming(markerMarginBottom.value, { duration: 400 }),
+    };
+  }, [step2]);
 
-  const translateYBottomSheet = value.interpolate({
-    inputRange: [0, 1],
-    outputRange: [bottomSheetHeight, 0],
-  });
-
-  const exp = (t: number) =>
-    Math.min(Math.max(0, Math.pow(2, 10 * (t - 1))), 1);
-
-  useEffect(() => {
-    Animated.timing(value, {
-      toValue: !step2 ? 0 : 1,
-      duration: 500,
-      useNativeDriver: true,
-      easing: Easing.out(exp),
-    }).start();
+  const translateY = useSharedValue(bottomSheetHeight);
+  const bottomSheetStyle = useAnimatedStyle(() => {
+    translateY.value = !step2 ? bottomSheetHeight : 0;
+    return {
+      transform: [
+        { translateY: withTiming(translateY.value, { duration: 400 }) },
+      ],
+    };
   }, [step2]);
 
   useEffect(() => {
@@ -110,36 +117,39 @@ const SafetyZone = () => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <Container>
-        <SafetyZoneMap value={translateYMap} mapPadding={mapPadding} />
-        <FakeMarker value={translateYMap} mapPadding={mapPadding} />
+        <SafetyZoneMap style={mapStyle} mapPadding={mapPadding} />
+        <FakeMarker style={markerStyle} mapPadding={mapPadding} />
+        <Dissolve
+          isVisible={!step2}
+          style={{
+            position: "absolute",
+            bottom: rpWidth(32) + bottom,
+            alignSelf: "center",
+            zIndex: 0,
+          }}>
+          <Button
+            onPress={() =>
+              dispatch(
+                deviceSettingActions.setSafetyZone({
+                  step2: true,
+                }),
+              )
+            }>
+            다음
+          </Button>
+        </Dissolve>
+        <Dissolve
+          isVisible={!step2}
+          style={{
+            position: "absolute",
+            right: rpWidth(17),
+            bottom: rpWidth(108) + bottom,
+            zIndex: 0,
+          }}>
+          <MapButton icon="myLocation" onPress={handleMyLocation} />
+        </Dissolve>
         {!step2 ? (
           <>
-            <Button
-              style={{
-                position: "absolute",
-                bottom: rpWidth(32) + bottom,
-                alignSelf: "center",
-                zIndex: 0,
-              }}
-              onPress={() =>
-                dispatch(
-                  deviceSettingActions.setSafetyZone({
-                    step2: true,
-                  }),
-                )
-              }>
-              다음
-            </Button>
-            <MapButton
-              style={{
-                position: "absolute",
-                right: rpWidth(17),
-                bottom: rpWidth(108) + bottom,
-                zIndex: 0,
-              }}
-              icon="myLocation"
-              onPress={handleMyLocation}
-            />
             <SearchBar />
           </>
         ) : (
@@ -158,12 +168,12 @@ const SafetyZone = () => {
               }}>
               <Arrow width={rpWidth(12)} height={rpWidth(20)} />
             </BackButton>
-            <SafetyZoneMapBottomSheet
-              value={translateYBottomSheet}
-              height={bottomSheetHeight}
-            />
           </>
         )}
+        <SafetyZoneMapBottomSheet
+          style={bottomSheetStyle}
+          height={bottomSheetHeight}
+        />
       </Container>
     </TouchableWithoutFeedback>
   );

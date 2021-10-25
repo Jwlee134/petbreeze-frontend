@@ -79,6 +79,7 @@ const EmergencyMissingFirstPage = ({
           </MyText>
           <InputTitle>보호자 연락처</InputTitle>
           <Input
+            maxLength={15}
             value={phoneNumber.replace(
               /(^02.{0}|^01.{1}|[0-9]{3})([0-9]+)([0-9]{4})/,
               "$1-$2-$3",
@@ -120,8 +121,9 @@ const EmergencyMissingFirstPage = ({
           </SelectableButton>
           <InputTitle>잃어버린 장소</InputTitle>
           <Input
-            containerStyle={{ marginBottom: rpWidth(50) }}
+            maxLength={50}
             value={lostPlace}
+            containerStyle={{ marginBottom: rpWidth(50) }}
             onChangeText={text =>
               dispatch(
                 deviceSettingActions.setProfile({
@@ -155,11 +157,8 @@ const EmergencyMissingFirstPage = ({
             close();
           }}
           close={close}
-          style={{ width: rpWidth(300) }}>
+          style={{ width: "auto" }}>
           <DatePicker
-            style={{
-              width: rpWidth(300),
-            }}
             maximumDate={new Date()}
             date={date}
             onDateChange={setDate}

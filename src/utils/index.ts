@@ -1,3 +1,4 @@
+/* eslint-disable default-case */
 import { Alert, Platform } from "react-native";
 import {
   check,
@@ -18,24 +19,24 @@ export const resetAll = () => {
   store.dispatch(storageActions.reset());
 };
 
-export const formatWalkTime = (time: number) => {
+export const formatWalkTime = (minute: number) => {
   return `${
-    time < 60
-      ? `${time}분`
-      : `${Math.floor(time / 60)}시간 ${
-          time % 60 === 0 ? "" : `${time % 60}분`
+    minute < 60
+      ? `${minute}분`
+      : `${Math.floor(minute / 60)}시간 ${
+          minute % 60 === 0 ? "" : `${minute % 60}분`
         }`
   }`;
 };
 
-export const formatWalkDistance = (distance: number) => {
+export const formatWalkDistance = (meter: number) => {
   return `${
-    distance < 1000
-      ? `${distance}m`
-      : `${Math.floor(distance / 1000)}${
-          distance % 1000 === 0 || (distance % 1000).toString().length < 3
+    meter < 1000
+      ? `${meter}m`
+      : `${Math.floor(meter / 1000)}${
+          meter % 1000 === 0 || (meter % 1000).toString().length < 3
             ? ""
-            : `.${(distance % 1000).toString().substr(0, 1)}`
+            : `.${(meter % 1000).toString().substr(0, 1)}`
         }km`
   }`;
 };
@@ -124,8 +125,6 @@ export const permissionCheck = (type: "location" | "gallery" | "bluetooth") => {
           : PERMISSIONS.IOS.PHOTO_LIBRARY;
       case "bluetooth":
         return PERMISSIONS.IOS.BLUETOOTH_PERIPHERAL;
-      default:
-        break;
     }
   };
   const permissionName = () => {
@@ -136,8 +135,6 @@ export const permissionCheck = (type: "location" | "gallery" | "bluetooth") => {
         return isAndroid ? "저장소 접근" : "사진 접근";
       case "bluetooth":
         return "블루투스 사용";
-      default:
-        break;
     }
   };
 

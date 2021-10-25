@@ -40,8 +40,8 @@ const SearchBar = () => {
   const isSearchMode = useAppSelector(
     state => state.deviceSetting.safetyZone.isSearchMode,
   );
-  const addr = useAppSelector(
-    state => state.deviceSetting.safetyZone.draft.addr,
+  const address = useAppSelector(
+    state => state.deviceSetting.safetyZone.draft.address,
   );
   const dispatch = useDispatch();
   const { rpWidth, width } = useContext(DimensionsContext);
@@ -79,11 +79,11 @@ const SearchBar = () => {
           )}
           <Input
             rpWidth={rpWidth}
-            value={addr}
+            defaultValue={address}
             onChangeText={text =>
               dispatch(
                 deviceSettingActions.setSafetyZone({
-                  draft: { addr: text },
+                  draft: { address: text },
                 }),
               )
             }

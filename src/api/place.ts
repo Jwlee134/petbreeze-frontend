@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const getAddress = async (
   query: string,
-): Promise<{ addr: string; latitude: number; longitude: number }[]> => {
+): Promise<{ address: string; latitude: number; longitude: number }[]> => {
   const { data } = await axios({
     url: `https://dapi.kakao.com/v2/local/search/address.json?query=${query}`,
     method: "get",
@@ -11,7 +11,7 @@ export const getAddress = async (
     },
   });
   const format = data.documents.map((addr: any) => ({
-    addr: addr.address_name,
+    address: addr.address_name,
     latitude: Number(addr.y),
     longitude: Number(addr.x),
   }));

@@ -4,7 +4,7 @@ import MyText from "../../common/MyText";
 
 import Swipeable from "../../common/Swipeable";
 import ListItem from "../../common/ListItem";
-import Trashcan from "~/assets/svg/myPage/trashcan.svg";
+import Trashcan from "~/assets/svg/trashcan/trashcan-white.svg";
 import DeviceSettingTitle from "./DeviceSettingTitle";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch } from "react-redux";
@@ -13,8 +13,6 @@ import { DeviceSettingScreenNavigationProp } from "~/types/navigator";
 import { useAppSelector } from "~/store";
 import { deviceSettingActions } from "~/store/deviceSetting";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
-import { View } from "react-native";
-import Divider from "~/components/common/Divider";
 import SwipeableButton from "~/components/common/SwipeableButton";
 import Animated, { EasingNode } from "react-native-reanimated";
 

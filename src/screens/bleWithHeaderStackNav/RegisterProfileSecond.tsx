@@ -122,6 +122,7 @@ const RegisterProfileSecond = ({
           </RowContainer>
           <InputTitle>품종</InputTitle>
           <Input
+            maxLength={16}
             containerStyle={{ marginBottom: rpWidth(35) }}
             value={species}
             onChangeText={text =>

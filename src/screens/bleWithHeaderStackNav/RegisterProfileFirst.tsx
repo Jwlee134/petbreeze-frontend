@@ -63,6 +63,7 @@ const RegisterProfileFirst = ({
           <InputContainer rpWidth={rpWidth}>
             <InputTitle>이름</InputTitle>
             <Input
+              maxLength={16}
               value={name}
               onChangeText={text =>
                 dispatch(deviceSettingActions.setProfile({ name: text }))
@@ -74,9 +75,9 @@ const RegisterProfileFirst = ({
               fontColor="rgba(0, 0, 0, 0.8)"
               selected={!!birthYear}
               onPress={open}>
-              {birthYear}
-              {birthYear ? "년" : ""} {birthMonth}
-              {birthYear ? "월" : ""} {birthDay}
+              {birthYear || ""}
+              {birthYear ? "년" : ""} {birthMonth || ""}
+              {birthYear ? "월" : ""} {birthDay || ""}
               {birthYear ? "일" : ""}
             </SelectableButton>
           </InputContainer>

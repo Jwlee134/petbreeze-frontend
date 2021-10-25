@@ -136,6 +136,18 @@ const userApi = api.injectEndpoints({
         method: "PUT",
         body: { nickname },
       }),
+      onQueryStarted: async (nickname, { dispatch, queryFulfilled }) => {
+        const putResult = dispatch(
+          userApi.util.updateQueryData("getNickname", undefined, draft => {
+            draft.nickname = nickname;
+          }),
+        );
+        try {
+          await queryFulfilled;
+        } catch {
+          putResult.undo();
+        }
+      },
     }),
 
     deleteAccount: builder.mutation<void, number>({

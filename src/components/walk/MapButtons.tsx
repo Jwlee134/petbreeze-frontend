@@ -14,7 +14,7 @@ const MapButtons = () => {
   const { top } = useSafeAreaInsets();
   const isStopped = useAppSelector(state => state.storage.walk.isStopped);
   const [showDevice, setShowDevice] = useState(false);
-  const { mapRef, devices } = useContext(WalkContext);
+  const { mapRef, deviceList } = useContext(WalkContext);
 
   const animateToMyLocation = () => {
     const { coords } = store.getState().storage.walk;
@@ -47,10 +47,11 @@ const MapButtons = () => {
           right: rpWidth(mapButtonSize + 32),
         }}>
         <FlatList
-          data={devices}
-          keyExtractor={item => item.id}
+          data={deviceList}
+          keyExtractor={item => `${item.id}`}
           renderItem={({ item, index }) => (
             <AnimatedCircularProgress
+              avatar={item.profile_image}
               circleWidth={70}
               lineWidth={5}
               battery={item.battery}

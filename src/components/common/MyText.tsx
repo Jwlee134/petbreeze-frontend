@@ -1,5 +1,5 @@
 import React, { ReactNode, useContext } from "react";
-import { Animated, StyleProp, TextProps, TextStyle } from "react-native";
+import { Animated, TextProps, TextStyle } from "react-native";
 import styled from "styled-components/native";
 import { DimensionsContext } from "~/context/DimensionsContext";
 
@@ -10,7 +10,7 @@ interface IProps extends Animated.AnimatedProps<TextProps> {
   fontWeight?: FontWeight;
   fontSize?: number | undefined;
   color?: string;
-  style?: Animated.AnimatedProps<StyleProp<TextStyle>>;
+  style?: Animated.AnimatedProps<TextStyle>;
 }
 
 interface IText {

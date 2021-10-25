@@ -6,7 +6,7 @@ import { delta } from "~/constants";
 import { useAppSelector } from "~/store";
 import palette from "~/styles/palette";
 
-const Path = ({ showEntirePath }: { showEntirePath: boolean }) => {
+const Path = ({ isStopped }: { isStopped: boolean }) => {
   const coords = useAppSelector(state => state.storage.walk.coords);
   const { rpWidth } = useContext(DimensionsContext);
   const { mapRef } = useContext(WalkContext);
@@ -43,7 +43,7 @@ const Path = ({ showEntirePath }: { showEntirePath: boolean }) => {
   if (coords.length) {
     return (
       <>
-        {!showEntirePath ? (
+        {!isStopped ? (
           <Marker
             coordinate={{
               latitude: coords[coords.length - 1][0],

@@ -23,11 +23,8 @@ const Divider = styled.View`
 const SearchResultItem = ({
   item,
 }: {
-  item: { addr: string; latitude: number; longitude: number };
+  item: { address: string; latitude: number; longitude: number };
 }) => {
-  const history = useAppSelector(
-    state => state.storage.history.safetyZoneSearch,
-  );
   const dispatch = useDispatch();
   const { rpWidth } = useContext(DimensionsContext);
 
@@ -39,7 +36,7 @@ const SearchResultItem = ({
           Keyboard.dismiss();
           dispatch(
             deviceSettingActions.setSafetyZone({
-              draft: { addr: item.addr },
+              draft: { address: item.address },
             }),
           );
           dispatch(storageActions.setSafetyZoneSearchHistory(item));
@@ -70,7 +67,7 @@ const SearchResultItem = ({
           width={rpWidth(18)}
           height={rpWidth(18)}
         />
-        <MyText>{item.addr}</MyText>
+        <MyText>{item.address}</MyText>
       </Button>
       <Divider />
     </>

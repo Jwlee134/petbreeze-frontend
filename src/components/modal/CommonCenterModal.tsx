@@ -47,7 +47,9 @@ const CommonCenterModal = ({
   return (
     <Container rpWidth={rpWidth} style={style}>
       {title ? (
-        <MyText style={{ marginVertical: rpWidth(27) }} fontWeight="medium">
+        <MyText
+          style={{ marginVertical: rpWidth(27), textAlign: "center" }}
+          fontWeight="medium">
           {title}
         </MyText>
       ) : null}

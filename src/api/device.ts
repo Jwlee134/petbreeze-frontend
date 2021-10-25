@@ -10,26 +10,24 @@ export interface Device {
   is_missed: boolean;
 }
 
-interface EmergencyMissingThumbnail {
+interface EmergencyMissingForm {
+  missing_datetime: string;
+  missing_location: string;
+  message: string;
+  contact_number: string;
+  has_dog_tag: boolean;
+}
+
+interface EmergencyMissing extends EmergencyMissingForm {
+  device_name: string;
+  device_species: string;
+  emergency_key: string;
   image1_thumbnail: string;
   image2_thumbnail: string;
   image3_thumbnail: string;
   image4_thumbnail: string;
-}
-
-interface EmergencyMissingForm {
-  missing_datetime: string;
-  missing_location: string;
-  characteristic: string;
-  message: string;
-}
-
-interface EmergencyMissing
-  extends EmergencyMissingForm,
-    EmergencyMissingThumbnail {
-  device_name: string;
-  device_species: string;
-  emergency_key: string;
+  contact_number: string;
+  has_dog_tag: boolean;
 }
 
 interface DeviceCoord {
@@ -41,7 +39,7 @@ interface DeviceCoord {
 }
 
 interface DeviceMember {
-  user_id: number;
+  id: number;
   nickname: string;
 }
 
@@ -56,29 +54,23 @@ interface DeviceProfileBody {
   sex: boolean;
   species: string;
   weight: number;
-  characteristic: number;
 }
 
 export interface DeviceProfile extends DeviceProfileBody {
   profile_image: string;
 }
 
-interface DeviceSetting {
-  Period: number;
-  Area: {
-    id: number;
-    name: string;
-    address: string;
-    data: number[];
-    image: string;
-  }[];
-  WiFi: { id: number; ssid: string; pw: string }[];
+interface Area {
+  id: number;
+  name: string;
+  address: string;
+  data: number[];
 }
 
-interface SafetyZoneThumbnail<T> {
-  safety_area_0_thumbnail: T;
-  safety_area_1_thumbnail: T;
-  safety_area_2_thumbnail: T;
+interface DeviceSetting<A> {
+  Period: number;
+  Area: A[];
+  WiFi: { id: number; ssid: string; pw: string }[];
 }
 
 interface DailyWalkRecord {
@@ -92,7 +84,7 @@ interface DailyWalkRecord {
 
 interface MonthlyWalkRecord {
   summary: {
-    total_time: string;
+    total_time: number;
     total_distance: number;
     count: number;
   };
@@ -116,25 +108,29 @@ const deviceApi = api.injectEndpoints({
       providesTags: result => providesList(result, "Device"),
     }),
 
-    postDevice: builder.mutation<{ detail: string; device_id: number }, string>(
-      {
-        query: IMEInumber => ({
-          url: "/device/",
-          method: "POST",
-          body: {
-            IMEInumber,
-          },
-        }),
-        invalidatesTags: () => [{ type: "Device", id: "LIST" }],
-      },
-    ),
+    postDevice: builder.mutation<
+      { status: number; data: { device_id: number } },
+      string
+    >({
+      query: IMEInumber => ({
+        url: "/devices/",
+        method: "POST",
+        body: {
+          IMEInumber,
+        },
+        responseHandler: async (res: Response) => {
+          const data = await res.json();
+          return { status: res.status, data };
+        },
+      }),
+      invalidatesTags: () => [{ type: "Device", id: "LIST" }],
+    }),
 
     deleteDevice: builder.mutation<void, number>({
       query: deviceID => ({
-        url: `/devices/${deviceID}`,
+        url: `/devices/${deviceID}/`,
         method: "DELETE",
       }),
-      invalidatesTags: () => [{ type: "Device", id: "LIST" }],
       onQueryStarted: async (deviceID, { dispatch, queryFulfilled }) => {
         const deleteResult = dispatch(
           deviceApi.util.updateQueryData("getDeviceList", undefined, draft =>
@@ -147,6 +143,9 @@ const deviceApi = api.injectEndpoints({
           deleteResult.undo();
         }
       },
+      invalidatesTags: (result, error, deviceID) => [
+        { type: "Device", id: deviceID },
+      ],
     }),
 
     getEmergencyMissing: builder.query<EmergencyMissing, number>({
@@ -157,7 +156,7 @@ const deviceApi = api.injectEndpoints({
     }),
 
     postEmergencyMissing: builder.mutation<
-      EmergencyMissing,
+      { emergency_key: string },
       { deviceID: number; body: EmergencyMissingForm }
     >({
       query: ({ deviceID, body }) => ({
@@ -165,11 +164,27 @@ const deviceApi = api.injectEndpoints({
         method: "POST",
         body,
       }),
+      onQueryStarted: async ({ deviceID }, { dispatch, queryFulfilled }) => {
+        const postResult = dispatch(
+          deviceApi.util.updateQueryData("getDeviceList", undefined, draft => {
+            draft[draft.findIndex(device => device.id === deviceID)].is_missed =
+              true;
+          }),
+        );
+        try {
+          await queryFulfilled;
+        } catch {
+          postResult.undo();
+        }
+      },
+      invalidatesTags: (result, error, { deviceID }) => [
+        { type: "Device", id: deviceID },
+      ],
     }),
 
     updateEmergencyMissing: builder.mutation<
-      EmergencyMissing,
-      { deviceID: number; body: EmergencyMissing }
+      void,
+      { deviceID: number; body: EmergencyMissingForm }
     >({
       query: ({ deviceID, body }) => ({
         url: `/devices/${deviceID}/emergency/`,
@@ -178,16 +193,16 @@ const deviceApi = api.injectEndpoints({
       }),
     }),
 
-    patchEmergencyMissingPhoto: builder.mutation<
-      EmergencyMissingThumbnail,
-      { deviceID: number; body: EmergencyMissingThumbnail }
+    updateEmergencyMissingThumbnail: builder.mutation<
+      void,
+      { deviceID: number; body: FormData }
     >({
       query: ({ deviceID, body }) => ({
         url: `/devices/${deviceID}/emergency/`,
-        headers: {
-          "content-type": "multipart/form-data",
-        },
         method: "PATCH",
+        headers: {
+          "Content-Type": "multipart/form-data;",
+        },
         body,
       }),
     }),
@@ -197,6 +212,22 @@ const deviceApi = api.injectEndpoints({
         url: `/devices/${deviceID}/emergency/`,
         method: "DELETE",
       }),
+      onQueryStarted: async (deviceID, { dispatch, queryFulfilled }) => {
+        const deleteResult = dispatch(
+          deviceApi.util.updateQueryData("getDeviceList", undefined, draft => {
+            draft[draft.findIndex(device => device.id === deviceID)].is_missed =
+              false;
+          }),
+        );
+        try {
+          await queryFulfilled;
+        } catch {
+          deleteResult.undo();
+        }
+      },
+      invalidatesTags: (result, error, deviceID) => [
+        { type: "Device", id: deviceID },
+      ],
     }),
 
     getDeviceCoord: builder.query<DeviceCoord, number>({
@@ -211,7 +242,7 @@ const deviceApi = api.injectEndpoints({
         url: `/devices/${deviceID}/members/`,
         method: "GET",
       }),
-      providesTags: () => [{ type: "Device", id: "MEMBER" }],
+      providesTags: result => providesList(result?.members, "Member"),
     }),
 
     deleteDeviceMember: builder.mutation<
@@ -222,7 +253,6 @@ const deviceApi = api.injectEndpoints({
         url: `/devices/${deviceID}/members/${userID}`,
         method: "DELETE",
       }),
-      invalidatesTags: () => [{ type: "Device", id: "MEMBER" }],
       onQueryStarted: async (
         { deviceID, userID },
         { dispatch, queryFulfilled },
@@ -233,7 +263,7 @@ const deviceApi = api.injectEndpoints({
             deviceID,
             draft => {
               draft.members = draft.members.filter(
-                member => member.user_id !== userID,
+                member => member.id !== userID,
               );
             },
           ),
@@ -244,6 +274,9 @@ const deviceApi = api.injectEndpoints({
           deleteResult.undo();
         }
       },
+      invalidatesTags: (result, error, { userID }) => [
+        { type: "Member", id: userID },
+      ],
     }),
 
     updateDeviceOwner: builder.mutation<
@@ -257,7 +290,6 @@ const deviceApi = api.injectEndpoints({
           user_id: userID,
         },
       }),
-      invalidatesTags: () => [{ type: "Device", id: "MEMBER" }],
       onQueryStarted: async (
         { deviceID, userID },
         { dispatch, queryFulfilled },
@@ -277,6 +309,9 @@ const deviceApi = api.injectEndpoints({
           putResult.undo();
         }
       },
+      invalidatesTags: (result, error, { userID }) => [
+        { type: "Member", id: userID },
+      ],
     }),
 
     getDeviceProfile: builder.query<DeviceProfile, number>({
@@ -284,6 +319,7 @@ const deviceApi = api.injectEndpoints({
         url: `/devices/${deviceID}/profile/`,
         method: "GET",
       }),
+      providesTags: () => [{ type: "Device", id: "PROFILE" }],
     }),
 
     updateDeviceProfile: builder.mutation<
@@ -298,48 +334,76 @@ const deviceApi = api.injectEndpoints({
         method: "PUT",
         body,
       }),
+      onQueryStarted: async (
+        { deviceID, body },
+        { dispatch, queryFulfilled },
+      ) => {
+        const putResult = dispatch(
+          deviceApi.util.updateQueryData(
+            "getDeviceProfile",
+            deviceID,
+            draft => ({ ...draft, ...body }),
+          ),
+        );
+        try {
+          await queryFulfilled;
+        } catch {
+          putResult.undo();
+        }
+      },
+      invalidatesTags: (result, error, { deviceID }) => [
+        { type: "Device", id: "PROFILE" },
+        { type: "Device", id: deviceID },
+      ],
     }),
 
     updateDeviceProfileAvatar: builder.mutation<
       { profile_image: string },
-      {
-        deviceID: number;
-        avatar: FormData;
-      }
+      { deviceID: number; body: FormData }
     >({
-      query: ({ deviceID, avatar }) => ({
-        url: `/device/${deviceID}/profile/`,
+      query: ({ deviceID, body }) => ({
+        url: `/devices/${deviceID}/profile/`,
         method: "PATCH",
         headers: {
-          "content-type": "multipart/form-data",
+          "Content-Type": "multipart/form-data;",
         },
-        body: {
-          profile_image: avatar,
-        },
+        body,
       }),
     }),
 
-    getDeviceSetting: builder.query<DeviceSetting, number>({
+    getDeviceSetting: builder.query<
+      DeviceSetting<Area & { image: string }>,
+      number
+    >({
       query: deviceID => ({
         url: `/devices/${deviceID}/setting/`,
         method: "GET",
       }),
+      providesTags: () => [{ type: "Device", id: "SETTING" }],
     }),
 
-    updateDeviceSetting: builder.mutation<DeviceSetting, DeviceSetting>({
-      query: deviceID => ({
+    updateDeviceSetting: builder.mutation<
+      void,
+      { deviceID: number; body: DeviceSetting<Area> }
+    >({
+      query: ({ deviceID, body }) => ({
         url: `/devices/${deviceID}/setting/`,
         method: "PUT",
+        body,
       }),
+      invalidatesTags: () => [{ type: "Device", id: "SETTING" }],
     }),
 
     updateSafetyZoneThumbnail: builder.mutation<
-      SafetyZoneThumbnail<string>,
-      { deviceID: number; body: SafetyZoneThumbnail<FormData> }
+      void,
+      { deviceID: number; body: FormData }
     >({
       query: ({ deviceID, body }) => ({
         url: `/devices/${deviceID}/setting/`,
         method: "PATCH",
+        headers: {
+          "Content-Type": "multipart/form-data;",
+        },
         body,
       }),
     }),
@@ -365,7 +429,10 @@ const deviceApi = api.injectEndpoints({
       }),
     }),
 
-    postWalk: builder.mutation<void, { deviceID: string; body: WalkBody }>({
+    postWalk: builder.mutation<
+      WalkBody & { id: number },
+      { deviceID: number; body: WalkBody }
+    >({
       query: ({ deviceID, body }) => ({
         url: `/devices/${deviceID}/walks/`,
         method: "POST",
@@ -374,18 +441,16 @@ const deviceApi = api.injectEndpoints({
     }),
 
     patchWalkThumbnail: builder.mutation<
-      { path_image: string },
-      { path_image: FormData; walkID: number; deviceID: number }
+      void,
+      { body: FormData; walkID: number; deviceID: number }
     >({
-      query: ({ path_image, walkID, deviceID }) => ({
+      query: ({ body, walkID, deviceID }) => ({
         url: `/devices/${deviceID}/walks/${walkID}/`,
         method: "PATCH",
         headers: {
-          "content-type": "multipart/form-data",
+          "Content-Type": "multipart/form-data;",
         },
-        body: {
-          path_image,
-        },
+        body,
       }),
     }),
 
@@ -397,7 +462,6 @@ const deviceApi = api.injectEndpoints({
         url: `/devices/${deviceID}/walks/${walkID}/`,
         method: "DELETE",
       }),
-      invalidatesTags: () => [{ type: "Walk", id: "LIST" }],
       onQueryStarted: async (
         { deviceID, walkID, date },
         { dispatch, queryFulfilled },
@@ -415,6 +479,9 @@ const deviceApi = api.injectEndpoints({
           deleteResult.undo();
         }
       },
+      invalidatesTags: (result, error, { walkID }) => [
+        { type: "Walk", id: walkID },
+      ],
     }),
   }),
 });

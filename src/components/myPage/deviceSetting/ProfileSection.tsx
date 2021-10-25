@@ -9,6 +9,8 @@ import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import deviceApi from "~/api/device";
 import { DeviceSettingScreenNavigationProp } from "~/types/navigator";
 import { noAvatar, noName } from "~/constants";
+import { useDispatch } from "react-redux";
+import { deviceSettingActions } from "~/store/deviceSetting";
 
 const Container = styled.View<{ rpWidth: RpWidth }>`
   align-items: center;
@@ -29,15 +31,31 @@ const Image = styled.Image<{ rpWidth: RpWidth }>`
 const ProfileSection = ({ deviceID }: { deviceID: number }) => {
   const navigation = useNavigation<DeviceSettingScreenNavigationProp>();
   const { rpWidth } = useContext(DimensionsContext);
-  const { data } = deviceApi.useGetDeviceProfileQuery(deviceID);
+  const { data } = deviceApi.useGetDeviceProfileQuery(deviceID, {
+    refetchOnMountOrArgChange: true,
+  });
+  const dispatch = useDispatch();
 
   return (
     <Container rpWidth={rpWidth}>
       <TouchableOpacity
         onPress={() => {
           if (!data) return;
+          dispatch(
+            deviceSettingActions.setProfile({
+              photos: [data.profile_image],
+              name: data.name,
+              species: data.species,
+              ...(data.birthdate && {
+                birthYear: parseInt(data.birthdate.split("-")[0], 10),
+                birthMonth: parseInt(data.birthdate?.split("-")[1], 10),
+                birthDay: parseInt(data.birthdate?.split("-")[2], 10),
+              }),
+              weight: data.weight?.toString() || "",
+            }),
+          );
           navigation.navigate("UpdateProfile", {
-            data,
+            deviceID,
           });
         }}>
         <Image
@@ -63,11 +81,13 @@ const ProfileSection = ({ deviceID }: { deviceID: number }) => {
         <Divider isVertical height={rpWidth(8)} />
         {"  "}
         {data?.birthdate
-          ? new Date().getFullYear() -
-            new Date(data?.birthdate).getFullYear() +
-            1
-          : 0}
-        세{"  "}
+          ? `${
+              new Date().getFullYear() -
+              new Date(data?.birthdate).getFullYear() +
+              1
+            }세`
+          : "나이 미상"}
+        {"  "}
         <Divider isVertical height={rpWidth(8)} />
         {"  "}
         {data?.sex ? "남" : "여"}

@@ -2,11 +2,10 @@ import React, { useContext } from "react";
 import styled, { css } from "styled-components/native";
 import { useAppSelector } from "~/store";
 import FootprintOutline from "~/assets/svg/tab/footprint-outline.svg";
-import PlusCircle from "~/assets/svg/plus-circle-blue.svg";
-import ImagePicker from "react-native-image-crop-picker";
-import { useDispatch } from "react-redux";
-import palette from "~/styles/palette";
+import PlusCircle from "~/assets/svg/plus/plus-circle-blue.svg";
+
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
+import imageHandler from "~/utils/imageHandler";
 
 const Container = styled.TouchableOpacity<{ noImg: boolean; rpWidth: RpWidth }>`
   ${({ rpWidth }) => css`
@@ -32,36 +31,22 @@ const Image = styled.Image<{ rpWidth: RpWidth }>`
 `;
 
 const AvatarCircle = () => {
-  const avatar = useAppSelector(state => state.form.avatar);
-  const dispatch = useDispatch();
+  const photos = useAppSelector(state => state.deviceSetting.profile.photos);
   const { rpWidth } = useContext(DimensionsContext);
 
-  const openPicker = () => {
-    ImagePicker.openPicker({
-      mediaType: "photo",
-      width: 640,
-      height: 640,
-      cropping: true,
-      cropperCircleOverlay: true,
-      cropperActiveWidgetColor: palette.blue_7b,
-      showCropFrame: false,
-      showCropGuidelines: false,
-    }).then(image => {
-      if (!image) return;
-      dispatch(formActions.setAvatar(image));
-    });
-  };
-
   return (
-    <Container rpWidth={rpWidth} onPress={openPicker} noImg={!avatar}>
-      {!avatar ? (
+    <Container
+      rpWidth={rpWidth}
+      onPress={imageHandler.openCircleCropper}
+      noImg={!photos[0]}>
+      {!photos[0] ? (
         <FootprintOutline
           width={rpWidth(77)}
           height={rpWidth(74)}
           opacity={0.3}
         />
       ) : (
-        <Image rpWidth={rpWidth} source={{ uri: avatar.path }} />
+        <Image rpWidth={rpWidth} source={{ uri: photos[0] }} />
       )}
       <Svg rpWidth={rpWidth}>
         <PlusCircle width={rpWidth(28)} height={rpWidth(28)} />

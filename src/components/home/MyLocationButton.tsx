@@ -27,16 +27,14 @@ const MyLocationButton = ({
   }, [address]);
 
   return (
-    <Animated.View style={{ transform: [{ translateY }] }}>
-      <MapButton
-        onPress={handleMyLocation}
-        icon="myLocation"
-        style={{
-          marginBottom: rpWidth(157),
-          alignSelf: "flex-end",
-          marginRight: rpWidth(16),
-        }}
-      />
+    <Animated.View
+      style={{
+        transform: [{ translateY }],
+        marginBottom: rpWidth(157),
+        alignSelf: "flex-end",
+        marginRight: rpWidth(16),
+      }}>
+      <MapButton onPress={handleMyLocation} icon="myLocation" />
     </Animated.View>
   );
 };

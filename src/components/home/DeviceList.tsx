@@ -3,7 +3,6 @@ import React, {
   useCallback,
   useContext,
   useEffect,
-  useMemo,
   useRef,
   useState,
 } from "react";
@@ -42,13 +41,9 @@ const DeviceList = () => {
   const { open, close, modalProps } = useModal();
   const [clickedId, setClickedId] = useState(0);
 
-  const device = useMemo(
-    () =>
-      deviceList?.length
-        ? deviceList[deviceList.findIndex(device => device.id === clickedId)]
-        : null,
-    [clickedId],
-  );
+  const device = deviceList?.length
+    ? deviceList[deviceList.findIndex(device => device.id === clickedId)]
+    : null;
 
   const onAvatarLongPress = useCallback((id: number) => {
     setClickedId(id);

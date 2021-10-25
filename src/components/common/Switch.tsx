@@ -1,5 +1,13 @@
-import React, { useContext, useEffect, useRef } from "react";
-import { Animated, Easing, Pressable, StyleSheet } from "react-native";
+import React, { useContext } from "react";
+import { Pressable, StyleSheet } from "react-native";
+import Animated, {
+  Easing,
+  interpolate,
+  interpolateColor,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 import styled, { css } from "styled-components/native";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import palette from "~/styles/palette";
@@ -48,46 +56,50 @@ const styles = StyleSheet.create({
 
 const Switch = ({ isOn, onToggle }: IProps) => {
   const { rpWidth } = useContext(DimensionsContext);
-  const color = useRef(new Animated.Value(0)).current;
-  const trans = useRef(new Animated.Value(0)).current;
 
-  const moveSwitchToggle = trans.interpolate({
-    inputRange: [0, 1],
-    outputRange: [rpWidth(2), rpWidth(22)],
-  });
+  const color = useSharedValue(0);
+  const trans = useSharedValue(0);
 
-  const backgroundColor = color.interpolate({
-    inputRange: [0, 1],
-    outputRange: ["rgba(120, 120, 128, 0.16)", palette.blue_7b_80],
-  });
+  const off = rpWidth(2);
+  const on = rpWidth(22);
 
-  useEffect(() => {
-    Animated.parallel([
-      Animated.timing(color, {
-        toValue: isOn ? 1 : 0,
+  const backgroundColorToggle = useAnimatedStyle(() => {
+    color.value = isOn ? 1 : 0;
+    const backgroundColor = interpolateColor(
+      color.value,
+      [0, 1],
+      ["rgba(120, 120, 128, 0.16)", palette.blue_7b_80],
+    );
+    return {
+      backgroundColor: withTiming(backgroundColor, {
         duration: 200,
-        useNativeDriver: false,
         easing: Easing.linear,
       }),
-      Animated.timing(trans, {
-        toValue: isOn ? 1 : 0,
-        duration: 200,
-        useNativeDriver: true,
-        easing: Easing.linear,
-      }),
-    ]).start();
+    };
+  }, [isOn]);
+
+  const moveSwitchToggle = useAnimatedStyle(() => {
+    trans.value = isOn ? 1 : 0;
+    const translateX = interpolate(trans.value, [0, 1], [off, on]);
+    return {
+      transform: [
+        {
+          translateX: withTiming(translateX, {
+            duration: 200,
+            easing: Easing.linear,
+          }),
+        },
+      ],
+    };
   }, [isOn]);
 
   return (
     <Wrap rpWidth={rpWidth}>
       <Pressable onPress={onToggle}>
-        <ToggleContainer rpWidth={rpWidth} style={{ backgroundColor }}>
+        <ToggleContainer rpWidth={rpWidth} style={[backgroundColorToggle]}>
           <ToggleWheel
             rpWidth={rpWidth}
-            style={[
-              styles.toggleWheel,
-              { transform: [{ translateX: moveSwitchToggle }] },
-            ]}
+            style={[styles.toggleWheel, moveSwitchToggle]}
           />
         </ToggleContainer>
       </Pressable>

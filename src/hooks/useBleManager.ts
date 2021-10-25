@@ -11,6 +11,7 @@ import { decode } from "base64-arraybuffer";
 import { store, useAppSelector } from "~/store";
 import { useDispatch } from "react-redux";
 import { bleActions } from "~/store/ble";
+import { deviceSettingActions } from "~/store/deviceSetting";
 
 const BleManagerModule = NativeModules.BleManager;
 const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
@@ -44,7 +45,9 @@ const useBleMaganer = () => {
   const [firmware, setFirmware] = useState<number[]>([]);
   const timeout = useRef<NodeJS.Timeout>();
 
-  const [registerDevice, devEUIResult] = deviceApi.usePostDeviceMutation();
+  const [registerDevice, { data, error }] = deviceApi.usePostDeviceMutation();
+  const [getProfile, { data: profile }] =
+    deviceApi.useLazyGetDeviceProfileQuery();
 
   const startNotification = async (type: "WiFi" | "OTA") => {
     try {
@@ -102,11 +105,11 @@ const useBleMaganer = () => {
 
   const sendWifi = useCallback(async () => {
     if (disconnected) return;
-    const { name, password } = store.getState().deviceSetting.wifi.draft;
+    const { ssid, pw } = store.getState().deviceSetting.wifi.draft;
     const obj: { WiFi0: { [key: string]: string } } = {
       WiFi0: {},
     };
-    obj.WiFi0[name] = password;
+    obj.WiFi0[ssid] = pw;
     console.log(obj, stringToBytes(JSON.stringify(obj)));
     try {
       await BleManager.write(
@@ -205,32 +208,41 @@ const useBleMaganer = () => {
   }, [status]);
 
   useEffect(() => {
+    if (profile) {
+      const { name, profile_image, birthdate, sex, species } = profile;
+      dispatch(
+        deviceSettingActions.setProfile({
+          name,
+          photos: [profile_image],
+          birthYear: new Date(birthdate).getFullYear(),
+          sex,
+          species,
+        }),
+      );
+      dispatch(bleActions.setStatus("relationAdded"));
+    }
+  }, [profile]);
+
+  useEffect(() => {
     const handleDevEUIResult = async () => {
-      console.log(devEUIResult);
-      if (devEUIResult.data) {
-        await startNotification("OTA");
-        /* if (devEUIResult.data.detail.includes("relation")) {
-          disconnect().finally(() => {
-            setStatus({
-              value: "200Success",
-              text: "등록이 완료되었어요.",
-            });
-          });
+      console.log(data, error);
+      if (data) {
+        const {
+          data: { device_id },
+        } = data;
+        dispatch(bleActions.setDeviceID(device_id));
+        if (data.status === 200) {
+          getProfile(device_id);
         } else {
-          dispatch(
-            storageActions.setDeviceRegistrationStep({
-              id: devEUIResult.data.device_id,
-            }),
-          );
-          startNotification();
-        } */
+          await startNotification("OTA");
+        }
       }
-      if (devEUIResult.isError && devEUIResult.error.status === 400) {
+      if (error && "status" in error && error.status === 400) {
         dispatch(bleActions.setStatus("devEUIFail"));
       }
     };
     handleDevEUIResult();
-  }, [devEUIResult]);
+  }, [data, error]);
 
   const handleReadDevEUI = useCallback(async () => {
     try {
@@ -240,8 +252,7 @@ const useBleMaganer = () => {
         DeviceInformation.CharacteristicA,
       );
       console.log("Succeded to read devEUI: ", bytesToString(devEUI));
-      await startNotification("OTA");
-      /* registerDevice(bytesToString(devEUI)); */
+      registerDevice(bytesToString(devEUI));
     } catch (error) {
       console.warn("Failed to read devEUI", error);
       dispatch(bleActions.setStatus("retrieveFail"));
@@ -347,54 +358,36 @@ const useBleMaganer = () => {
   useEffect(() => {
     console.log(status);
     if (status === "scanning") {
-      // scanPeripheral();
-      setTimeout(() => {
-        dispatch(bleActions.setStatus("connected"));
-      }, 1000);
+      scanPeripheral();
     }
     if (status === "connected") {
-      /* setTimeout(() => {
-        getPeripheralData();
-      }, 1700); */
       setTimeout(() => {
-        dispatch(bleActions.setStatus("retrieveSuccess"));
-      }, 2700);
+        getPeripheralData();
+      }, 1700);
     }
     if (status === "retrieveSuccess") {
-      /* if (isOtaUpdate) {
+      if (isOtaUpdate) {
         startNotification("OTA");
       } else {
         handleReadDevEUI();
-      } */
-      setTimeout(() => {
-        dispatch(bleActions.setStatus("downloadingFirmware"));
-      }, 1000);
+      }
     }
     if (status === "downloadingFirmware") {
-      // downloadFirmware();
-      setTimeout(() => {
-        dispatch(bleActions.setStatus("installingFirmware"));
-      }, 1000);
+      downloadFirmware();
     }
     if (status === "installingFirmware") {
-      // installFirmware();
-      setTimeout(() => {
-        dispatch(bleActions.setStatus("otaUpdateSuccess"));
-      }, 1000);
+      installFirmware();
     }
     if (status === "otaUpdateSuccess") {
-      /* setTimeout(() => {
+      setTimeout(() => {
         stopNotification("OTA");
-      }, 500); */
+      }, 500);
     }
     if (status === "connectingToWifi") {
-      // sendWifi();
-      setTimeout(() => {
-        dispatch(bleActions.setStatus("wifiSuccess"));
-      }, 1000);
+      sendWifi();
     }
     if (status === "sendingSafetyZone") {
-      // sendSafetyZone();
+      sendSafetyZone();
     }
   }, [status]);
 

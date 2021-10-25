@@ -3,28 +3,26 @@ import { StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { getAddress } from "~/api/place";
 import useDebounce from "~/hooks/useDebounce";
-
-import KeyboardAwareScrollContainer from "~/components/common/container/KeyboardAwareScrollContainer";
 import { useDispatch } from "react-redux";
-
 import { useAppSelector } from "~/store";
 import SearchResultItem from "./SearchResultItem";
 import MyText from "~/components/common/MyText";
 import { storageActions } from "~/store/storage";
 import { DimensionsContext } from "~/context/DimensionsContext";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 const SearchResult = () => {
   const { top } = useSafeAreaInsets();
-  const addr = useAppSelector(
-    state => state.deviceSetting.safetyZone.draft.addr,
+  const address = useAppSelector(
+    state => state.deviceSetting.safetyZone.draft.address,
   );
   const history = useAppSelector(
     state => state.storage.history.safetyZoneSearch,
   );
-  const value = useDebounce(addr, 200);
+  const value = useDebounce(address, 200);
   const [data, setData] = useState<
     {
-      addr: string;
+      address: string;
       latitude: number;
       longitude: number;
     }[]
@@ -41,7 +39,8 @@ const SearchResult = () => {
   }, [value]);
 
   return (
-    <KeyboardAwareScrollContainer
+    <KeyboardAwareScrollView
+      keyboardShouldPersistTaps="handled"
       style={{
         ...(StyleSheet.absoluteFill as object),
         backgroundColor: "white",
@@ -50,12 +49,11 @@ const SearchResult = () => {
       contentContainerStyle={{
         paddingTop: top + rpWidth(71),
         paddingHorizontal: rpWidth(17),
-        flexGrow: 1,
         minHeight: height,
       }}>
       {data.length ? (
         data.map((item, i) => <SearchResultItem item={item} key={i} />)
-      ) : !addr ? (
+      ) : !address ? (
         <>
           {history.map((item, i) => (
             <SearchResultItem item={item} key={i} />
@@ -73,7 +71,7 @@ const SearchResult = () => {
           ) : null}
         </>
       ) : null}
-    </KeyboardAwareScrollContainer>
+    </KeyboardAwareScrollView>
   );
 };
 

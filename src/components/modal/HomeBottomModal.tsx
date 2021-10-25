@@ -2,7 +2,7 @@ import { useNavigation } from "@react-navigation/native";
 import React, { useContext } from "react";
 import { useDispatch } from "react-redux";
 import styled, { css } from "styled-components/native";
-import { Device } from "~/api/device";
+import deviceApi, { Device } from "~/api/device";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import palette from "~/styles/palette";
 import { HomeScreenNavigationProp } from "~/types/navigator";
@@ -33,8 +33,8 @@ const Button = styled.TouchableOpacity<{ rpWidth: RpWidth }>`
 
 const HomeBottomModal = ({ device, close }: IProps) => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
-  const dispatch = useDispatch();
   const { rpWidth } = useContext(DimensionsContext);
+  const [trigger] = deviceApi.useDeleteEmergencyMissingMutation();
 
   return (
     <>
@@ -64,20 +64,24 @@ const HomeBottomModal = ({ device, close }: IProps) => {
       <Divider />
       <Button
         rpWidth={rpWidth}
-        onPress={() => {
-          close();
-          /* dispatch(
-            formActions.setDefaultValue({
+        onPress={async () => {
+          if (!device.is_missed) {
+            close();
+            navigation.navigate("EmergencyMissingStackNav", {
+              avatar: device.profile_image,
               name: device.name,
-              breed: device.breed,
-              characteristic: device.etc,
-            }),
-          ); */
-          navigation.navigate("EmergencyMissingStackNav", {
-            device,
-          });
+              deviceID: device.id,
+            });
+          } else {
+            try {
+              close();
+              await trigger(device.id).unwrap();
+            } catch (error) {}
+          }
         }}>
-        <MyText color={palette.red_f0}>긴급실종</MyText>
+        <MyText color={palette.red_f0}>
+          {device.is_missed ? "찾았어요" : "긴급실종"}
+        </MyText>
       </Button>
     </>
   );

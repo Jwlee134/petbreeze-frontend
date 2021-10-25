@@ -1,15 +1,13 @@
 import React, { ReactNode, useEffect, useRef, useState } from "react";
-import { Animated, StyleProp, ViewStyle } from "react-native";
+import { Animated, StyleProp, ViewProps, ViewStyle } from "react-native";
 
-const Dissolve = ({
-  isVisible,
-  children,
-  style,
-}: {
+interface IProps extends ViewProps {
   isVisible: boolean;
   children: ReactNode;
-  style?: Animated.AnimatedProps<StyleProp<ViewStyle>>;
-}) => {
+  style?: StyleProp<ViewStyle>;
+}
+
+const Dissolve = ({ isVisible, children, style, ...props }: IProps) => {
   const [isChildrenVisible, setIsChildrenVisible] = useState(isVisible);
   const value = useRef(new Animated.Value(isVisible ? 1 : 0)).current;
 
@@ -34,7 +32,8 @@ const Dissolve = ({
       style={{
         opacity: value,
         ...(style as object),
-      }}>
+      }}
+      {...props}>
       {isChildrenVisible ? children : null}
     </Animated.View>
   );

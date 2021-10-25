@@ -1,16 +1,17 @@
 import React, { useContext } from "react";
-import { Animated, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import styled, { css } from "styled-components/native";
 import palette from "~/styles/palette";
 import ShadowContainer from "../common/container/ShadowContainer";
+import Animated from "react-native-reanimated";
 
 interface IProps {
-  value: Animated.AnimatedInterpolation;
   mapPadding: {
     top: number;
     bottom: number;
   };
+  style: { marginBottom: number };
 }
 
 const OuterMarker = styled.View<{ rpWidth: RpWidth }>`
@@ -33,18 +34,19 @@ const InnerMarker = styled.View<{ rpWidth: RpWidth }>`
   background-color: ${palette.blue_7b};
 `;
 
-const FakeMarker = ({ mapPadding, value }: IProps) => {
+const FakeMarker = ({ mapPadding, style }: IProps) => {
   const { rpWidth } = useContext(DimensionsContext);
 
   return (
     <Animated.View
       pointerEvents="none"
-      style={{
-        ...(StyleSheet.absoluteFill as object),
-        marginTop: mapPadding.top,
-        marginBottom: mapPadding.bottom,
-        transform: [{ translateY: value }],
-      }}>
+      style={[
+        {
+          ...(StyleSheet.absoluteFill as object),
+          marginTop: mapPadding.top,
+        },
+        style,
+      ]}>
       <ShadowContainer
         shadowRadius={12}
         shadowOpacity={0.3}

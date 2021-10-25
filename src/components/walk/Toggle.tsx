@@ -18,6 +18,9 @@ import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import useModal from "~/hooks/useModal";
 import Modal from "react-native-modal";
 import CommonCenterModal from "../modal/CommonCenterModal";
+import { navigatorActions } from "~/store/navigator";
+import { useNavigation } from "@react-navigation/native";
+import { WalkMapScreenNavigationProp } from "~/types/navigator";
 
 const RowContainer = styled.View<{ rpWidth: RpWidth }>`
   flex-direction: row;
@@ -51,9 +54,11 @@ const Button = styled.TouchableOpacity<{ rpWidth: RpWidth }>`
 `;
 
 const Toggle = () => {
+  const navigation = useNavigation<WalkMapScreenNavigationProp>();
   const currentPauseTime = useAppSelector(
     state => state.storage.walk.currentPauseTime,
   );
+  const duration = useAppSelector(state => state.storage.walk.duration);
   const isWalking = useAppSelector(state => state.storage.walk.isWalking);
   const dispatch = useDispatch();
   const { rpWidth } = useContext(DimensionsContext);
@@ -144,13 +149,31 @@ const Toggle = () => {
             resume();
           }}
           rightButtonText="종료"
-          title="산책을 종료할까요?"
+          title={(() => {
+            if (duration < 60) {
+              return `1분 미만의 산책은 기록되지 않습니다.\n산책을 종료할까요?`;
+            }
+            return "산책을 종료할까요?";
+          })()}
           onRightButtonPress={() => {
-            dispatch(
-              storageActions.setWalk({
-                isStopped: true,
-              }),
-            );
+            if (duration < 60) {
+              setTimeout(() => {
+                dispatch(storageActions.setWalk(null));
+              }, 200);
+              dispatch(
+                navigatorActions.setInitialRoute({
+                  initialBottomTabNavRouteName: "WalkTab",
+                }),
+              );
+              navigation.replace("BottomTabNav");
+            } else {
+              dispatch(
+                storageActions.setWalk({
+                  isStopped: true,
+                }),
+              );
+            }
+
             close();
           }}
         />

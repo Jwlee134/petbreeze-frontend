@@ -44,7 +44,6 @@ const Loading = ({
             firebaseToken,
             userID,
           }).unwrap();
-          console.log(data);
           console.log(data.key, firebaseToken, data.user_id);
           await saveTokens(data.key, firebaseToken, data.user_id);
         } else {

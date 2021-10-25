@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import MyText from "../../common/MyText";
-import Trashcan from "~/assets/svg/myPage/trashcan.svg";
+import Trashcan from "~/assets/svg/trashcan/trashcan-white.svg";
 import ListItem from "../../common/ListItem";
 import Swipeable from "../../common/Swipeable";
 import DeviceSettingTitle from "./DeviceSettingTitle";
@@ -70,6 +70,7 @@ const WiFi = ({ isEdit }: { isEdit: boolean }) => {
       <Animated.View
         style={{
           height: heightInterpolate,
+          overflow: "hidden",
         }}>
         {result.map(({ id, pw, ssid }, i) =>
           ssid ? (

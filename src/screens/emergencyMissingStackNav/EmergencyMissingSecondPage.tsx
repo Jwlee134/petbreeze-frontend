@@ -115,6 +115,7 @@ const EmergencyMissingSecondPage = ({
           <PaddingContainer rpWidth={rpWidth}>
             <InputTitle>메시지</InputTitle>
             <Input
+              maxLength={512}
               value={message}
               onChangeText={text =>
                 dispatch(

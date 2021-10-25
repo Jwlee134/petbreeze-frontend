@@ -2,9 +2,10 @@ import React, { createContext, ReactNode, useCallback, useRef } from "react";
 import { StyleSheet } from "react-native";
 import NaverMapView, { NaverMapViewProps } from "react-native-nmap";
 import ViewShotComp from "react-native-view-shot";
+import { Device } from "~/api/device";
 import NaverMap from "~/components/common/Map";
+import useDevice from "~/hooks/useDevice";
 import { useAppSelector } from "~/store";
-import { IDevice } from "~/store/device";
 
 interface IMap extends NaverMapViewProps {
   children: ReactNode;
@@ -15,7 +16,7 @@ interface IContext {
   Map: ({ children, ...props }: IMap) => JSX.Element;
   viewShotRef: React.RefObject<ViewShotComp>;
   ViewShot: ({ children }: { children: ReactNode }) => JSX.Element;
-  devices: IDevice[];
+  deviceList: Device[];
 }
 
 const initialContext: IContext = {
@@ -23,7 +24,7 @@ const initialContext: IContext = {
   Map: () => <></>,
   viewShotRef: { current: null },
   ViewShot: () => <></>,
-  devices: [],
+  deviceList: [],
 };
 
 export const WalkContext = createContext(initialContext);
@@ -32,7 +33,7 @@ const WalkContextProvider = ({ children }: { children: ReactNode }) => {
   const selectedIds = useAppSelector(
     state => state.storage.walk.selectedDeviceId,
   );
-  const devices = useAppSelector(state => state.device);
+  const deviceList = useDevice();
 
   const mapRef = useRef<NaverMapView>(null);
   const viewShotRef = useRef<ViewShotComp>(null);
@@ -62,9 +63,10 @@ const WalkContextProvider = ({ children }: { children: ReactNode }) => {
         Map,
         viewShotRef,
         ViewShot,
-        devices: devices.filter(device =>
-          selectedIds.some(id => device.id === id),
-        ),
+        deviceList:
+          deviceList?.filter(device =>
+            selectedIds.some(id => device.id === id),
+          ) || [],
       }}>
       {children}
     </WalkContext.Provider>

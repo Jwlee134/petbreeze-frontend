@@ -15,10 +15,12 @@ const BleLoading = ({
     if (status === "downloadingFirmware")
       navigation.replace("FirmwareProgress");
     if (status === "wifiSuccess") navigation.replace("Success");
-    if (status === "wifiFail") navigation.replace("Fail");
+    if (status === "wifiFail" || status === "devEUIFail")
+      navigation.replace("Fail");
     if (status === "retrieveFail" || status === "startNotificationFail")
       navigation.replace("ScanningFail");
     if (status === "notificationFail") navigation.replace("Fail");
+    if (status === "relationAdded") navigation.replace("Completion");
   }, [status]);
 
   return <Loading loadingText={loadingText} />;

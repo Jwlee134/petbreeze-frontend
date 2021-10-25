@@ -3,20 +3,25 @@ import { ScrollView, TouchableOpacity } from "react-native";
 import MyText from "~/components/common/MyText";
 import CustomHeader from "~/components/navigator/CustomHeader";
 import palette from "~/styles/palette";
-import { DeviceSettingListScreenProps } from "~/types/navigator";
+import { DeviceSettingListScreenNavigationProp } from "~/types/navigator";
 import Swipeable from "~/components/common/Swipeable";
 import Bye from "~/assets/svg/myPage/bye.svg";
 import ListItem from "~/components/common/ListItem";
 import DeviceSettingListItem from "~/components/myPage/deviceSetting/DeviceSettingListItem";
 import { DimensionsContext } from "~/context/DimensionsContext";
 import SwipeableButton from "~/components/common/SwipeableButton";
+import deviceApi from "~/api/device";
+import useDevice from "~/hooks/useDevice";
 
 const DeviceSettingList = ({
   navigation,
-  route,
-}: DeviceSettingListScreenProps) => {
+}: {
+  navigation: DeviceSettingListScreenNavigationProp;
+}) => {
   const [isEdit, setIsEdit] = useState(false);
   const { rpWidth } = useContext(DimensionsContext);
+  const [deleteDevice] = deviceApi.useDeleteDeviceMutation();
+  const deviceList = useDevice();
 
   return (
     <>
@@ -34,12 +39,20 @@ const DeviceSettingList = ({
           paddingVertical: rpWidth(25),
           flexGrow: 1,
         }}>
-        {route.params.deviceList?.map((device, i) => (
+        {deviceList?.map((device, i) => (
           <Swipeable
             animate={i === 0 && isEdit}
             key={device.id}
             RenderRightActions={() => (
-              <SwipeableButton backgroundColor="red" onPress={() => {}}>
+              <SwipeableButton
+                backgroundColor="red"
+                onPress={() => {
+                  try {
+                    deleteDevice(device.id).unwrap();
+                  } catch (error) {
+                    console.log(error);
+                  }
+                }}>
                 <Bye width={rpWidth(44)} height={rpWidth(38)} />
               </SwipeableButton>
             )}

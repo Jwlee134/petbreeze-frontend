@@ -1,9 +1,13 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useMemo } from "react";
 import styled from "styled-components/native";
 import MyText from "../../common/MyText";
 import Location from "~/assets/svg/myPage/location.svg";
 import ScrollPicker from "../../common/ScrollPicker";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
+import { useDispatch } from "react-redux";
+import { useAppSelector } from "~/store";
+import { deviceSettingActions } from "~/store/deviceSetting";
+import deviceApi from "~/api/device";
 
 const RowContainer = styled.View`
   flex-direction: row;
@@ -21,11 +25,32 @@ const Container = styled(RowContainer)<{ rpWidth: RpWidth }>`
   justify-content: space-between;
 `;
 
-const data = ["5분", "10분", "30분"];
-
-const LocationInfoCollectionPeriod = () => {
-  const [selectedIndex, setSelectedIndex] = useState(0);
+const LocationInfoCollectionPeriod = ({ deviceID }: { deviceID: number }) => {
+  const period = useAppSelector(
+    state => state.deviceSetting.locationInfoCollectionPeriod,
+  );
   const { rpWidth } = useContext(DimensionsContext);
+  const dispatch = useDispatch();
+  const { data } = deviceApi.endpoints.getDeviceList.useQueryState();
+
+  const periodArr = useMemo(() => {
+    if (
+      data &&
+      data[data.findIndex(device => device.id === deviceID)]?.is_missed
+    ) {
+      return [
+        { text: "실시간", value: 0 },
+        { text: "5분", value: 300 },
+        { text: "10분", value: 600 },
+        { text: "30분", value: 1800 },
+      ];
+    }
+    return [
+      { text: "5분", value: 300 },
+      { text: "10분", value: 600 },
+      { text: "30분", value: 1800 },
+    ];
+  }, [data]);
 
   return (
     <Container rpWidth={rpWidth}>
@@ -35,14 +60,22 @@ const LocationInfoCollectionPeriod = () => {
         </SvgContainer>
         <MyText>위치정보 수신 주기</MyText>
       </RowContainer>
-      <ScrollPicker
-        data={data}
-        selectedIndex={selectedIndex}
-        onChange={index => setSelectedIndex(index)}
-        width={rpWidth(88)}
-        height={rpWidth(36)}
-        style={{ marginRight: rpWidth(16) }}
-      />
+      {period !== null && (
+        <ScrollPicker
+          data={periodArr.map(period => period.text)}
+          selectedIndex={periodArr.findIndex(item => item.value === period)}
+          onChange={index => {
+            dispatch(
+              deviceSettingActions.setLocationInfoCollectionPeriod(
+                periodArr[index].value,
+              ),
+            );
+          }}
+          width={rpWidth(88)}
+          height={rpWidth(36)}
+          style={{ marginRight: rpWidth(16) }}
+        />
+      )}
     </Container>
   );
 };

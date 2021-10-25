@@ -21,7 +21,7 @@ interface IWalk {
 }
 
 interface IHistory {
-  safetyZoneSearch: { addr: string; latitude: number; longitude: number }[];
+  safetyZoneSearch: { address: string; latitude: number; longitude: number }[];
 }
 
 interface IStorage {
@@ -94,7 +94,7 @@ const storage = createSlice({
       {
         payload,
       }: PayloadAction<{
-        addr: string;
+        address: string;
         latitude: number;
         longitude: number;
       } | null>,
@@ -104,7 +104,7 @@ const storage = createSlice({
         return;
       }
       const exist = state.history.safetyZoneSearch.some(
-        data => data.addr === payload.addr,
+        data => data.address === payload.address,
       );
       if (!exist) {
         if (state.history.safetyZoneSearch.length === 10) {

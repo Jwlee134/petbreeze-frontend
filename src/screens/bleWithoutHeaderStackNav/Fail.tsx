@@ -47,6 +47,8 @@ const Fail = ({ navigation }: { navigation: FailScreenNavigationProp }) => {
             ? "디바이스를 재부팅하고\n다시 시도해 주세요."
             : status === "wifiFail"
             ? "WiFi 연결에 실패했어요."
+            : status === "devEUIFail"
+            ? "디바이스의 IMEI가\n유효하지 않습니다."
             : ""}
         </MyText>
         <View>
@@ -58,7 +60,8 @@ const Fail = ({ navigation }: { navigation: FailScreenNavigationProp }) => {
               }
               if (
                 status === "installingFail" ||
-                status === "notificationFail"
+                status === "notificationFail" ||
+                status === "devEUIFail"
               ) {
                 navigation.replace("Scanning");
                 dispatch(bleActions.setStatus("scanning"));
@@ -85,6 +88,8 @@ const Fail = ({ navigation }: { navigation: FailScreenNavigationProp }) => {
                     initialBleWithHeaderStackNavRouteName: "PreSafetyZone",
                   }),
                 );
+                navigation.replace("BleWithHeaderStackNav");
+                return;
               }
               if (navigation.canGoBack()) {
                 navigation.goBack();

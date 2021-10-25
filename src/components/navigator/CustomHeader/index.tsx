@@ -19,6 +19,7 @@ interface IProps extends Partial<StackHeaderProps> {
   totalPage?: number;
   RightButton?: () => JSX.Element;
   style?: StyleProp<ViewStyle>;
+  navigation?: any;
 }
 
 const Container = styled(Animated.View)`

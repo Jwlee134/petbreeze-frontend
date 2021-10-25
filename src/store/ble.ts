@@ -6,7 +6,7 @@ export type BleStatus =
   | "connected"
   | "downloadingFirmware"
   | "installingFirmware"
-  | "200Success"
+  | "relationAdded"
   | "otaUpdateSuccess"
   | "scanningFail"
   | "connectingFail"
@@ -29,6 +29,7 @@ interface IState {
   progress: number;
   isOtaUpdate: boolean;
   disconnected: boolean;
+  deviceID: number;
 }
 
 const initialState: IState = {
@@ -36,6 +37,7 @@ const initialState: IState = {
   progress: 0,
   isOtaUpdate: false,
   disconnected: true,
+  deviceID: 0,
 };
 
 const ble = createSlice({
@@ -53,6 +55,9 @@ const ble = createSlice({
     },
     setDisconnected: (state, { payload }: PayloadAction<boolean>) => {
       state.disconnected = payload;
+    },
+    setDeviceID: (state, { payload }: PayloadAction<number>) => {
+      state.deviceID = payload;
     },
     reset: () => initialState,
   },

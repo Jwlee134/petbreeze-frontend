@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useMemo, useRef } from "react";
-import { Animated, Keyboard, StyleSheet } from "react-native";
+import React, { useEffect, useMemo, useRef } from "react";
+import { Keyboard, StyleSheet } from "react-native";
 import NaverMapView, { Circle } from "react-native-nmap";
 import { getLeftRightPointsOfCircle } from "~/utils";
 
@@ -12,23 +12,23 @@ import { SafetyZoneScreenNavigationProp } from "~/types/navigator";
 import { navigatorActions } from "~/store/navigator";
 import { deviceSettingActions } from "~/store/deviceSetting";
 import { bleActions } from "~/store/ble";
-import { DimensionsContext } from "~/context/DimensionsContext";
 import Map from "../common/Map";
 import palette from "~/styles/palette";
-import CameraRoll from "@react-native-community/cameraroll";
 import { getAddressByCoord } from "~/api/place";
+import Animated from "react-native-reanimated";
 
 interface IProps {
-  value: Animated.AnimatedInterpolation;
   mapPadding: {
     top: number;
     bottom: number;
   };
+  style: {
+    marginBottom: number;
+  };
 }
 
-const SafetyZoneMap = ({ value, mapPadding }: IProps) => {
+const SafetyZoneMap = ({ mapPadding, style }: IProps) => {
   const navigation = useNavigation<SafetyZoneScreenNavigationProp>();
-  const { rpWidth } = useContext(DimensionsContext);
 
   const {
     step2,
@@ -72,9 +72,6 @@ const SafetyZoneMap = ({ value, mapPadding }: IProps) => {
     if (!isSubmitting || !viewShotRef.current) return;
     const submit = async () => {
       const uri = await viewShotRef.current?.capture();
-      if (uri) {
-        await CameraRoll.save(uri, { album: "어디개" });
-      }
       const {
         draft: { name, address },
         fromDeviceSetting,
@@ -96,7 +93,10 @@ const SafetyZoneMap = ({ value, mapPadding }: IProps) => {
             name,
             address: address || addr,
             image: uri || "",
-            coord: { latitude: coord.latitude, longitude: coord.longitude },
+            coord: {
+              latitude: parseFloat(coord.latitude.toFixed(4)),
+              longitude: parseFloat(coord.longitude.toFixed(4)),
+            },
             radius,
           }),
         );
@@ -125,11 +125,13 @@ const SafetyZoneMap = ({ value, mapPadding }: IProps) => {
 
   return (
     <Animated.View
-      style={{
-        ...(StyleSheet.absoluteFill as object),
-        zIndex: 0,
-        transform: [{ translateY: value }],
-      }}>
+      style={[
+        {
+          ...(StyleSheet.absoluteFill as object),
+          zIndex: 0,
+        },
+        style,
+      ]}>
       <ViewShot ref={viewShotRef} style={StyleSheet.absoluteFill as object}>
         <Map
           ref={mapRef}
@@ -138,8 +140,8 @@ const SafetyZoneMap = ({ value, mapPadding }: IProps) => {
               deviceSettingActions.setSafetyZone({
                 draft: {
                   coord: {
-                    latitude: parseFloat(latitude.toFixed(4)),
-                    longitude: parseFloat(longitude.toFixed(4)),
+                    latitude,
+                    longitude,
                   },
                 },
               }),
@@ -149,7 +151,7 @@ const SafetyZoneMap = ({ value, mapPadding }: IProps) => {
           mapPadding={mapPadding}
           rotateGesturesEnabled={false}
           zoomGesturesEnabled={!step2}>
-          {coord.latitude && coord.longitude && radius ? (
+          {coord.latitude && coord.longitude && radius && step2 ? (
             <Circle
               coordinate={{
                 latitude: coord.latitude,

@@ -1,7 +1,7 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import styled, { css } from "styled-components/native";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
-import { store, useAppSelector } from "~/store";
+import { useAppSelector } from "~/store";
 import AnimatedCircularProgress from "../common/AnimatedCircularProgress";
 import Button from "../common/Button";
 import MyText from "../common/MyText";
@@ -10,13 +10,15 @@ import Path from "~/assets/svg/walk/path-gray.svg";
 import palette from "~/styles/palette";
 import { View } from "react-native";
 import { WalkContext } from "~/context/WalkContext";
-import CameraRoll from "@react-native-community/cameraroll";
 import { useDispatch } from "react-redux";
 import { storageActions } from "~/store/storage";
 import { navigatorActions } from "~/store/navigator";
 import { useNavigation } from "@react-navigation/native";
 import { WalkMapScreenNavigationProp } from "~/types/navigator";
 import { formatWalkDistance } from "~/utils";
+import deviceApi from "~/api/device";
+import imageHandler from "~/utils/imageHandler";
+import allSettled from "promise.allsettled";
 
 const Container = styled.View`
   align-items: center;
@@ -54,9 +56,12 @@ const RowContainer = styled.View`
 
 const Result = () => {
   const { rpWidth } = useContext(DimensionsContext);
-  const { viewShotRef, devices } = useContext(WalkContext);
+  const { viewShotRef, deviceList } = useContext(WalkContext);
   const dispatch = useDispatch();
   const navigation = useNavigation<WalkMapScreenNavigationProp>();
+  const [postWalk] = deviceApi.usePostWalkMutation();
+  const [postWalkThumbnail] = deviceApi.usePatchWalkThumbnailMutation();
+  const [loading, setLoading] = useState(false);
 
   const { startTime, duration, meter, coords, selectedDeviceId } =
     useAppSelector(state => state.storage.walk);
@@ -66,34 +71,51 @@ const Result = () => {
   const sec = Math.floor(duration) % 60;
 
   const handleFinish = async () => {
-    if (viewShotRef?.current) {
-      const uri = await viewShotRef.current?.capture();
-      CameraRoll.save(uri, { album: "어디개" });
+    setLoading(true);
+    const uri = await viewShotRef.current?.capture();
+
+    const results = await allSettled(
+      selectedDeviceId.map(id =>
+        postWalk({
+          deviceID: id,
+          body: {
+            distance: meter,
+            start_date_time: startTime,
+            time: Math.floor(duration / 60),
+            travel_path: {
+              type: "MultiPoint",
+              coordinates: coords,
+            },
+          },
+        }).unwrap(),
+      ),
+    );
+
+    if (uri) {
+      const formData = imageHandler.handleFormData(uri, "path_image");
+      await allSettled(
+        selectedDeviceId
+          .map((id, i) => {
+            if (results[i].status === "rejected") return null;
+            return postWalkThumbnail({
+              body: formData,
+              deviceID: id,
+              walkID: results[i].value.id,
+            });
+          })
+          .filter(item => item !== null),
+      );
     }
+
+    setTimeout(() => {
+      dispatch(storageActions.setWalk(null));
+    }, 200);
     dispatch(
       navigatorActions.setInitialRoute({
         initialBottomTabNavRouteName: "WalkTab",
       }),
     );
-    setTimeout(() => {
-      dispatch(storageActions.setWalk(null));
-    }, 200);
     navigation.replace("BottomTabNav");
-    // const promise = selectedDeviceId.map(id =>
-    //   trigger({
-    //     deviceId: id,
-    //     start_date_time: new Date(startTime),
-    //     walking_time: duration,
-    //     distance: meter,
-    //     coordinates: coords,
-    //   }),
-    // );
-    // Promise.all(promise).then(() => {
-    //   dispatch(storageActions.clearWalk());
-    //   navigation.replace("BottomTabNav", {
-    //     initialRoute: "WalkTab",
-    //   });
-    // });
   };
 
   return (
@@ -107,29 +129,30 @@ const Result = () => {
         })()}
       </MyText>
       <Avatar rpWidth={rpWidth}>
-        {devices.map((device, i) =>
+        {deviceList.map((device, i) =>
           i < 3 ? (
             <View key={i}>
               <AnimatedCircularProgress
+                avatar={device.profile_image}
                 circleWidth={70}
                 lineWidth={2.5}
                 battery={100}
                 style={{
                   marginRight:
-                    i === devices.length - 1 || i === 2 ? 0 : rpWidth(21),
+                    i === deviceList.length - 1 || i === 2 ? 0 : rpWidth(21),
                   ...(i === 2 &&
-                    devices.length > 3 && {
+                    deviceList.length > 3 && {
                       opacity: 0.1,
                     }),
                 }}
               />
-              {i === 2 && devices.length > 3 && (
+              {i === 2 && deviceList.length > 3 && (
                 <Overlay rpWidth={rpWidth}>
                   <MyText
                     color={palette.blue_7b_90}
                     fontWeight="medium"
                     fontSize={18}>
-                    +{devices.length - 3}
+                    +{deviceList.length - 3}
                   </MyText>
                 </Overlay>
               )}
@@ -160,7 +183,9 @@ const Result = () => {
           </MyText>
         </RowContainer>
       </SvgContainer>
-      <Button onPress={handleFinish}>산책 종료</Button>
+      <Button isLoading={loading} onPress={handleFinish}>
+        산책 종료
+      </Button>
     </Container>
   );
 };

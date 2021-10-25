@@ -14,7 +14,11 @@ import { RootNavParamList } from "~/types/navigator";
 import Intro from "~/screens/rootNav/Intro";
 import Auth from "~/screens/rootNav/Auth";
 import Loading from "~/screens/rootNav/Loading";
-import Toast, { BaseToast, ToastShowOptions } from "react-native-toast-message";
+import Toast, {
+  BaseToast,
+  BaseToastProps,
+  ErrorToast,
+} from "react-native-toast-message";
 import palette from "~/styles/palette";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { DimensionsContext } from "~/context/DimensionsContext";
@@ -36,11 +40,46 @@ const RootNav = () => {
 
   const toastConfig = useMemo(
     () => ({
-      notification: ({ ...rest }: ToastShowOptions) => (
+      notification: ({ ...rest }: BaseToastProps) => (
         <BaseToast
           {...rest}
           style={{
             borderLeftColor: palette.blue_7b_90,
+            borderLeftWidth: rpWidth(7),
+            height: "auto",
+            marginTop: top / 2,
+          }}
+          contentContainerStyle={{
+            paddingLeft: rpWidth(14),
+            paddingVertical: rpWidth(10),
+            height: "auto",
+          }}
+          text1Style={{
+            ...(isAndroid && { fontWeight: "normal" }),
+            fontSize: rpWidth(15),
+            fontFamily: "NotoSansKR-Bold",
+            includeFontPadding: false,
+          }}
+          text2Style={{
+            fontSize: rpWidth(15),
+            fontFamily: "NotoSansKR-Regular",
+            includeFontPadding: false,
+          }}
+          trailingIconContainerStyle={{
+            width: rpWidth(40),
+          }}
+          trailingIconStyle={{
+            width: rpWidth(10),
+            height: rpWidth(10),
+          }}
+          onTrailingIconPress={Toast.hide}
+        />
+      ),
+      error: (props: BaseToastProps) => (
+        <BaseToast
+          {...props}
+          style={{
+            borderLeftColor: palette.red_f0,
             borderLeftWidth: rpWidth(7),
             height: "auto",
             marginTop: top / 2,

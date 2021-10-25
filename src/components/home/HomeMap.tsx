@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import NaverMapView, { Marker } from "react-native-nmap";
 import { DimensionsContext } from "~/context/DimensionsContext";
-import MapButton from "../common/MapButton";
 import Geolocation from "react-native-geolocation-service";
 import { delta } from "~/constants";
 import useAppState from "~/hooks/useAppState";

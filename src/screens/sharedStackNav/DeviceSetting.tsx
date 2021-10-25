@@ -16,6 +16,8 @@ import deviceApi from "~/api/device";
 import { useDispatch } from "react-redux";
 import { deviceSettingActions } from "~/store/deviceSetting";
 import Family from "~/components/myPage/deviceSetting/Family";
+import imageHandler from "~/utils/imageHandler";
+import useError from "~/hooks/useError";
 
 const DeviceSetting = ({
   navigation,
@@ -25,8 +27,24 @@ const DeviceSetting = ({
 }: DeviceSettingScreenProps) => {
   const { rpWidth } = useContext(DimensionsContext);
   const [isEdit, setIsEdit] = useState(false);
-  const { data: settings } = deviceApi.useGetDeviceSettingQuery(deviceID);
+  const { data: settings, error } = deviceApi.useGetDeviceSettingQuery(
+    deviceID,
+    {
+      refetchOnMountOrArgChange: true,
+    },
+  );
+  const [updateSetting] = deviceApi.useUpdateDeviceSettingMutation();
+  const [updateSafetyZoneThumbnail] =
+    deviceApi.useUpdateSafetyZoneThumbnailMutation();
   const dispatch = useDispatch();
+
+  useError({
+    error,
+    type: "Device",
+    callback: () => {
+      navigation.goBack();
+    },
+  });
 
   useEffect(() => {
     if (!settings) return;
@@ -51,14 +69,45 @@ const DeviceSetting = ({
     }
   }, [settings]);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const {
       locationInfoCollectionPeriod,
       safetyZone: { result: safetyZone },
       wifi: { result: wifi },
     } = store.getState().deviceSetting;
 
-    setIsEdit(false);
+    const areaWithoutImage = safetyZone.map(area => ({
+      address: area.address,
+      data: area.data,
+      id: area.id,
+      name: area.name,
+    }));
+    const areaImages = safetyZone
+      .map(area => ({
+        id: area.id,
+        data: area.image,
+      }))
+      .filter(area => !area.data.includes("amazonaws") && area.data);
+
+    try {
+      if (areaImages.length) {
+        const generateKey = (i: number) => `safety_area_${i}_thumbnail`;
+        const formData = imageHandler.handleFormData(areaImages, generateKey);
+
+        await updateSafetyZoneThumbnail({ deviceID, body: formData }).unwrap();
+      }
+      await updateSetting({
+        deviceID,
+        body: {
+          Area: areaWithoutImage,
+          Period: locationInfoCollectionPeriod as number,
+          WiFi: wifi,
+        },
+      }).unwrap();
+      setIsEdit(false);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -86,7 +135,7 @@ const DeviceSetting = ({
         }}>
         <ProfileSection deviceID={deviceID} />
         <Divider isHairline={false} />
-        <LocationInfoCollectionPeriod />
+        <LocationInfoCollectionPeriod deviceID={deviceID} />
         <View style={{ paddingHorizontal: rpWidth(16) }}>
           <Divider />
         </View>

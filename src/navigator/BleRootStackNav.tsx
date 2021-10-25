@@ -25,17 +25,23 @@ const BleRootStackNav = () => {
   const initialRouteName = useAppSelector(
     state => state.navigator.initialBleRootStackNavRouteName,
   );
+  const fromDeviceSetting = useAppSelector(
+    state => state.deviceSetting.safetyZone.fromDeviceSetting,
+  );
   const dispatch = useDispatch();
   useBleMaganer();
 
   useEffect(() => {
     return () => {
-      dispatch(bleActions.reset());
+      if (!fromDeviceSetting) {
+        dispatch(bleActions.reset());
+        dispatch(deviceSettingActions.setProfile(null));
+        dispatch(deviceSettingActions.setWifi(null));
+      }
       dispatch(deviceSettingActions.setSafetyZone(null));
-      dispatch(deviceSettingActions.setProfile(null));
-      dispatch(deviceSettingActions.setWifi(null));
       dispatch(
         navigatorActions.setInitialRoute({
+          initialBleRootStackNavRouteName: "BleWithHeaderStackNav",
           initialBleWithHeaderStackNavRouteName: "ChargingCheck",
           initialBleWithoutHeaderStackNavRouteName: "Scanning",
         }),

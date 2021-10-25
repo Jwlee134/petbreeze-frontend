@@ -46,18 +46,26 @@ interface IWifi<T> {
 }
 
 interface IProfile {
-  avatar: string;
+  photos: string[];
   name: string;
-  birthYear: string;
-  birthMonth: string;
-  birthDay: string;
-  sex: string;
+  birthYear: number;
+  birthMonth: number;
+  birthDay: number;
+  sex: boolean;
   species: string;
   weight: string;
+  phoneNumber: string;
+  hasTag: boolean;
+  lostMonth: number;
+  lostDate: number;
+  lostHour: number;
+  lostMinute: number;
+  lostPlace: string;
+  message: string;
 }
 
 interface IState {
-  locationInfoCollectionPeriod: number;
+  locationInfoCollectionPeriod: number | null;
   safetyZone: ISafetyZone<ISafetyZoneDraft>;
   wifi: IWifi<IWifiDraft>;
   profile: IProfile;
@@ -67,7 +75,7 @@ const numOfArea = 3;
 const numOfWiFi = 5;
 
 const initialState: IState = {
-  locationInfoCollectionPeriod: 0,
+  locationInfoCollectionPeriod: null,
   safetyZone: {
     step2: false,
     animateCamera: false,
@@ -106,14 +114,22 @@ const initialState: IState = {
     },
   },
   profile: {
-    avatar: "",
+    photos: [],
     name: "",
-    birthYear: "",
-    birthMonth: "",
-    birthDay: "",
-    sex: "",
+    birthYear: 0,
+    birthMonth: 0,
+    birthDay: 0,
+    sex: true,
     species: "",
     weight: "",
+    phoneNumber: "",
+    hasTag: true,
+    lostHour: new Date().getHours(),
+    lostMinute: new Date().getMinutes(),
+    lostMonth: new Date().getMonth() + 1,
+    lostDate: new Date().getDate(),
+    lostPlace: "",
+    message: "",
   },
 };
 

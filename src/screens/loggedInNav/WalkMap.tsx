@@ -1,10 +1,10 @@
-import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import Path from "~/components/walk/Path";
 import { store, useAppSelector } from "~/store";
 import WalkBottomSheet from "~/components/walk/WalkBottomSheet";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { DimensionsContext } from "~/context/DimensionsContext";
-import { Animated, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import MapButtons from "~/components/walk/MapButtons";
 import {
   bottomSheetHandleHeight,
@@ -14,6 +14,11 @@ import WalkMapHeader from "~/components/walk/WalkMapHeader";
 import { getDistanceBetween2Points, isIos } from "~/utils";
 import { delta } from "~/constants";
 import { WalkContext } from "~/context/WalkContext";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 
 const WalkMap = () => {
   const isStopped = useAppSelector(state => state.storage.walk.isStopped);
@@ -23,9 +28,6 @@ const WalkMap = () => {
   const { Map, ViewShot, mapRef } = useContext(WalkContext);
 
   const [index, setIndex] = useState(1);
-  const [showEntirePath, setShowEntirePath] = useState(false);
-  const marginBottom = useRef(new Animated.Value(0)).current;
-  const opacity = useRef(new Animated.Value(0)).current;
 
   const handleBottomSheetChange = (i: number) => setIndex(i);
 
@@ -51,25 +53,8 @@ const WalkMap = () => {
     [isStopped, index],
   );
 
-  const marginBottomInterpolate = marginBottom.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, snapPoints[0]],
-  });
-
   useEffect(() => {
     if (isStopped) {
-      Animated.timing(marginBottom, {
-        toValue: 1,
-        useNativeDriver: false,
-        duration: 400,
-      }).start(() => {
-        setShowEntirePath(true);
-      });
-    }
-  }, [isStopped]);
-
-  useEffect(() => {
-    if (showEntirePath) {
       const { coords } = store.getState().storage.walk;
 
       const maxLat = Math.max(...coords.map(coord => coord[0]));
@@ -97,24 +82,43 @@ const WalkMap = () => {
           { latitude: minLat, longitude: minLng - distance / 100000 },
         );
       }
-      Animated.timing(opacity, {
-        toValue: 0.15,
-        useNativeDriver: true,
-        duration: 400,
-      }).start();
     }
-  }, [showEntirePath]);
+  }, [isStopped]);
+
+  const opacity = useSharedValue(0);
+
+  const backgroundStyle = useAnimatedStyle(() => {
+    opacity.value = isStopped ? 0.15 : 0;
+    return {
+      opacity: withTiming(opacity.value, {
+        duration: 400,
+      }),
+    };
+  }, [isStopped]);
+
+  const marginBottom = useSharedValue(0);
+
+  const mapStyle = useAnimatedStyle(() => {
+    marginBottom.value = isStopped ? snapPoints[0] : 0;
+    return {
+      marginBottom: withTiming(marginBottom.value, {
+        duration: 400,
+      }),
+    };
+  }, [isStopped]);
 
   return (
     <>
       <Animated.View
-        style={{
-          ...(StyleSheet.absoluteFill as object),
-          marginBottom: marginBottomInterpolate,
-        }}>
+        style={[
+          {
+            ...(StyleSheet.absoluteFill as object),
+          },
+          mapStyle,
+        ]}>
         <ViewShot>
           <Map mapPadding={mapPadding}>
-            <Path showEntirePath={showEntirePath} />
+            <Path isStopped={isStopped} />
           </Map>
         </ViewShot>
       </Animated.View>
@@ -122,11 +126,13 @@ const WalkMap = () => {
       {!isStopped && <MapButtons />}
       {isStopped && (
         <Animated.View
-          style={{
-            opacity,
-            ...(StyleSheet.absoluteFill as object),
-            backgroundColor: "black",
-          }}
+          style={[
+            {
+              ...(StyleSheet.absoluteFill as object),
+              backgroundColor: "black",
+            },
+            backgroundStyle,
+          ]}
         />
       )}
       <WalkBottomSheet

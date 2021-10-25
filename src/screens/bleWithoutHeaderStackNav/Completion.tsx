@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import styled, { css } from "styled-components/native";
 import SafeAreaContainer from "~/components/common/container/SafeAreaContainer";
 import MyText from "~/components/common/MyText";
@@ -13,6 +13,7 @@ import { CompletionScreenNavigationProp } from "~/types/navigator";
 import { useDispatch } from "react-redux";
 import { navigatorActions } from "~/store/navigator";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
+import { noAvatar, noName } from "~/constants";
 
 const DeviceContainer = styled(Animated.View)<{ rpWidth: RpWidth }>`
   margin-top: ${({ rpWidth }) => rpWidth(52)}px;
@@ -38,9 +39,13 @@ const Completion = ({
 }: {
   navigation: CompletionScreenNavigationProp;
 }) => {
-  const { name, deviceName, breed, birthYear, gender } = useAppSelector(
-    state => state.form,
-  );
+  const {
+    profile: { name, species, birthYear, sex, photos },
+    safetyZone: {
+      draft: { name: safetyZoneName },
+    },
+  } = useAppSelector(state => state.deviceSetting);
+  const deviceID = useAppSelector(state => state.ble.deviceID);
   const dispatch = useDispatch();
   const { rpWidth } = useContext(DimensionsContext);
 
@@ -49,20 +54,16 @@ const Completion = ({
     delayAfterMount: 800,
     onAnimatedFinish: () => {
       setTimeout(() => {
-        dispatch(
-          navigatorActions.setInitialRoute({
-            initialLoggedInNavRouteName: "BottomTabNav",
-            ...(redirectionRouteName && redirectionRouteName === "MyPage"
-              ? { initialBottomTabNavRouteName: "MyPageTab" }
-              : {
-                  initialBottomTabNavRouteName: "WalkTab",
-                }),
-          }),
-        );
-        navigation.reset({
-          index: 0,
-          routes: [{ name: "LoggedInNav" }],
-        });
+        if (navigation.canGoBack()) {
+          navigation.goBack();
+        } else {
+          dispatch(
+            navigatorActions.setInitialRoute({
+              initialLoggedInNavRouteName: "BottomTabNav",
+            }),
+          );
+          navigation.replace("LoggedInNav");
+        }
       }, 800);
     },
   });
@@ -86,7 +87,10 @@ const Completion = ({
       <DeviceContainer
         rpWidth={rpWidth}
         style={{ transform: [{ translateY }] }}>
-        <Image rpWidth={rpWidth} source={require("~/assets/image/test.jpg")} />
+        <Image
+          rpWidth={rpWidth}
+          source={photos[0] ? { uri: photos[0] } : noAvatar}
+        />
         <RowContainer>
           <Footprint
             width={rpWidth(22)}
@@ -94,26 +98,28 @@ const Completion = ({
             style={{ marginTop: rpWidth(3), marginRight: rpWidth(3) }}
           />
           <MyText fontWeight="medium" fontSize={20} color={palette.blue_7b_90}>
-            {name}
+            {name || noName}
           </MyText>
         </RowContainer>
         <RowContainer>
           <MyText fontSize={14} color="rgba(0, 0, 0, 0.3)">
-            {breed}
+            {species}
           </MyText>
           <Divider
             isVertical
             style={{ height: rpWidth(10), marginHorizontal: rpWidth(5) }}
           />
           <MyText fontSize={14} color="rgba(0, 0, 0, 0.3)">
-            {new Date().getFullYear() - Number(birthYear || 1997) + 1}세
+            {birthYear
+              ? `${new Date().getFullYear() - Number(birthYear || 1997) + 1}세`
+              : "나이 미상"}
           </MyText>
           <Divider
             isVertical
             style={{ height: rpWidth(10), marginHorizontal: rpWidth(5) }}
           />
           <MyText fontSize={14} color="rgba(0, 0, 0, 0.3)">
-            {gender}
+            {sex ? "남" : "여"}
           </MyText>
         </RowContainer>
         <View style={{ marginTop: rpWidth(30), height: rpWidth(200) }}>
@@ -125,17 +131,19 @@ const Completion = ({
               color="rgba(0, 0, 0, 0.5)">
               디바이스 이름
             </MyText>
-            <MyText style={{ width: rpWidth(100) }}>{deviceName}</MyText>
+            <MyText style={{ width: rpWidth(100) }}>{deviceID}</MyText>
           </RowContainer>
-          <RowContainer>
-            <MyText
-              style={{ width: rpWidth(100) }}
-              fontSize={14}
-              color="rgba(0, 0, 0, 0.5)">
-              안심존
-            </MyText>
-            <MyText style={{ width: rpWidth(100) }}>내 안심존</MyText>
-          </RowContainer>
+          {safetyZoneName ? (
+            <RowContainer>
+              <MyText
+                style={{ width: rpWidth(100) }}
+                fontSize={14}
+                color="rgba(0, 0, 0, 0.5)">
+                안심존
+              </MyText>
+              <MyText style={{ width: rpWidth(100) }}>{safetyZoneName}</MyText>
+            </RowContainer>
+          ) : null}
         </View>
         <MyText
           style={{ textAlign: "center" }}

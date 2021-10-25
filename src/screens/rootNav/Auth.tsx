@@ -78,13 +78,11 @@ const Auth = () => {
   });
 
   useEffect(() => {
-    if (showBtn) {
-      Animated.timing(value, {
-        toValue: 1,
-        duration: 200,
-        useNativeDriver: true,
-      }).start();
-    }
+    Animated.timing(value, {
+      toValue: showBtn ? 1 : 0,
+      duration: 200,
+      useNativeDriver: true,
+    }).start();
   }, [showBtn]);
 
   useEffect(() => {
@@ -149,12 +147,17 @@ const Auth = () => {
               }}>
               <Input
                 ref={ref}
+                maxLength={32}
                 isWhiteBorder
                 value={name}
                 onChangeText={text => setName(text)}
                 textAlign="center"
                 onSubmitEditing={handleSubmit}
-                editable={!showBtn}
+                onFocus={() => {
+                  if (showBtn) {
+                    setShowBtn(false);
+                  }
+                }}
               />
             </InputContainer>
             {showBtn ? (

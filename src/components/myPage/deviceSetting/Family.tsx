@@ -25,7 +25,7 @@ const Item = styled.View<{ rpWidth: RpWidth }>`
 `;
 
 const Li = styled.View<{ rpWidth: RpWidth }>`
-  width:${({ rpWidth }) => rpWidth(47)}px
+  width: ${({ rpWidth }) => rpWidth(47)}px;
   align-items: center;
 `;
 
@@ -36,7 +36,9 @@ const Family = ({
   isEdit: boolean;
   deviceID: number;
 }) => {
-  const { data } = deviceApi.useGetDeviceMembersQuery(deviceID);
+  const { data } = deviceApi.useGetDeviceMembersQuery(deviceID, {
+    refetchOnMountOrArgChange: true,
+  });
   const { rpWidth } = useContext(DimensionsContext);
   const [myID, setMyID] = useState(0);
 
@@ -47,6 +49,10 @@ const Family = ({
   }, []);
 
   const [showList, setShowList] = useState(false);
+
+  useEffect(() => {
+    if (isEdit) setShowList(true);
+  }, [isEdit]);
 
   const value1 = useRef(new Animated.Value(0)).current;
 
@@ -81,12 +87,12 @@ const Family = ({
       />
       <Animated.View style={{ height: heightInterpolate, overflow: "hidden" }}>
         {data?.members.map((member, i) => (
-          <Animated.View key={`${member.user_id}-${i}`}>
+          <Animated.View key={`${member.id}-${i}`}>
             <Swipeable
               rightThreshold={rpWidth(36)}
               enableRightActions={isEdit}
               RenderRightActions={() =>
-                myID === member.user_id || myID !== data?.owner_id ? (
+                myID === member.id || myID !== data?.owner_id ? (
                   <></>
                 ) : (
                   <>
@@ -94,7 +100,7 @@ const Family = ({
                       <Bye width={rpWidth(37)} height={rpWidth(32)} />
                     </SwipeableButton>
                     <SwipeableButton backgroundColor="blue" onPress={() => {}}>
-                      <KeyWhite width={rpWidth(23)} height={rpWidth(23)} />
+                      <KeyWhite width={rpWidth(22)} height={rpWidth(22)} />
                     </SwipeableButton>
                   </>
                 )
@@ -102,7 +108,7 @@ const Family = ({
               <Item rpWidth={rpWidth}>
                 <Li rpWidth={rpWidth}>
                   <MyText style={{ marginHorizontal: rpWidth(12) }}>
-                    {data?.owner_id === member.user_id ? (
+                    {data?.owner_id === member.id ? (
                       <KeyBlue width={rpWidth(19)} height={rpWidth(19)} />
                     ) : (
                       "•"
@@ -111,12 +117,12 @@ const Family = ({
                 </Li>
                 <MyText
                   color={
-                    data?.owner_id === member.user_id
+                    data?.owner_id === member.id
                       ? palette.blue_7b_90
                       : undefined
                   }>
                   {member.nickname}
-                  {myID === member.user_id && " (나)"}
+                  {myID === member.id && " (나)"}
                 </MyText>
               </Item>
             </Swipeable>

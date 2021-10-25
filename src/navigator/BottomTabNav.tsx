@@ -25,7 +25,10 @@ const BottomTabNav = () => {
     <Tab.Navigator
       initialRouteName={initialRouteName}
       tabBar={props => (
-        <CustomBottomTabBar newNotifExists={data?.count !== 0} {...props} />
+        <CustomBottomTabBar
+          newNotifExists={data !== undefined && data.count !== 0}
+          {...props}
+        />
       )}
       screenOptions={{ headerShown: false }}>
       <Tab.Screen name="HomeTab">

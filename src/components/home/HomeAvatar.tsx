@@ -1,8 +1,8 @@
-import React, { memo, useContext } from "react";
+import React, { memo, useContext, useEffect } from "react";
 import { Animated, ViewStyle } from "react-native";
 import { useDispatch } from "react-redux";
 import styled, { css } from "styled-components/native";
-import { Device } from "~/api/device";
+import deviceApi, { Device } from "~/api/device";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import { commonActions } from "~/store/common";
 import AnimatedCircularProgress from "../common/AnimatedCircularProgress";
@@ -63,6 +63,20 @@ const HomeAvatar = ({
 }: IProps) => {
   const { rpWidth } = useContext(DimensionsContext);
   const dispatch = useDispatch();
+  const [trigger, { data }] = deviceApi.useLazyGetDeviceCoordQuery();
+
+  useEffect(() => {
+    console.log(data?.coordinate?.coordinates);
+    if (data?.coordinate?.coordinates) {
+      dispatch(commonActions.setIsDeviceMoved(false));
+      dispatch(
+        commonActions.setDeviceCoord({
+          latitude: data?.coordinate?.coordinates[0],
+          longitude: data?.coordinate?.coordinates[1],
+        }),
+      );
+    }
+  }, [data]);
 
   return (
     <Animated.View style={style}>
@@ -72,13 +86,8 @@ const HomeAvatar = ({
         length={length}
         index={index}
         onPress={() => {
-          dispatch(commonActions.setIsDeviceMoved(false));
-          /* dispatch(
-            commonActions.setDeviceCoord({
-              latitude: device.latitude,
-              longitude: device.longitude,
-            }),
-          ); */
+          dispatch(commonActions.setDeviceCoord({ latitude: 0, longitude: 0 }));
+          trigger(device.id);
         }}>
         <AnimatedCircularProgress
           avatar={device.profile_image}

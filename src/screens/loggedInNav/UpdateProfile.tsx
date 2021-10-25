@@ -1,17 +1,23 @@
-import React, { useContext } from "react";
-import { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { View } from "react-native";
+import { useDispatch } from "react-redux";
 import styled, { css } from "styled-components/native";
+import deviceApi from "~/api/device";
 import Button from "~/components/common/Button";
 import KeyboardAwareScrollContainer from "~/components/common/container/KeyboardAwareScrollContainer";
 import Input from "~/components/common/Input";
 import InputTitle from "~/components/common/InputTitle";
 import SelectableButton from "~/components/common/SelectableButton";
+import { noAvatar } from "~/constants";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
-import {
-  UpdateProfileRouteProp,
-  UpdateProfileScreenNavigationProp,
-} from "~/types/navigator";
+import useModal from "~/hooks/useModal";
+import { store, useAppSelector } from "~/store";
+import { deviceSettingActions } from "~/store/deviceSetting";
+import { UpdateProfileScreenProps } from "~/types/navigator";
+import imageHandler from "~/utils/imageHandler";
+import Modal from "react-native-modal";
+import CommonCenterModal from "~/components/modal/CommonCenterModal";
+import DatePicker from "react-native-date-picker";
 
 const AvatarButton = styled.TouchableOpacity<{ rpWidth: RpWidth }>`
   ${({ rpWidth }) => css`
@@ -40,97 +46,186 @@ const RowContainer = styled.View`
 
 const UpdateProfile = ({
   navigation,
-}: {
-  navigation: UpdateProfileScreenNavigationProp;
-}) => {
+  route: {
+    params: { deviceID },
+  },
+}: UpdateProfileScreenProps) => {
   const { rpWidth } = useContext(DimensionsContext);
-  const [name, setName] = useState(device.name);
-  const [birthYear, setBirthYear] = useState("1997");
-  const [birtyMonth, setBirthMonth] = useState("11");
-  const [birthDay, setBirthDay] = useState("19");
-  const [gender, setGender] = useState(device.gender);
-  const [breed, setBreed] = useState(device.breed);
-  const [weight, setWeight] = useState(String(device.weight));
-  const [etc, setEtc] = useState(device.etc);
+  const {
+    name,
+    birthYear,
+    birthMonth,
+    birthDay,
+    species,
+    photos,
+    sex,
+    weight,
+  } = useAppSelector(state => state.deviceSetting.profile);
+  const dispatch = useDispatch();
+  const [triggerProfile] = deviceApi.useUpdateDeviceProfileMutation();
+  const [triggerAvatar] = deviceApi.useUpdateDeviceProfileAvatarMutation();
+  const [loading, setLoading] = useState(false);
+  const { open, close, modalProps } = useModal();
+  const [date, setDate] = useState(
+    birthYear ? new Date(birthYear, birthMonth, birthDay) : new Date(),
+  );
 
-  const openGallery = () => {};
+  const handleSubmit = async () => {
+    if (loading) return;
+    try {
+      setLoading(true);
+      if (photos[0] && !photos[0].includes("amazonaws")) {
+        const { profile_image } = await triggerAvatar({
+          deviceID,
+          body: imageHandler.handleFormData(photos[0], "profile_image"),
+        }).unwrap();
+        store.dispatch(
+          deviceApi.util.updateQueryData(
+            "getDeviceProfile",
+            deviceID,
+            draft => {
+              draft.profile_image = profile_image;
+            },
+          ),
+        );
+      }
+
+      await triggerProfile({
+        deviceID,
+        body: {
+          name,
+          sex,
+          weight: parseInt(weight, 10),
+          species,
+          birthdate: `${birthYear}-${birthMonth}-${birthDay}`,
+        },
+      }).unwrap();
+      navigation.goBack();
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      dispatch(deviceSettingActions.setProfile(null));
+    };
+  }, []);
 
   return (
-    <KeyboardAwareScrollContainer isSpaceBetween>
-      <View style={{ marginBottom: rpWidth(30) }}>
-        <AvatarButton rpWidth={rpWidth}>
-          <Image source={require("~/assets/image/test.jpg")} />
-        </AvatarButton>
-        <InputContainer rpWidth={rpWidth}>
-          <InputTitle>이름</InputTitle>
-          <Input value={name} onChangeText={text => setName(text)} />
-          <InputTitle>생년월일</InputTitle>
-          <RowContainer>
+    <>
+      <KeyboardAwareScrollContainer isSpaceBetween>
+        <View style={{ marginBottom: rpWidth(30) }}>
+          <AvatarButton
+            onPress={imageHandler.openCircleCropper}
+            rpWidth={rpWidth}>
+            <Image source={photos[0] ? { uri: photos[0] } : noAvatar} />
+          </AvatarButton>
+          <InputContainer rpWidth={rpWidth}>
+            <InputTitle>이름</InputTitle>
             <Input
-              value={birthYear}
-              onChangeText={text => setBirthYear(text)}
-              keyboardType="number-pad"
-              containerStyle={{
-                width: "34.48%",
-                marginRight: "6.9%",
-              }}
-              solidPlaceholderTitle="년"
-              textAlign="center"
+              maxLength={16}
+              value={name}
+              onChangeText={text =>
+                dispatch(deviceSettingActions.setProfile({ name: text }))
+              }
             />
-            <Input
-              value={birtyMonth}
-              onChangeText={text => setBirthMonth(text)}
-              keyboardType="number-pad"
-              containerStyle={{
-                width: "25.86%",
-                marginRight: "6.9%",
-              }}
-              solidPlaceholderTitle="월"
-              textAlign="center"
-            />
-            <Input
-              value={birthDay}
-              onChangeText={text => setBirthDay(text)}
-              keyboardType="number-pad"
-              containerStyle={{
-                width: "25.86%",
-                marginRight: "6.9%",
-              }}
-              solidPlaceholderTitle="일"
-              textAlign="center"
-            />
-          </RowContainer>
-          <InputTitle>성별</InputTitle>
-          <RowContainer>
+            <InputTitle>생년월일</InputTitle>
             <SelectableButton
-              style={{ flexGrow: 1, marginRight: rpWidth(20) }}
-              onPress={() => setGender("남")}
-              selected={gender === "남"}>
-              남
+              fontColor="rgba(0, 0, 0, 0.8)"
+              selected={!!birthYear}
+              onPress={open}>
+              {birthYear || ""}
+              {birthYear ? "년" : ""} {birthMonth || ""}
+              {birthYear ? "월" : ""} {birthDay || ""}
+              {birthYear ? "일" : ""}
             </SelectableButton>
-            <SelectableButton
-              style={{ flexGrow: 1 }}
-              onPress={() => setGender("여")}
-              selected={gender === "여"}>
-              여
-            </SelectableButton>
-          </RowContainer>
-          <InputTitle>품종</InputTitle>
-          <Input value={breed} onChangeText={text => setBreed(text)} />
-          <InputTitle>체중</InputTitle>
-          <Input
-            value={weight}
-            onChangeText={text => setWeight(text)}
-            keyboardType="number-pad"
-            solidPlaceholderTitle="kg"
-            alignLeftSolidPlaceholderWhenFocus
+            <InputTitle>성별</InputTitle>
+            <RowContainer>
+              <SelectableButton
+                style={{ flexGrow: 1, marginRight: rpWidth(20) }}
+                onPress={() =>
+                  dispatch(deviceSettingActions.setProfile({ sex: true }))
+                }
+                selected={sex}>
+                남
+              </SelectableButton>
+              <SelectableButton
+                style={{ flexGrow: 1 }}
+                onPress={() =>
+                  dispatch(deviceSettingActions.setProfile({ sex: false }))
+                }
+                selected={!sex}>
+                여
+              </SelectableButton>
+            </RowContainer>
+            <InputTitle>품종</InputTitle>
+            <Input
+              maxLength={16}
+              value={species}
+              onChangeText={text =>
+                dispatch(deviceSettingActions.setProfile({ species: text }))
+              }
+            />
+            <InputTitle>체중</InputTitle>
+            <Input
+              value={weight}
+              onChangeText={text =>
+                dispatch(
+                  deviceSettingActions.setProfile({
+                    weight: text.replace(/[^0-9]/g, ""),
+                  }),
+                )
+              }
+              keyboardType="number-pad"
+              solidPlaceholderTitle="kg"
+              alignLeftSolidPlaceholderWhenFocus
+            />
+          </InputContainer>
+        </View>
+        <Button
+          disabled={
+            !name ||
+            !birthYear ||
+            !birthMonth ||
+            !birthDay ||
+            !species ||
+            !weight
+          }
+          isLoading={loading}
+          useCommonMarginBottom
+          onPress={handleSubmit}>
+          확인
+        </Button>
+      </KeyboardAwareScrollContainer>
+      <Modal {...modalProps({ type: "center" })}>
+        <CommonCenterModal
+          rightButtonText="확인"
+          onRightButtonPress={() => {
+            dispatch(
+              deviceSettingActions.setProfile({
+                birthYear: date.getFullYear(),
+                birthMonth: date.getMonth() + 1,
+                birthDay: date.getDate(),
+              }),
+            );
+            close();
+          }}
+          close={close}
+          style={{ width: rpWidth(300) }}>
+          <DatePicker
+            style={{
+              width: rpWidth(300),
+            }}
+            date={date}
+            onDateChange={setDate}
+            mode="date"
+            maximumDate={new Date()}
           />
-          <InputTitle>기타사항</InputTitle>
-          <Input value={etc} onChangeText={text => setEtc(text)} />
-        </InputContainer>
-      </View>
-      <Button useCommonMarginBottom>확인</Button>
-    </KeyboardAwareScrollContainer>
+        </CommonCenterModal>
+      </Modal>
+    </>
   );
 };
 
