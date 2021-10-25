@@ -61,6 +61,10 @@ LocaleConfig.locales["ko"] = {
 };
 LocaleConfig.defaultLocale = "ko";
 
+interface DateObj {
+  [date: string]: { dots: { key: string; color: string }[] };
+}
+
 const WalkDetailMonth = ({
   navigation,
   route: {
@@ -71,9 +75,7 @@ const WalkDetailMonth = ({
     year: new Date().getFullYear(),
     month: new Date().getMonth() + 1,
   });
-  const [dateObj, setDateObj] = useState<{
-    [date: string]: { dots: { key: string; color: string }[] };
-  }>({});
+  const [dateObj, setDateObj] = useState<DateObj>({});
   const { data } = deviceApi.useGetMonthlyWalkRecordQuery(
     {
       deviceID,
@@ -91,7 +93,6 @@ const WalkDetailMonth = ({
   useEffect(() => {
     if (initialDate) {
       const date = new Date(initialDate);
-      console.log(date);
       navigation.navigate("WalkDetailDay", {
         deviceID,
         avatar,
@@ -102,9 +103,11 @@ const WalkDetailMonth = ({
 
   useEffect(() => {
     if (!data?.day_count.length) return;
+    // markedDates obj 변경되어도 달력의 dots 변화없는 문제 해결
+    // https://github.com/wix/react-native-calendars/issues/726#issuecomment-458659037
+    const obj: DateObj = JSON.parse(JSON.stringify(dateObj));
     // 날짜 배열 아래와 같이 생성
     //  [["2021-10-16", 0], ["2021-10-17", 0], ["2021-10-17", 1]]
-    const obj = {};
     const dateArr = data.day_count
       .map(({ date, count }) => {
         const arr: string[][] = [];
@@ -114,13 +117,27 @@ const WalkDetailMonth = ({
         return arr;
       })
       .flat();
-    dateArr.forEach(date => {
+
+    dateArr.forEach((date, i, arr) => {
       // 날짜 key가 없으면 새로 생성
       if (!obj[date[0]]) {
         obj[date[0]] = { dots: [{ key: date[1], color: palette.blue_7b }] };
-        // 날짜 key가 있는데 dots 배열에 같은 키가 없으면 push
-      } else if (!obj[date[0]].dots.some(item => item.key === date[1])) {
+        return;
+      }
+      // dots 배열의 모든 항목 중 같은 키가 없을 때 push => 중복 push 방지 목적
+      if (obj[date[0]].dots.every(item => item.key !== date[1])) {
         obj[date[0]].dots.push({ key: date[1], color: palette.blue_7b });
+        return;
+      }
+      // dots 배열의 마지막 index key가 dateArr의 마지막 count보다 많으면 그 차이만큼 splice => 산책 기록 삭제됐을 경우
+      if (
+        i === arr.length - 1 &&
+        obj[date[0]].dots[obj[date[0]].dots.length - 1].key > date[1]
+      ) {
+        const numOfStale =
+          parseInt(obj[date[0]].dots[obj[date[0]].dots.length - 1].key, 10) -
+          parseInt(date[1], 10);
+        obj[date[0]].dots.splice(-numOfStale);
       }
     });
     setDateObj(obj);

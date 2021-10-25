@@ -119,7 +119,7 @@ const deviceApi = api.injectEndpoints({
           IMEInumber,
         },
         responseHandler: async (res: Response) => {
-          const data = await res.json();
+          const data: { device_id: number } = await res.json();
           return { status: res.status, data };
         },
       }),
@@ -415,6 +415,10 @@ const deviceApi = api.injectEndpoints({
       query: ({ deviceID, date }) => ({
         url: `/devices/${deviceID}/walks/?date=${date}`,
         method: "GET",
+        responseHandler: async (res: Response) => {
+          const data: DailyWalkRecord[] = await res.json();
+          return data.reverse();
+        },
       }),
       providesTags: result => providesList(result, "Walk"),
     }),
