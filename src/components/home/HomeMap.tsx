@@ -11,10 +11,13 @@ import { useDispatch } from "react-redux";
 import { commonActions } from "~/store/common";
 import { getAddressByCoord } from "~/api/place";
 import MyLocationButton from "./MyLocationButton";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { isAndroid } from "~/utils";
 
 const HomeMap = () => {
   const mapRef = useRef<NaverMapView>(null);
   const { rpWidth } = useContext(DimensionsContext);
+  const { top } = useSafeAreaInsets();
   const trackingId = useRef<number | null>(null);
   const appState = useAppState();
   const isFocused = useIsFocused();
@@ -88,6 +91,7 @@ const HomeMap = () => {
     <>
       <Map
         ref={mapRef}
+        mapPadding={{ top: isAndroid ? top : 0 }}
         onMapClick={() => {
           dispatch(commonActions.setAddress(""));
         }}>

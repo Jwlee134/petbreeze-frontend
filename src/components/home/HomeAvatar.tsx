@@ -79,16 +79,16 @@ const HomeAvatar = ({
   }, [data]);
 
   return (
-    <Animated.View style={style}>
-      <Pressable
-        onLongPress={() => onAvatarLongPress(device.id)}
-        rpWidth={rpWidth}
-        length={length}
-        index={index}
-        onPress={() => {
-          dispatch(commonActions.setDeviceCoord({ latitude: 0, longitude: 0 }));
-          trigger(device.id);
-        }}>
+    <Pressable
+      onLongPress={() => onAvatarLongPress(device.id)}
+      rpWidth={rpWidth}
+      length={length}
+      index={index}
+      onPress={() => {
+        dispatch(commonActions.setDeviceCoord({ latitude: 0, longitude: 0 }));
+        trigger(device.id);
+      }}>
+      <Animated.View style={style}>
         <AnimatedCircularProgress
           avatar={device.profile_image}
           preventRpHeight
@@ -97,8 +97,8 @@ const HomeAvatar = ({
           battery={device.battery}
           highlightOnEmergency={device.is_missed}
         />
-      </Pressable>
-    </Animated.View>
+      </Animated.View>
+    </Pressable>
   );
 };
 
