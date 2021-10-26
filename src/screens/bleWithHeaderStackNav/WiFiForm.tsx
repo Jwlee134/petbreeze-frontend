@@ -29,13 +29,15 @@ const WiFiForm = ({
   const disconnected = useAppSelector(state => state.ble.disconnected);
 
   useEffect(() => {
-    WifiManager.getCurrentWifiSSID().then(ssid => {
-      dispatch(
-        deviceSettingActions.setWifi({
-          draft: { ssid },
-        }),
-      );
-    });
+    if (!ssid) {
+      WifiManager.getCurrentWifiSSID().then(ssid => {
+        dispatch(
+          deviceSettingActions.setWifi({
+            draft: { ssid },
+          }),
+        );
+      });
+    }
   }, []);
 
   return (
