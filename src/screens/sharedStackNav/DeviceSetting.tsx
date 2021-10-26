@@ -27,23 +27,37 @@ const DeviceSetting = ({
 }: DeviceSettingScreenProps) => {
   const { rpWidth } = useContext(DimensionsContext);
   const [isEdit, setIsEdit] = useState(false);
-  const { data: settings, error } = deviceApi.useGetDeviceSettingQuery(
-    deviceID,
-    {
+  const { data: settings, error: getError } =
+    deviceApi.useGetDeviceSettingQuery(deviceID, {
       refetchOnMountOrArgChange: true,
-    },
-  );
-  const [updateSetting] = deviceApi.useUpdateDeviceSettingMutation();
-  const [updateSafetyZoneThumbnail] =
+    });
+  const [updateSetting, { error: postError }] =
+    deviceApi.useUpdateDeviceSettingMutation();
+  const [updateSafetyZoneThumbnail, { error: thumbnailError }] =
     deviceApi.useUpdateSafetyZoneThumbnailMutation();
   const dispatch = useDispatch();
 
+  const callback = () => {
+    navigation.reset({
+      index: 0,
+      routes: [{ name: "MyPage" }],
+    });
+  };
+
   useError({
-    error,
+    error: getError,
     type: "Device",
-    callback: () => {
-      navigation.goBack();
-    },
+    callback,
+  });
+  useError({
+    error: postError,
+    type: "Device",
+    callback,
+  });
+  useError({
+    error: thumbnailError,
+    type: "Device",
+    callback,
   });
 
   useEffect(() => {
@@ -95,25 +109,21 @@ const DeviceSetting = ({
       }))
       .filter(area => !area.data.includes("amazonaws") && area.data);
 
-    try {
-      if (areaImages.length) {
-        const generateKey = (i: number) => `safety_area_${i}_thumbnail`;
-        const formData = imageHandler.handleFormData(areaImages, generateKey);
+    await updateSetting({
+      deviceID,
+      body: {
+        Area: areaWithoutImage,
+        Period: locationInfoCollectionPeriod as number,
+        WiFi: wifi,
+      },
+    });
+    if (areaImages.length) {
+      const generateKey = (i: number) => `safety_area_${i}_thumbnail`;
+      const formData = imageHandler.handleFormData(areaImages, generateKey);
 
-        await updateSafetyZoneThumbnail({ deviceID, body: formData }).unwrap();
-      }
-      await updateSetting({
-        deviceID,
-        body: {
-          Area: areaWithoutImage,
-          Period: locationInfoCollectionPeriod as number,
-          WiFi: wifi,
-        },
-      }).unwrap();
-      setIsEdit(false);
-    } catch (error) {
-      console.log(error);
+      await updateSafetyZoneThumbnail({ deviceID, body: formData });
     }
+    setIsEdit(false);
   };
 
   return (
@@ -153,7 +163,7 @@ const DeviceSetting = ({
         <View style={{ paddingHorizontal: rpWidth(16) }}>
           <Divider />
         </View>
-        <Family isEdit={isEdit} deviceID={deviceID} />
+        <Family isEdit={isEdit} deviceID={deviceID} callback={callback} />
       </ScrollView>
     </>
   );

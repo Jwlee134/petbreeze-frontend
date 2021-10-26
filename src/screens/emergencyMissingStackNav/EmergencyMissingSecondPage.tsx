@@ -19,6 +19,8 @@ import useModal from "~/hooks/useModal";
 import IosStyleBottomModal from "~/components/modal/IosStyleBottomModal";
 import Divider from "~/components/common/Divider";
 import palette from "~/styles/palette";
+import useError from "~/hooks/useError";
+import { navigatorActions } from "~/store/navigator";
 
 const PaddingContainer = styled.View<{ rpWidth: RpWidth }>`
   ${({ rpWidth }) => css`
@@ -69,12 +71,25 @@ const EmergencyMissingSecondPage = ({
   } = useAppSelector(state => state.deviceSetting.profile);
   const dispatch = useDispatch();
   const { width, rpWidth } = useContext(DimensionsContext);
-  const [trigger] = deviceApi.usePostEmergencyMissingMutation();
+  const [trigger, { error }] = deviceApi.usePostEmergencyMissingMutation();
   const [triggerAvatar] =
     deviceApi.useUpdateEmergencyMissingThumbnailMutation();
   const [loading, setLoading] = useState(false);
   const { open, close, modalProps } = useModal();
   const [selectedIndex, setSelectedIndex] = useState(0);
+
+  useError({
+    error,
+    type: "Device",
+    callback: () => {
+      dispatch(
+        navigatorActions.setInitialRoute({
+          initialBottomTabNavRouteName: "HomeTab",
+        }),
+      );
+      navigation.replace("BottomTabNav");
+    },
+  });
 
   const handleSubmit = async () => {
     const generateKey = (i: number) => `image${i}_thumbnail`;

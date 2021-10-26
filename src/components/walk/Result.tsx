@@ -19,6 +19,7 @@ import { formatWalkDistance } from "~/utils";
 import deviceApi from "~/api/device";
 import imageHandler from "~/utils/imageHandler";
 import allSettled from "promise.allsettled";
+import useError from "~/hooks/useError";
 
 const Container = styled.View`
   align-items: center;
@@ -59,9 +60,13 @@ const Result = () => {
   const { viewShotRef, deviceList } = useContext(WalkContext);
   const dispatch = useDispatch();
   const navigation = useNavigation<WalkMapScreenNavigationProp>();
-  const [postWalk] = deviceApi.usePostWalkMutation();
-  const [postWalkThumbnail] = deviceApi.usePatchWalkThumbnailMutation();
+  const [postWalk, { error: postError }] = deviceApi.usePostWalkMutation();
+  const [postWalkThumbnail, { error: patchError }] =
+    deviceApi.usePatchWalkThumbnailMutation();
   const [loading, setLoading] = useState(false);
+
+  useError({ error: postError, type: "Device" });
+  useError({ error: patchError, type: "Device" });
 
   const { startTime, duration, meter, coords, selectedDeviceId } =
     useAppSelector(state => state.storage.walk);

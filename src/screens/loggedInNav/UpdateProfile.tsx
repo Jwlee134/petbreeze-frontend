@@ -18,6 +18,8 @@ import imageHandler from "~/utils/imageHandler";
 import Modal from "react-native-modal";
 import CommonCenterModal from "~/components/modal/CommonCenterModal";
 import DatePicker from "react-native-date-picker";
+import { navigatorActions } from "~/store/navigator";
+import useError from "~/hooks/useError";
 
 const AvatarButton = styled.TouchableOpacity<{ rpWidth: RpWidth }>`
   ${({ rpWidth }) => css`
@@ -62,49 +64,54 @@ const UpdateProfile = ({
     weight,
   } = useAppSelector(state => state.deviceSetting.profile);
   const dispatch = useDispatch();
-  const [triggerProfile] = deviceApi.useUpdateDeviceProfileMutation();
-  const [triggerAvatar] = deviceApi.useUpdateDeviceProfileAvatarMutation();
+  const [triggerProfile, { error: profileError }] =
+    deviceApi.useUpdateDeviceProfileMutation();
+  const [triggerAvatar, { error: avatarError }] =
+    deviceApi.useUpdateDeviceProfileAvatarMutation();
   const [loading, setLoading] = useState(false);
   const { open, close, modalProps } = useModal();
   const [date, setDate] = useState(
     birthYear ? new Date(birthYear, birthMonth, birthDay) : new Date(),
   );
 
+  const callback = () => {
+    dispatch(
+      navigatorActions.setInitialRoute({
+        initialBottomTabNavRouteName: "MyPageTab",
+      }),
+    );
+    navigation.replace("BottomTabNav");
+  };
+
+  useError({ error: profileError, type: "Device", callback });
+  useError({ error: avatarError, type: "Device", callback });
+
   const handleSubmit = async () => {
     if (loading) return;
-    try {
-      setLoading(true);
-      if (photos[0] && !photos[0].includes("amazonaws")) {
-        const { profile_image } = await triggerAvatar({
-          deviceID,
-          body: imageHandler.handleFormData(photos[0], "profile_image"),
-        }).unwrap();
-        store.dispatch(
-          deviceApi.util.updateQueryData(
-            "getDeviceProfile",
-            deviceID,
-            draft => {
-              draft.profile_image = profile_image;
-            },
-          ),
-        );
-      }
-
-      await triggerProfile({
+    setLoading(true);
+    if (photos[0] && !photos[0].includes("amazonaws")) {
+      const { profile_image } = await triggerAvatar({
         deviceID,
-        body: {
-          name,
-          sex,
-          weight: parseInt(weight, 10),
-          species,
-          birthdate: `${birthYear}-${birthMonth}-${birthDay}`,
-        },
+        body: imageHandler.handleFormData(photos[0], "profile_image"),
       }).unwrap();
-      navigation.goBack();
-    } catch (error) {
-      console.log(error);
-      setLoading(false);
+      store.dispatch(
+        deviceApi.util.updateQueryData("getDeviceProfile", deviceID, draft => {
+          draft.profile_image = profile_image;
+        }),
+      );
     }
+    await triggerProfile({
+      deviceID,
+      body: {
+        name,
+        sex,
+        weight: parseInt(weight, 10),
+        species,
+        birthdate: `${birthYear}-${birthMonth}-${birthDay}`,
+      },
+    });
+
+    navigation.goBack();
   };
 
   useEffect(() => {

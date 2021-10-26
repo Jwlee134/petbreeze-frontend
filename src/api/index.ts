@@ -1,11 +1,8 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import * as SecureStore from "expo-secure-store";
-import Toast from "react-native-toast-message";
 import { secureItems } from "~/constants";
 
 export const baseUrl = "http://3.36.100.60/wheredog-api";
-
-let isRequesting = false;
 
 const baseQuery = fetchBaseQuery({
   baseUrl,
@@ -19,19 +16,7 @@ const baseQuery = fetchBaseQuery({
 });
 
 const api = createApi({
-  baseQuery: async (args, baseQueryApi, extraOptions) => {
-    const result = await baseQuery(args, baseQueryApi, extraOptions);
-
-    if (
-      result.error &&
-      "originalStatus" in result.error &&
-      result.error.originalStatus === 500
-    ) {
-      Toast.show({ type: "error", text1: "서버에 연결할 수 없습니다." });
-    }
-
-    return result;
-  },
+  baseQuery,
   tagTypes: ["Device", "Walk", "Notification", "Member"],
   endpoints: () => ({}),
 });

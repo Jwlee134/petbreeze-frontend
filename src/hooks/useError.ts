@@ -15,8 +15,18 @@ const useError = ({
   callback?: () => void;
 }) => {
   useEffect(() => {
-    if (!error || !("status" in error)) return;
+    if (!error) return;
+
+    if ("originalStatus" in error && error.originalStatus === 500) {
+      Toast.show({ type: "error", text1: "서버에 연결할 수 없습니다." });
+      return;
+    }
+
+    if (!("status" in error)) return;
     if (type === "Device") {
+      if (error.status === 400) {
+        Toast.show({ type: "error", text1: "이미 긴급실종 상태입니다." });
+      }
       if (error.status === 403) {
         Toast.show({ type: "error", text1: "디바이스의 멤버가 아닙니다." });
       }

@@ -17,6 +17,7 @@ import * as SecureStore from "expo-secure-store";
 import { secureItems } from "~/constants";
 import KeyWhite from "~/assets/svg/myPage/key-white.svg";
 import KeyBlue from "~/assets/svg/myPage/key-blue.svg";
+import useError from "~/hooks/useError";
 
 const Item = styled.View<{ rpWidth: RpWidth }>`
   ${({ rpWidth }) => css`
@@ -36,15 +37,24 @@ const Li = styled.View<{ rpWidth: RpWidth }>`
 const Family = ({
   isEdit,
   deviceID,
+  callback,
 }: {
   isEdit: boolean;
   deviceID: number;
+  callback: () => void;
 }) => {
   const { data } = deviceApi.useGetDeviceMembersQuery(deviceID, {
     refetchOnMountOrArgChange: true,
   });
+  const [deleteMember, { error: deleteError }] =
+    deviceApi.useDeleteDeviceMemberMutation();
+  const [updateOwner, { error: updateError }] =
+    deviceApi.useUpdateDeviceOwnerMutation();
   const { rpWidth } = useContext(DimensionsContext);
   const [myID, setMyID] = useState(0);
+
+  useError({ error: deleteError, type: "Device", callback });
+  useError({ error: updateError, type: "Device", callback });
 
   useEffect(() => {
     SecureStore.getItemAsync(secureItems.userID).then(id => {
@@ -98,10 +108,18 @@ const Family = ({
                   <></>
                 ) : (
                   <>
-                    <SwipeableButton backgroundColor="red" onPress={() => {}}>
+                    <SwipeableButton
+                      backgroundColor="red"
+                      onPress={() => {
+                        deleteMember({ deviceID, userID: member.id });
+                      }}>
                       <Bye width={rpWidth(37)} height={rpWidth(32)} />
                     </SwipeableButton>
-                    <SwipeableButton backgroundColor="blue" onPress={() => {}}>
+                    <SwipeableButton
+                      backgroundColor="blue"
+                      onPress={() => {
+                        updateOwner({ deviceID, userID: member.id });
+                      }}>
                       <KeyWhite width={rpWidth(22)} height={rpWidth(22)} />
                     </SwipeableButton>
                   </>

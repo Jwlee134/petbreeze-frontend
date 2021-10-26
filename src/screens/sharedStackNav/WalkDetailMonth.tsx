@@ -21,6 +21,7 @@ import { useDispatch } from "react-redux";
 import { storageActions } from "~/store/storage";
 import { navigatorActions } from "~/store/navigator";
 import { useAppSelector } from "~/store";
+import useError from "~/hooks/useError";
 
 const TopContainer = styled.View`
   align-items: center;
@@ -76,7 +77,7 @@ const WalkDetailMonth = ({
     month: new Date().getMonth() + 1,
   });
   const [dateObj, setDateObj] = useState<DateObj>({});
-  const { data } = deviceApi.useGetMonthlyWalkRecordQuery(
+  const { data, error } = deviceApi.useGetMonthlyWalkRecordQuery(
     {
       deviceID,
       year: date.year,
@@ -89,6 +90,12 @@ const WalkDetailMonth = ({
   const { date: initialDate } = useAppSelector(
     state => state.navigator.initialWalkRecordParams,
   );
+
+  useError({
+    error,
+    type: "Device",
+    callback: navigation.goBack,
+  });
 
   useEffect(() => {
     if (initialDate) {

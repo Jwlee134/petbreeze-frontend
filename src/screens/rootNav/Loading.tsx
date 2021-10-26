@@ -9,6 +9,7 @@ import * as SecureStore from "expo-secure-store";
 import { useAppSelector } from "~/store";
 import userApi from "~/api/user";
 import { secureItems } from "~/constants";
+import useError from "~/hooks/useError";
 
 const Loading = ({
   navigation,
@@ -17,10 +18,19 @@ const Loading = ({
   },
 }: LoadingScreenProps) => {
   const { isPermissionAllowed } = useAppSelector(state => state.storage.init);
-  const [postFacebookUser] = userApi.useFacebookLoginMutation();
-  const [postKakaoUser] = userApi.useKakaoLoginMutation();
+  const [postFacebookUser, { error: fbError }] =
+    userApi.useFacebookLoginMutation();
+  const [postKakaoUser, { error: kakaoError }] =
+    userApi.useKakaoLoginMutation();
   const [updateNickname] = userApi.useUpdateNicknameMutation();
   const dispatch = useDispatch();
+
+  const callback = () => {
+    navigation.replace("Auth");
+  };
+
+  useError({ error: fbError, type: "Auth", callback });
+  useError({ error: kakaoError, type: "Auth", callback });
 
   useEffect(() => {
     const saveTokens = async (
@@ -36,38 +46,33 @@ const Loading = ({
     };
 
     const signUp = async () => {
-      try {
-        const firebaseToken = await messaging().getToken();
-        if (userID) {
-          const data = await postFacebookUser({
-            accessToken: token,
-            firebaseToken,
-            userID,
-          }).unwrap();
-          console.log(data.key, firebaseToken, data.user_id);
-          await saveTokens(data.key, firebaseToken, data.user_id);
-        } else {
-          const { key, user_id } = await postKakaoUser({
-            accessToken: token,
-            firebaseToken,
-          }).unwrap();
-          console.log(key, firebaseToken, user_id);
-          await saveTokens(key, firebaseToken, user_id);
-        }
-        await updateNickname(nickname).unwrap();
-
-        dispatch(
-          navigatorActions.setInitialRoute({
-            initialBleWithHeaderStackNavRouteName: "DeviceCheck",
-            initialLoggedInNavRouteName:
-              isIos && !isPermissionAllowed ? "Permissions" : "BleRootStackNav",
-          }),
-        );
-        navigation.replace("LoggedInNav");
-      } catch (error) {
-        console.log(error);
-        navigation.replace("Auth");
+      const firebaseToken = await messaging().getToken();
+      if (userID) {
+        const data = await postFacebookUser({
+          accessToken: token,
+          firebaseToken,
+          userID,
+        }).unwrap();
+        console.log(data.key, firebaseToken, data.user_id);
+        await saveTokens(data.key, firebaseToken, data.user_id);
+      } else {
+        const { key, user_id } = await postKakaoUser({
+          accessToken: token,
+          firebaseToken,
+        }).unwrap();
+        console.log(key, firebaseToken, user_id);
+        await saveTokens(key, firebaseToken, user_id);
       }
+      await updateNickname(nickname);
+
+      dispatch(
+        navigatorActions.setInitialRoute({
+          initialBleWithHeaderStackNavRouteName: "DeviceCheck",
+          initialLoggedInNavRouteName:
+            isIos && !isPermissionAllowed ? "Permissions" : "BleRootStackNav",
+        }),
+      );
+      navigation.replace("LoggedInNav");
     };
 
     signUp();

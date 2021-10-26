@@ -1,9 +1,9 @@
 import { useNavigation } from "@react-navigation/native";
 import React, { useContext } from "react";
-import { useDispatch } from "react-redux";
 import styled, { css } from "styled-components/native";
 import deviceApi, { Device } from "~/api/device";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
+import useError from "~/hooks/useError";
 import palette from "~/styles/palette";
 import { HomeScreenNavigationProp } from "~/types/navigator";
 import AnimatedCircularProgress from "../common/AnimatedCircularProgress";
@@ -34,7 +34,9 @@ const Button = styled.TouchableOpacity<{ rpWidth: RpWidth }>`
 const HomeBottomModal = ({ device, close }: IProps) => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
   const { rpWidth } = useContext(DimensionsContext);
-  const [trigger] = deviceApi.useDeleteEmergencyMissingMutation();
+  const [trigger, { error }] = deviceApi.useDeleteEmergencyMissingMutation();
+
+  useError({ error, type: "Device", callback: close });
 
   return (
     <>
@@ -64,7 +66,7 @@ const HomeBottomModal = ({ device, close }: IProps) => {
       <Divider />
       <Button
         rpWidth={rpWidth}
-        onPress={async () => {
+        onPress={() => {
           if (!device.is_missed) {
             close();
             navigation.navigate("EmergencyMissingStackNav", {
@@ -73,10 +75,8 @@ const HomeBottomModal = ({ device, close }: IProps) => {
               deviceID: device.id,
             });
           } else {
-            try {
-              close();
-              await trigger(device.id).unwrap();
-            } catch (error) {}
+            close();
+            trigger(device.id);
           }
         }}>
         <MyText color={palette.red_f0}>

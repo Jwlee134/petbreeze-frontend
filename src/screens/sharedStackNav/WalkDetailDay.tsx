@@ -17,6 +17,7 @@ import useModal from "~/hooks/useModal";
 import IosStyleBottomModal from "~/components/modal/IosStyleBottomModal";
 import { useDispatch } from "react-redux";
 import { navigatorActions } from "~/store/navigator";
+import useError from "~/hooks/useError";
 
 const Container = styled.View<{ rpWidth: RpWidth }>`
   ${({ rpWidth }) => css`
@@ -80,14 +81,36 @@ const WalkDetailDay = ({
   },
 }: WalkDetailDayScreenProps) => {
   const { rpWidth, width } = useContext(DimensionsContext);
-  const { data } = deviceApi.useGetDailyWalkRecordQuery({
-    deviceID,
-    date,
-  });
+  const { data, error: getError } = deviceApi.useGetDailyWalkRecordQuery(
+    {
+      deviceID,
+      date,
+    },
+    { refetchOnMountOrArgChange: true },
+  );
   const dispatch = useDispatch();
-  const [deleteWalk] = deviceApi.useDeleteWalkRecordMutation();
+  const [deleteWalk, { error: deleteError }] =
+    deviceApi.useDeleteWalkRecordMutation();
   const { open, close, modalProps } = useModal();
   const [walkID, setWalkID] = useState(0);
+
+  const callback = () => {
+    navigation.reset({
+      index: 0,
+      routes: [{ name: "WalkTopTabNav" }],
+    });
+  };
+
+  useError({
+    error: getError,
+    type: "Device",
+    callback,
+  });
+  useError({
+    error: deleteError,
+    type: "Device",
+    callback,
+  });
 
   const formatPeriod = (from: string, duration: number) => {
     const formatFrom = new Date(from);
@@ -104,13 +127,9 @@ const WalkDetailDay = ({
     }`;
   };
 
-  const deleteRecord = async () => {
-    try {
-      close();
-      await deleteWalk({ deviceID, walkID, date }).unwrap();
-    } catch (error) {
-      console.log(error);
-    }
+  const deleteRecord = () => {
+    close();
+    deleteWalk({ deviceID, walkID, date });
   };
 
   useEffect(() => {
