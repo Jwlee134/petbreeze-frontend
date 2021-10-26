@@ -28,7 +28,7 @@ const SearchResult = () => {
     }[]
   >([]);
   const dispatch = useDispatch();
-  const { height, rpWidth } = useContext(DimensionsContext);
+  const { rpWidth } = useContext(DimensionsContext);
 
   useEffect(() => {
     if (value) {
@@ -49,7 +49,6 @@ const SearchResult = () => {
       contentContainerStyle={{
         paddingTop: top + rpWidth(71),
         paddingHorizontal: rpWidth(17),
-        minHeight: height,
       }}>
       {data.length ? (
         data.map((item, i) => <SearchResultItem item={item} key={i} />)
@@ -63,7 +62,7 @@ const SearchResult = () => {
               onPress={() =>
                 dispatch(storageActions.setSafetyZoneSearchHistory(null))
               }
-              style={{ marginTop: rpWidth(25), textAlign: "center" }}
+              style={{ marginVertical: rpWidth(25), textAlign: "center" }}
               fontSize={14}
               color="rgba(0, 0, 0, 0.5)">
               검색 히스토리 삭제

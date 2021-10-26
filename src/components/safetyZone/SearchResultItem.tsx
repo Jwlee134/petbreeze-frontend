@@ -5,7 +5,6 @@ import Search from "~/assets/svg/search.svg";
 import MyText from "~/components/common/MyText";
 import { useDispatch } from "react-redux";
 import { storageActions } from "~/store/storage";
-import { useAppSelector } from "~/store";
 import { deviceSettingActions } from "~/store/deviceSetting";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 
@@ -44,15 +43,7 @@ const SearchResultItem = ({
             dispatch(
               deviceSettingActions.setSafetyZone({
                 isSearchMode: false,
-              }),
-            );
-            dispatch(
-              deviceSettingActions.setSafetyZone({
                 animateCamera: true,
-              }),
-            );
-            dispatch(
-              deviceSettingActions.setSafetyZone({
                 draft: {
                   coord: { latitude: item.latitude, longitude: item.longitude },
                 },
