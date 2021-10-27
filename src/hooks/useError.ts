@@ -31,6 +31,13 @@ const useError = ({
         Toast.show({ type: "error", text1: "디바이스의 멤버가 아닙니다." });
       }
       if (error.status === 404) {
+        if (error.data.detail.includes("Walk")) {
+          Toast.show({
+            type: "error",
+            text1: "산책 기록이 존재하지 않습니다.",
+          });
+          return;
+        }
         Toast.show({ type: "error", text1: "디바이스가 존재하지 않습니다." });
       }
       store.dispatch(

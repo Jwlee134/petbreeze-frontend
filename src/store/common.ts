@@ -9,6 +9,9 @@ interface IState {
     };
     isDeviceMoved: boolean;
   };
+  walk: {
+    dateOfDeletedRecord: string;
+  };
 }
 
 const initialState: IState = {
@@ -19,6 +22,9 @@ const initialState: IState = {
       longitude: 0,
     },
     isDeviceMoved: true,
+  },
+  walk: {
+    dateOfDeletedRecord: "",
   },
 };
 
@@ -37,6 +43,9 @@ const common = createSlice({
       { payload }: PayloadAction<{ latitude: number; longitude: number }>,
     ) => {
       state.home.deviceCoord = payload;
+    },
+    setDateOfDeleteRecord: (state, { payload }: PayloadAction<string>) => {
+      state.walk.dateOfDeletedRecord = payload;
     },
   },
 });

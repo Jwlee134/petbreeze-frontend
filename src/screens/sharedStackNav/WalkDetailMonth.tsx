@@ -22,6 +22,7 @@ import { storageActions } from "~/store/storage";
 import { navigatorActions } from "~/store/navigator";
 import { useAppSelector } from "~/store";
 import useError from "~/hooks/useError";
+import { commonActions } from "~/store/common";
 
 const TopContainer = styled.View`
   align-items: center;
@@ -63,7 +64,7 @@ LocaleConfig.locales["ko"] = {
 LocaleConfig.defaultLocale = "ko";
 
 interface DateObj {
-  [date: string]: { dots: { key: string; color: string }[] };
+  [key: string]: { dots: { key: string; color: string }[] };
 }
 
 const WalkDetailMonth = ({
@@ -77,7 +78,7 @@ const WalkDetailMonth = ({
     month: new Date().getMonth() + 1,
   });
   const [dateObj, setDateObj] = useState<DateObj>({});
-  const { data, error } = deviceApi.useGetMonthlyWalkRecordQuery(
+  const { data, error, isFetching } = deviceApi.useGetMonthlyWalkRecordQuery(
     {
       deviceID,
       year: date.year,
@@ -90,6 +91,7 @@ const WalkDetailMonth = ({
   const { date: initialDate } = useAppSelector(
     state => state.navigator.initialWalkRecordParams,
   );
+  const { dateOfDeletedRecord } = useAppSelector(state => state.common.walk);
 
   useError({
     error,
@@ -109,13 +111,25 @@ const WalkDetailMonth = ({
   }, [initialDate]);
 
   useEffect(() => {
-    if (!data?.day_count.length) return;
     // markedDates obj 변경되어도 달력의 dots 변화없는 문제 해결
     // https://github.com/wix/react-native-calendars/issues/726#issuecomment-458659037
     const obj: DateObj = JSON.parse(JSON.stringify(dateObj));
+
+    // 기록 삭제하면 이 이펙트가 다시 실행되는데 삭제한 날짜의 dot만 제거 후 실행 종료
+    // dot 제거 후 dots 배열이 비면 해당 날짜 키 삭제
+    if (dateOfDeletedRecord && obj[dateOfDeletedRecord]) {
+      obj[dateOfDeletedRecord].dots.pop();
+      if (!obj[dateOfDeletedRecord].dots.length) {
+        delete obj[dateOfDeletedRecord];
+      }
+      setDateObj(obj);
+      dispatch(commonActions.setDateOfDeleteRecord(""));
+      return;
+    }
+
     // 날짜 배열 아래와 같이 생성
     //  [["2021-10-16", 0], ["2021-10-17", 0], ["2021-10-17", 1]]
-    const dateArr = data.day_count
+    const dateArr = data?.day_count
       .map(({ date, count }) => {
         const arr: string[][] = [];
         for (let i = 0; i < count; i++) {
@@ -125,7 +139,9 @@ const WalkDetailMonth = ({
       })
       .flat();
 
-    dateArr.forEach((date, i, arr) => {
+    if (!dateArr || !dateArr.length) return;
+
+    dateArr.forEach(date => {
       // 날짜 key가 없으면 새로 생성
       if (!obj[date[0]]) {
         obj[date[0]] = { dots: [{ key: date[1], color: palette.blue_7b }] };
@@ -134,17 +150,6 @@ const WalkDetailMonth = ({
       // dots 배열의 모든 항목 중 같은 키가 없을 때 push => 중복 push 방지 목적
       if (obj[date[0]].dots.every(item => item.key !== date[1])) {
         obj[date[0]].dots.push({ key: date[1], color: palette.blue_7b });
-        return;
-      }
-      // dots 배열의 마지막 index key가 dateArr의 마지막 count보다 많으면 그 차이만큼 splice => 산책 기록 삭제됐을 경우
-      if (
-        i === arr.length - 1 &&
-        obj[date[0]].dots[obj[date[0]].dots.length - 1].key > date[1]
-      ) {
-        const numOfStale =
-          parseInt(obj[date[0]].dots[obj[date[0]].dots.length - 1].key, 10) -
-          parseInt(date[1], 10);
-        obj[date[0]].dots.splice(-numOfStale);
       }
     });
     setDateObj(obj);
@@ -165,11 +170,13 @@ const WalkDetailMonth = ({
             setDate({ year: months[0].year, month: months[0].month });
           }}
           onDayPress={day => {
-            navigation.navigate("WalkDetailDay", {
-              deviceID,
-              avatar,
-              date: day.dateString,
-            });
+            if (Object.keys(dateObj).some(date => date === day.dateString)) {
+              navigation.navigate("WalkDetailDay", {
+                deviceID,
+                avatar,
+                date: day.dateString,
+              });
+            }
           }}
           monthFormat="M월"
           pagingEnabled
@@ -226,7 +233,8 @@ const WalkDetailMonth = ({
           isVisible={
             date.month === new Date().getMonth() + 1 &&
             data !== undefined &&
-            !data.day_count.length
+            !data.day_count.length &&
+            !isFetching
           }>
           <NoWalkRecord pointerEvents="none">
             <MyText
@@ -243,7 +251,8 @@ const WalkDetailMonth = ({
           isVisible={
             date.month === new Date().getMonth() + 1 &&
             data !== undefined &&
-            !data.day_count.length
+            !data.day_count.length &&
+            !isFetching
           }>
           <Button
             onPress={() => {

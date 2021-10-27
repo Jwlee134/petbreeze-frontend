@@ -18,6 +18,7 @@ import IosStyleBottomModal from "~/components/modal/IosStyleBottomModal";
 import { useDispatch } from "react-redux";
 import { navigatorActions } from "~/store/navigator";
 import useError from "~/hooks/useError";
+import { commonActions } from "~/store/common";
 
 const Container = styled.View<{ rpWidth: RpWidth }>`
   ${({ rpWidth }) => css`
@@ -130,6 +131,7 @@ const WalkDetailDay = ({
   const deleteRecord = () => {
     close();
     deleteWalk({ deviceID, walkID, date });
+    dispatch(commonActions.setDateOfDeleteRecord(date));
   };
 
   useEffect(() => {
