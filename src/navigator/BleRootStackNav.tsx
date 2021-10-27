@@ -6,11 +6,13 @@ import React, { useEffect } from "react";
 import useBleMaganer from "~/hooks/useBleManager";
 import BleWithoutHeaderStackNav from "./BleWithoutHeaderStackNav";
 import BleWithHeaderStackNav from "./BleWithHeaderStackNav";
-import { BleRootStackNavParamList } from "~/types/navigator";
+import {
+  BleRootStackNavParamList,
+  BleRootStackNavRouteProp,
+} from "~/types/navigator";
 import { useAppSelector } from "~/store";
 import { useDispatch } from "react-redux";
 import { deviceSettingActions } from "~/store/deviceSetting";
-import { navigatorActions } from "~/store/navigator";
 import { bleActions } from "~/store/ble";
 
 const forFade = ({ current }: StackCardInterpolationProps) => ({
@@ -21,10 +23,7 @@ const forFade = ({ current }: StackCardInterpolationProps) => ({
 
 const Stack = createStackNavigator<BleRootStackNavParamList>();
 
-const BleRootStackNav = () => {
-  const initialRouteName = useAppSelector(
-    state => state.navigator.initialBleRootStackNavRouteName,
-  );
+const BleRootStackNav = ({ route }: { route: BleRootStackNavRouteProp }) => {
   const fromDeviceSetting = useAppSelector(
     state => state.deviceSetting.safetyZone.fromDeviceSetting,
   );
@@ -39,29 +38,29 @@ const BleRootStackNav = () => {
         dispatch(deviceSettingActions.setWifi(null));
       }
       dispatch(deviceSettingActions.setSafetyZone(null));
-      dispatch(
-        navigatorActions.setInitialRoute({
-          initialBleRootStackNavRouteName: "BleWithHeaderStackNav",
-          initialBleWithHeaderStackNavRouteName: "ChargingCheck",
-          initialBleWithoutHeaderStackNavRouteName: "Scanning",
-        }),
-      );
     };
   }, []);
 
   return (
     <Stack.Navigator
-      initialRouteName={initialRouteName}
+      initialRouteName={route.params?.initialRouteName}
       screenOptions={{
         cardStyleInterpolator: forFade,
         headerShown: false,
       }}>
       <Stack.Screen
         name="BleWithHeaderStackNav"
+        initialParams={{
+          initialRouteName: route.params?.initialBleWithHeaderStackNavRouteName,
+        }}
         component={BleWithHeaderStackNav}
       />
       <Stack.Screen
         name="BleWithoutHeaderStackNav"
+        initialParams={{
+          initialRouteName:
+            route.params?.initialBleWithoutHeaderStackNavRouteName,
+        }}
         component={BleWithoutHeaderStackNav}
       />
     </Stack.Navigator>

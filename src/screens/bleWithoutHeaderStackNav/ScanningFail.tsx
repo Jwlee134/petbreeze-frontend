@@ -79,7 +79,9 @@ const ScanningFail = ({
               if (navigation.canGoBack()) {
                 navigation.goBack();
               } else {
-                navigation.replace("BleWithHeaderStackNav");
+                navigation.replace("BleWithHeaderStackNav", {
+                  initialRouteName: "DeviceCheck",
+                });
               }
             }}
             useCommonMarginBottom

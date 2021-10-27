@@ -1,15 +1,10 @@
 import React, { useEffect } from "react";
 import Loading from "~/components/common/Loading";
 import { useAppSelector } from "~/store";
-import { BleLoadingScreenNavigationProp } from "~/types/navigator";
+import { BleLoadingScreenScreenProps } from "~/types/navigator";
 
-const BleLoading = ({
-  navigation,
-}: {
-  navigation: BleLoadingScreenNavigationProp;
-}) => {
+const BleLoading = ({ navigation, route }: BleLoadingScreenScreenProps) => {
   const status = useAppSelector(state => state.ble.status);
-  const loadingText = useAppSelector(state => state.navigator.loadingText);
 
   useEffect(() => {
     if (status === "downloadingFirmware")
@@ -23,7 +18,7 @@ const BleLoading = ({
     if (status === "relationAdded") navigation.replace("Completion");
   }, [status]);
 
-  return <Loading loadingText={loadingText} />;
+  return <Loading loadingText={route.params.loadingText} />;
 };
 
 export default BleLoading;

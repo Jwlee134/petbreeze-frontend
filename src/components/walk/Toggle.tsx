@@ -18,7 +18,6 @@ import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import useModal from "~/hooks/useModal";
 import Modal from "react-native-modal";
 import CommonCenterModal from "../modal/CommonCenterModal";
-import { navigatorActions } from "~/store/navigator";
 import { useNavigation } from "@react-navigation/native";
 import { WalkMapScreenNavigationProp } from "~/types/navigator";
 
@@ -160,12 +159,9 @@ const Toggle = () => {
               setTimeout(() => {
                 dispatch(storageActions.setWalk(null));
               }, 200);
-              dispatch(
-                navigatorActions.setInitialRoute({
-                  initialBottomTabNavRouteName: "WalkTab",
-                }),
-              );
-              navigation.replace("BottomTabNav");
+              navigation.replace("BottomTabNav", {
+                initialRouteName: "WalkTab",
+              });
             } else {
               dispatch(
                 storageActions.setWalk({

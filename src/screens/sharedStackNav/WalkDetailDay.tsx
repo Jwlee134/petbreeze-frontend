@@ -1,4 +1,4 @@
-import React, { Fragment, useContext, useEffect, useState } from "react";
+import React, { Fragment, useContext, useState } from "react";
 import { FlatList, View } from "react-native";
 import styled, { css } from "styled-components/native";
 import MyText from "~/components/common/MyText";
@@ -16,7 +16,6 @@ import Modal from "react-native-modal";
 import useModal from "~/hooks/useModal";
 import IosStyleBottomModal from "~/components/modal/IosStyleBottomModal";
 import { useDispatch } from "react-redux";
-import { navigatorActions } from "~/store/navigator";
 import useError from "~/hooks/useError";
 import { commonActions } from "~/store/common";
 
@@ -78,14 +77,16 @@ const ModalDeleteButton = styled.TouchableOpacity<{ rpWidth: RpWidth }>`
 const WalkDetailDay = ({
   navigation,
   route: {
-    params: { deviceID, date, avatar },
+    params: { deviceID, date, avatarUrl },
   },
 }: WalkDetailDayScreenProps) => {
   const { rpWidth, width } = useContext(DimensionsContext);
   const { data, error: getError } = deviceApi.useGetDailyWalkRecordQuery(
     {
       deviceID,
-      date,
+      date: `${new Date(date).getFullYear()}-${
+        new Date(date).getMonth() + 1
+      }-${new Date(date).getDate()}`,
     },
     { refetchOnMountOrArgChange: true },
   );
@@ -95,23 +96,8 @@ const WalkDetailDay = ({
   const { open, close, modalProps } = useModal();
   const [walkID, setWalkID] = useState(0);
 
-  const callback = () => {
-    navigation.reset({
-      index: 0,
-      routes: [{ name: "WalkTopTabNav" }],
-    });
-  };
-
-  useError({
-    error: getError,
-    type: "Device",
-    callback,
-  });
-  useError({
-    error: deleteError,
-    type: "Device",
-    callback,
-  });
+  useError({ error: getError, type: "Device", callback: navigation.goBack });
+  useError({ error: deleteError, type: "Device", callback: navigation.goBack });
 
   const formatPeriod = (from: string, duration: number) => {
     const formatFrom = new Date(from);
@@ -134,12 +120,6 @@ const WalkDetailDay = ({
     dispatch(commonActions.setDateOfDeleteRecord(date));
   };
 
-  useEffect(() => {
-    return () => {
-      dispatch(navigatorActions.setInitialWalkRecordParams(null));
-    };
-  }, []);
-
   return (
     <>
       <FlatList
@@ -155,7 +135,7 @@ const WalkDetailDay = ({
                 <RowContainer>
                   <Avatar
                     rpWidth={rpWidth}
-                    source={avatar ? { uri: avatar } : noAvatar}
+                    source={avatarUrl ? { uri: avatarUrl } : noAvatar}
                   />
                   <View>
                     <MyText

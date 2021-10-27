@@ -8,7 +8,6 @@ import Trashcan from "~/assets/svg/trashcan/trashcan-white.svg";
 import DeviceSettingTitle from "./DeviceSettingTitle";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch } from "react-redux";
-import { navigatorActions } from "~/store/navigator";
 import { DeviceSettingScreenNavigationProp } from "~/types/navigator";
 import { useAppSelector } from "~/store";
 import { deviceSettingActions } from "~/store/deviceSetting";
@@ -81,13 +80,10 @@ const SafetyZone = ({ isEdit }: { isEdit: boolean }) => {
               fromDeviceSetting: true,
             }),
           );
-          dispatch(
-            navigatorActions.setInitialRoute({
-              initialBleRootStackNavRouteName: "BleWithoutHeaderStackNav",
-              initialBleWithoutHeaderStackNavRouteName: "SafetyZone",
-            }),
-          );
-          navigation.navigate("BleRootStackNav");
+          navigation.navigate("BleRootStackNav", {
+            initialRouteName: "BleWithoutHeaderStackNav",
+            initialBleWithoutHeaderStackNavRouteName: "SafetyZone",
+          });
         }}
       />
       <Animated.View style={[animatedStyle]}>
@@ -125,14 +121,10 @@ const SafetyZone = ({ isEdit }: { isEdit: boolean }) => {
                       currentId: id,
                     }),
                   );
-                  dispatch(
-                    navigatorActions.setInitialRoute({
-                      initialBleRootStackNavRouteName:
-                        "BleWithoutHeaderStackNav",
-                      initialBleWithoutHeaderStackNavRouteName: "SafetyZone",
-                    }),
-                  );
-                  navigation.navigate("BleRootStackNav");
+                  navigation.navigate("BleRootStackNav", {
+                    initialRouteName: "BleWithoutHeaderStackNav",
+                    initialBleWithoutHeaderStackNavRouteName: "SafetyZone",
+                  });
                 }}
                 showIcon={isEdit}>
                 <RowContainer>

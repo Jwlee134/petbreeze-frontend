@@ -9,7 +9,6 @@ import { store, useAppSelector } from "~/store";
 import ViewShot from "react-native-view-shot";
 import { useNavigation } from "@react-navigation/native";
 import { SafetyZoneScreenNavigationProp } from "~/types/navigator";
-import { navigatorActions } from "~/store/navigator";
 import { deviceSettingActions } from "~/store/deviceSetting";
 import { bleActions } from "~/store/ble";
 import Map from "../common/Map";
@@ -103,12 +102,9 @@ const SafetyZoneMap = ({ mapPadding, style }: IProps) => {
         navigation.goBack();
       } else {
         dispatch(bleActions.setStatus("sendingSafetyZone"));
-        dispatch(
-          navigatorActions.setInitialRoute({
-            initialBleWithHeaderStackNavRouteName: "RegisterProfileFirst",
-          }),
-        );
-        navigation.replace("BleWithHeaderStackNav");
+        navigation.replace("BleWithHeaderStackNav", {
+          initialRouteName: "RegisterProfileFirst",
+        });
       }
     };
     submit();

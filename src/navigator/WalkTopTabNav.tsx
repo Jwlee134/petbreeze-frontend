@@ -6,20 +6,15 @@ import {
 import StartWalking from "~/screens/walkTopTabNav/StartWalking";
 import CustomTopTabBar from "~/components/navigator/CustomTopTabBar";
 import WalkRecord from "~/screens/walkTopTabNav/WalkRecord";
-import { useAppSelector } from "~/store";
 import useDevice from "~/hooks/useDevice";
 
 const Tab = createMaterialTopTabNavigator();
 
 const WalkTopTabNav = () => {
-  const initialRouteName = useAppSelector(
-    state => state.navigator.initialWalkTopTabNavRouteName,
-  );
   const deviceList = useDevice();
 
   return (
     <Tab.Navigator
-      initialRouteName={initialRouteName}
       tabBar={(props: MaterialTopTabBarProps) => (
         <CustomTopTabBar {...props} />
       )}>

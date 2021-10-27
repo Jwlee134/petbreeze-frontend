@@ -10,7 +10,6 @@ import Modal from "react-native-modal";
 import CommonCenterModal from "~/components/modal/CommonCenterModal";
 import { useDispatch } from "react-redux";
 import { bleActions } from "~/store/ble";
-import { navigatorActions } from "~/store/navigator";
 import { useAppSelector } from "~/store";
 import { deviceSettingActions } from "~/store/deviceSetting";
 import WifiManager from "react-native-wifi-reborn";
@@ -79,21 +78,15 @@ const WiFiForm = ({
             disabled={!ssid || (!!pw && pw.length < 8)}
             onPress={() => {
               if (disconnected) {
-                dispatch(
-                  navigatorActions.setInitialRoute({
-                    initialBleWithoutHeaderStackNavRouteName: "BleLoading",
-                  }),
-                );
-                navigation.navigate("BleWithoutHeaderStackNav");
+                navigation.navigate("BleWithoutHeaderStackNav", {
+                  initialRouteName: "BleLoading",
+                });
               } else {
                 dispatch(bleActions.setStatus("connectingToWifi"));
-                dispatch(navigatorActions.setLoadingText("연결 확인중"));
-                dispatch(
-                  navigatorActions.setInitialRoute({
-                    initialBleWithoutHeaderStackNavRouteName: "BleLoading",
-                  }),
-                );
-                navigation.navigate("BleWithoutHeaderStackNav");
+                navigation.navigate("BleWithoutHeaderStackNav", {
+                  initialRouteName: "BleLoading",
+                  loadingText: "연결 확인중",
+                });
               }
             }}
             style={{

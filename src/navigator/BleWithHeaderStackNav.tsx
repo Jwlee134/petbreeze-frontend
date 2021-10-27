@@ -17,7 +17,6 @@ import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 import RegisterProfileSecond from "~/screens/bleWithHeaderStackNav/RegisterProfileSecond";
 import PreWiFiForm from "~/screens/bleWithHeaderStackNav/PreWiFiForm";
 import WiFiForm from "~/screens/bleWithHeaderStackNav/WiFiForm";
-import { useAppSelector } from "~/store";
 
 const Stack = createStackNavigator<BleWithHeaderStackNavParamList>();
 
@@ -34,17 +33,12 @@ const BleWithHeaderStackNav = ({
   navigation: BleWithHeaderStackNavScreenNavigationProp;
   route: BleWithHeaderStackNavScreenRouteProp;
 }) => {
-  const initialRouteName = useAppSelector(
-    state => state.navigator.initialBleWithHeaderStackNavRouteName,
-  );
-  const routeName = getFocusedRouteNameFromRoute(route) || initialRouteName;
+  const routeName = getFocusedRouteNameFromRoute(route);
 
   return (
     <>
       <CustomHeader
-        disableBackButton={
-          routeName === "DeviceCheck" || routeName === "PreWiFiForm"
-        }
+        disableBackButton={routeName === "PreWiFiForm"}
         currentPage={
           routeName?.includes("WiFi")
             ? 1
@@ -66,9 +60,8 @@ const BleWithHeaderStackNav = ({
         }}
       />
       <Stack.Navigator
-        initialRouteName={initialRouteName}
+        initialRouteName={route.params?.initialRouteName}
         screenOptions={{ cardStyleInterpolator: forFade, headerShown: false }}>
-        <Stack.Screen name="DeviceCheck" component={DeviceCheck} />
         <Stack.Screen name="ChargingCheck" component={ChargingCheck} />
         <Stack.Screen name="PreWiFiForm" component={PreWiFiForm} />
         <Stack.Screen name="PreSafetyZone" component={PreSafetyZone} />
@@ -81,6 +74,7 @@ const BleWithHeaderStackNav = ({
           name="RegisterProfileSecond"
           component={RegisterProfileSecond}
         />
+        <Stack.Screen name="DeviceCheck" component={DeviceCheck} />
       </Stack.Navigator>
     </>
   );

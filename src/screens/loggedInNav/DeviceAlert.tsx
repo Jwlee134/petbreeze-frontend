@@ -6,7 +6,6 @@ import MyText from "~/components/common/MyText";
 import AnimatedCircularProgress from "~/components/common/AnimatedCircularProgress";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import palette from "~/styles/palette";
-import setInitialRoute from "~/utils/setInitialRoute";
 
 import One from "~/assets/svg/number/1.svg";
 import Two from "~/assets/svg/number/2.svg";
@@ -92,8 +91,7 @@ const DeviceAlert = ({ navigation, route }) => {
   const { rpWidth } = useContext(DimensionsContext);
 
   const handlePress = () => {
-    setInitialRoute();
-    navigation.replace("LoggedInNav");
+    navigation.goBack();
   };
 
   const title: "battery" | "lostConnection" | "whereAmI" = "lostConnection";

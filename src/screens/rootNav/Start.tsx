@@ -4,14 +4,11 @@ import GradientContainer from "~/components/common/container/GradientContainer";
 import Footprint from "~/assets/svg/footprint/footprint-app-icon-blue.svg";
 import { Animated, Linking } from "react-native";
 import { StartScreenNavigationProp } from "~/types/navigator";
-import { useDispatch } from "react-redux";
 import useAnimatedSequence from "~/hooks/useAnimatedSequence";
 import * as SecureStore from "expo-secure-store";
 import { isAndroid, isIos } from "~/utils";
 import { DimensionsContext } from "~/context/DimensionsContext";
 import messaging from "@react-native-firebase/messaging";
-import setInitialRoute from "~/utils/setInitialRoute";
-import { navigatorActions } from "~/store/navigator";
 import userApi from "~/api/user";
 import { secureItems } from "~/constants";
 import notificationHandler from "~/utils/notificationHandler";
@@ -28,24 +25,22 @@ const LogoContainer = styled(Animated.View)`
 `;
 
 const Start = ({ navigation }: { navigation: StartScreenNavigationProp }) => {
-  const dispatch = useDispatch();
   const { rpWidth, rpHeight } = useContext(DimensionsContext);
   const [handleRead] = userApi.useReadNotificationsMutation();
 
   const onAnimatedFinish = async () => {
     const token = await SecureStore.getItemAsync(secureItems.token);
-    if (token) {
+    const fbToken = await SecureStore.getItemAsync(secureItems.firebaseToken);
+    if (token && fbToken) {
       console.log(`🔐 Here's your value 🔐 \n + ${token}`);
+      console.log(`🔐 Here's your fb value 🔐 \n + ${fbToken}`);
 
       if (isAndroid) {
         const link = await Linking.getInitialURL();
         if (link && link.includes("walk")) {
-          dispatch(
-            navigatorActions.setInitialRoute({
-              initialLoggedInNavRouteName: "WalkMap",
-            }),
-          );
-          navigation.replace("LoggedInNav");
+          navigation.replace("LoggedInNav", {
+            initialRouteName: "WalkMap",
+          });
           return;
         }
       }
@@ -65,9 +60,8 @@ const Start = ({ navigation }: { navigation: StartScreenNavigationProp }) => {
           }
         } */
       } else {
-        setInitialRoute();
+        navigation.replace("LoggedInNav");
       }
-      navigation.replace("LoggedInNav");
     } else {
       console.log("No values stored under that key.");
       navigation.replace("Auth");

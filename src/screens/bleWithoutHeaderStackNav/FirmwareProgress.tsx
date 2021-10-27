@@ -5,7 +5,6 @@ import AnimatedPoints from "~/components/common/AnimatedPoints";
 import useAnimatedSequence from "~/hooks/useAnimatedSequence";
 import { Animated } from "react-native";
 import palette from "~/styles/palette";
-import { useDispatch } from "react-redux";
 import Footprint from "~/assets/svg/footprint/footprint-app-icon-white.svg";
 import { FirmwareProgressScreenNavigationProp } from "~/types/navigator";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
@@ -45,7 +44,6 @@ const FirmwareProgress = ({
 }) => {
   const { rpWidth } = useContext(DimensionsContext);
   const { status, progress } = useAppSelector(state => state.ble);
-  const dispatch = useDispatch();
   const [value1] = useAnimatedSequence({
     numOfValues: 1,
     loop: true,

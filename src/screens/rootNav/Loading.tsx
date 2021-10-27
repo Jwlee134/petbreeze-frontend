@@ -1,7 +1,5 @@
 import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
 import LoadingComponent from "~/components/common/Loading";
-import { navigatorActions } from "~/store/navigator";
 import { LoadingScreenProps } from "~/types/navigator";
 import { isIos } from "~/utils";
 import messaging from "@react-native-firebase/messaging";
@@ -23,7 +21,6 @@ const Loading = ({
   const [postKakaoUser, { error: kakaoError }] =
     userApi.useKakaoLoginMutation();
   const [updateNickname] = userApi.useUpdateNicknameMutation();
-  const dispatch = useDispatch();
 
   const callback = () => {
     navigation.replace("Auth");
@@ -65,14 +62,11 @@ const Loading = ({
       }
       await updateNickname(nickname);
 
-      dispatch(
-        navigatorActions.setInitialRoute({
-          initialBleWithHeaderStackNavRouteName: "DeviceCheck",
-          initialLoggedInNavRouteName:
-            isIos && !isPermissionAllowed ? "Permissions" : "BleRootStackNav",
-        }),
-      );
-      navigation.replace("LoggedInNav");
+      navigation.replace("LoggedInNav", {
+        initialRouteName:
+          isIos && !isPermissionAllowed ? "Permissions" : "BleRootStackNav",
+        initialBleWithHeaderStackNavRouteName: "DeviceCheck",
+      });
     };
 
     signUp();

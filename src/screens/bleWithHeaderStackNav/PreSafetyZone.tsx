@@ -9,8 +9,6 @@ import SafeAreaContainer from "~/components/common/container/SafeAreaContainer";
 import { PreSafetyZoneScreenNavigationProp } from "~/types/navigator";
 import { Animated } from "react-native";
 import useAnimatedSequence from "~/hooks/useAnimatedSequence";
-import { useDispatch } from "react-redux";
-import { navigatorActions } from "~/store/navigator";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 
 const DescriptionContainer = styled(Animated.View)`
@@ -47,7 +45,6 @@ const PreSafetyZone = ({
     numOfValues: 2,
     secondDuration: 300,
   });
-  const dispatch = useDispatch();
   const { rpHeight, rpWidth } = useContext(DimensionsContext);
 
   return (
@@ -98,12 +95,9 @@ const PreSafetyZone = ({
           delay={1300}
           useCommonMarginBottom
           onPress={() => {
-            dispatch(
-              navigatorActions.setInitialRoute({
-                initialBleWithoutHeaderStackNavRouteName: "SafetyZone",
-              }),
-            );
-            navigation.navigate("BleWithoutHeaderStackNav");
+            navigation.navigate("BleWithoutHeaderStackNav", {
+              initialRouteName: "SafetyZone",
+            });
           }}>
           다음
         </Button>

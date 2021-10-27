@@ -10,13 +10,11 @@ import Toast from "react-native-toast-message";
 import { store } from "~/store";
 import { bleActions } from "~/store/ble";
 import { deviceSettingActions } from "~/store/deviceSetting";
-import { navigatorActions } from "~/store/navigator";
 import { storageActions } from "~/store/storage";
 
 export const resetAll = () => {
   store.dispatch(bleActions.reset());
   store.dispatch(deviceSettingActions.reset());
-  store.dispatch(navigatorActions.reset());
   store.dispatch(storageActions.reset());
 };
 

@@ -19,7 +19,6 @@ import Dissolve from "~/components/common/Dissolve";
 import Button from "~/components/common/Button";
 import { useDispatch } from "react-redux";
 import { storageActions } from "~/store/storage";
-import { navigatorActions } from "~/store/navigator";
 import { useAppSelector } from "~/store";
 import useError from "~/hooks/useError";
 import { commonActions } from "~/store/common";
@@ -70,7 +69,7 @@ interface DateObj {
 const WalkDetailMonth = ({
   navigation,
   route: {
-    params: { deviceID, avatar, name },
+    params: { deviceID, avatarUrl, name },
   },
 }: WalkDetailMonthScreenProps) => {
   const [date, setDate] = useState({
@@ -88,9 +87,6 @@ const WalkDetailMonth = ({
   );
   const { rpWidth, isTablet } = useContext(DimensionsContext);
   const dispatch = useDispatch();
-  const { date: initialDate } = useAppSelector(
-    state => state.navigator.initialWalkRecordParams,
-  );
   const { dateOfDeletedRecord } = useAppSelector(state => state.common.walk);
 
   useError({
@@ -98,17 +94,6 @@ const WalkDetailMonth = ({
     type: "Device",
     callback: navigation.goBack,
   });
-
-  useEffect(() => {
-    if (initialDate) {
-      const date = new Date(initialDate);
-      navigation.navigate("WalkDetailDay", {
-        deviceID,
-        avatar,
-        date: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
-      });
-    }
-  }, [initialDate]);
 
   useEffect(() => {
     // markedDates obj 변경되어도 달력의 dots 변화없는 문제 해결
@@ -158,7 +143,10 @@ const WalkDetailMonth = ({
   return (
     <ScrollView>
       <TopContainer>
-        <Image rpWidth={rpWidth} source={avatar ? { uri: avatar } : noAvatar} />
+        <Image
+          rpWidth={rpWidth}
+          source={avatarUrl ? { uri: avatarUrl } : noAvatar}
+        />
         <MyText style={{ marginBottom: rpWidth(19) }} fontWeight="medium">
           {name || noName}
         </MyText>
@@ -173,7 +161,7 @@ const WalkDetailMonth = ({
             if (Object.keys(dateObj).some(date => date === day.dateString)) {
               navigation.navigate("WalkDetailDay", {
                 deviceID,
-                avatar,
+                avatarUrl,
                 date: day.dateString,
               });
             }
@@ -262,12 +250,9 @@ const WalkDetailMonth = ({
                     selectedDeviceId: [deviceID],
                   }),
                 );
-                dispatch(
-                  navigatorActions.setInitialRoute({
-                    initialLoggedInNavRouteName: "WalkMap",
-                  }),
-                );
-                navigation.replace("LoggedInNav");
+                navigation.replace("LoggedInNav", {
+                  initialRouteName: "WalkMap",
+                });
               });
             }}
             style={{ width: rpWidth(126) }}>

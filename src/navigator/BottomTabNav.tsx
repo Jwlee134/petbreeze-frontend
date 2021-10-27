@@ -2,18 +2,14 @@ import React, { useEffect } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import SharedStackNav from "./SharedStackNav";
 
-import { useAppSelector } from "~/store";
-import { BottomTabParamList } from "~/types/navigator";
+import { BottomTabNavRouteProp, BottomTabParamList } from "~/types/navigator";
 import CustomBottomTabBar from "~/components/navigator/CustomBottomTabBar";
 import userApi from "~/api/user";
 import useAppState from "~/hooks/useAppState";
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
 
-const BottomTabNav = () => {
-  const initialRouteName = useAppSelector(
-    state => state.navigator.initialBottomTabNavRouteName,
-  );
+const BottomTabNav = ({ route }: { route: BottomTabNavRouteProp }) => {
   const appState = useAppState();
   const { data, refetch } = userApi.useGetNumOfNewNotificationsQuery();
 
@@ -23,7 +19,7 @@ const BottomTabNav = () => {
 
   return (
     <Tab.Navigator
-      initialRouteName={initialRouteName}
+      initialRouteName={route.params?.initialRouteName}
       tabBar={props => (
         <CustomBottomTabBar
           newNotifExists={data !== undefined && data.count !== 0}

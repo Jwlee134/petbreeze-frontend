@@ -8,10 +8,10 @@ import KeyboardAwareScrollContainer from "~/components/common/container/Keyboard
 import Input from "~/components/common/Input";
 import InputTitle from "~/components/common/InputTitle";
 import SelectableButton from "~/components/common/SelectableButton";
+import { serverImageUri } from "~/constants";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import { useAppSelector } from "~/store";
 import { deviceSettingActions } from "~/store/deviceSetting";
-import { navigatorActions } from "~/store/navigator";
 import { RegisterProfileSecondScreenNavigationProp } from "~/types/navigator";
 import imageHandler from "~/utils/imageHandler";
 import AvatarCircle from "./AvatarCircle";
@@ -63,7 +63,7 @@ const RegisterProfileSecond = ({
     setLoading(true);
     Keyboard.dismiss();
     try {
-      if (photos[0]) {
+      if (photos[0] && !photos[0].includes(serverImageUri)) {
         await triggerAvatar({
           deviceID,
           body: imageHandler.handleFormData(photos[0], "profile_image"),
@@ -79,12 +79,9 @@ const RegisterProfileSecond = ({
           birthdate: `${birthYear}-${birthMonth}-${birthDay}`,
         },
       }).unwrap();
-      dispatch(
-        navigatorActions.setInitialRoute({
-          initialBleWithoutHeaderStackNavRouteName: "Completion",
-        }),
-      );
-      navigation.replace("BleWithoutHeaderStackNav");
+      navigation.replace("BleWithoutHeaderStackNav", {
+        initialRouteName: "Completion",
+      });
     } catch (error) {
       console.log(error);
       setLoading(false);

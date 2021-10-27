@@ -8,11 +8,13 @@ import FirmwareProgress from "~/screens/bleWithoutHeaderStackNav/FirmwareProgres
 import Scanning from "~/screens/bleWithoutHeaderStackNav/Scanning";
 import Success from "~/screens/bleWithoutHeaderStackNav/Success";
 import SafetyZone from "~/screens/bleWithoutHeaderStackNav/SafetyZone";
-import { BleWithoutHeaderStackNavParamList } from "~/types/navigator";
+import {
+  BleWithoutHeaderStackNavParamList,
+  BleWithoutHeaderStackNavScreenRouteProp,
+} from "~/types/navigator";
 import ScanningFail from "~/screens/bleWithoutHeaderStackNav/ScanningFail";
 import BleLoading from "~/screens/bleWithoutHeaderStackNav/BleLoading";
 import Completion from "~/screens/bleWithoutHeaderStackNav/Completion";
-import { useAppSelector } from "~/store";
 
 const forFade = ({ current }: StackCardInterpolationProps) => ({
   cardStyle: {
@@ -22,14 +24,14 @@ const forFade = ({ current }: StackCardInterpolationProps) => ({
 
 const Stack = createStackNavigator<BleWithoutHeaderStackNavParamList>();
 
-const BleWithoutHeaderStackNav = () => {
-  const initialRouteName = useAppSelector(
-    state => state.navigator.initialBleWithoutHeaderStackNavRouteName,
-  );
-
+const BleWithoutHeaderStackNav = ({
+  route,
+}: {
+  route: BleWithoutHeaderStackNavScreenRouteProp;
+}) => {
   return (
     <Stack.Navigator
-      initialRouteName={initialRouteName}
+      initialRouteName={route.params?.initialRouteName}
       screenOptions={{
         cardStyleInterpolator: forFade,
         headerShown: false,
@@ -40,7 +42,11 @@ const BleWithoutHeaderStackNav = () => {
       <Stack.Screen name="Fail" component={Fail} />
       <Stack.Screen name="Success" component={Success} />
       <Stack.Screen name="SafetyZone" component={SafetyZone} />
-      <Stack.Screen name="BleLoading" component={BleLoading} />
+      <Stack.Screen
+        name="BleLoading"
+        initialParams={{ loadingText: route.params?.loadingText }}
+        component={BleLoading}
+      />
       <Stack.Screen name="Completion" component={Completion} />
     </Stack.Navigator>
   );

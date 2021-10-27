@@ -26,7 +26,6 @@ import SafeAreaContainer from "~/components/common/container/SafeAreaContainer";
 import { PermissionsScreenNavigationProp } from "~/types/navigator";
 import useAnimatedSequence from "~/hooks/useAnimatedSequence";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
-import { navigatorActions } from "~/store/navigator";
 
 const TopContainer = styled(Animated.View)`
   flex: 1;
@@ -106,12 +105,9 @@ const Permissions = ({
       PERMISSIONS.IOS.CAMERA,
     ]).then(() => {
       dispatch(storageActions.setInit({ isPermissionAllowed: true }));
-      dispatch(
-        navigatorActions.setInitialRoute({
-          initialBleWithHeaderStackNavRouteName: "DeviceCheck",
-        }),
-      );
-      navigation.replace("BleRootStackNav");
+      navigation.replace("BleRootStackNav", {
+        initialBleWithHeaderStackNavRouteName: "DeviceCheck",
+      });
     });
   };
 

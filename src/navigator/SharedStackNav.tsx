@@ -11,9 +11,6 @@ import DeviceSetting from "~/screens/sharedStackNav/DeviceSetting";
 import MyPage from "~/screens/sharedStackNav/MyPage";
 import WalkDetailMonth from "~/screens/sharedStackNav/WalkDetailMonth";
 import DeviceSettingList from "~/screens/sharedStackNav/DeviceSettingList";
-import { useAppSelector } from "~/store";
-import WalkDetailDay from "~/screens/sharedStackNav/WalkDetailDay";
-import { WalkDetailDayScreenRouteProp } from "~/types/navigator";
 import NotificationSetting from "~/screens/sharedStackNav/NotificationSetting";
 import UpdateNickname from "~/screens/sharedStackNav/UpdateNickname";
 
@@ -26,14 +23,8 @@ const forFade = ({ current }: StackCardInterpolationProps) => ({
 });
 
 const SharedStackNav = ({ screenName }: { screenName: string }) => {
-  const initialRouteName = useAppSelector(
-    state => state.navigator.initialSharedStackNavRouteName,
-  );
-
   return (
-    <Stack.Navigator
-      initialRouteName={initialRouteName}
-      screenOptions={{ cardStyleInterpolator: forFade }}>
+    <Stack.Navigator screenOptions={{ cardStyleInterpolator: forFade }}>
       {screenName === "Home" && (
         <Stack.Screen
           name="Home"
@@ -87,20 +78,6 @@ const SharedStackNav = ({ screenName }: { screenName: string }) => {
         component={WalkDetailMonth}
         options={{
           header: props => <CustomHeader {...props}>산책기록</CustomHeader>,
-        }}
-      />
-      <Stack.Screen
-        name="WalkDetailDay"
-        component={WalkDetailDay}
-        options={{
-          header: props => (
-            <CustomHeader {...props}>
-              {`${(props.route as WalkDetailDayScreenRouteProp).params.date
-                .split("-")
-                .splice(1)
-                .join("월 ")}일`}
-            </CustomHeader>
-          ),
         }}
       />
       <Stack.Screen

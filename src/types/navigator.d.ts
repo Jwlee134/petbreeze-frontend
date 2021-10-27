@@ -15,7 +15,12 @@ export type RootNavParamList = {
   Start: undefined;
   Intro: undefined;
   Auth: undefined;
-  LoggedInNav: undefined;
+  LoggedInNav:
+    | {
+        initialRouteName?: keyof LoggedInNavParamList;
+        initialBleWithHeaderStackNavRouteName?: keyof BleWithHeaderStackNavParamList;
+      }
+    | undefined;
   Loading: {
     token: string;
     userID?: string;
@@ -46,8 +51,18 @@ export type LoadingScreenProps = StackScreenProps<RootNavParamList, "Loading">;
 
 export type LoggedInNavParamList = {
   Permissions: undefined;
-  BottomTabNav: undefined;
-  BleRootStackNav: undefined;
+  BottomTabNav:
+    | {
+        initialRouteName?: keyof BottomTabParamList;
+      }
+    | undefined;
+  BleRootStackNav:
+    | {
+        initialRouteName?: keyof BleRootStackNavParamList;
+        initialBleWithHeaderStackNavRouteName?: keyof BleWithHeaderStackNavParamList;
+        initialBleWithoutHeaderStackNavRouteName?: keyof BleWithoutHeaderStackNavParamList;
+      }
+    | undefined;
   WalkMap: undefined;
   UpdateProfile: {
     deviceID: number;
@@ -56,12 +71,26 @@ export type LoggedInNavParamList = {
     deviceID: number;
     name: string;
     avatar: string;
+    isModify?: boolean;
   };
   DeleteAccountStackNav: undefined;
   UpdateWiFi: undefined;
   DeviceAlert: undefined;
   UserRequestSuccess: { text: string; key?: string };
+  WalkDetailDay: {
+    deviceID: number;
+    avatarUrl: string;
+    date: string;
+  };
 };
+export type BottomTabNavRouteProp = RouteProp<
+  LoggedInNavParamList,
+  "BottomTabNav"
+>;
+export type BleRootStackNavRouteProp = RouteProp<
+  LoggedInNavParamList,
+  "BleRootStackNav"
+>;
 export type PermissionsScreenNavigationProp = CompositeNavigationProp<
   StackNavigationProp<LoggedInNavParamList, "Permissions">,
   StackNavigationProp<RootNavParamList>
@@ -88,6 +117,11 @@ export type EmergencyMissingStackNavScreenRouteProp = RouteProp<
   LoggedInNavParamList,
   "EmergencyMissingStackNav"
 >;
+export type WalkDetailDayScreenProps = CompositeScreenProps<
+  StackScreenProps<LoggedInNavParamList, "WalkDetailDay">,
+  StackScreenProps<RootNavParamList>
+>;
+export type WalkDetailDayScreenRouteProp = WalkDetailDayScreenProps["route"];
 
 export type EmergencyMissingStackNavParamList = {
   EmergencyMissingFirstPage: undefined;
@@ -144,8 +178,17 @@ export type DeleteAccountSecondPageScreenNavigationProp =
   >;
 
 export type BleRootStackNavParamList = {
-  BleWithHeaderStackNav: undefined;
-  BleWithoutHeaderStackNav: undefined;
+  BleWithHeaderStackNav:
+    | {
+        initialRouteName?: keyof BleWithHeaderStackNavParamList;
+      }
+    | undefined;
+  BleWithoutHeaderStackNav:
+    | {
+        initialRouteName?: keyof BleWithoutHeaderStackNavParamList;
+        loadingText?: string;
+      }
+    | undefined;
 };
 export type BleWithHeaderStackNavScreenRouteProp = RouteProp<
   BleRootStackNavParamList,
@@ -153,6 +196,10 @@ export type BleWithHeaderStackNavScreenRouteProp = RouteProp<
 >;
 export type BleWithHeaderStackNavScreenNavigationProp =
   StackNavigationProp<BleWithHeaderStackNavParamList>;
+export type BleWithoutHeaderStackNavScreenRouteProp = RouteProp<
+  BleRootStackNavParamList,
+  "BleWithoutHeaderStackNav"
+>;
 
 export type BleWithHeaderStackNavParamList = {
   DeviceCheck: undefined;
@@ -235,7 +282,9 @@ export type RegisterProfileSecondScreenNavigationProp = CompositeNavigationProp<
 >;
 
 export type BleWithoutHeaderStackNavParamList = {
-  BleLoading: undefined;
+  BleLoading: {
+    loadingText: string;
+  };
   Scanning: undefined;
   ScanningFail: undefined;
   Fail: undefined;
@@ -244,13 +293,13 @@ export type BleWithoutHeaderStackNavParamList = {
   SafetyZone: undefined;
   Completion: undefined;
 };
-export type BleLoadingScreenNavigationProp = CompositeNavigationProp<
-  StackNavigationProp<BleWithoutHeaderStackNavParamList, "BleLoading">,
-  CompositeNavigationProp<
-    StackNavigationProp<BleRootStackNavParamList>,
-    CompositeNavigationProp<
-      StackNavigationProp<LoggedInNavParamList>,
-      StackNavigationProp<RootNavParamList>
+export type BleLoadingScreenScreenProps = CompositeScreenProps<
+  StackScreenProps<BleWithoutHeaderStackNavParamList, "BleLoading">,
+  CompositeScreenProps<
+    StackScreenProps<BleRootStackNavParamList>,
+    CompositeScreenProps<
+      StackScreenProps<LoggedInNavParamList>,
+      StackScreenProps<RootNavParamList>
     >
   >
 >;
@@ -340,13 +389,8 @@ export type SharedStackNavParamList = {
   NotificationSetting: undefined;
   WalkDetailMonth: {
     deviceID: number;
-    avatar: string;
+    avatarUrl: string;
     name: string;
-  };
-  WalkDetailDay: {
-    deviceID: number;
-    avatar: string;
-    date: string;
   };
   DeviceSetting: {
     deviceID: number;
@@ -394,16 +438,6 @@ export type WalkDetailMonthScreenProps = CompositeScreenProps<
     >
   >
 >;
-export type WalkDetailDayScreenProps = CompositeScreenProps<
-  StackScreenProps<SharedStackNavParamList, "WalkDetailDay">,
-  CompositeScreenProps<
-    BottomTabScreenProps<BottomTabParamList>,
-    CompositeScreenProps<
-      StackScreenProps<LoggedInNavParamList>,
-      StackScreenProps<RootNavParamList>
-    >
-  >
->;
 export type DeviceSettingListScreenNavigationProp = CompositeNavigationProp<
   StackNavigationProp<SharedStackNavParamList, "DeviceSettingList">,
   CompositeNavigationProp<
@@ -426,10 +460,6 @@ export type DeviceSettingScreenProps = CompositeScreenProps<
 >;
 export type DeviceSettingScreenNavigationProp =
   DeviceSettingScreenProps["navigation"];
-export type WalkDetailDayScreenRouteProp = RouteProp<
-  SharedStackNavParamList,
-  "WalkDetailDay"
->;
 
 export type WalkTopTabParamList = {
   StartWalking: undefined;

@@ -8,7 +8,6 @@ import { FailScreenNavigationProp } from "~/types/navigator";
 import Exclamation from "~/assets/svg/exclamation/exclamation-mark-gray.svg";
 import { View } from "react-native";
 import { bleActions } from "~/store/ble";
-import { navigatorActions } from "~/store/navigator";
 import { DimensionsContext } from "~/context/DimensionsContext";
 
 const TopContainer = styled.View`
@@ -67,12 +66,9 @@ const Fail = ({ navigation }: { navigation: FailScreenNavigationProp }) => {
                 dispatch(bleActions.setStatus("scanning"));
               }
               if (status === "wifiFail") {
-                dispatch(
-                  navigatorActions.setInitialRoute({
-                    initialBleWithHeaderStackNavRouteName: "WiFiForm",
-                  }),
-                );
-                navigation.replace("BleWithHeaderStackNav");
+                navigation.replace("BleWithHeaderStackNav", {
+                  initialRouteName: "WiFiForm",
+                });
               }
             }}
             style={{
@@ -83,18 +79,17 @@ const Fail = ({ navigation }: { navigation: FailScreenNavigationProp }) => {
           <Button
             onPress={() => {
               if (status === "wifiFail") {
-                dispatch(
-                  navigatorActions.setInitialRoute({
-                    initialBleWithHeaderStackNavRouteName: "PreSafetyZone",
-                  }),
-                );
-                navigation.replace("BleWithHeaderStackNav");
+                navigation.replace("BleWithHeaderStackNav", {
+                  initialRouteName: "PreSafetyZone",
+                });
                 return;
               }
               if (navigation.canGoBack()) {
                 navigation.goBack();
               } else {
-                navigation.replace("BleWithHeaderStackNav");
+                navigation.replace("BleWithHeaderStackNav", {
+                  initialRouteName: "DeviceCheck",
+                });
               }
             }}
             useCommonMarginBottom

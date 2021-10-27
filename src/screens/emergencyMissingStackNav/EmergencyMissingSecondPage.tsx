@@ -20,7 +20,6 @@ import IosStyleBottomModal from "~/components/modal/IosStyleBottomModal";
 import Divider from "~/components/common/Divider";
 import palette from "~/styles/palette";
 import useError from "~/hooks/useError";
-import { navigatorActions } from "~/store/navigator";
 
 const PaddingContainer = styled.View<{ rpWidth: RpWidth }>`
   ${({ rpWidth }) => css`
@@ -54,9 +53,11 @@ const ModalButton = styled.TouchableOpacity<{ rpWidth: RpWidth }>`
 const EmergencyMissingSecondPage = ({
   navigation,
   deviceID,
+  isModify,
 }: {
   navigation: EmergencyMissingSecondPageScreenNavigationProp;
   deviceID: number;
+  isModify: boolean | undefined;
 }) => {
   const {
     message,
@@ -68,55 +69,67 @@ const EmergencyMissingSecondPage = ({
     lostMinute,
     phoneNumber,
     hasTag,
+    emergencyKey,
   } = useAppSelector(state => state.deviceSetting.profile);
   const dispatch = useDispatch();
   const { width, rpWidth } = useContext(DimensionsContext);
-  const [trigger, { error }] = deviceApi.usePostEmergencyMissingMutation();
+  const [trigger, { error: postError }] =
+    deviceApi.usePostEmergencyMissingMutation();
   const [triggerAvatar] =
     deviceApi.useUpdateEmergencyMissingThumbnailMutation();
+  const [update, { error: putError }] =
+    deviceApi.useUpdateEmergencyMissingMutation();
   const [loading, setLoading] = useState(false);
   const { open, close, modalProps } = useModal();
   const [selectedIndex, setSelectedIndex] = useState(0);
 
-  useError({
-    error,
-    type: "Device",
-    callback: () => {
-      dispatch(
-        navigatorActions.setInitialRoute({
-          initialBottomTabNavRouteName: "HomeTab",
-        }),
-      );
-      navigation.replace("BottomTabNav");
-    },
-  });
+  const callback = () => {
+    navigation.replace("BottomTabNav");
+  };
+
+  useError({ error: putError, type: "Device", callback });
+  useError({ error: postError, type: "Device", callback });
 
   const handleSubmit = async () => {
-    const generateKey = (i: number) => `image${i}_thumbnail`;
-    const formData = imageHandler.handleFormData(photos, generateKey);
-
     try {
       setLoading(true);
-      const data = await trigger({
-        deviceID,
-        body: {
-          message,
-          missing_location: lostPlace,
-          missing_datetime: new Date(
-            new Date().getFullYear(),
-            lostMonth - 1,
-            lostDate,
-            lostHour,
-            lostMinute,
-          ).toISOString(),
-          contact_number: phoneNumber,
-          has_dog_tag: hasTag,
-        },
-      }).unwrap();
-      await triggerAvatar({ deviceID, body: formData }).unwrap();
+      const body = {
+        message,
+        missing_location: lostPlace,
+        missing_datetime: new Date(
+          new Date().getFullYear(),
+          lostMonth - 1,
+          lostDate,
+          lostHour,
+          lostMinute,
+        ).toISOString(),
+        contact_number: phoneNumber,
+        has_dog_tag: hasTag,
+      };
+      let key = "";
+      if (isModify) {
+        await update({
+          deviceID,
+          body,
+        }).unwrap();
+        key = emergencyKey;
+      } else {
+        const data = await trigger({
+          deviceID,
+          body,
+        }).unwrap();
+        key = data.emergency_key;
+      }
+
+      if (!photos.every(photo => photo.includes("amazonaws"))) {
+        const generateKey = (i: number) => `image${i}_thumbnail`;
+        const formData = imageHandler.handleFormData(photos, generateKey);
+        await triggerAvatar({ deviceID, body: formData }).unwrap();
+      }
+
       navigation.replace("UserRequestSuccess", {
-        text: "업로드 되었습니다.",
-        key: data.emergency_key,
+        text: isModify ? "수정되었습니다." : "업로드 되었습니다.",
+        key,
       });
     } catch {
       setLoading(false);
@@ -199,8 +212,11 @@ const EmergencyMissingSecondPage = ({
         <IosStyleBottomModal close={close}>
           <ModalButton
             onPress={() => {
-              imageHandler.openThreeTwoRatioCropper(photos, selectedIndex);
-              close();
+              imageHandler.openThreeTwoRatioCropper(
+                photos,
+                selectedIndex,
+                close,
+              );
             }}
             rpWidth={rpWidth}>
             <MyText color={palette.blue_7b}>변경</MyText>

@@ -8,7 +8,7 @@ import KeyboardAwareScrollContainer from "~/components/common/container/Keyboard
 import Input from "~/components/common/Input";
 import InputTitle from "~/components/common/InputTitle";
 import SelectableButton from "~/components/common/SelectableButton";
-import { noAvatar } from "~/constants";
+import { noAvatar, serverImageUri } from "~/constants";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import useModal from "~/hooks/useModal";
 import { store, useAppSelector } from "~/store";
@@ -18,7 +18,6 @@ import imageHandler from "~/utils/imageHandler";
 import Modal from "react-native-modal";
 import CommonCenterModal from "~/components/modal/CommonCenterModal";
 import DatePicker from "react-native-date-picker";
-import { navigatorActions } from "~/store/navigator";
 import useError from "~/hooks/useError";
 
 const AvatarButton = styled.TouchableOpacity<{ rpWidth: RpWidth }>`
@@ -75,12 +74,9 @@ const UpdateProfile = ({
   );
 
   const callback = () => {
-    dispatch(
-      navigatorActions.setInitialRoute({
-        initialBottomTabNavRouteName: "MyPageTab",
-      }),
-    );
-    navigation.replace("BottomTabNav");
+    navigation.replace("BottomTabNav", {
+      initialRouteName: "MyPageTab",
+    });
   };
 
   useError({ error: profileError, type: "Device", callback });
@@ -89,7 +85,7 @@ const UpdateProfile = ({
   const handleSubmit = async () => {
     if (loading) return;
     setLoading(true);
-    if (photos[0] && !photos[0].includes("amazonaws")) {
+    if (photos[0] && !photos[0].includes(serverImageUri)) {
       const { profile_image } = await triggerAvatar({
         deviceID,
         body: imageHandler.handleFormData(photos[0], "profile_image"),

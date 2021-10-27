@@ -8,7 +8,6 @@ import { permissionCheck } from "~/utils";
 import Button from "~/components/common/Button";
 import { ScrollView, View } from "react-native";
 import ListItem from "~/components/common/ListItem";
-import { navigatorActions } from "~/store/navigator";
 import MyText from "~/components/common/MyText";
 import Dog from "~/assets/svg/dog/dog-with-device.svg";
 import { DimensionsContext } from "~/context/DimensionsContext";
@@ -40,12 +39,9 @@ const StartWalking = ({
             selectedDeviceId: selected,
           }),
         );
-        dispatch(
-          navigatorActions.setInitialRoute({
-            initialLoggedInNavRouteName: "WalkMap",
-          }),
-        );
-        navigation.replace("LoggedInNav");
+        navigation.replace("LoggedInNav", {
+          initialRouteName: "WalkMap",
+        });
       });
     }
   };

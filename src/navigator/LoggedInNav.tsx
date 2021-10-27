@@ -7,13 +7,13 @@ import {
 import BottomTabNav from "./BottomTabNav";
 import WalkMap from "~/screens/loggedInNav/WalkMap";
 import CustomHeader from "~/components/navigator/CustomHeader";
-import { useAppSelector } from "~/store";
 
 import messaging from "@react-native-firebase/messaging";
 import Permissions from "~/screens/loggedInNav/Permissions";
 import {
   LoggedInNavParamList,
   LoggedInNavScreenProps,
+  WalkDetailDayScreenRouteProp,
 } from "~/types/navigator";
 import UpdateProfile from "~/screens/loggedInNav/UpdateProfile";
 import EmergencyMissingStackNav from "./EmergencyMissingStackNav";
@@ -28,8 +28,8 @@ import { useDispatch } from "react-redux";
 import Toast from "react-native-toast-message";
 import UserRequestSuccess from "~/screens/loggedInNav/UserRequestSuccess";
 import { storageActions } from "~/store/storage";
-import { navigatorActions } from "~/store/navigator";
 import notificationHandler from "~/utils/notificationHandler";
+import WalkDetailDay from "~/screens/sharedStackNav/WalkDetailDay";
 
 const Stack = createStackNavigator<LoggedInNavParamList>();
 
@@ -40,9 +40,6 @@ const forFade = ({ current }: StackCardInterpolationProps) => ({
 });
 
 const LoggedInNav = ({ navigation, route }: LoggedInNavScreenProps) => {
-  const initialRouteName = useAppSelector(
-    state => state.navigator.initialLoggedInNavRouteName,
-  );
   const dispatch = useDispatch();
 
   const [postRead] = userApi.useReadNotificationsMutation();
@@ -95,11 +92,16 @@ const LoggedInNav = ({ navigation, route }: LoggedInNavScreenProps) => {
 
   return (
     <Stack.Navigator
-      initialRouteName={initialRouteName}
+      initialRouteName={route.params?.initialRouteName}
       screenOptions={{
         cardStyleInterpolator: forFade,
         detachPreviousScreen: false,
       }}>
+      <Stack.Screen
+        name="BottomTabNav"
+        component={BottomTabNav}
+        options={{ headerShown: false }}
+      />
       <Stack.Screen
         name="Permissions"
         component={Permissions}
@@ -108,11 +110,10 @@ const LoggedInNav = ({ navigation, route }: LoggedInNavScreenProps) => {
       <Stack.Screen
         name="BleRootStackNav"
         component={BleRootStackNav}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="BottomTabNav"
-        component={BottomTabNav}
+        initialParams={{
+          initialBleWithHeaderStackNavRouteName:
+            route.params?.initialBleWithHeaderStackNavRouteName,
+        }}
         options={{ headerShown: false }}
       />
       <Stack.Screen
@@ -157,6 +158,20 @@ const LoggedInNav = ({ navigation, route }: LoggedInNavScreenProps) => {
         name="UserRequestSuccess"
         component={UserRequestSuccess}
         options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="WalkDetailDay"
+        component={WalkDetailDay}
+        options={{
+          header: props => (
+            <CustomHeader {...props}>
+              {`${(props.route as WalkDetailDayScreenRouteProp).params.date
+                .split("-")
+                .splice(1)
+                .join("월 ")}일`}
+            </CustomHeader>
+          ),
+        }}
       />
     </Stack.Navigator>
   );

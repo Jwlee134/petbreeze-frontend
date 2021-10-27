@@ -10,8 +10,6 @@ import Divider from "~/components/common/Divider";
 import { Animated, View } from "react-native";
 import useAnimatedSequence from "~/hooks/useAnimatedSequence";
 import { CompletionScreenNavigationProp } from "~/types/navigator";
-import { useDispatch } from "react-redux";
-import { navigatorActions } from "~/store/navigator";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import { noAvatar, noName } from "~/constants";
 
@@ -46,7 +44,6 @@ const Completion = ({
     },
   } = useAppSelector(state => state.deviceSetting);
   const deviceID = useAppSelector(state => state.ble.deviceID);
-  const dispatch = useDispatch();
   const { rpWidth } = useContext(DimensionsContext);
 
   const [value1, value2] = useAnimatedSequence({
@@ -57,11 +54,6 @@ const Completion = ({
         if (navigation.canGoBack()) {
           navigation.goBack();
         } else {
-          dispatch(
-            navigatorActions.setInitialRoute({
-              initialLoggedInNavRouteName: "BottomTabNav",
-            }),
-          );
           navigation.replace("LoggedInNav");
         }
       }, 800);

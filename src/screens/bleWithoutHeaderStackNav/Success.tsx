@@ -1,12 +1,10 @@
 import React, { useContext, useEffect } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useDispatch } from "react-redux";
 import styled from "styled-components/native";
 import MyText from "~/components/common/MyText";
 import SuccessLottie from "~/components/lottie/Success";
 import { DimensionsContext } from "~/context/DimensionsContext";
 import { useAppSelector } from "~/store";
-import { navigatorActions } from "~/store/navigator";
 import { SuccessScreenNavigationProp } from "~/types/navigator";
 
 const TopContainer = styled.View`
@@ -27,13 +25,13 @@ const Success = ({
   const { rpWidth } = useContext(DimensionsContext);
   const { top } = useSafeAreaInsets();
   const { status, isOtaUpdate } = useAppSelector(state => state.ble);
-  const dispatch = useDispatch();
 
   useEffect(() => {
     if (status === "connected") {
       setTimeout(() => {
-        dispatch(navigatorActions.setLoadingText("Loading"));
-        navigation.replace("BleLoading");
+        navigation.replace("BleLoading", {
+          loadingText: "Loading",
+        });
       }, 1700);
     }
     if (status === "otaUpdateSuccess") {
@@ -41,23 +39,17 @@ const Success = ({
         /*  */
       } else {
         setTimeout(() => {
-          dispatch(
-            navigatorActions.setInitialRoute({
-              initialBleWithHeaderStackNavRouteName: "PreWiFiForm",
-            }),
-          );
-          navigation.replace("BleWithHeaderStackNav");
+          navigation.replace("BleWithHeaderStackNav", {
+            initialRouteName: "PreWiFiForm",
+          });
         }, 1700);
       }
     }
     if (status === "wifiSuccess") {
       setTimeout(() => {
-        dispatch(
-          navigatorActions.setInitialRoute({
-            initialBleWithHeaderStackNavRouteName: "PreSafetyZone",
-          }),
-        );
-        navigation.replace("BleWithHeaderStackNav");
+        navigation.replace("BleWithHeaderStackNav", {
+          initialRouteName: "PreSafetyZone",
+        });
       }, 1700);
     }
   }, [status]);

@@ -12,7 +12,6 @@ import { View } from "react-native";
 import { WalkContext } from "~/context/WalkContext";
 import { useDispatch } from "react-redux";
 import { storageActions } from "~/store/storage";
-import { navigatorActions } from "~/store/navigator";
 import { useNavigation } from "@react-navigation/native";
 import { WalkMapScreenNavigationProp } from "~/types/navigator";
 import { formatWalkDistance } from "~/utils";
@@ -115,12 +114,9 @@ const Result = () => {
     setTimeout(() => {
       dispatch(storageActions.setWalk(null));
     }, 200);
-    dispatch(
-      navigatorActions.setInitialRoute({
-        initialBottomTabNavRouteName: "WalkTab",
-      }),
-    );
-    navigation.replace("BottomTabNav");
+    navigation.replace("BottomTabNav", {
+      initialRouteName: "WalkTab",
+    });
   };
 
   return (

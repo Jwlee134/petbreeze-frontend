@@ -1,5 +1,4 @@
 import React, { useContext } from "react";
-import { useDispatch } from "react-redux";
 import styled from "styled-components/native";
 
 import Device from "~/assets/svg/device/device.svg";
@@ -7,7 +6,6 @@ import Button from "~/components/common/Button";
 import MyText from "~/components/common/MyText";
 import SafeAreaContainer from "~/components/common/container/SafeAreaContainer";
 import { DeviceCheckScreenNavigationProp } from "~/types/navigator";
-import { navigatorActions } from "~/store/navigator";
 import { DimensionsContext } from "~/context/DimensionsContext";
 
 const TopContainer = styled.View`
@@ -26,7 +24,6 @@ const DeviceCheck = ({
 }: {
   navigation: DeviceCheckScreenNavigationProp;
 }) => {
-  const dispatch = useDispatch();
   const { rpHeight, rpWidth } = useContext(DimensionsContext);
 
   return (
@@ -59,12 +56,9 @@ const DeviceCheck = ({
           fontColor="rgba(0, 0, 0, 0.5)"
           useCommonMarginBottom
           onPress={() => {
-            dispatch(
-              navigatorActions.setInitialRoute({
-                initialLoggedInNavRouteName: "BottomTabNav",
-              }),
-            );
-            navigation.replace("LoggedInNav");
+            navigation.replace("LoggedInNav", {
+              initialRouteName: "BottomTabNav",
+            });
           }}>
           건너뛰기
         </Button>
