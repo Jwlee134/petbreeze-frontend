@@ -49,10 +49,6 @@ const HomeBottomModal = ({ device, close }: IProps) => {
           avatar={device.profile_image}
         />
       </AvatarContainer>
-      <Button rpWidth={rpWidth}>
-        <MyText color={palette.blue_7b}>이동경로</MyText>
-      </Button>
-      <Divider />
       <Button
         rpWidth={rpWidth}
         onPress={() => {
@@ -64,6 +60,24 @@ const HomeBottomModal = ({ device, close }: IProps) => {
         <MyText color={palette.blue_7b}>기기설정</MyText>
       </Button>
       <Divider />
+      {device.is_missed ? (
+        <>
+          <Button
+            rpWidth={rpWidth}
+            onPress={() => {
+              close();
+              navigation.navigate("EmergencyMissingStackNav", {
+                avatar: device.profile_image,
+                name: device.name,
+                deviceID: device.id,
+                isModify: true,
+              });
+            }}>
+            <MyText color={palette.red_f0}>긴급실종 수정</MyText>
+          </Button>
+          <Divider />
+        </>
+      ) : null}
       <Button
         rpWidth={rpWidth}
         onPress={() => {

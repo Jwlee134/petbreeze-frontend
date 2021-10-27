@@ -25,3 +25,5 @@ export const secureItems = {
 
 export const noName = "익명";
 export const noAvatar = require("~/assets/image/default-avatar.png");
+
+export const serverImageUri = "amazonaws";

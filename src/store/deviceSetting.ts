@@ -62,6 +62,7 @@ interface IProfile {
   lostMinute: number;
   lostPlace: string;
   message: string;
+  emergencyKey: string;
 }
 
 interface IState {
@@ -130,6 +131,7 @@ const initialState: IState = {
     lostDate: new Date().getDate(),
     lostPlace: "",
     message: "",
+    emergencyKey: "",
   },
 };
 

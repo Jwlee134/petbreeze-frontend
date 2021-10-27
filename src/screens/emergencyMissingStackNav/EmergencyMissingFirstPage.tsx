@@ -79,7 +79,7 @@ const EmergencyMissingFirstPage = ({
           </MyText>
           <InputTitle>보호자 연락처</InputTitle>
           <Input
-            maxLength={15}
+            maxLength={13}
             value={phoneNumber.replace(
               /(^02.{0}|^01.{1}|[0-9]{3})([0-9]+)([0-9]{4})/,
               "$1-$2-$3",

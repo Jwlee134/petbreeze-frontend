@@ -1,4 +1,5 @@
 import ImagePicker from "react-native-image-crop-picker";
+import { serverImageUri } from "~/constants";
 import { store } from "~/store";
 import { deviceSettingActions } from "~/store/deviceSetting";
 import palette from "~/styles/palette";
@@ -27,7 +28,12 @@ export default {
       if (!image) return;
       store.dispatch(deviceSettingActions.setProfile({ photos: [image.path] }));
     }),
-  openThreeTwoRatioCropper: (photos: string[], index?: number) =>
+
+  openThreeTwoRatioCropper: (
+    photos: string[],
+    index?: number,
+    callback?: () => void,
+  ) =>
     ImagePicker.openPicker({
       mediaType: "photo",
       width: 1080,
@@ -47,7 +53,11 @@ export default {
           deviceSettingActions.setProfile({ photos: [...photos, image.path] }),
         );
       }
+      if (callback) {
+        callback();
+      }
     }),
+
   handleFormData: (
     uri: string | string[] | { data: string; id: number }[],
     key: string | ((i: number) => string),
@@ -56,6 +66,7 @@ export default {
     if (Array.isArray(uri) && typeof key === "function") {
       uri.forEach((uri, i) => {
         const imageUri = hasID(uri) ? uri.data : uri;
+        if (imageUri.includes(serverImageUri)) return;
         formData.append(key(hasID(uri) ? uri.id : i + 1), {
           name: imageUri.substring(imageUri.lastIndexOf("/") + 1),
           type: "image/jpeg",
