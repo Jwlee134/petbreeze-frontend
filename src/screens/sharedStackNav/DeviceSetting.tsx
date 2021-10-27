@@ -37,28 +37,11 @@ const DeviceSetting = ({
     deviceApi.useUpdateSafetyZoneThumbnailMutation();
   const dispatch = useDispatch();
 
-  const callback = () => {
-    navigation.reset({
-      index: 0,
-      routes: [{ name: "MyPage" }],
-    });
-  };
+  const callback = () => navigation.goBack();
 
-  useError({
-    error: getError,
-    type: "Device",
-    callback,
-  });
-  useError({
-    error: postError,
-    type: "Device",
-    callback,
-  });
-  useError({
-    error: thumbnailError,
-    type: "Device",
-    callback,
-  });
+  useError({ error: getError, type: "Device", callback });
+  useError({ error: postError, type: "Device", callback });
+  useError({ error: thumbnailError, type: "Device", callback });
 
   useEffect(() => {
     if (!settings) return;

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { ScrollView, TouchableOpacity } from "react-native";
 import MyText from "~/components/common/MyText";
 import CustomHeader from "~/components/navigator/CustomHeader";
@@ -30,6 +30,12 @@ const DeviceSettingList = ({
     callback: navigation.goBack,
   });
 
+  useEffect(() => {
+    if (deviceList && !deviceList.length) {
+      navigation.goBack();
+    }
+  }, [deviceList]);
+
   return (
     <>
       <CustomHeader
@@ -54,11 +60,7 @@ const DeviceSettingList = ({
               <SwipeableButton
                 backgroundColor="red"
                 onPress={() => {
-                  try {
-                    deleteDevice(device.id).unwrap();
-                  } catch (error) {
-                    console.log(error);
-                  }
+                  deleteDevice(device.id);
                 }}>
                 <Bye width={rpWidth(44)} height={rpWidth(38)} />
               </SwipeableButton>
