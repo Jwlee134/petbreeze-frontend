@@ -48,8 +48,8 @@ const setCoords = () =>
           const distanceBetweenCoords = getDistanceBetween2Points(
             latitude,
             longitude,
-            coords[coords.length - 1][0],
             coords[coords.length - 1][1],
+            coords[coords.length - 1][0],
           );
           if (distanceBetweenCoords > 9) {
             store.dispatch(

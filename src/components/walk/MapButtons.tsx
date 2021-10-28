@@ -20,8 +20,8 @@ const MapButtons = () => {
     const { coords } = store.getState().storage.walk;
     if (!coords.length) return;
     mapRef.current?.animateToCoordinate({
-      latitude: coords[coords.length - 1][0],
-      longitude: coords[coords.length - 1][1],
+      latitude: coords[coords.length - 1][1],
+      longitude: coords[coords.length - 1][0],
     });
   };
 

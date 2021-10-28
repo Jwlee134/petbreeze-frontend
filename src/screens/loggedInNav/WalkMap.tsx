@@ -57,10 +57,10 @@ const WalkMap = () => {
     if (isStopped) {
       const { coords } = store.getState().storage.walk;
 
-      const maxLat = Math.max(...coords.map(coord => coord[0]));
-      const maxLng = Math.max(...coords.map(coord => coord[1]));
-      const minLat = Math.min(...coords.map(coord => coord[0]));
-      const minLng = Math.min(...coords.map(coord => coord[1]));
+      const maxLat = Math.max(...coords.map(coord => coord[1]));
+      const maxLng = Math.max(...coords.map(coord => coord[0]));
+      const minLat = Math.min(...coords.map(coord => coord[1]));
+      const minLng = Math.min(...coords.map(coord => coord[0]));
 
       const distance = getDistanceBetween2Points(
         maxLat,
@@ -71,8 +71,8 @@ const WalkMap = () => {
 
       if (coords.length === 1) {
         mapRef.current?.animateToRegion({
-          latitude: coords[0][0],
-          longitude: coords[0][1],
+          latitude: coords[0][1],
+          longitude: coords[0][0],
           latitudeDelta: delta,
           longitudeDelta: delta,
         });

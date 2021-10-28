@@ -18,8 +18,8 @@ const Path = ({ isStopped }: { isStopped: boolean }) => {
       // map initialCamera 프로퍼티와 겹치지 않기 위해 setTimeout
       setTimeout(() => {
         mapRef.current?.animateToRegion({
-          latitude: coords[coords.length - 1][0],
-          longitude: coords[coords.length - 1][1],
+          latitude: coords[coords.length - 1][1],
+          longitude: coords[coords.length - 1][0],
           latitudeDelta: delta,
           longitudeDelta: delta,
         });
@@ -32,8 +32,8 @@ const Path = ({ isStopped }: { isStopped: boolean }) => {
     // 시작 후 최초 좌표 받을 시 그 좌표로 화면 이동
     if (coords.length === 1) {
       mapRef.current.animateToRegion({
-        latitude: coords[0][0],
-        longitude: coords[0][1],
+        latitude: coords[0][1],
+        longitude: coords[0][0],
         latitudeDelta: delta,
         longitudeDelta: delta,
       });
@@ -46,8 +46,8 @@ const Path = ({ isStopped }: { isStopped: boolean }) => {
         {!isStopped ? (
           <Marker
             coordinate={{
-              latitude: coords[coords.length - 1][0],
-              longitude: coords[coords.length - 1][1],
+              latitude: coords[coords.length - 1][1],
+              longitude: coords[coords.length - 1][0],
             }}
             image={require("~/assets/image/footprint-marker.png")}
             width={rpWidth(41)}
@@ -61,7 +61,7 @@ const Path = ({ isStopped }: { isStopped: boolean }) => {
           <>
             {coords.length > 1 ? (
               <Marker
-                coordinate={{ latitude: coords[0][0], longitude: coords[0][1] }}
+                coordinate={{ latitude: coords[0][1], longitude: coords[0][0] }}
                 image={require("~/assets/image/walk/walk-start.png")}
                 width={rpWidth(20)}
                 height={rpWidth(20)}
@@ -73,8 +73,8 @@ const Path = ({ isStopped }: { isStopped: boolean }) => {
             ) : null}
             <Marker
               coordinate={{
-                latitude: coords[coords.length - 1][0],
-                longitude: coords[coords.length - 1][1],
+                latitude: coords[coords.length - 1][1],
+                longitude: coords[coords.length - 1][0],
               }}
               image={require("~/assets/image/walk/walk-end.png")}
               width={rpWidth(20)}
@@ -89,8 +89,8 @@ const Path = ({ isStopped }: { isStopped: boolean }) => {
         {coords.length > 1 && (
           <Polyline
             coordinates={coords.map(coord => ({
-              latitude: coord[0],
-              longitude: coord[1],
+              latitude: coord[1],
+              longitude: coord[0],
             }))}
             color={palette.blue_7b_80}
             outlineWidth={0}
