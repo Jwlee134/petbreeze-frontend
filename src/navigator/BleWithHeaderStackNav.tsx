@@ -33,12 +33,15 @@ const BleWithHeaderStackNav = ({
   navigation: BleWithHeaderStackNavScreenNavigationProp;
   route: BleWithHeaderStackNavScreenRouteProp;
 }) => {
-  const routeName = getFocusedRouteNameFromRoute(route);
+  const routeName =
+    getFocusedRouteNameFromRoute(route) || route.params?.initialRouteName;
 
   return (
     <>
       <CustomHeader
-        disableBackButton={routeName === "PreWiFiForm"}
+        disableBackButton={
+          routeName === "DeviceCheck" || routeName === "PreWiFiForm"
+        }
         currentPage={
           routeName?.includes("WiFi")
             ? 1
