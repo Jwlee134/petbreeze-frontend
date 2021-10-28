@@ -31,11 +31,11 @@ const TextContainer = styled.View<{ rpWidth: RpWidth }>`
 
 const NotificationItem = ({ data }: { data: Notification }) => {
   const { rpWidth } = useContext(DimensionsContext);
-  /*  const showArrow = !data.body.title.includes("배터리"); */
+  const showArrow = !data.title.includes("배터리");
 
   return (
     <Container rpWidth={rpWidth}>
-      {/* <Image rpWidth={rpWidth} source={require("~/assets/image/test.jpg")} />
+      <Image rpWidth={rpWidth} source={require("~/assets/image/test.jpg")} />
       <TextContainer rpWidth={rpWidth}>
         <MyText
           fontSize={14}
@@ -50,7 +50,7 @@ const NotificationItem = ({ data }: { data: Notification }) => {
               }}
               fontSize={12}
               color="rgba(0, 0, 0, 0.3)">
-              {formatCreatedAt(data.sentTime)}
+              {formatCreatedAt(data.created_at)}
             </MyText>
           </View>
         </MyText>
@@ -61,7 +61,7 @@ const NotificationItem = ({ data }: { data: Notification }) => {
           height={rpWidth(12)}
           style={{ marginTop: rpWidth(3) }}
         />
-      ) : null} */}
+      ) : null}
     </Container>
   );
 };

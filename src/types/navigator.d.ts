@@ -18,7 +18,13 @@ export type RootNavParamList = {
   LoggedInNav:
     | {
         initialRouteName?: keyof LoggedInNavParamList;
+        initialBottomTabRouteName?: keyof BottomTabParamList;
         initialBleWithHeaderStackNavRouteName?: keyof BleWithHeaderStackNavParamList;
+        initialWalkDetailDayParams?: {
+          deviceID: number;
+          date: string;
+          avatarUrl: string;
+        };
       }
     | undefined;
   Loading: {
@@ -43,10 +49,9 @@ export type AuthScreenNavigationProp = StackNavigationProp<
   RootNavParamList,
   "Auth"
 >;
-export type LoggedInNavScreenProps = StackScreenProps<
-  RootNavParamList,
-  "LoggedInNav"
->;
+export type LoggedInNavScreenNavigationProp =
+  StackNavigationProp<LoggedInNavParamList>;
+export type LoggedInNavRouteProp = RouteProp<RootNavParamList, "LoggedInNav">;
 export type LoadingScreenProps = StackScreenProps<RootNavParamList, "Loading">;
 
 export type LoggedInNavParamList = {

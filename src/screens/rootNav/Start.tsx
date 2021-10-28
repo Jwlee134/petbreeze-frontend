@@ -51,14 +51,16 @@ const Start = ({ navigation }: { navigation: StartScreenNavigationProp }) => {
         remoteMessage,
       );
       if (remoteMessage) {
-        notificationHandler(remoteMessage, navigation);
-        /* if(remoteMessage.data.messageId){
+        notificationHandler(remoteMessage, navigation, true);
+        if (remoteMessage?.data?.messageId) {
           try {
-            await handleRead([remoteMessage.data.messageId]).unwrap()
+            await handleRead([
+              parseInt(remoteMessage.data.messageId, 10),
+            ]).unwrap();
           } catch (error) {
-            console.log(error)
+            console.log(error);
           }
-        } */
+        }
       } else {
         navigation.replace("LoggedInNav");
       }

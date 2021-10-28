@@ -25,6 +25,7 @@ interface IHistory {
 }
 
 interface IStorage {
+  numOfDevice: number;
   lastCoord: {
     latitude: number;
     longitude: number;
@@ -35,6 +36,7 @@ interface IStorage {
 }
 
 const initialState: IStorage = {
+  numOfDevice: 0,
   lastCoord: {
     latitude: 0,
     longitude: 0,
@@ -69,6 +71,10 @@ const storage = createSlice({
       state.init = { ...state.init, ...payload };
     },
 
+    setNumOfDevice: (state, { payload }: PayloadAction<number>) => {
+      state.numOfDevice = payload;
+    },
+
     setWalk: (state, { payload }: PayloadAction<Partial<IWalk> | null>) => {
       if (payload) {
         state.walk = { ...state.walk, ...payload };
@@ -80,7 +86,7 @@ const storage = createSlice({
       state,
       { payload }: PayloadAction<{ latitude: number; longitude: number }>,
     ) => {
-      state.walk.coords.push([payload.latitude, payload.longitude]);
+      state.walk.coords.push([payload.longitude, payload.latitude]);
     },
     setTotalPauseDuration: (state, { payload }: PayloadAction<number>) => {
       state.walk.totalPauseDuration += payload;

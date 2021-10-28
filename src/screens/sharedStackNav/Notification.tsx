@@ -10,7 +10,6 @@ import NotificationItem from "~/components/notification/NotificationItem";
 import userApi from "~/api/user";
 import { useIsFocused } from "@react-navigation/native";
 import { store } from "~/store";
-import { DeviceContext } from "~/context/DeviceContext";
 
 const Container = styled.ScrollView`
   flex: 1;
@@ -55,9 +54,8 @@ const Notification = ({
   }, [data]);
 
   useEffect(() => {
-    if (isFocused && numOfNewNotif !== undefined && numOfNewNotif > 0)
-      refetch();
-  }, [isFocused, numOfNewNotif]);
+    if (isFocused) refetch();
+  }, [isFocused]);
 
   if (!data) return null;
 

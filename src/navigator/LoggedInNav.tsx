@@ -12,7 +12,8 @@ import messaging from "@react-native-firebase/messaging";
 import Permissions from "~/screens/loggedInNav/Permissions";
 import {
   LoggedInNavParamList,
-  LoggedInNavScreenProps,
+  LoggedInNavRouteProp,
+  LoggedInNavScreenNavigationProp,
   WalkDetailDayScreenRouteProp,
 } from "~/types/navigator";
 import UpdateProfile from "~/screens/loggedInNav/UpdateProfile";
@@ -27,7 +28,6 @@ import userApi from "~/api/user";
 import { useDispatch } from "react-redux";
 import Toast from "react-native-toast-message";
 import UserRequestSuccess from "~/screens/loggedInNav/UserRequestSuccess";
-import { storageActions } from "~/store/storage";
 import notificationHandler from "~/utils/notificationHandler";
 import WalkDetailDay from "~/screens/sharedStackNav/WalkDetailDay";
 
@@ -39,10 +39,25 @@ const forFade = ({ current }: StackCardInterpolationProps) => ({
   },
 });
 
-const LoggedInNav = ({ navigation, route }: LoggedInNavScreenProps) => {
+const LoggedInNav = ({
+  navigation,
+  route,
+}: {
+  navigation: LoggedInNavScreenNavigationProp;
+  route: LoggedInNavRouteProp;
+}) => {
   const dispatch = useDispatch();
 
   const [postRead] = userApi.useReadNotificationsMutation();
+
+  useEffect(() => {
+    if (route.params?.initialWalkDetailDayParams) {
+      navigation.navigate(
+        "WalkDetailDay",
+        route.params.initialWalkDetailDayParams,
+      );
+    }
+  }, [route.params?.initialWalkDetailDayParams]);
 
   useEffect(() => {
     CodePush.sync({
@@ -61,14 +76,14 @@ const LoggedInNav = ({ navigation, route }: LoggedInNavScreenProps) => {
         onPress: async () => {
           notificationHandler(remoteMessage, navigation);
           Toast.hide();
-          /* if (!isNotificationTab) {
+          if (!isNotificationTab) {
             await postRead([1]);
             dispatch(
               userApi.util.invalidateTags([
                 { type: "Notification", id: "NEW" },
               ]),
             );
-          } */
+          }
         },
       });
       dispatch(
@@ -100,6 +115,9 @@ const LoggedInNav = ({ navigation, route }: LoggedInNavScreenProps) => {
       <Stack.Screen
         name="BottomTabNav"
         component={BottomTabNav}
+        initialParams={{
+          initialRouteName: route.params?.initialBottomTabRouteName,
+        }}
         options={{ headerShown: false }}
       />
       <Stack.Screen
