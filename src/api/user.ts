@@ -30,7 +30,7 @@ const userApi = api.injectEndpoints({
   endpoints: builder => ({
     facebookLogin: builder.mutation<LoginRes, LoginArgs & { userID: string }>({
       query: ({ accessToken, firebaseToken, userID }) => ({
-        url: "/accounts/login/facebook/",
+        url: "/account/login/facebook/",
         method: "POST",
         headers: {
           "access-token": accessToken,
@@ -42,7 +42,7 @@ const userApi = api.injectEndpoints({
 
     kakaoLogin: builder.mutation<LoginRes, LoginArgs>({
       query: ({ accessToken, firebaseToken }) => ({
-        url: "/accounts/login/kakao/",
+        url: "/account/login/kakao/",
         method: "POST",
         headers: {
           "access-token": accessToken,
@@ -53,7 +53,7 @@ const userApi = api.injectEndpoints({
 
     logout: builder.mutation<void, string>({
       query: firebaseToken => ({
-        url: "/accounts/logout/",
+        url: "/account/logout/",
         method: "POST",
         headers: {
           "firebase-registration-token": firebaseToken,
@@ -62,13 +62,13 @@ const userApi = api.injectEndpoints({
     }),
 
     getNotifications: builder.query<Notification[], void>({
-      query: () => "/accounts/push-noti/",
+      query: () => "/account/push-noti/",
       providesTags: result => providesList(result, "Notification"),
     }),
 
     readNotifications: builder.mutation<void, number[]>({
       query: ids => ({
-        url: "/accounts/push-noti/",
+        url: "/account/push-noti/",
         method: "POST",
         body: {
           message_ids: ids,
@@ -77,13 +77,13 @@ const userApi = api.injectEndpoints({
     }),
 
     getNumOfNewNotifications: builder.query<{ count: number }, void>({
-      query: () => "/accounts/push-noti/check-new/",
+      query: () => "/account/push-noti/check-new/",
       providesTags: () => [{ type: "Notification", id: "NEW" }],
     }),
 
     getNofiticationSettings: builder.query<NotificationSettings, string>({
       query: firebaseToken => ({
-        url: "/accounts/setting/push-noti/",
+        url: "/account/setting/push-noti/",
         headers: {
           "firebase-registration-token": firebaseToken,
         },
@@ -98,7 +98,7 @@ const userApi = api.injectEndpoints({
       }
     >({
       query: ({ firebaseToken, body }) => ({
-        url: "/accounts/setting/push-noti/",
+        url: "/account/setting/push-noti/",
         method: "PUT",
         headers: {
           "firebase-registration-token": firebaseToken,
@@ -127,12 +127,12 @@ const userApi = api.injectEndpoints({
     }),
 
     getNickname: builder.query<{ nickname: string }, void>({
-      query: () => "/accounts/setting/nickname/",
+      query: () => "/account/setting/nickname/",
     }),
 
     updateNickname: builder.mutation<{ nickname: string }, string>({
       query: nickname => ({
-        url: "/accounts/setting/nickname/",
+        url: "/account/setting/nickname/",
         method: "PUT",
         body: { nickname },
       }),
@@ -152,7 +152,7 @@ const userApi = api.injectEndpoints({
 
     deleteAccount: builder.mutation<void, number>({
       query: reason => ({
-        url: "/accounts/withdraw/",
+        url: "/account/withdraw/",
         method: "POST",
         body: {
           with_draw_reason: reason,

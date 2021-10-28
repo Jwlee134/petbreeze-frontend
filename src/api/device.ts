@@ -78,7 +78,7 @@ interface DailyWalkRecord {
   start_date_time: string;
   time: number;
   distance: number;
-  handler_nickname: string;
+  handler_name: string;
   path_image: string;
 }
 
@@ -104,7 +104,7 @@ interface WalkBody {
 const deviceApi = api.injectEndpoints({
   endpoints: builder => ({
     getDeviceList: builder.query<Device[], void>({
-      query: () => "/devices/",
+      query: () => "/device/",
       providesTags: result => providesList(result, "Device"),
     }),
 
@@ -113,22 +113,27 @@ const deviceApi = api.injectEndpoints({
       string
     >({
       query: IMEInumber => ({
-        url: "/devices/",
+        url: "/device/",
         method: "POST",
         body: {
           IMEInumber,
         },
-        responseHandler: async (res: Response) => {
+        responseHandler: async res => {
           const data: { device_id: number } = await res.json();
           return { status: res.status, data };
         },
       }),
-      invalidatesTags: () => [{ type: "Device", id: "LIST" }],
+      invalidatesTags: res => {
+        if (res && (res.status === 200 || res.status === 201)) {
+          return [{ type: "Device", id: "LIST" }];
+        }
+        return [];
+      },
     }),
 
     deleteDevice: builder.mutation<void, number>({
       query: deviceID => ({
-        url: `/devices/${deviceID}/`,
+        url: `/device/${deviceID}/`,
         method: "DELETE",
       }),
       onQueryStarted: async (deviceID, { dispatch, queryFulfilled }) => {
@@ -150,9 +155,18 @@ const deviceApi = api.injectEndpoints({
 
     getEmergencyMissing: builder.query<EmergencyMissing, number>({
       query: deviceID => ({
-        url: `/devices/${deviceID}/emergency/`,
+        url: `/device/${deviceID}/emergency/`,
         method: "GET",
       }),
+      onQueryStarted: async (deviceID, { dispatch, queryFulfilled }) => {
+        try {
+          await queryFulfilled;
+        } catch {
+          dispatch(
+            deviceApi.util.invalidateTags([{ type: "Device", id: deviceID }]),
+          );
+        }
+      },
     }),
 
     postEmergencyMissing: builder.mutation<
@@ -160,7 +174,7 @@ const deviceApi = api.injectEndpoints({
       { deviceID: number; body: EmergencyMissingForm }
     >({
       query: ({ deviceID, body }) => ({
-        url: `/devices/${deviceID}/emergency/`,
+        url: `/device/${deviceID}/emergency/`,
         method: "POST",
         body,
       }),
@@ -187,10 +201,13 @@ const deviceApi = api.injectEndpoints({
       { deviceID: number; body: EmergencyMissingForm }
     >({
       query: ({ deviceID, body }) => ({
-        url: `/devices/${deviceID}/emergency/`,
+        url: `/device/${deviceID}/emergency/`,
         method: "PUT",
         body,
       }),
+      invalidatesTags: (result, error, { deviceID }) => [
+        { type: "Device", id: deviceID },
+      ],
     }),
 
     updateEmergencyMissingThumbnail: builder.mutation<
@@ -198,18 +215,24 @@ const deviceApi = api.injectEndpoints({
       { deviceID: number; body: FormData }
     >({
       query: ({ deviceID, body }) => ({
-        url: `/devices/${deviceID}/emergency/`,
+        url: `/device/${deviceID}/emergency/`,
         method: "PATCH",
         headers: {
           "Content-Type": "multipart/form-data;",
         },
         body,
       }),
+      invalidatesTags: (result, error, { deviceID }) => {
+        if (error) {
+          return [{ type: "Device", id: deviceID }];
+        }
+        return [];
+      },
     }),
 
     deleteEmergencyMissing: builder.mutation<void, number>({
       query: deviceID => ({
-        url: `/devices/${deviceID}/emergency/`,
+        url: `/device/${deviceID}/emergency/`,
         method: "DELETE",
       }),
       onQueryStarted: async (deviceID, { dispatch, queryFulfilled }) => {
@@ -232,14 +255,23 @@ const deviceApi = api.injectEndpoints({
 
     getDeviceCoord: builder.query<DeviceCoord, number>({
       query: deviceID => ({
-        url: `/devices/${deviceID}/location/`,
+        url: `/device/${deviceID}/location/`,
         method: "GET",
       }),
+      onQueryStarted: async (deviceID, { dispatch, queryFulfilled }) => {
+        try {
+          await queryFulfilled;
+        } catch {
+          dispatch(
+            deviceApi.util.invalidateTags([{ type: "Device", id: deviceID }]),
+          );
+        }
+      },
     }),
 
     getDeviceMembers: builder.query<DeviceMembers, number>({
       query: deviceID => ({
-        url: `/devices/${deviceID}/members/`,
+        url: `/device/${deviceID}/member/`,
         method: "GET",
       }),
       providesTags: result => providesList(result?.members, "Member"),
@@ -250,7 +282,7 @@ const deviceApi = api.injectEndpoints({
       { deviceID: number; userID: number }
     >({
       query: ({ deviceID, userID }) => ({
-        url: `/devices/${deviceID}/members/${userID}`,
+        url: `/device/${deviceID}/member/${userID}`,
         method: "DELETE",
       }),
       onQueryStarted: async (
@@ -274,9 +306,12 @@ const deviceApi = api.injectEndpoints({
           deleteResult.undo();
         }
       },
-      invalidatesTags: (result, error, { userID }) => [
-        { type: "Member", id: userID },
-      ],
+      invalidatesTags: (result, error, { userID, deviceID }) => {
+        if (error?.data.detail === "Device id does not exist.") {
+          return [{ type: "Device", id: deviceID }];
+        }
+        return [{ type: "Member", id: userID }];
+      },
     }),
 
     updateDeviceOwner: builder.mutation<
@@ -284,7 +319,7 @@ const deviceApi = api.injectEndpoints({
       { deviceID: number; userID: number }
     >({
       query: ({ deviceID, userID }) => ({
-        url: `/devices/${deviceID}/owner/`,
+        url: `/device/${deviceID}/owner/`,
         method: "PUT",
         body: {
           user_id: userID,
@@ -309,14 +344,17 @@ const deviceApi = api.injectEndpoints({
           putResult.undo();
         }
       },
-      invalidatesTags: (result, error, { userID }) => [
-        { type: "Member", id: userID },
-      ],
+      invalidatesTags: (result, error, { userID, deviceID }) => {
+        if (error?.data.detail === "Device id does not exist.") {
+          return [{ type: "Device", id: deviceID }];
+        }
+        return [{ type: "Member", id: userID }];
+      },
     }),
 
     getDeviceProfile: builder.query<DeviceProfile, number>({
       query: deviceID => ({
-        url: `/devices/${deviceID}/profile/`,
+        url: `/device/${deviceID}/profile/`,
         method: "GET",
       }),
       providesTags: () => [{ type: "Device", id: "PROFILE" }],
@@ -330,7 +368,7 @@ const deviceApi = api.injectEndpoints({
       }
     >({
       query: ({ deviceID, body }) => ({
-        url: `/devices/${deviceID}/profile/`,
+        url: `/device/${deviceID}/profile/`,
         method: "PUT",
         body,
       }),
@@ -362,13 +400,33 @@ const deviceApi = api.injectEndpoints({
       { deviceID: number; body: FormData }
     >({
       query: ({ deviceID, body }) => ({
-        url: `/devices/${deviceID}/profile/`,
+        url: `/device/${deviceID}/profile/`,
         method: "PATCH",
         headers: {
           "Content-Type": "multipart/form-data;",
         },
         body,
       }),
+      onQueryStarted: async ({ deviceID }, { dispatch, queryFulfilled }) => {
+        try {
+          const {
+            data: { profile_image },
+          } = await queryFulfilled;
+          dispatch(
+            deviceApi.util.updateQueryData(
+              "getDeviceProfile",
+              deviceID,
+              draft => {
+                draft.profile_image = profile_image;
+              },
+            ),
+          );
+        } catch {
+          dispatch(
+            deviceApi.util.invalidateTags([{ type: "Device", id: deviceID }]),
+          );
+        }
+      },
     }),
 
     getDeviceSetting: builder.query<
@@ -376,10 +434,19 @@ const deviceApi = api.injectEndpoints({
       number
     >({
       query: deviceID => ({
-        url: `/devices/${deviceID}/setting/`,
+        url: `/device/${deviceID}/setting/`,
         method: "GET",
       }),
       providesTags: () => [{ type: "Device", id: "SETTING" }],
+      onQueryStarted: async (deviceID, { dispatch, queryFulfilled }) => {
+        try {
+          await queryFulfilled;
+        } catch {
+          dispatch(
+            deviceApi.util.invalidateTags([{ type: "Device", id: deviceID }]),
+          );
+        }
+      },
     }),
 
     updateDeviceSetting: builder.mutation<
@@ -387,7 +454,7 @@ const deviceApi = api.injectEndpoints({
       { deviceID: number; body: DeviceSetting<Area> }
     >({
       query: ({ deviceID, body }) => ({
-        url: `/devices/${deviceID}/setting/`,
+        url: `/device/${deviceID}/setting/`,
         method: "PUT",
         body,
       }),
@@ -399,13 +466,19 @@ const deviceApi = api.injectEndpoints({
       { deviceID: number; body: FormData }
     >({
       query: ({ deviceID, body }) => ({
-        url: `/devices/${deviceID}/setting/`,
+        url: `/device/${deviceID}/setting/`,
         method: "PATCH",
         headers: {
           "Content-Type": "multipart/form-data;",
         },
         body,
       }),
+      invalidatesTags: (result, error, { deviceID }) => {
+        if (error) {
+          return [{ type: "Device", id: deviceID }];
+        }
+        return [];
+      },
     }),
 
     getDailyWalkRecord: builder.query<
@@ -413,7 +486,7 @@ const deviceApi = api.injectEndpoints({
       { deviceID: number; date: string }
     >({
       query: ({ deviceID, date }) => ({
-        url: `/devices/${deviceID}/walks/?date=${date}`,
+        url: `/device/${deviceID}/walk/?date=${date}`,
         method: "GET",
         responseHandler: async (res: Response) => {
           const data: DailyWalkRecord[] = await res.json();
@@ -421,6 +494,15 @@ const deviceApi = api.injectEndpoints({
         },
       }),
       providesTags: result => providesList(result, "Walk"),
+      onQueryStarted: async ({ deviceID }, { dispatch, queryFulfilled }) => {
+        try {
+          await queryFulfilled;
+        } catch {
+          dispatch(
+            deviceApi.util.invalidateTags([{ type: "Device", id: deviceID }]),
+          );
+        }
+      },
     }),
 
     getMonthlyWalkRecord: builder.query<
@@ -428,10 +510,33 @@ const deviceApi = api.injectEndpoints({
       { deviceID: number; year: number; month: number }
     >({
       query: ({ deviceID, year, month }) => ({
-        url: `/devices/${deviceID}/walks/summary/?year=${year}&month=${month}`,
+        url: `/device/${deviceID}/walk/summary/?year=${year}&month=${month}`,
         method: "GET",
       }),
       providesTags: () => [{ type: "Walk", id: "MONTHLY" }],
+      onQueryStarted: async ({ deviceID }, { dispatch, queryFulfilled }) => {
+        try {
+          await queryFulfilled;
+        } catch {
+          dispatch(
+            deviceApi.util.invalidateTags([{ type: "Device", id: deviceID }]),
+          );
+        }
+      },
+    }),
+
+    startWalking: builder.mutation<void, number>({
+      query: deviceID => ({
+        url: `/device/${deviceID}/walk/start/`,
+        method: "POST",
+        body: {},
+      }),
+      invalidatesTags: (result, error, deviceID) => {
+        if (error?.status === 403 || error?.status === 404) {
+          return [{ type: "Device", id: deviceID }];
+        }
+        return [];
+      },
     }),
 
     postWalk: builder.mutation<
@@ -439,7 +544,7 @@ const deviceApi = api.injectEndpoints({
       { deviceID: number; body: WalkBody }
     >({
       query: ({ deviceID, body }) => ({
-        url: `/devices/${deviceID}/walks/`,
+        url: `/device/${deviceID}/walk/`,
         method: "POST",
         body,
       }),
@@ -450,7 +555,7 @@ const deviceApi = api.injectEndpoints({
       { body: FormData; walkID: number; deviceID: number }
     >({
       query: ({ body, walkID, deviceID }) => ({
-        url: `/devices/${deviceID}/walks/${walkID}/`,
+        url: `/device/${deviceID}/walk/${walkID}/`,
         method: "PATCH",
         headers: {
           "Content-Type": "multipart/form-data;",
@@ -464,7 +569,7 @@ const deviceApi = api.injectEndpoints({
       { deviceID: number; walkID: number; date: string }
     >({
       query: ({ deviceID, walkID }) => ({
-        url: `/devices/${deviceID}/walks/${walkID}/`,
+        url: `/device/${deviceID}/walk/${walkID}/`,
         method: "DELETE",
       }),
       onQueryStarted: async (
@@ -484,10 +589,15 @@ const deviceApi = api.injectEndpoints({
           deleteResult.undo();
         }
       },
-      invalidatesTags: (result, error, { walkID }) => [
-        { type: "Walk", id: walkID },
-        { type: "Walk", id: "MONTHLY" },
-      ],
+      invalidatesTags: (result, error, { walkID, deviceID }) => {
+        if (error?.status === 403 || error?.status === 404) {
+          return [{ type: "Device", id: deviceID }];
+        }
+        return [
+          { type: "Walk", id: walkID },
+          { type: "Walk", id: "MONTHLY" },
+        ];
+      },
     }),
   }),
 });

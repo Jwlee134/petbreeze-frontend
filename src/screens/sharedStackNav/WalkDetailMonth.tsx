@@ -89,11 +89,7 @@ const WalkDetailMonth = ({
   const dispatch = useDispatch();
   const { dateOfDeletedRecord } = useAppSelector(state => state.common.walk);
 
-  useError({
-    error,
-    type: "Device",
-    callback: navigation.goBack,
-  });
+  useError({ error, type: "Device", callback: navigation.goBack });
 
   useEffect(() => {
     // markedDates obj 변경되어도 달력의 dots 변화없는 문제 해결

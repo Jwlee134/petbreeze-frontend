@@ -37,11 +37,11 @@ const EmergencyMissingStackNav = ({
   const [getMissingInfo, { data, error }] =
     deviceApi.useLazyGetEmergencyMissingQuery();
 
-  useError({ error, type: "Device", callback: navigation.goBack });
-
   const {
     params: { name, avatar, deviceID, isModify },
   } = route;
+
+  useError({ error, type: "Device", callback: navigation.goBack });
 
   useEffect(() => {
     if (data) {

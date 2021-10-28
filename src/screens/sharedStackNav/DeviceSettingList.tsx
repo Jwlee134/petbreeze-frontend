@@ -24,11 +24,7 @@ const DeviceSettingList = ({
   const [deleteDevice, { error }] = deviceApi.useDeleteDeviceMutation();
   const deviceList = useDevice();
 
-  useError({
-    error,
-    type: "Device",
-    callback: navigation.goBack,
-  });
+  useError({ error, type: "Device", callback: navigation.goBack });
 
   useEffect(() => {
     if (deviceList && !deviceList.length) {

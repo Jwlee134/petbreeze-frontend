@@ -11,7 +11,7 @@ import SelectableButton from "~/components/common/SelectableButton";
 import { noAvatar, serverImageUri } from "~/constants";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import useModal from "~/hooks/useModal";
-import { store, useAppSelector } from "~/store";
+import { useAppSelector } from "~/store";
 import { deviceSettingActions } from "~/store/deviceSetting";
 import { UpdateProfileScreenProps } from "~/types/navigator";
 import imageHandler from "~/utils/imageHandler";
@@ -74,8 +74,9 @@ const UpdateProfile = ({
   );
 
   const callback = () => {
+    const tabIndex = navigation.getState().routes[0].state?.index ?? 0;
     navigation.replace("BottomTabNav", {
-      initialRouteName: "MyPageTab",
+      initialRouteName: tabIndex === 0 ? "HomeTab" : "MyPageTab",
     });
   };
 
@@ -86,15 +87,14 @@ const UpdateProfile = ({
     if (loading) return;
     setLoading(true);
     if (photos[0] && !photos[0].includes(serverImageUri)) {
-      const { profile_image } = await triggerAvatar({
-        deviceID,
-        body: imageHandler.handleFormData(photos[0], "profile_image"),
-      }).unwrap();
-      store.dispatch(
-        deviceApi.util.updateQueryData("getDeviceProfile", deviceID, draft => {
-          draft.profile_image = profile_image;
-        }),
-      );
+      try {
+        await triggerAvatar({
+          deviceID,
+          body: imageHandler.handleFormData(photos[0], "profile_image"),
+        }).unwrap();
+      } catch (error) {
+        return;
+      }
     }
     await triggerProfile({
       deviceID,

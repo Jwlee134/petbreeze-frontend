@@ -73,9 +73,9 @@ const EmergencyMissingSecondPage = ({
   } = useAppSelector(state => state.deviceSetting.profile);
   const dispatch = useDispatch();
   const { width, rpWidth } = useContext(DimensionsContext);
-  const [trigger, { error: postError }] =
+  const [register, { error: postError }] =
     deviceApi.usePostEmergencyMissingMutation();
-  const [triggerAvatar] =
+  const [updateAvatar, { error: patchError }] =
     deviceApi.useUpdateEmergencyMissingThumbnailMutation();
   const [update, { error: putError }] =
     deviceApi.useUpdateEmergencyMissingMutation();
@@ -87,26 +87,29 @@ const EmergencyMissingSecondPage = ({
     navigation.replace("BottomTabNav");
   };
 
+  useError({ error: patchError, type: "Device", callback });
   useError({ error: putError, type: "Device", callback });
   useError({ error: postError, type: "Device", callback });
 
   const handleSubmit = async () => {
+    if (loading) return;
+    setLoading(true);
+
+    const body = {
+      message,
+      missing_location: lostPlace,
+      missing_datetime: new Date(
+        new Date().getFullYear(),
+        lostMonth - 1,
+        lostDate,
+        lostHour,
+        lostMinute,
+      ).toISOString(),
+      contact_number: phoneNumber,
+      has_dog_tag: hasTag,
+    };
+    let key = "";
     try {
-      setLoading(true);
-      const body = {
-        message,
-        missing_location: lostPlace,
-        missing_datetime: new Date(
-          new Date().getFullYear(),
-          lostMonth - 1,
-          lostDate,
-          lostHour,
-          lostMinute,
-        ).toISOString(),
-        contact_number: phoneNumber,
-        has_dog_tag: hasTag,
-      };
-      let key = "";
       if (isModify) {
         await update({
           deviceID,
@@ -114,26 +117,30 @@ const EmergencyMissingSecondPage = ({
         }).unwrap();
         key = emergencyKey;
       } else {
-        const data = await trigger({
+        const data = await register({
           deviceID,
           body,
         }).unwrap();
         key = data.emergency_key;
       }
+    } catch {
+      return;
+    }
 
-      if (!photos.every(photo => photo.includes("amazonaws"))) {
+    if (!photos.every(photo => photo.includes("amazonaws"))) {
+      try {
         const generateKey = (i: number) => `image${i}_thumbnail`;
         const formData = imageHandler.handleFormData(photos, generateKey);
-        await triggerAvatar({ deviceID, body: formData }).unwrap();
+        await updateAvatar({ deviceID, body: formData }).unwrap();
+      } catch {
+        return;
       }
-
-      navigation.replace("UserRequestSuccess", {
-        text: isModify ? "수정되었습니다." : "업로드 되었습니다.",
-        key,
-      });
-    } catch {
-      setLoading(false);
     }
+
+    navigation.replace("UserRequestSuccess", {
+      text: isModify ? "수정되었습니다." : "업로드 되었습니다.",
+      key,
+    });
   };
 
   return (
