@@ -7,6 +7,8 @@ import { formatCreatedAt } from "~/utils";
 import MyText from "../common/MyText";
 import Arrow from "~/assets/svg/arrow/arrow-right-blue.svg";
 import { Notification } from "~/api/user";
+import { noAvatar } from "~/constants";
+import { Device } from "~/api/device";
 
 const Container = styled.TouchableOpacity<{ rpWidth: RpWidth }>`
   padding: ${({ rpWidth }) => `0 ${rpWidth(32)}px`};
@@ -29,18 +31,43 @@ const TextContainer = styled.View<{ rpWidth: RpWidth }>`
   flex: 1;
 `;
 
-const NotificationItem = ({ data }: { data: Notification }) => {
+const NotificationItem = ({
+  data,
+  device,
+}: {
+  data: Notification;
+  device: Device;
+}) => {
   const { rpWidth } = useContext(DimensionsContext);
   const showArrow = !data.title.includes("배터리");
 
   return (
     <Container rpWidth={rpWidth}>
-      <Image rpWidth={rpWidth} source={require("~/assets/image/test.jpg")} />
+      <Image
+        rpWidth={rpWidth}
+        source={device.profile_image ? { uri: device.profile_image } : noAvatar}
+      />
       <TextContainer rpWidth={rpWidth}>
-        <MyText
-          fontSize={14}
-          color={data.title.includes("안심존") ? palette.red_f0 : undefined}>
-          {data.title}
+        <MyText>
+          {(() => {
+            const color = data.title.includes("안심존")
+              ? palette.red_f0
+              : undefined;
+            const parts = data.title.split(
+              new RegExp(`(${device.name})`, "gi"),
+            );
+            return parts.map((text, i) =>
+              text === device.name ? (
+                <MyText color={color} fontSize={14} fontWeight="medium" key={i}>
+                  {text}
+                </MyText>
+              ) : (
+                <MyText color={color} fontSize={14} key={i}>
+                  {text}
+                </MyText>
+              ),
+            );
+          })()}
           {"    "}
           <View>
             <MyText

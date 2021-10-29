@@ -13,7 +13,7 @@ interface LoginArgs {
 export interface Notification {
   related_device_id: number;
   is_new: boolean;
-  body: string;
+  title: string;
   created_at: string;
   id: number;
 }
@@ -74,6 +74,7 @@ const userApi = api.injectEndpoints({
           message_ids: ids,
         },
       }),
+      invalidatesTags: () => [{ type: "Notification", id: "NEW" }],
     }),
 
     getNumOfNewNotifications: builder.query<{ count: number }, void>({

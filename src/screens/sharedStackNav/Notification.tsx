@@ -9,7 +9,8 @@ import Divider from "~/components/common/Divider";
 import NotificationItem from "~/components/notification/NotificationItem";
 import userApi from "~/api/user";
 import { useIsFocused } from "@react-navigation/native";
-import { store } from "~/store";
+import useDevice from "~/hooks/useDevice";
+import useAppState from "~/hooks/useAppState";
 
 const Container = styled.ScrollView`
   flex: 1;
@@ -28,26 +29,19 @@ const Notification = ({
 }: {
   navigation: NotificationScreenNavigationProp;
 }) => {
+  const deviceList = useDevice();
   const { data, refetch } = userApi.useGetNotificationsQuery();
-  const { data: numOfNewNotif } =
-    userApi.endpoints.getNumOfNewNotifications.useQueryState();
   const [postRead] = userApi.useReadNotificationsMutation();
   const { rpWidth } = useContext(DimensionsContext);
   const isFocused = useIsFocused();
+  const appState = useAppState();
 
   useEffect(() => {
     if (!data) return;
     const handleRead = async () => {
       const newNotifs = data.filter(notif => notif.is_new);
       if (newNotifs.length) {
-        try {
-          await postRead(newNotifs.map(notif => notif.id)).unwrap();
-          store.dispatch(
-            userApi.util.invalidateTags([{ type: "Notification", id: "NEW" }]),
-          );
-        } catch (error) {
-          console.log(error);
-        }
+        postRead(newNotifs.map(notif => notif.id));
       }
     };
     handleRead();
@@ -57,32 +51,63 @@ const Notification = ({
     if (isFocused) refetch();
   }, [isFocused]);
 
-  if (!data) return null;
+  useEffect(() => {
+    if (appState === "active") refetch();
+  }, [appState]);
+
+  if (!data || !deviceList) return null;
+
+  const newNotif = data.filter(notif => notif.is_new);
+  const thisWeek = data.filter(notif => !notif.is_new);
 
   if (data.length) {
     return (
       <Container>
-        <CategoryTitle rpWidth={rpWidth}>
-          <MyText fontWeight="medium" fontSize={18}>
-            새로운 알림
-          </MyText>
-        </CategoryTitle>
-        {data
-          .filter(notif => notif.is_new)
-          .map(notif => (
-            <NotificationItem key={notif.id} data={notif} />
-          ))}
-        <Divider />
-        <CategoryTitle rpWidth={rpWidth}>
-          <MyText fontWeight="medium" fontSize={18}>
-            이번주
-          </MyText>
-        </CategoryTitle>
-        {data
-          .filter(notif => !notif.is_new)
-          .map(notif => (
-            <NotificationItem key={notif.id} data={notif} />
-          ))}
+        {newNotif.length ? (
+          <>
+            <CategoryTitle rpWidth={rpWidth}>
+              <MyText fontWeight="medium" fontSize={18}>
+                새로운 알림
+              </MyText>
+            </CategoryTitle>
+            {newNotif.map(notif => (
+              <NotificationItem
+                key={notif.id}
+                data={notif}
+                device={
+                  deviceList[
+                    deviceList.findIndex(
+                      device => device.id === notif.related_device_id,
+                    )
+                  ]
+                }
+              />
+            ))}
+            <Divider />
+          </>
+        ) : null}
+        {thisWeek.length ? (
+          <>
+            <CategoryTitle rpWidth={rpWidth}>
+              <MyText fontWeight="medium" fontSize={18}>
+                이번주
+              </MyText>
+            </CategoryTitle>
+            {thisWeek.map(notif => (
+              <NotificationItem
+                key={notif.id}
+                data={notif}
+                device={
+                  deviceList[
+                    deviceList.findIndex(
+                      device => device.id === notif.related_device_id,
+                    )
+                  ]
+                }
+              />
+            ))}
+          </>
+        ) : null}
       </Container>
     );
   }

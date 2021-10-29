@@ -48,7 +48,7 @@ const LoggedInNav = ({
 }) => {
   const dispatch = useDispatch();
 
-  const [postRead] = userApi.useReadNotificationsMutation();
+  const [handleRead] = userApi.useReadNotificationsMutation();
 
   useEffect(() => {
     if (route.params?.initialWalkDetailDayParams) {
@@ -66,9 +66,20 @@ const LoggedInNav = ({
     });
 
     const unsubscribe = messaging().onMessage(async remoteMessage => {
+      console.log(remoteMessage);
       const isNotificationTab =
         navigation.getState().routes[0].state?.routes[0].state?.index === 2;
-      // 토스트 클릭 시 알림 탭이 아니라면 읽음 요청 후 새로운 알림 수 revalidate
+
+      if (isNotificationTab) {
+        dispatch(
+          userApi.util.invalidateTags([{ type: "Notification", id: "LIST" }]),
+        );
+      } else {
+        dispatch(
+          userApi.util.invalidateTags([{ type: "Notification", id: "NEW" }]),
+        );
+      }
+
       Toast.show({
         type: "notification",
         text1: remoteMessage.notification?.title,
@@ -76,29 +87,25 @@ const LoggedInNav = ({
         onPress: async () => {
           notificationHandler(remoteMessage, navigation);
           Toast.hide();
-          if (!isNotificationTab) {
-            await postRead([1]);
-            dispatch(
-              userApi.util.invalidateTags([
-                { type: "Notification", id: "NEW" },
-              ]),
-            );
+          if (!isNotificationTab && remoteMessage?.data?.messageId) {
+            handleRead([parseInt(remoteMessage.data.messageId, 10)]);
           }
         },
       });
-      dispatch(
-        userApi.util.invalidateTags([{ type: "Notification", id: "NEW" }]),
-      );
-
-      console.log(remoteMessage);
     });
 
     messaging().onNotificationOpenedApp(async remoteMessage => {
-      // 백그라운드에 있을 때 알림 클릭해서 앱 다시 연 경우
       console.log(
         "Notification caused app to open from background state:",
         remoteMessage,
       );
+
+      const isNotificationTab =
+        navigation.getState().routes[0].state?.routes[0].state?.index === 2;
+      if (!isNotificationTab && remoteMessage?.data?.messageId) {
+        handleRead([parseInt(remoteMessage.data.messageId, 10)]);
+      }
+
       notificationHandler(remoteMessage, navigation);
     });
 
