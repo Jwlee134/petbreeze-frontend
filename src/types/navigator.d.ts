@@ -399,6 +399,8 @@ export type SharedStackNavParamList = {
   };
   DeviceSetting: {
     deviceID: number;
+    avatar: string;
+    name: string;
   };
   DeviceSettingList: undefined;
   UpdateNickname: undefined;

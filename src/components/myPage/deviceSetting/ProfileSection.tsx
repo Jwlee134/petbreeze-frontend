@@ -8,9 +8,9 @@ import { useNavigation } from "@react-navigation/native";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import deviceApi from "~/api/device";
 import { DeviceSettingScreenNavigationProp } from "~/types/navigator";
-import { noAvatar, noName } from "~/constants";
 import { useDispatch } from "react-redux";
 import { deviceSettingActions } from "~/store/deviceSetting";
+import { noAvatar, noName } from "~/constants";
 
 const Container = styled.View<{ rpWidth: RpWidth }>`
   align-items: center;
@@ -22,13 +22,21 @@ const Container = styled.View<{ rpWidth: RpWidth }>`
 
 const Image = styled.Image<{ rpWidth: RpWidth }>`
   ${({ rpWidth }) => css`
-    width: ${rpWidth(70)}px;
-    height: ${rpWidth(70)}px;
-    border-radius: ${rpWidth(35)}px;
+    width: ${rpWidth(70, true)}px;
+    height: ${rpWidth(70, true)}px;
+    border-radius: ${rpWidth(35, true)}px;
   `}
 `;
 
-const ProfileSection = ({ deviceID }: { deviceID: number }) => {
+const ProfileSection = ({
+  deviceID,
+  avatar,
+  name,
+}: {
+  deviceID: number;
+  avatar: string;
+  name: string;
+}) => {
   const navigation = useNavigation<DeviceSettingScreenNavigationProp>();
   const { rpWidth } = useContext(DimensionsContext);
   const { data } = deviceApi.useGetDeviceProfileQuery(deviceID, {
@@ -60,7 +68,13 @@ const ProfileSection = ({ deviceID }: { deviceID: number }) => {
         }}>
         <Image
           rpWidth={rpWidth}
-          source={data?.profile_image ? { uri: data?.profile_image } : noAvatar}
+          source={
+            data?.profile_image
+              ? { uri: data?.profile_image }
+              : avatar
+              ? { uri: avatar }
+              : noAvatar
+          }
         />
         <Pencil
           width={rpWidth(28)}
@@ -73,7 +87,7 @@ const ProfileSection = ({ deviceID }: { deviceID: number }) => {
         />
       </TouchableOpacity>
       <MyText style={{ marginTop: rpWidth(7) }} fontWeight="medium">
-        {data?.name || noName}
+        {data?.name || name || noName}
       </MyText>
       <MyText fontSize={12} color="rgba(0, 0, 0, 0.3)">
         {data?.species || "품종 없음"}

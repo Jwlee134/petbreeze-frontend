@@ -72,6 +72,8 @@ const DeviceList = ({ deviceList }: { deviceList: Device[] | undefined }) => {
               onPress={() => {
                 navigation.navigate("DeviceSetting", {
                   deviceID: device.id,
+                  avatar: device.profile_image,
+                  name: device.name,
                 });
               }}
               key={device.id}>

@@ -23,7 +23,7 @@ import { serverImageUri } from "~/constants";
 const DeviceSetting = ({
   navigation,
   route: {
-    params: { deviceID },
+    params: { deviceID, avatar, name },
   },
 }: DeviceSettingScreenProps) => {
   const { rpWidth } = useContext(DimensionsContext);
@@ -143,7 +143,7 @@ const DeviceSetting = ({
           flexGrow: 1,
           paddingBottom: rpWidth(35),
         }}>
-        <ProfileSection deviceID={deviceID} />
+        <ProfileSection deviceID={deviceID} avatar={avatar} name={name} />
         <Divider isHairline={false} />
         <LocationInfoCollectionPeriod deviceID={deviceID} />
         <View style={{ paddingHorizontal: rpWidth(16) }}>
