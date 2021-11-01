@@ -7,7 +7,6 @@ import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import deviceApi from "~/api/device";
 import CustomHeader from "~/components/navigator/CustomHeader";
-import useError from "~/hooks/useError";
 import EmergencyMissingFirstPage from "~/screens/emergencyMissingStackNav/EmergencyMissingFirstPage";
 import EmergencyMissingSecondPage from "~/screens/emergencyMissingStackNav/EmergencyMissingSecondPage";
 import { deviceSettingActions } from "~/store/deviceSetting";
@@ -34,14 +33,12 @@ const EmergencyMissingStackNav = ({
 }) => {
   const currentRouteName = getFocusedRouteNameFromRoute(route);
   const dispatch = useDispatch();
-  const [getMissingInfo, { data, error }] =
+  const [getMissingInfo, { data }] =
     deviceApi.useLazyGetEmergencyMissingQuery();
 
   const {
     params: { name, avatar, deviceID, isModify },
   } = route;
-
-  useError({ error, type: "Device", callback: navigation.goBack });
 
   useEffect(() => {
     if (data) {

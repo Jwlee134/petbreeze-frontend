@@ -20,7 +20,6 @@ import Button from "~/components/common/Button";
 import { useDispatch } from "react-redux";
 import { storageActions } from "~/store/storage";
 import { useAppSelector } from "~/store";
-import useError from "~/hooks/useError";
 import { commonActions } from "~/store/common";
 
 const TopContainer = styled.View`
@@ -77,7 +76,7 @@ const WalkDetailMonth = ({
     month: new Date().getMonth() + 1,
   });
   const [dateObj, setDateObj] = useState<DateObj>({});
-  const { data, error, isFetching } = deviceApi.useGetMonthlyWalkRecordQuery(
+  const { data, isFetching } = deviceApi.useGetMonthlyWalkRecordQuery(
     {
       deviceID,
       year: date.year,
@@ -88,8 +87,6 @@ const WalkDetailMonth = ({
   const { rpWidth, isTablet } = useContext(DimensionsContext);
   const dispatch = useDispatch();
   const { dateOfDeletedRecord } = useAppSelector(state => state.common.walk);
-
-  useError({ error, type: "Device", callback: navigation.goBack });
 
   useEffect(() => {
     // markedDates obj 변경되어도 달력의 dots 변화없는 문제 해결

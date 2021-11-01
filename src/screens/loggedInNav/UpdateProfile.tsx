@@ -18,7 +18,6 @@ import imageHandler from "~/utils/imageHandler";
 import Modal from "react-native-modal";
 import CommonCenterModal from "~/components/modal/CommonCenterModal";
 import DatePicker from "react-native-date-picker";
-import useError from "~/hooks/useError";
 
 const AvatarButton = styled.TouchableOpacity<{ rpWidth: RpWidth }>`
   ${({ rpWidth }) => css`
@@ -63,25 +62,13 @@ const UpdateProfile = ({
     weight,
   } = useAppSelector(state => state.deviceSetting.profile);
   const dispatch = useDispatch();
-  const [triggerProfile, { error: profileError }] =
-    deviceApi.useUpdateDeviceProfileMutation();
-  const [triggerAvatar, { error: avatarError }] =
-    deviceApi.useUpdateDeviceProfileAvatarMutation();
+  const [triggerProfile] = deviceApi.useUpdateDeviceProfileMutation();
+  const [triggerAvatar] = deviceApi.useUpdateDeviceProfileAvatarMutation();
   const [loading, setLoading] = useState(false);
   const { open, close, modalProps } = useModal();
   const [date, setDate] = useState(
     birthYear ? new Date(birthYear, birthMonth, birthDay) : new Date(),
   );
-
-  const callback = () => {
-    const tabIndex = navigation.getState().routes[0].state?.index ?? 0;
-    navigation.replace("BottomTabNav", {
-      initialRouteName: tabIndex === 0 ? "HomeTab" : "MyPageTab",
-    });
-  };
-
-  useError({ error: profileError, type: "Device", callback });
-  useError({ error: avatarError, type: "Device", callback });
 
   const handleSubmit = async () => {
     if (loading) return;
@@ -92,20 +79,24 @@ const UpdateProfile = ({
           deviceID,
           body: imageHandler.handleFormData(photos[0], "profile_image"),
         }).unwrap();
-      } catch (error) {
+      } catch {
         return;
       }
     }
-    await triggerProfile({
-      deviceID,
-      body: {
-        name,
-        sex,
-        weight: parseInt(weight, 10),
-        species,
-        birthdate: `${birthYear}-${birthMonth}-${birthDay}`,
-      },
-    });
+    try {
+      await triggerProfile({
+        deviceID,
+        body: {
+          name,
+          sex,
+          weight: parseInt(weight, 10),
+          species,
+          birthdate: `${birthYear}-${birthMonth}-${birthDay}`,
+        },
+      }).unwrap();
+    } catch {
+      return;
+    }
 
     navigation.goBack();
   };

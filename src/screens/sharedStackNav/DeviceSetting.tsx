@@ -17,7 +17,6 @@ import { useDispatch } from "react-redux";
 import { deviceSettingActions } from "~/store/deviceSetting";
 import Family from "~/components/myPage/deviceSetting/Family";
 import imageHandler from "~/utils/imageHandler";
-import useError from "~/hooks/useError";
 import { serverImageUri } from "~/constants";
 
 const DeviceSetting = ({
@@ -28,21 +27,13 @@ const DeviceSetting = ({
 }: DeviceSettingScreenProps) => {
   const { rpWidth } = useContext(DimensionsContext);
   const [isEdit, setIsEdit] = useState(false);
-  const { data: settings, error: getError } =
-    deviceApi.useGetDeviceSettingQuery(deviceID, {
-      refetchOnMountOrArgChange: true,
-    });
-  const [updateSetting, { error: postError }] =
-    deviceApi.useUpdateDeviceSettingMutation();
-  const [updateSafetyZoneThumbnail, { error: patchError }] =
+  const { data: settings } = deviceApi.useGetDeviceSettingQuery(deviceID, {
+    refetchOnMountOrArgChange: true,
+  });
+  const [updateSetting] = deviceApi.useUpdateDeviceSettingMutation();
+  const [updateSafetyZoneThumbnail] =
     deviceApi.useUpdateSafetyZoneThumbnailMutation();
   const dispatch = useDispatch();
-
-  const callback = () => navigation.goBack();
-
-  useError({ error: getError, type: "Device", callback });
-  useError({ error: postError, type: "Device", callback });
-  useError({ error: patchError, type: "Device", callback });
 
   useEffect(() => {
     if (!settings) return;

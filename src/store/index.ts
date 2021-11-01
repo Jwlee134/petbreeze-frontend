@@ -17,7 +17,7 @@ import deviceSetting from "./deviceSetting";
 import storage from "./storage";
 import common from "./common";
 
-import api from "~/api";
+import api, { rtkQueryErrorLogger } from "~/api";
 
 const rootReducer = combineReducers({
   ble,
@@ -35,7 +35,7 @@ const persistConfig = {
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-const middleware = [api.middleware];
+const middleware = [api.middleware, rtkQueryErrorLogger];
 
 if (__DEV__) {
   const createDebugger = require("redux-flipper").default;

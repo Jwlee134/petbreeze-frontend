@@ -16,7 +16,6 @@ import Modal from "react-native-modal";
 import useModal from "~/hooks/useModal";
 import IosStyleBottomModal from "~/components/modal/IosStyleBottomModal";
 import { useDispatch } from "react-redux";
-import useError from "~/hooks/useError";
 import { commonActions } from "~/store/common";
 
 const Container = styled.View<{ rpWidth: RpWidth }>`
@@ -81,7 +80,7 @@ const WalkDetailDay = ({
   },
 }: WalkDetailDayScreenProps) => {
   const { rpWidth, width } = useContext(DimensionsContext);
-  const { data, error: getError } = deviceApi.useGetDailyWalkRecordQuery(
+  const { data } = deviceApi.useGetDailyWalkRecordQuery(
     {
       deviceID,
       date: `${new Date(date).getFullYear()}-${
@@ -91,13 +90,9 @@ const WalkDetailDay = ({
     { refetchOnMountOrArgChange: true },
   );
   const dispatch = useDispatch();
-  const [deleteWalk, { error: deleteError }] =
-    deviceApi.useDeleteWalkRecordMutation();
+  const [deleteWalk] = deviceApi.useDeleteWalkRecordMutation();
   const { open, close, modalProps } = useModal();
   const [walkID, setWalkID] = useState(0);
-
-  useError({ error: getError, type: "Device", callback: navigation.goBack });
-  useError({ error: deleteError, type: "Device", callback: navigation.goBack });
 
   const formatPeriod = (from: string, duration: number) => {
     const formatFrom = new Date(from);
@@ -141,7 +136,7 @@ const WalkDetailDay = ({
                     <MyText
                       color={palette.blue_7b}
                       style={{ marginBottom: rpWidth(5) }}>
-                      {item.handler_nickname}
+                      {item.handler_name}
                     </MyText>
                     <MyText color="rgba(0, 0, 0, 0.5)">
                       {formatPeriod(item.start_date_time, item.time)}

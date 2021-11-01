@@ -12,7 +12,6 @@ import { DimensionsContext } from "~/context/DimensionsContext";
 import SwipeableButton from "~/components/common/SwipeableButton";
 import deviceApi from "~/api/device";
 import useDevice from "~/hooks/useDevice";
-import useError from "~/hooks/useError";
 
 const DeviceSettingList = ({
   navigation,
@@ -21,10 +20,8 @@ const DeviceSettingList = ({
 }) => {
   const [isEdit, setIsEdit] = useState(false);
   const { rpWidth } = useContext(DimensionsContext);
-  const [deleteDevice, { error }] = deviceApi.useDeleteDeviceMutation();
+  const [deleteDevice] = deviceApi.useDeleteDeviceMutation();
   const deviceList = useDevice();
-
-  useError({ error, type: "Device", callback: navigation.goBack });
 
   useEffect(() => {
     if (deviceList && !deviceList.length) {

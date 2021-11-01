@@ -19,7 +19,6 @@ import useModal from "~/hooks/useModal";
 import IosStyleBottomModal from "~/components/modal/IosStyleBottomModal";
 import Divider from "~/components/common/Divider";
 import palette from "~/styles/palette";
-import useError from "~/hooks/useError";
 
 const PaddingContainer = styled.View<{ rpWidth: RpWidth }>`
   ${({ rpWidth }) => css`
@@ -73,23 +72,12 @@ const EmergencyMissingSecondPage = ({
   } = useAppSelector(state => state.deviceSetting.profile);
   const dispatch = useDispatch();
   const { width, rpWidth } = useContext(DimensionsContext);
-  const [register, { error: postError }] =
-    deviceApi.usePostEmergencyMissingMutation();
-  const [updateAvatar, { error: patchError }] =
-    deviceApi.useUpdateEmergencyMissingThumbnailMutation();
-  const [update, { error: putError }] =
-    deviceApi.useUpdateEmergencyMissingMutation();
+  const [register] = deviceApi.usePostEmergencyMissingMutation();
+  const [updateAvatar] = deviceApi.useUpdateEmergencyMissingThumbnailMutation();
+  const [update] = deviceApi.useUpdateEmergencyMissingMutation();
   const [loading, setLoading] = useState(false);
   const { open, close, modalProps } = useModal();
   const [selectedIndex, setSelectedIndex] = useState(0);
-
-  const callback = () => {
-    navigation.replace("BottomTabNav");
-  };
-
-  useError({ error: patchError, type: "Device", callback });
-  useError({ error: putError, type: "Device", callback });
-  useError({ error: postError, type: "Device", callback });
 
   const handleSubmit = async () => {
     if (loading) return;

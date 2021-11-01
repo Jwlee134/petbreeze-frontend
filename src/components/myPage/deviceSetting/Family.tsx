@@ -17,10 +17,6 @@ import * as SecureStore from "expo-secure-store";
 import { secureItems } from "~/constants";
 import KeyWhite from "~/assets/svg/myPage/key-white.svg";
 import KeyBlue from "~/assets/svg/myPage/key-blue.svg";
-import useError from "~/hooks/useError";
-import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
-import { useNavigation } from "@react-navigation/native";
-import { DeviceSettingScreenNavigationProp } from "~/types/navigator";
 
 const Item = styled.View<{ rpWidth: RpWidth }>`
   ${({ rpWidth }) => css`
@@ -44,33 +40,13 @@ const Family = ({
   isEdit: boolean;
   deviceID: number;
 }) => {
-  const navigation = useNavigation<DeviceSettingScreenNavigationProp>();
   const { data } = deviceApi.useGetDeviceMembersQuery(deviceID, {
     refetchOnMountOrArgChange: true,
   });
-  const [deleteMember, { error: deleteError }] =
-    deviceApi.useDeleteDeviceMemberMutation();
-  const [updateOwner, { error: updateError }] =
-    deviceApi.useUpdateDeviceOwnerMutation();
+  const [deleteMember] = deviceApi.useDeleteDeviceMemberMutation();
+  const [updateOwner] = deviceApi.useUpdateDeviceOwnerMutation();
   const { rpWidth } = useContext(DimensionsContext);
   const [myID, setMyID] = useState(0);
-
-  const callback = (error: FetchBaseQueryError) => {
-    if (error.data.detail === "Device id does not exist.") {
-      navigation.goBack();
-    }
-  };
-
-  useError({
-    error: deleteError,
-    type: "Device",
-    callback: () => callback(deleteError as FetchBaseQueryError),
-  });
-  useError({
-    error: updateError,
-    type: "Device",
-    callback: () => callback(updateError as FetchBaseQueryError),
-  });
 
   useEffect(() => {
     SecureStore.getItemAsync(secureItems.userID).then(id => {

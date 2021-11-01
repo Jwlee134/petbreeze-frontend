@@ -3,7 +3,6 @@ import React, { useContext } from "react";
 import styled, { css } from "styled-components/native";
 import deviceApi, { Device } from "~/api/device";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
-import useError from "~/hooks/useError";
 import palette from "~/styles/palette";
 import { HomeScreenNavigationProp } from "~/types/navigator";
 import AnimatedCircularProgress from "../common/AnimatedCircularProgress";
@@ -34,9 +33,7 @@ const Button = styled.TouchableOpacity<{ rpWidth: RpWidth }>`
 const HomeBottomModal = ({ device, close }: IProps) => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
   const { rpWidth } = useContext(DimensionsContext);
-  const [trigger, { error }] = deviceApi.useDeleteEmergencyMissingMutation();
-
-  useError({ error, type: "Device", callback: close });
+  const [trigger] = deviceApi.useDeleteEmergencyMissingMutation();
 
   return (
     <>
@@ -55,6 +52,8 @@ const HomeBottomModal = ({ device, close }: IProps) => {
           close();
           navigation.navigate("DeviceSetting", {
             deviceID: device.id,
+            avatar: device.profile_image,
+            name: device.name,
           });
         }}>
         <MyText color={palette.blue_7b}>기기설정</MyText>

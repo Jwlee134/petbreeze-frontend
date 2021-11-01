@@ -4,7 +4,6 @@ import { useDispatch } from "react-redux";
 import styled, { css } from "styled-components/native";
 import deviceApi, { Device } from "~/api/device";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
-import useError from "~/hooks/useError";
 import { commonActions } from "~/store/common";
 import AnimatedCircularProgress from "../common/AnimatedCircularProgress";
 
@@ -64,9 +63,7 @@ const HomeAvatar = ({
 }: IProps) => {
   const { rpWidth } = useContext(DimensionsContext);
   const dispatch = useDispatch();
-  const [trigger, { data, error }] = deviceApi.useLazyGetDeviceCoordQuery();
-
-  useError({ error, type: "Device" });
+  const [trigger, { data }] = deviceApi.useLazyGetDeviceCoordQuery();
 
   useEffect(() => {
     console.log(data?.coordinate?.coordinates);
