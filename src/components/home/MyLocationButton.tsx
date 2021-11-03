@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef } from "react";
+import React, { memo, useContext, useEffect, useRef } from "react";
 import { Animated } from "react-native";
 import { DimensionsContext } from "~/context/DimensionsContext";
 import { useAppSelector } from "~/store";
@@ -39,4 +39,4 @@ const MyLocationButton = ({
   );
 };
 
-export default MyLocationButton;
+export default memo(MyLocationButton);

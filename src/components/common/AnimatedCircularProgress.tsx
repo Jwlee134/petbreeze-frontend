@@ -1,11 +1,10 @@
-import React, { useContext } from "react";
+import React, { memo, useContext, useEffect, useRef } from "react";
 import styled, { css } from "styled-components/native";
 import { AnimatedCircularProgress as RNCircularProgress } from "react-native-circular-progress";
 import palette from "~/styles/palette";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import { Animated, StyleProp, View, ViewStyle } from "react-native";
 import Icon from "~/assets/svg/exclamation/exclamation-mark-white.svg";
-import useAnimatedSequence from "~/hooks/useAnimatedSequence";
 import { noAvatar } from "~/constants";
 
 interface IProps {
@@ -66,20 +65,32 @@ const AnimatedCircularProgress = ({
 }: IProps) => {
   const batteryValue = battery || 0;
   const { rpWidth } = useContext(DimensionsContext);
-  const [value] = useAnimatedSequence({
-    numOfValues: 1,
-    loop: true,
-    startAnimation: highlightOnEmergency,
-    firstDuration: 400,
-    resetDuration: 400,
-    delayAfterFirst: 0,
-    delayAfterReset: 1000,
-  });
+  const value = useRef(new Animated.Value(0)).current;
 
   const scale = value.interpolate({
     inputRange: [0, 1],
     outputRange: [1, 1.3],
   });
+
+  useEffect(() => {
+    if (highlightOnEmergency) {
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(value, {
+            toValue: 1,
+            useNativeDriver: true,
+            duration: 400,
+          }),
+          Animated.timing(value, {
+            toValue: 0,
+            useNativeDriver: true,
+            duration: 400,
+          }),
+          Animated.delay(1000),
+        ]),
+      ).start();
+    }
+  }, [highlightOnEmergency]);
 
   return (
     <View style={style}>
@@ -128,4 +139,4 @@ const AnimatedCircularProgress = ({
   );
 };
 
-export default AnimatedCircularProgress;
+export default memo(AnimatedCircularProgress);
