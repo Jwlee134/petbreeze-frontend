@@ -19,8 +19,7 @@ import Dissolve from "~/components/common/Dissolve";
 import Button from "~/components/common/Button";
 import { useDispatch } from "react-redux";
 import { storageActions } from "~/store/storage";
-import { useAppSelector } from "~/store";
-import { commonActions } from "~/store/common";
+import { useIsFocused } from "@react-navigation/native";
 
 const TopContainer = styled.View`
   align-items: center;
@@ -76,7 +75,7 @@ const WalkDetailMonth = ({
     month: new Date().getMonth() + 1,
   });
   const [dateObj, setDateObj] = useState<DateObj>({});
-  const { data, isFetching } = deviceApi.useGetMonthlyWalkRecordQuery(
+  const { data, refetch, isFetching } = deviceApi.useGetMonthlyWalkRecordQuery(
     {
       deviceID,
       year: date.year,
@@ -86,52 +85,69 @@ const WalkDetailMonth = ({
   );
   const { rpWidth, isTablet } = useContext(DimensionsContext);
   const dispatch = useDispatch();
-  const { dateOfDeletedRecord } = useAppSelector(state => state.common.walk);
+  const isFocused = useIsFocused();
 
   useEffect(() => {
+    if (isFocused) refetch();
+  }, [isFocused]);
+
+  useEffect(() => {
+    if (!data) return;
     // markedDates obj 변경되어도 달력의 dots 변화없는 문제 해결
     // https://github.com/wix/react-native-calendars/issues/726#issuecomment-458659037
     const obj: DateObj = JSON.parse(JSON.stringify(dateObj));
 
-    // 기록 삭제하면 이 이펙트가 다시 실행되는데 삭제한 날짜의 dot만 제거 후 실행 종료
-    // dot 제거 후 dots 배열이 비면 해당 날짜 키 삭제
-    if (dateOfDeletedRecord && obj[dateOfDeletedRecord]) {
-      obj[dateOfDeletedRecord].dots.pop();
-      if (!obj[dateOfDeletedRecord].dots.length) {
-        delete obj[dateOfDeletedRecord];
-      }
-      setDateObj(obj);
-      dispatch(commonActions.setDateOfDeleteRecord(""));
-      return;
-    }
-
     // 날짜 배열 아래와 같이 생성
-    //  [["2021-10-16", 0], ["2021-10-17", 0], ["2021-10-17", 1]]
-    const dateArr = data?.day_count
+    //  [["2021-10-16", "0", "isLast"], ["2021-10-17", "0"], ["2021-10-17", "1", "isLast"], ["2021-10-18", "0", "isLast"]]
+    const dateArr = data.day_count
       .map(({ date, count }) => {
         const arr: string[][] = [];
         for (let i = 0; i < count; i++) {
-          arr.push([date, i.toString()]);
+          arr.push([date, i.toString(), ...(i === count - 1 ? ["last"] : [])]);
         }
         return arr;
       })
       .flat();
 
-    if (!dateArr || !dateArr.length) return;
+    // 해당 날짜 산책기록이 전부 삭제되어 dateArr에서 필터링을 못할 때
+    const emptyKeys = Object.keys(obj).filter(
+      date => !dateArr.map(date => date[0]).includes(date),
+    );
+    if (emptyKeys.length) {
+      emptyKeys.forEach(date => {
+        delete obj[date];
+      });
+    }
 
-    dateArr.forEach(date => {
-      // 날짜 key가 없으면 새로 생성
-      if (!obj[date[0]]) {
-        obj[date[0]] = { dots: [{ key: date[1], color: palette.blue_7b }] };
-        return;
-      }
-      // dots 배열의 모든 항목 중 같은 키가 없을 때 push => 중복 push 방지 목적
-      if (obj[date[0]].dots.every(item => item.key !== date[1])) {
-        obj[date[0]].dots.push({ key: date[1], color: palette.blue_7b });
-      }
-    });
+    if (dateArr.length) {
+      dateArr.forEach(date => {
+        // 날짜 key가 없으면 새로 생성
+        if (!obj[date[0]]) {
+          obj[date[0]] = { dots: [{ key: date[1], color: palette.blue_7b }] };
+          return;
+        }
+        // dots 배열의 모든 항목 중 같은 키가 없을 때 push => 중복 push 방지 목적
+        if (obj[date[0]].dots.every(item => item.key !== date[1])) {
+          obj[date[0]].dots.push({ key: date[1], color: palette.blue_7b });
+        }
+
+        // 산책 기록이 삭제되어 dots 배열에 담긴 수가 새로 받아온 날짜 배열의 마지막 인덱스보다 클 때
+        if (date[2] && obj[date[0]].dots.length - 1 > parseInt(date[1], 10)) {
+          const numOfStale =
+            obj[date[0]].dots.length - 1 - parseInt(date[1], 10);
+          obj[date[0]].dots.splice(-numOfStale);
+        }
+      });
+    }
+
     setDateObj(obj);
   }, [data]);
+
+  const isNoWalkRecordVisible =
+    data !== undefined &&
+    !data.day_count.length &&
+    date.month === new Date().getMonth() + 1 &&
+    !isFetching;
 
   return (
     <ScrollView>
@@ -211,12 +227,7 @@ const WalkDetailMonth = ({
         <Dissolve
           pointerEvents="none"
           style={StyleSheet.absoluteFill}
-          isVisible={
-            date.month === new Date().getMonth() + 1 &&
-            data !== undefined &&
-            !data.day_count.length &&
-            !isFetching
-          }>
+          isVisible={isNoWalkRecordVisible}>
           <NoWalkRecord pointerEvents="none">
             <MyText
               color="rgba(0, 0, 0, 0.5)"
@@ -229,12 +240,7 @@ const WalkDetailMonth = ({
         </Dissolve>
         <Dissolve
           style={{ position: "absolute", bottom: 0, alignSelf: "center" }}
-          isVisible={
-            date.month === new Date().getMonth() + 1 &&
-            data !== undefined &&
-            !data.day_count.length &&
-            !isFetching
-          }>
+          isVisible={isNoWalkRecordVisible}>
           <Button
             onPress={() => {
               permissionCheck("location").then(() => {

@@ -10,20 +10,28 @@ interface IProps extends ViewProps {
 const Dissolve = ({ isVisible, children, style, ...props }: IProps) => {
   const [isChildrenVisible, setIsChildrenVisible] = useState(isVisible);
   const value = useRef(new Animated.Value(isVisible ? 1 : 0)).current;
+  const timeout = useRef<NodeJS.Timeout>();
 
   useEffect(() => {
     if (isVisible) {
       setIsChildrenVisible(true);
     }
+    if (!isVisible) {
+      timeout.current = setTimeout(() => {
+        setIsChildrenVisible(false);
+      }, 200);
+    }
     Animated.timing(value, {
       toValue: isVisible ? 1 : 0,
       useNativeDriver: true,
       duration: 200,
-    }).start(() => {
-      if (!isVisible) {
-        setIsChildrenVisible(false);
+    }).start();
+
+    return () => {
+      if (timeout.current) {
+        clearTimeout(timeout.current);
       }
-    });
+    };
   }, [isVisible]);
 
   return (

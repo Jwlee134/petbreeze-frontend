@@ -15,8 +15,6 @@ import { noAvatar } from "~/constants";
 import Modal from "react-native-modal";
 import useModal from "~/hooks/useModal";
 import IosStyleBottomModal from "~/components/modal/IosStyleBottomModal";
-import { useDispatch } from "react-redux";
-import { commonActions } from "~/store/common";
 
 const Container = styled.View<{ rpWidth: RpWidth }>`
   ${({ rpWidth }) => css`
@@ -89,7 +87,6 @@ const WalkDetailDay = ({
     },
     { refetchOnMountOrArgChange: true },
   );
-  const dispatch = useDispatch();
   const [deleteWalk] = deviceApi.useDeleteWalkRecordMutation();
   const { open, close, modalProps } = useModal();
   const [walkID, setWalkID] = useState(0);
@@ -112,7 +109,6 @@ const WalkDetailDay = ({
   const deleteRecord = () => {
     close();
     deleteWalk({ deviceID, walkID, date });
-    dispatch(commonActions.setDateOfDeleteRecord(date));
   };
 
   return (

@@ -10,9 +10,6 @@ interface IState {
     isDeviceMoved: boolean;
     clickedID: number;
   };
-  walk: {
-    dateOfDeletedRecord: string;
-  };
 }
 
 const initialState: IState = {
@@ -24,9 +21,6 @@ const initialState: IState = {
     },
     isDeviceMoved: true,
     clickedID: 0,
-  },
-  walk: {
-    dateOfDeletedRecord: "",
   },
 };
 
@@ -48,9 +42,6 @@ const common = createSlice({
     },
     setClickedID: (state, { payload }: PayloadAction<number>) => {
       state.home.clickedID = payload;
-    },
-    setDateOfDeleteRecord: (state, { payload }: PayloadAction<string>) => {
-      state.walk.dateOfDeletedRecord = payload;
     },
   },
 });
