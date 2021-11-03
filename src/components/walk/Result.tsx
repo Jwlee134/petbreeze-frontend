@@ -10,8 +10,6 @@ import Path from "~/assets/svg/walk/path-gray.svg";
 import palette from "~/styles/palette";
 import { View } from "react-native";
 import { WalkContext } from "~/context/WalkContext";
-import { useDispatch } from "react-redux";
-import { storageActions } from "~/store/storage";
 import { useNavigation } from "@react-navigation/native";
 import { WalkMapScreenNavigationProp } from "~/types/navigator";
 import { formatWalkDistance } from "~/utils";
@@ -56,7 +54,6 @@ const RowContainer = styled.View`
 const Result = () => {
   const { rpWidth } = useContext(DimensionsContext);
   const { viewShotRef, deviceList } = useContext(WalkContext);
-  const dispatch = useDispatch();
   const navigation = useNavigation<WalkMapScreenNavigationProp>();
   const [postWalk] = deviceApi.usePostWalkMutation();
   const [postWalkThumbnail] = deviceApi.usePatchWalkThumbnailMutation();
@@ -70,6 +67,7 @@ const Result = () => {
   const sec = Math.floor(duration) % 60;
 
   const handleFinish = async () => {
+    if (loading) return;
     setLoading(true);
     const uri = await viewShotRef.current?.capture();
 
@@ -106,9 +104,6 @@ const Result = () => {
       );
     }
 
-    setTimeout(() => {
-      dispatch(storageActions.setWalk(null));
-    }, 200);
     navigation.replace("BottomTabNav", {
       initialRouteName: "WalkTab",
     });

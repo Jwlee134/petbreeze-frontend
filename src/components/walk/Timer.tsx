@@ -6,6 +6,12 @@ import styled from "styled-components/native";
 import { useDispatch } from "react-redux";
 import { storageActions } from "~/store/storage";
 import { DimensionsContext } from "~/context/DimensionsContext";
+import { useNavigation } from "@react-navigation/native";
+import { WalkMapScreenNavigationProp } from "~/types/navigator";
+import deviceApi from "~/api/device";
+import { WalkContext } from "~/context/WalkContext";
+import allSettled from "promise.allsettled";
+import backgroundTracking from "~/utils/backgroundTracking";
 
 const RowContainer = styled.View`
   flex-direction: row;
@@ -15,6 +21,11 @@ const RowContainer = styled.View`
 `;
 
 const Timer = () => {
+  const [startWalking] = deviceApi.useStartWalkingMutation();
+  const selectedIDs = useAppSelector(
+    state => state.storage.walk.selectedDeviceId,
+  );
+  const navigation = useNavigation<WalkMapScreenNavigationProp>();
   const isWalking = useAppSelector(state => state.storage.walk.isWalking);
   const startTime = useAppSelector(state => state.storage.walk.startTime);
   const currentPauseTime = useAppSelector(
@@ -26,6 +37,7 @@ const Timer = () => {
   const dispatch = useDispatch();
   const timeout = useRef<NodeJS.Timeout>();
   const { rpHeight, rpWidth } = useContext(DimensionsContext);
+  const { deviceList } = useContext(WalkContext);
 
   const getDuration = () => {
     if (!isWalking && currentPauseTime) {
@@ -79,6 +91,57 @@ const Timer = () => {
     }
   }, [isWalking, duration]);
 
+  useEffect(() => {
+    if (duration === 60) {
+      (async () => {
+        const results = await allSettled(
+          selectedIDs.map(
+            id =>
+              new Promise((resolve, reject) => {
+                startWalking(id)
+                  .unwrap()
+                  .then(() => {
+                    resolve(id);
+                  })
+                  .catch(() => {
+                    reject(id);
+                  });
+              }),
+          ),
+        );
+        const rejectedIDs = results
+          .filter(result => result.status === "rejected")
+          ?.map(
+            result =>
+              deviceList[
+                deviceList.findIndex(device => device.id === result.reason)
+              ].id,
+          );
+        if (rejectedIDs.length) {
+          const selectedIDsCopy = [...selectedIDs];
+          dispatch(
+            storageActions.setWalk({
+              selectedDeviceId: selectedIDsCopy.filter(
+                id => !rejectedIDs.includes(id),
+              ),
+            }),
+          );
+        }
+      })();
+    }
+  }, [duration]);
+
+  useEffect(() => {
+    if (!selectedIDs.length) {
+      (async () => {
+        await backgroundTracking.stop();
+        navigation.replace("BottomTabNav", {
+          initialRouteName: "WalkTab",
+        });
+      })();
+    }
+  }, [selectedIDs]);
+
   return (
     <RowContainer>
       <TimerSVG
@@ -87,8 +150,8 @@ const Timer = () => {
         style={{ marginRight: rpWidth(17) }}
       />
       <MyText fontSize={18} color="rgba(0, 0, 0, 0.5)">
-        {hour < 10 ? `${hour}` : hour} : {min < 10 ? `0${min}` : min} :{" "}
-        {sec < 10 ? `0${sec}` : sec}
+        {hour} : {min.toString().padStart(2, "0")} :{" "}
+        {sec.toString().padStart(2, "0")}
       </MyText>
     </RowContainer>
   );

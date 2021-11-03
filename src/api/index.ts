@@ -40,6 +40,9 @@ export const rtkQueryErrorLogger: Middleware = () => next => action => {
       if (detail.includes("not in emergency")) {
         Toast.show({ type: "error", text1: "긴급실종 상태가 아닙니다." });
       }
+      if (detail === "This device is already walking.") {
+        Toast.show({ type: "error", text1: "이미 산책중입니다." });
+      }
     }
 
     if (status === 403) {
@@ -54,10 +57,7 @@ export const rtkQueryErrorLogger: Middleware = () => next => action => {
         Toast.show({ type: "error", text1: "긴급실종 상태가 아닙니다." });
       }
       if (detail === "Walk id does not exist.") {
-        Toast.show({
-          type: "error",
-          text1: "산책 기록이 존재하지 않습니다.",
-        });
+        Toast.show({ type: "error", text1: "산책 기록이 존재하지 않습니다." });
       }
       if (detail === "User id does not exist.") {
         Toast.show({ type: "error", text1: "사용자가 존재하지 않습니다." });
