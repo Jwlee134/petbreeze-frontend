@@ -1,8 +1,8 @@
 import React, {
-  memo,
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -19,6 +19,12 @@ import MyText from "../common/MyText";
 import palette from "~/styles/palette";
 import useDevice from "~/hooks/useDevice";
 import { noName } from "~/constants";
+import { useDispatch } from "react-redux";
+import deviceApi from "~/api/device";
+import { useIsFocused } from "@react-navigation/native";
+import { commonActions } from "~/store/common";
+import useAppState from "~/hooks/useAppState";
+import { storageActions } from "~/store/storage";
 
 const Address = styled(Animated.View)<{ rpWidth: RpWidth }>`
   height: ${({ rpWidth }) => rpWidth(41)}px;
@@ -33,22 +39,90 @@ const Address = styled(Animated.View)<{ rpWidth: RpWidth }>`
 
 const DeviceList = () => {
   const deviceList = useDevice();
+  const clickedID = useAppSelector(state => state.common.home.clickedID);
   const address = useAppSelector(state => state.common.home.address);
   const value = useRef(new Animated.Value(0)).current;
+  const dispatch = useDispatch();
+  const [getDeviceCoord, { data: coord, isFetching: isCoordFetching }] =
+    deviceApi.useLazyGetDeviceCoordQuery();
+  const [
+    getDeviceSetting,
+    { data: deviceSetting, isFetching: isDeviceSettingFetching },
+  ] = deviceApi.useLazyGetDeviceSettingQuery();
+  const timeout = useRef<NodeJS.Timeout>();
+  const isFocused = useIsFocused();
+  const appState = useAppState();
+  const [interval, setInterval] = useState(0);
 
   const { rpWidth, width, isTablet } = useContext(DimensionsContext);
 
   const { open, close, modalProps } = useModal();
-  const [clickedId, setClickedId] = useState(0);
 
-  const device = deviceList?.length
-    ? deviceList[deviceList.findIndex(device => device.id === clickedId)]
-    : null;
+  const device = useMemo(
+    () =>
+      deviceList?.length
+        ? deviceList[deviceList.findIndex(device => device.id === clickedID)]
+        : null,
+    [clickedID, deviceList],
+  );
+
+  // 이미 캐시된 데이터 있는 상태에서 한번 더 클릭하여 같은 데이터 들어오면 effect 실행 안되는 현상이
+  // 가 디바이스가 여러개일 경우 문제가 생기므로 isFetching 인자 추가하여 같은 데이터라도 매번 실행
+
+  useEffect(() => {
+    if (isDeviceSettingFetching) return;
+    if (deviceSetting) {
+      const period = deviceSetting.Period;
+      setInterval(deviceSetting.Period === 0 ? 1000 : period * 1000);
+      getDeviceCoord(clickedID);
+    }
+  }, [deviceSetting, isDeviceSettingFetching]);
+
+  useEffect(() => {
+    if (isCoordFetching) return;
+    if (coord?.coordinate?.coordinates) {
+      const latitude = coord.coordinate.coordinates[1];
+      const longitude = coord.coordinate.coordinates[0];
+
+      dispatch(commonActions.setDeviceCoord({ latitude, longitude }));
+      dispatch(storageActions.setLastCoord({ latitude, longitude }));
+
+      timeout.current = setTimeout(() => {
+        getDeviceCoord(clickedID);
+      }, interval);
+    } else {
+      dispatch(commonActions.setIsDeviceMoved(true));
+      dispatch(
+        commonActions.setDeviceCoord({
+          latitude: 0,
+          longitude: 0,
+        }),
+      );
+    }
+
+    return () => {
+      if (timeout.current) {
+        clearTimeout(timeout.current);
+      }
+    };
+  }, [coord, isCoordFetching]);
+
+  const onAvatarPress = useCallback((id: number) => {
+    dispatch(commonActions.setClickedID(id));
+    dispatch(commonActions.setIsDeviceMoved(false));
+    getDeviceSetting(id);
+  }, []);
 
   const onAvatarLongPress = useCallback((id: number) => {
-    setClickedId(id);
+    dispatch(commonActions.setClickedID(id));
     open();
   }, []);
+
+  useEffect(() => {
+    if ((!isFocused || appState === "background") && timeout.current) {
+      clearTimeout(timeout.current);
+    }
+  }, [isFocused, appState]);
 
   const translateYAvatar = value.interpolate({
     inputRange: [0, 1],
@@ -79,6 +153,7 @@ const DeviceList = () => {
             device={device}
             index={i}
             length={deviceList.length}
+            onAvatarPress={onAvatarPress}
             onAvatarLongPress={onAvatarLongPress}
             style={{
               transform: [{ translateY: translateYAvatar }],
@@ -115,6 +190,7 @@ const DeviceList = () => {
               device={device}
               index={i}
               length={deviceList.length}
+              onAvatarPress={onAvatarPress}
               onAvatarLongPress={onAvatarLongPress}
             />
           ))}
@@ -138,4 +214,4 @@ const DeviceList = () => {
   );
 };
 
-export default memo(DeviceList);
+export default DeviceList;

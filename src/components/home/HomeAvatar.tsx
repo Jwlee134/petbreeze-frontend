@@ -1,15 +1,14 @@
-import React, { memo, useContext, useEffect } from "react";
+import React, { memo, useContext } from "react";
 import { Animated, ViewStyle } from "react-native";
-import { useDispatch } from "react-redux";
 import styled, { css } from "styled-components/native";
-import deviceApi, { Device } from "~/api/device";
+import { Device } from "~/api/device";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
-import { commonActions } from "~/store/common";
 import AnimatedCircularProgress from "../common/AnimatedCircularProgress";
 
 interface IProps {
   index: number;
   length: number;
+  onAvatarPress: (id: number) => void;
   onAvatarLongPress: (id: number) => void;
   style?: Animated.AnimatedProps<ViewStyle>;
   device: Device;
@@ -58,36 +57,19 @@ const HomeAvatar = ({
   device,
   length,
   index,
+  onAvatarPress,
   onAvatarLongPress,
   style,
 }: IProps) => {
   const { rpWidth } = useContext(DimensionsContext);
-  const dispatch = useDispatch();
-  const [trigger, { data }] = deviceApi.useLazyGetDeviceCoordQuery();
-
-  useEffect(() => {
-    console.log(data?.coordinate?.coordinates);
-    if (data?.coordinate?.coordinates) {
-      dispatch(commonActions.setIsDeviceMoved(false));
-      dispatch(
-        commonActions.setDeviceCoord({
-          latitude: data?.coordinate?.coordinates[0],
-          longitude: data?.coordinate?.coordinates[1],
-        }),
-      );
-    }
-  }, [data]);
 
   return (
     <Pressable
+      onPress={() => onAvatarPress(device.id)}
       onLongPress={() => onAvatarLongPress(device.id)}
       rpWidth={rpWidth}
       length={length}
-      index={index}
-      onPress={() => {
-        dispatch(commonActions.setDeviceCoord({ latitude: 0, longitude: 0 }));
-        trigger(device.id);
-      }}>
+      index={index}>
       <Animated.View style={style}>
         <AnimatedCircularProgress
           avatar={device.profile_image}

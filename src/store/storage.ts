@@ -71,6 +71,13 @@ const storage = createSlice({
       state.init = { ...state.init, ...payload };
     },
 
+    setLastCoord: (
+      state,
+      { payload }: PayloadAction<{ latitude: number; longitude: number }>,
+    ) => {
+      state.lastCoord = payload;
+    },
+
     setNumOfDevice: (state, { payload }: PayloadAction<number>) => {
       state.numOfDevice = payload;
     },
