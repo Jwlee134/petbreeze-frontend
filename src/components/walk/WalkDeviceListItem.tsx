@@ -5,6 +5,7 @@ import { Device } from "~/api/device";
 import { noName } from "~/constants";
 import { DimensionsContext } from "~/context/DimensionsContext";
 import palette from "~/styles/palette";
+import { formatCreatedAt } from "~/utils";
 import AnimatedCircularProgress from "../common/AnimatedCircularProgress";
 import MyText from "../common/MyText";
 
@@ -35,12 +36,15 @@ const WalkDeviceListItem = ({ device }: { device: Device }) => {
             {device.battery || 0}%
           </MyText>
         </RowContainer>
-        <MyText
-          style={{ marginTop: rpWidth(5) }}
-          fontSize={12}
-          color="rgba(0, 0, 0, 0.5)">
-          마지막 산책
-        </MyText>
+        {device.last_walk ? (
+          <MyText
+            style={{ marginTop: rpWidth(5) }}
+            fontSize={12}
+            color="rgba(0, 0, 0, 0.5)">
+            마지막 산책{"   "}
+            {formatCreatedAt(device.last_walk)}
+          </MyText>
+        ) : null}
       </View>
     </RowContainer>
   );

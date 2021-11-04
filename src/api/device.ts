@@ -9,6 +9,7 @@ export interface Device {
   battery: number;
   firmware_version: string;
   is_missed: boolean;
+  last_walk: string;
 }
 
 interface EmergencyMissingForm {
@@ -96,8 +97,8 @@ interface WalkBody {
   start_date_time: string;
   time: number;
   distance: number;
-  travel_path: {
-    type: "MultiPoint";
+  path: {
+    type: "LineString";
     coordinates: number[][];
   };
 }

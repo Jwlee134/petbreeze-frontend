@@ -93,6 +93,10 @@ export const formatCreatedAt = (createdAt: string) => {
     return Math.floor(days) === 1 ? "어제" : `${Math.floor(days)}일 전`;
   const weeks = days / 7;
   if (weeks < 5) return `${Math.floor(weeks)}주 전`;
+  const months = days / 30;
+  if (months < 12) return `${Math.floor(months)}개월 전`;
+  const years = days / 365;
+  return `${Math.floor(years)}년 전`;
 };
 
 export const getDistanceBetween2Points = (

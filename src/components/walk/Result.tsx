@@ -79,8 +79,8 @@ const Result = () => {
             distance: meter,
             start_date_time: startTime,
             time: Math.floor(duration / 60),
-            travel_path: {
-              type: "MultiPoint",
+            path: {
+              type: "LineString",
               coordinates: coords,
             },
           },
