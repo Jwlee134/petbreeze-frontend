@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import NaverMapView, { Marker, Path as Polyline } from "react-native-nmap";
+import NaverMapView, { Marker } from "react-native-nmap";
 import { DimensionsContext } from "~/context/DimensionsContext";
 import Geolocation from "react-native-geolocation-service";
 import { delta } from "~/constants";
@@ -20,7 +20,6 @@ import MyLocationButton from "./MyLocationButton";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { isAndroid, showLocationError } from "~/utils";
 import useDevice from "~/hooks/useDevice";
-import palette from "~/styles/palette";
 
 const HomeMap = () => {
   const mapRef = useRef<NaverMapView>(null);
@@ -40,9 +39,6 @@ const HomeMap = () => {
 
   const [isMyLocationMoved, setIsMyLocationMoved] = useState(true);
   const [coords, setCoords] = useState({ latitude: 0, longitude: 0 });
-  const [polyline, setPolyline] = useState<
-    { latitude: number; longitude: number }[]
-  >([]);
 
   const animateToRegion = (type: "myLocation" | "device") => {
     mapRef.current?.animateToRegion({
@@ -84,23 +80,6 @@ const HomeMap = () => {
 
   useEffect(() => {
     if (!isDeviceMoved && deviceCoord.latitude) animateToRegion("device");
-    if (deviceCoord.latitude) {
-      if (
-        polyline.length &&
-        polyline[0].latitude === deviceCoord.latitude &&
-        polyline[0].longitude === deviceCoord.longitude
-      ) {
-        return;
-      }
-      const polylineCopy = [...polyline];
-      if (polyline.length > 4) {
-        polylineCopy.pop();
-      }
-      setPolyline([
-        { latitude: deviceCoord.latitude, longitude: deviceCoord.longitude },
-        ...polylineCopy,
-      ]);
-    }
   }, [deviceCoord]);
 
   // home tab unmount
@@ -113,9 +92,6 @@ const HomeMap = () => {
       }
       if (deviceCoord.latitude) {
         dispatch(commonActions.setDeviceCoord({ latitude: 0, longitude: 0 }));
-      }
-      if (polyline.length) {
-        setPolyline([]);
       }
     }
   }, [isFocused, appState]);
@@ -142,14 +118,6 @@ const HomeMap = () => {
             width={rpWidth(100)}
             height={rpWidth(100)}
             anchor={{ x: 0.5, y: 0.5 }}
-          />
-        ) : null}
-        {polyline.length > 1 ? (
-          <Polyline
-            coordinates={polyline}
-            color={palette.red_f0}
-            outlineWidth={0}
-            width={5}
           />
         ) : null}
         {deviceCoord.latitude && deviceList && clickedID ? (
