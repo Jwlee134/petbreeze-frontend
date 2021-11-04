@@ -23,11 +23,14 @@ interface IProps extends TextInputProps {
   alignLeftSolidPlaceholderWhenFocus?: boolean;
   containerStyle?: StyleProp<ViewStyle>;
   isWhiteBorder?: boolean;
+  hasBorder?: boolean;
+  style?: StyleProp<ViewStyle>;
 }
 
 interface IContainer {
   isFocused: boolean;
   rpWidth: RpWidth;
+  isMultiline: boolean;
 }
 
 const Container = styled.View<{ rpWidth: RpWidth }>`
@@ -35,15 +38,17 @@ const Container = styled.View<{ rpWidth: RpWidth }>`
 `;
 
 const InputContainer = styled.View<IContainer>`
+  ${({ rpWidth, isMultiline }) => css`
+    height: ${isMultiline ? "auto" : `${rpWidth(36)}px`};
+    min-height: ${isMultiline ? `${rpWidth(36)}px` : "auto"};
+  `}
   width: 100%;
-  height: ${({ rpWidth }) => rpWidth(36)}px;
   flex-direction: row;
   align-items: center;
 `;
 
 const TextInputComponent = styled.TextInput<{ rpWidth: RpWidth }>`
   ${({ rpWidth }) => css`
-    padding: 0px ${rpWidth(9)}px;
     font-size: ${rpWidth(16)}px;
   `}
   margin: 0;
@@ -69,6 +74,8 @@ const Input = forwardRef(
       alignLeftSolidPlaceholderWhenFocus = false,
       containerStyle,
       isWhiteBorder,
+      hasBorder = true,
+      style,
       ...props
     }: IProps,
     ref: ForwardedRef<TextInput>,
@@ -99,15 +106,21 @@ const Input = forwardRef(
 
     return (
       <Container rpWidth={rpWidth} style={containerStyle}>
-        <InputContainer rpWidth={rpWidth} isFocused={isFocused}>
+        <InputContainer
+          isMultiline={props.multiline || false}
+          rpWidth={rpWidth}
+          isFocused={isFocused}>
           <TextInputComponent
             rpWidth={rpWidth}
             ref={ref}
             onFocus={handleFocus}
             onBlur={handleBlur}
             style={{
+              paddingVertical: 0,
+              paddingHorizontal: rpWidth(9),
               includeFontPadding: false,
               color: isWhiteBorder ? "white" : "rgba(0, 0, 0, 0.7)",
+              ...(style as object),
             }}
             placeholderTextColor="rgba(0, 0, 0, 0.3)"
             selectionColor={
@@ -132,19 +145,21 @@ const Input = forwardRef(
             </MyText>
           )}
         </InputContainer>
-        <BorderContainer
-          style={{
-            backgroundColor: isWhiteBorder
-              ? "rgba(255, 255, 255, 0.3)"
-              : "rgba(0, 0, 0, 0.3)",
-          }}>
-          <Border
+        {hasBorder ? (
+          <BorderContainer
             style={{
-              width: borderWidth,
-              backgroundColor: isWhiteBorder ? "white" : palette.blue_7b,
-            }}
-          />
-        </BorderContainer>
+              backgroundColor: isWhiteBorder
+                ? "rgba(255, 255, 255, 0.3)"
+                : "rgba(0, 0, 0, 0.3)",
+            }}>
+            <Border
+              style={{
+                width: borderWidth,
+                backgroundColor: isWhiteBorder ? "white" : palette.blue_7b,
+              }}
+            />
+          </BorderContainer>
+        ) : null}
       </Container>
     );
   },

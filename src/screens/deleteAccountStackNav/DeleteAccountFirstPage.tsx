@@ -1,16 +1,16 @@
-import React, { useContext, useState } from "react";
-import { View } from "react-native";
+import React, { useContext } from "react";
+import { useDispatch } from "react-redux";
 import styled from "styled-components/native";
 import Button from "~/components/common/Button";
 import CheckCircle from "~/components/common/CheckCircle";
+import KeyboardAwareScrollContainer from "~/components/common/container/KeyboardAwareScrollContainer";
+import Input from "~/components/common/Input";
 import MyText from "~/components/common/MyText";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
+import { useAppSelector } from "~/store";
+import { commonActions } from "~/store/common";
 import { DeleteAccountFirstPageScreenNavigationProp } from "~/types/navigator";
-
-const Container = styled.View`
-  flex: 1;
-  justify-content: space-between;
-`;
+import { isAndroid } from "~/utils";
 
 const TextContainer = styled.View<{ rpWidth: RpWidth }>`
   padding: ${({ rpWidth }) => `0px ${rpWidth(32)}px`};
@@ -18,7 +18,7 @@ const TextContainer = styled.View<{ rpWidth: RpWidth }>`
 
 const Item = styled.TouchableOpacity<{ rpWidth: RpWidth }>`
   flex-direction: row;
-  padding-bottom: ${({ rpWidth }) => rpWidth(27)}px;
+  margin-bottom: ${({ rpWidth }) => rpWidth(27)}px;
   justify-content: space-between;
 `;
 
@@ -35,44 +35,73 @@ const DeleteAccountFirstPage = ({
 }: {
   navigation: DeleteAccountFirstPageScreenNavigationProp;
 }) => {
-  const [selected, setSelected] = useState<string[]>([]);
   const { rpWidth } = useContext(DimensionsContext);
+  const { body, text } = useAppSelector(state => state.common.deleteAccount);
+  const dispatch = useDispatch();
 
   return (
-    <Container>
+    <KeyboardAwareScrollContainer isSpaceBetween>
       <TextContainer rpWidth={rpWidth}>
-        <MyText
-          style={{ marginTop: rpWidth(10), marginBottom: rpWidth(43) }}
-          color="rgba(0, 0, 0, 0.5)"
-          fontSize={14}>
-          탈퇴 이유를 말씀해주세요.
-        </MyText>
         {reasons.map((reason, i) => (
           <Item
             key={i}
             rpWidth={rpWidth}
             onPress={() => {
-              if (selected.includes(reason)) {
-                setSelected(selected.filter(item => item !== reason));
+              if (body.includes(i)) {
+                dispatch(
+                  commonActions.setDeleteAccount({
+                    body: body.filter(num => num !== i),
+                  }),
+                );
               } else {
-                setSelected([...selected, reason]);
+                dispatch(
+                  commonActions.setDeleteAccount({
+                    body: [...body, i],
+                  }),
+                );
               }
             }}>
             <MyText>{reason}</MyText>
-            <CheckCircle selected={selected.includes(reason)} />
+            <CheckCircle selected={body.includes(i)} />
           </Item>
         ))}
+        <Input
+          value={text}
+          onChangeText={text => {
+            dispatch(
+              commonActions.setDeleteAccount({
+                text,
+              }),
+            );
+          }}
+          placeholder="직접 입력"
+          multiline
+          scrollEnabled={false}
+          style={{
+            paddingHorizontal: 0,
+            marginBottom: isAndroid ? rpWidth(50) : 0,
+          }}
+          hasBorder={false}
+          placeholderTextColor="rgba(0, 0, 0, 0.8)"
+        />
       </TextContainer>
       <Button
-        useBottomInset
         useCommonMarginBottom
-        disabled={!selected.length}
+        disabled={!body.length}
         onPress={() => {
+          if (text) {
+            const filtered = body.filter(item => typeof item === "number");
+            dispatch(
+              commonActions.setDeleteAccount({
+                body: [...filtered, text],
+              }),
+            );
+          }
           navigation.navigate("DeleteAccountSecondPage");
         }}>
         다음
       </Button>
-    </Container>
+    </KeyboardAwareScrollContainer>
   );
 };
 

@@ -122,6 +122,12 @@ export type EmergencyMissingStackNavScreenRouteProp = RouteProp<
   LoggedInNavParamList,
   "EmergencyMissingStackNav"
 >;
+export type DeleteAccountStackNavScreenNavigationProp =
+  StackNavigationProp<DeleteAccountStackNavParamList>;
+export type DeleteAccountStackNavScreenRouteProp = RouteProp<
+  LoggedInNavParamList,
+  "DeleteAccountStackNav"
+>;
 export type WalkDetailDayScreenProps = CompositeScreenProps<
   StackScreenProps<LoggedInNavParamList, "WalkDetailDay">,
   StackScreenProps<RootNavParamList>

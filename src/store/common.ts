@@ -10,6 +10,10 @@ interface IState {
     isDeviceMoved: boolean;
     clickedID: number;
   };
+  deleteAccount: {
+    body: (string | number)[];
+    text: string;
+  };
 }
 
 const initialState: IState = {
@@ -21,6 +25,10 @@ const initialState: IState = {
     },
     isDeviceMoved: true,
     clickedID: 0,
+  },
+  deleteAccount: {
+    body: [],
+    text: "",
   },
 };
 
@@ -42,6 +50,24 @@ const common = createSlice({
     },
     setClickedID: (state, { payload }: PayloadAction<number>) => {
       state.home.clickedID = payload;
+    },
+
+    setDeleteAccount: (
+      state,
+      {
+        payload,
+      }: PayloadAction<
+        Partial<{
+          body: (string | number)[];
+          text: string;
+        } | null>
+      >,
+    ) => {
+      if (payload) {
+        state.deleteAccount = { ...state.deleteAccount, ...payload };
+      } else {
+        state.deleteAccount = initialState.deleteAccount;
+      }
     },
   },
 });

@@ -151,7 +151,7 @@ const userApi = api.injectEndpoints({
       },
     }),
 
-    deleteAccount: builder.mutation<void, number>({
+    deleteAccount: builder.mutation<void, string>({
       query: reason => ({
         url: "/account/withdraw/",
         method: "POST",

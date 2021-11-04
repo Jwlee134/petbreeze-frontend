@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import styled from "styled-components/native";
 import Button from "~/components/common/Button";
 import MyText from "~/components/common/MyText";
@@ -7,6 +7,10 @@ import Dog from "~/assets/svg/dog/dog-crying.svg";
 import { View } from "react-native";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import { DeleteAccountSecondPageScreenNavigationProp } from "~/types/navigator";
+import { useAppSelector } from "~/store";
+import userApi from "~/api/user";
+import { useDispatch } from "react-redux";
+import { commonActions } from "~/store/common";
 
 const Container = styled.View`
   flex: 1;
@@ -26,17 +30,24 @@ const DeleteAccountSecondPage = ({
 }: {
   navigation: DeleteAccountSecondPageScreenNavigationProp;
 }) => {
+  const { body } = useAppSelector(state => state.common.deleteAccount);
   const { rpWidth } = useContext(DimensionsContext);
+  const [deleteAccount, { isLoading, isSuccess }] =
+    userApi.useDeleteAccountMutation();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (isSuccess) {
+      dispatch(commonActions.setDeleteAccount(null));
+      navigation.replace("UserRequestSuccess", {
+        text: "정상적으로\n탈퇴되었습니다.",
+      });
+    }
+  }, [isSuccess]);
 
   return (
     <Container>
       <TextContainer rpWidth={rpWidth}>
-        <MyText
-          style={{ marginTop: rpWidth(10), marginBottom: rpWidth(43) }}
-          color="rgba(0, 0, 0, 0.5)"
-          fontSize={14}>
-          탈퇴 전 아래 유의사항을 확인해주세요.
-        </MyText>
         <RowContainer style={{ marginBottom: rpWidth(25) }}>
           <MyText
             color={palette.blue_7b}
@@ -69,7 +80,15 @@ const DeleteAccountSecondPage = ({
             marginRight: rpWidth(50),
           }}
         />
-        <Button useBottomInset useCommonMarginBottom onPress={() => {}}>
+        <Button
+          isLoading={isLoading}
+          useBottomInset
+          useCommonMarginBottom
+          onPress={() => {
+            if (isLoading) return;
+            const parsed = JSON.stringify(body).replace(/[[[\]"]/g, "");
+            deleteAccount(parsed);
+          }}>
           확인 및 탈퇴
         </Button>
       </View>
