@@ -73,7 +73,7 @@ const DeviceList = () => {
     if (isDeviceSettingFetching) return;
     if (deviceSetting) {
       const period = deviceSetting.Period;
-      setInterval(deviceSetting.Period === 0 ? 1000 : period * 1000);
+      setInterval(deviceSetting.Period === 0 ? 1000 : period * 60000);
       getDeviceCoord(clickedID);
     }
   }, [deviceSetting, isDeviceSettingFetching]);

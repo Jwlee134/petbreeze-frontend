@@ -40,15 +40,15 @@ const LocationInfoCollectionPeriod = ({ deviceID }: { deviceID: number }) => {
     ) {
       return [
         { text: "실시간", value: 0 },
-        { text: "5분", value: 300 },
-        { text: "10분", value: 600 },
-        { text: "30분", value: 1800 },
+        { text: "5분", value: 5 },
+        { text: "10분", value: 10 },
+        { text: "30분", value: 30 },
       ];
     }
     return [
-      { text: "5분", value: 300 },
-      { text: "10분", value: 600 },
-      { text: "30분", value: 1800 },
+      { text: "5분", value: 5 },
+      { text: "10분", value: 10 },
+      { text: "30분", value: 30 },
     ];
   }, [data]);
 
