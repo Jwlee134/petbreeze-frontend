@@ -486,7 +486,7 @@ PODS:
   - react-native-fbsdk-next/Share (4.6.0):
     - FBSDKShareKit (~> 9.3)
     - React-Core
-  - react-native-flipper (0.114.1):
+  - react-native-flipper (0.118.0):
     - React-Core
   - react-native-geolocation-service (5.3.0-beta.3):
     - React
@@ -983,7 +983,7 @@ SPEC CHECKSUMS:
   react-native-cameraroll: 88f4e62d9ecd0e1f253abe4f685474f2ea14bfa2
   react-native-date-picker: 414fe8f73392bae030dc4efec39d743b5c5de283
   react-native-fbsdk-next: a0dd8905af573ec4d21b7bc398423ccaa2ce2b07
-  react-native-flipper: 2f940282062135dfdd3ad2114d73e3b3be190f18
+  react-native-flipper: 5830e729e7d902021a0ade8f24ca10ab536de8f1
   react-native-geolocation-service: 32e50a2e4e4518b51b829fdfe137562a672d95d2
   react-native-nmap: cfcc5402746040494c544ea90a6062f49505acdf
   react-native-safe-area-context: 61c8c484a3a9e7d1fda19f7b1794b35bbfd2262a
@@ -1021,4 +1021,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 0c8b2e4d5c0aa5204700385b85f127b7b2e1bb21
 
-COCOAPODS: 1.10.2
+COCOAPODS: 1.11.2
