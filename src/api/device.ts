@@ -73,6 +73,7 @@ interface DeviceSetting<A> {
   Period: number;
   Area: A[];
   WiFi: { id: number; ssid: string; pw: string }[];
+  setting_confirmation: boolean;
 }
 
 interface DailyWalkRecord {
@@ -301,6 +302,21 @@ const deviceApi = api.injectEndpoints({
       query: deviceID => ({
         url: `/device/${deviceID}/member/`,
         method: "GET",
+        responseHandler: async res => {
+          const data: DeviceMembers = await res.json();
+          if (data.members.length > 1) {
+            const ownerIndex = data.members.findIndex(
+              member => member.id === data.owner_id,
+            );
+            return {
+              ...data,
+              members: [
+                data.members[ownerIndex],
+                ...data.members.filter((member, i) => i !== ownerIndex),
+              ],
+            };
+          }
+        },
       }),
       providesTags: result => providesList(result?.members, "Member"),
     }),
