@@ -54,9 +54,9 @@ export default (
     const month = new Date().getMonth() + 1;
     const date = new Date().getDate();
     const params = {
-      deviceID: 1,
+      deviceID: parseInt(message.data.deviceID, 10),
       date: `${year}-${month}-${date}`,
-      avatarUrl: "",
+      avatarUrl: message.data.profileImageURL,
     };
     if (isStartNavigation(navigation)) {
       navigation.replace("LoggedInNav", {
@@ -65,8 +65,5 @@ export default (
     } else {
       navigation.navigate("WalkDetailDay", params);
     }
-  }
-
-  if (message.notification?.title?.includes("Test")) {
   }
 };
