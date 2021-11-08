@@ -14,11 +14,7 @@ import { RootNavParamList } from "~/types/navigator";
 import Intro from "~/screens/rootNav/Intro";
 import Auth from "~/screens/rootNav/Auth";
 import Loading from "~/screens/rootNav/Loading";
-import Toast, {
-  BaseToast,
-  BaseToastProps,
-  ErrorToast,
-} from "react-native-toast-message";
+import Toast, { BaseToast, BaseToastProps } from "react-native-toast-message";
 import palette from "~/styles/palette";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { DimensionsContext } from "~/context/DimensionsContext";

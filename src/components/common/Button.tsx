@@ -63,24 +63,19 @@ const Button = ({
 }: IButton) => {
   const { bottom } = useSafeAreaInsets();
   const { rpWidth, width } = useContext(DimensionsContext);
-  const [enableAfterDelay, setEnableAfterDelay] = useState(
-    delay ? true : false,
-  );
+  const [enableAfterDelay, setEnableAfterDelay] = useState(delay ?? false);
   const value = useRef(
     new Animated.Value(props.disabled || delay ? 0 : 1),
   ).current;
 
   const color = value.interpolate({
     inputRange: [0, 1],
-    outputRange: ["rgba(0, 0, 0, 0.5)", fontColor ? fontColor : "white"],
+    outputRange: ["rgba(0, 0, 0, 0.5)", fontColor || "white"],
   });
 
   const backgroundColorInterpolate = value.interpolate({
     inputRange: [0, 1],
-    outputRange: [
-      "rgba(0, 0, 0, 0.05)",
-      backgroundColor ? backgroundColor : palette.blue_7b_90,
-    ],
+    outputRange: ["rgba(0, 0, 0, 0.05)", backgroundColor || palette.blue_7b_90],
   });
 
   useEffect(() => {
@@ -114,7 +109,7 @@ const Button = ({
           <>
             {RightIcon && <RightIcon />}
             <MyText
-              fontWeight={fontWeight ? fontWeight : "medium"}
+              fontWeight={fontWeight || "medium"}
               style={{
                 color,
               }}>
