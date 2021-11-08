@@ -1,4 +1,4 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { createApi, fetchBaseQuery, retry } from "@reduxjs/toolkit/query/react";
 import * as SecureStore from "expo-secure-store";
 import { isRejectedWithValue, Middleware } from "@reduxjs/toolkit";
 import { secureItems } from "~/constants";
@@ -6,16 +6,21 @@ import Toast from "react-native-toast-message";
 
 export const baseUrl = "http://3.36.100.60/wheredog-api";
 
-const baseQuery = fetchBaseQuery({
-  baseUrl,
-  prepareHeaders: async headers => {
-    const token = await SecureStore.getItemAsync(secureItems.token);
-    if (token) {
-      headers.set("Authorization", `Token ${token}`);
-    }
-    return headers;
+const baseQuery = retry(
+  fetchBaseQuery({
+    baseUrl,
+    prepareHeaders: async headers => {
+      const token = await SecureStore.getItemAsync(secureItems.token);
+      if (token) {
+        headers.set("Authorization", `Token ${token}`);
+      }
+      return headers;
+    },
+  }),
+  {
+    maxRetries: 5,
   },
-});
+);
 
 const api = createApi({
   baseQuery,
