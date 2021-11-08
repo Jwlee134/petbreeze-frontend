@@ -39,7 +39,10 @@ const Address = styled(Animated.View)<{ rpWidth: RpWidth }>`
 
 const DeviceList = () => {
   const deviceList = useDevice();
-  const clickedID = useAppSelector(state => state.common.home.clickedID);
+  const pressedID = useAppSelector(state => state.common.home.pressedID);
+  const longPressedID = useAppSelector(
+    state => state.common.home.longPressedID,
+  );
   const address = useAppSelector(state => state.common.home.address);
   const value = useRef(new Animated.Value(0)).current;
   const dispatch = useDispatch();
@@ -61,9 +64,11 @@ const DeviceList = () => {
   const device = useMemo(
     () =>
       deviceList?.length
-        ? deviceList[deviceList.findIndex(device => device.id === clickedID)]
+        ? deviceList[
+            deviceList.findIndex(device => device.id === longPressedID)
+          ]
         : null,
-    [clickedID, deviceList],
+    [longPressedID, deviceList],
   );
 
   // 이미 캐시된 데이터 있는 상태에서 한번 더 클릭하여 같은 데이터 들어오면 effect 실행 안되는 현상이
@@ -74,7 +79,7 @@ const DeviceList = () => {
     if (deviceSetting) {
       const period = deviceSetting.Period;
       setInterval(deviceSetting.Period === 0 ? 1000 : period * 60000);
-      getDeviceCoord(clickedID);
+      getDeviceCoord(pressedID);
     }
   }, [deviceSetting, isDeviceSettingFetching]);
 
@@ -84,18 +89,17 @@ const DeviceList = () => {
       const latitude = coord.coordinate.coordinates[1];
       const longitude = coord.coordinate.coordinates[0];
 
-      dispatch(commonActions.setDeviceCoord({ latitude, longitude }));
+      dispatch(commonActions.setHome({ deviceCoord: { latitude, longitude } }));
       dispatch(storageActions.setLastCoord({ latitude, longitude }));
 
       timeout.current = setTimeout(() => {
-        getDeviceCoord(clickedID);
+        getDeviceCoord(pressedID);
       }, interval);
     } else {
-      dispatch(commonActions.setIsDeviceMoved(true));
       dispatch(
-        commonActions.setDeviceCoord({
-          latitude: 0,
-          longitude: 0,
+        commonActions.setHome({
+          isDeviceMoved: true,
+          deviceCoord: { latitude: 0, longitude: 0 },
         }),
       );
     }
@@ -108,13 +112,12 @@ const DeviceList = () => {
   }, [coord, isCoordFetching]);
 
   const onAvatarPress = useCallback((id: number) => {
-    dispatch(commonActions.setClickedID(id));
-    dispatch(commonActions.setIsDeviceMoved(false));
+    dispatch(commonActions.setHome({ pressedID: id, isDeviceMoved: false }));
     getDeviceSetting(id);
   }, []);
 
   const onAvatarLongPress = useCallback((id: number) => {
-    dispatch(commonActions.setClickedID(id));
+    dispatch(commonActions.setHome({ longPressedID: id }));
     open();
   }, []);
 

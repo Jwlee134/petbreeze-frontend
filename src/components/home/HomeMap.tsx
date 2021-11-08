@@ -29,9 +29,9 @@ const HomeMap = () => {
   const appState = useAppState();
   const isFocused = useIsFocused();
   const dispatch = useDispatch();
-  const clickedID = useAppSelector(state => state.common.home.clickedID);
   const deviceList = useDevice();
 
+  const pressedID = useAppSelector(state => state.common.home.pressedID);
   const deviceCoord = useAppSelector(state => state.common.home.deviceCoord);
   const isDeviceMoved = useAppSelector(
     state => state.common.home.isDeviceMoved,
@@ -50,7 +50,7 @@ const HomeMap = () => {
     if (type === "myLocation") {
       setIsMyLocationMoved(true);
     } else {
-      dispatch(commonActions.setIsDeviceMoved(true));
+      dispatch(commonActions.setHome({ isDeviceMoved: true }));
     }
   };
 
@@ -91,7 +91,9 @@ const HomeMap = () => {
         setCoords({ latitude: 0, longitude: 0 });
       }
       if (deviceCoord.latitude) {
-        dispatch(commonActions.setDeviceCoord({ latitude: 0, longitude: 0 }));
+        dispatch(
+          commonActions.setHome({ deviceCoord: { latitude: 0, longitude: 0 } }),
+        );
       }
     }
   }, [isFocused, appState]);
@@ -109,7 +111,7 @@ const HomeMap = () => {
         })()}
         mapPadding={{ top: isAndroid ? top : 0 }}
         onMapClick={() => {
-          dispatch(commonActions.setAddress(""));
+          dispatch(commonActions.setHome({ address: "" }));
         }}>
         {coords.latitude ? (
           <Marker
@@ -120,24 +122,24 @@ const HomeMap = () => {
             anchor={{ x: 0.5, y: 0.5 }}
           />
         ) : null}
-        {deviceCoord.latitude && deviceList && clickedID ? (
+        {deviceCoord.latitude && deviceList && pressedID ? (
           <Marker
             coordinate={{
               latitude: deviceCoord.latitude,
               longitude: deviceCoord.longitude,
             }}
             onClick={async () => {
-              const addr = await getAddressByCoord(
+              const address = await getAddressByCoord(
                 deviceCoord.latitude,
                 deviceCoord.longitude,
               );
-              if (addr) {
-                dispatch(commonActions.setAddress(addr));
+              if (address) {
+                dispatch(commonActions.setHome({ address }));
               }
             }}
             image={
               deviceList[
-                deviceList.findIndex(device => device.id === clickedID)
+                deviceList.findIndex(device => device.id === pressedID)
               ].is_missed
                 ? require("~/assets/image/footprint-marker-red.png")
                 : require("~/assets/image/footprint-marker.png")
