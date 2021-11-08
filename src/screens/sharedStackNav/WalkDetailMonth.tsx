@@ -19,7 +19,6 @@ import Dissolve from "~/components/common/Dissolve";
 import Button from "~/components/common/Button";
 import { useDispatch } from "react-redux";
 import { storageActions } from "~/store/storage";
-import { useIsFocused } from "@react-navigation/native";
 
 const TopContainer = styled.View`
   align-items: center;
@@ -39,8 +38,7 @@ const RowContainer = styled.View<{ rpWidth: RpWidth }>`
   flex-direction: row;
   justify-content: space-between;
   ${({ rpWidth }) => css`
-    padding: 0 ${rpWidth(16)}px;
-    margin-top: ${rpWidth(30)}px;
+    padding: ${rpWidth(30)}px ${rpWidth(16)}px;
   `}
 `;
 
@@ -75,21 +73,18 @@ const WalkDetailMonth = ({
     month: new Date().getMonth() + 1,
   });
   const [dateObj, setDateObj] = useState<DateObj>({});
-  const { data, refetch, isFetching } = deviceApi.useGetMonthlyWalkRecordQuery(
+  const { data, isFetching } = deviceApi.useGetMonthlyWalkRecordQuery(
     {
       deviceID,
       year: date.year,
       month: date.month,
     },
-    { refetchOnMountOrArgChange: true },
+    {
+      refetchOnMountOrArgChange: true,
+    },
   );
   const { rpWidth, isTablet } = useContext(DimensionsContext);
   const dispatch = useDispatch();
-  const isFocused = useIsFocused();
-
-  useEffect(() => {
-    if (isFocused) refetch();
-  }, [isFocused]);
 
   useEffect(() => {
     if (!data) return;
@@ -110,9 +105,13 @@ const WalkDetailMonth = ({
       .flat();
 
     // 해당 날짜 산책기록이 전부 삭제되어 dateArr에서 필터링을 못할 때
-    const emptyKeys = Object.keys(obj).filter(
-      date => !dateArr.map(date => date[0]).includes(date),
-    );
+    const emptyKeys = Object.keys(obj).filter(objDate => {
+      const year = new Date(objDate).getFullYear();
+      const month = new Date(objDate).getMonth() + 1;
+      const currentMonth = year === date.year && month === date.month;
+
+      return currentMonth && !dateArr.map(date => date[0]).includes(objDate);
+    });
     if (emptyKeys.length) {
       emptyKeys.forEach(date => {
         delete obj[date];

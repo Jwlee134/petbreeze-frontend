@@ -54,7 +54,7 @@ const Path = ({ isStopped }: { isStopped: boolean }) => {
             height={rpWidth(57)}
             anchor={{
               x: 0.5,
-              y: 1,
+              y: 0.96,
             }}
           />
         ) : (

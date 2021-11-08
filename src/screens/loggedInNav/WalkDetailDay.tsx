@@ -1,4 +1,4 @@
-import React, { Fragment, useContext, useState } from "react";
+import React, { Fragment, useContext, useEffect, useState } from "react";
 import { FlatList, View } from "react-native";
 import styled, { css } from "styled-components/native";
 import MyText from "~/components/common/MyText";
@@ -15,6 +15,7 @@ import { noAvatar } from "~/constants";
 import Modal from "react-native-modal";
 import useModal from "~/hooks/useModal";
 import IosStyleBottomModal from "~/components/modal/IosStyleBottomModal";
+import { useDispatch } from "react-redux";
 
 const Container = styled.View<{ rpWidth: RpWidth }>`
   ${({ rpWidth }) => css`
@@ -77,6 +78,7 @@ const WalkDetailDay = ({
     params: { deviceID, date, avatarUrl },
   },
 }: WalkDetailDayScreenProps) => {
+  const dispatch = useDispatch();
   const { rpWidth, width } = useContext(DimensionsContext);
   const { data } = deviceApi.useGetDailyWalkRecordQuery(
     {
@@ -95,21 +97,23 @@ const WalkDetailDay = ({
     const formatFrom = new Date(from);
     const formatTo = new Date(new Date(from).getTime() + duration * 60000);
 
-    return `${formatFrom.getHours()}:${
-      formatFrom.getMinutes() < 10
-        ? `0${formatFrom.getMinutes()}`
-        : formatFrom.getMinutes()
-    } ~ ${formatTo.getHours()}:${
-      formatTo.getMinutes() < 10
-        ? `0${formatTo.getMinutes()}`
-        : formatTo.getMinutes()
-    }`;
+    return `${formatFrom.getHours()}:${formatFrom
+      .getMinutes()
+      .toString()
+      .padStart(2, "0")} ~ ${formatTo.getHours()}:${formatTo
+      .getMinutes()
+      .toString()
+      .padStart(2, "0")}`;
   };
 
   const deleteRecord = () => {
     close();
     deleteWalk({ deviceID, walkID, date });
   };
+
+  useEffect(() => {
+    dispatch(deviceApi.util.invalidateTags([{ type: "Walk", id: "MONTHLY" }]));
+  }, []);
 
   return (
     <>
