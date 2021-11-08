@@ -25,13 +25,13 @@ const forFade = ({ current }: StackCardInterpolationProps) => ({
 const Stack = createStackNavigator<BleWithoutHeaderStackNavParamList>();
 
 const BleWithoutHeaderStackNav = ({
-  route,
+  route: { params: { initialRouteName, loadingText } = {} },
 }: {
   route: BleWithoutHeaderStackNavScreenRouteProp;
 }) => {
   return (
     <Stack.Navigator
-      initialRouteName={route.params?.initialRouteName}
+      initialRouteName={initialRouteName}
       screenOptions={{
         cardStyleInterpolator: forFade,
         headerShown: false,
@@ -44,7 +44,7 @@ const BleWithoutHeaderStackNav = ({
       <Stack.Screen name="SafetyZone" component={SafetyZone} />
       <Stack.Screen
         name="BleLoading"
-        initialParams={{ loadingText: route.params?.loadingText }}
+        initialParams={{ loadingText }}
         component={BleLoading}
       />
       <Stack.Screen name="Completion" component={Completion} />

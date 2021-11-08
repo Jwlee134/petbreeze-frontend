@@ -9,7 +9,11 @@ import useAppState from "~/hooks/useAppState";
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
 
-const BottomTabNav = ({ route }: { route: BottomTabNavRouteProp }) => {
+const BottomTabNav = ({
+  route: { params: { initialRouteName } = {} },
+}: {
+  route: BottomTabNavRouteProp;
+}) => {
   const appState = useAppState();
   const { data, refetch } = userApi.useGetNumOfNewNotificationsQuery();
 
@@ -19,7 +23,7 @@ const BottomTabNav = ({ route }: { route: BottomTabNavRouteProp }) => {
 
   return (
     <Tab.Navigator
-      initialRouteName={route.params?.initialRouteName}
+      initialRouteName={initialRouteName}
       tabBar={props => (
         <CustomBottomTabBar
           newNotifExists={data !== undefined && data.count !== 0}

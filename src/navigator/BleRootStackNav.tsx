@@ -23,7 +23,17 @@ const forFade = ({ current }: StackCardInterpolationProps) => ({
 
 const Stack = createStackNavigator<BleRootStackNavParamList>();
 
-const BleRootStackNav = ({ route }: { route: BleRootStackNavRouteProp }) => {
+const BleRootStackNav = ({
+  route: {
+    params: {
+      initialBleWithHeaderStackNavRouteName,
+      initialBleWithoutHeaderStackNavRouteName,
+      initialRouteName,
+    } = {},
+  },
+}: {
+  route: BleRootStackNavRouteProp;
+}) => {
   const fromDeviceSetting = useAppSelector(
     state => state.deviceSetting.safetyZone.fromDeviceSetting,
   );
@@ -43,7 +53,7 @@ const BleRootStackNav = ({ route }: { route: BleRootStackNavRouteProp }) => {
 
   return (
     <Stack.Navigator
-      initialRouteName={route.params?.initialRouteName}
+      initialRouteName={initialRouteName}
       screenOptions={{
         cardStyleInterpolator: forFade,
         headerShown: false,
@@ -51,15 +61,14 @@ const BleRootStackNav = ({ route }: { route: BleRootStackNavRouteProp }) => {
       <Stack.Screen
         name="BleWithHeaderStackNav"
         initialParams={{
-          initialRouteName: route.params?.initialBleWithHeaderStackNavRouteName,
+          initialRouteName: initialBleWithHeaderStackNavRouteName,
         }}
         component={BleWithHeaderStackNav}
       />
       <Stack.Screen
         name="BleWithoutHeaderStackNav"
         initialParams={{
-          initialRouteName:
-            route.params?.initialBleWithoutHeaderStackNavRouteName,
+          initialRouteName: initialBleWithoutHeaderStackNavRouteName,
         }}
         component={BleWithoutHeaderStackNav}
       />
