@@ -8,7 +8,6 @@ interface HomeState {
   };
   isDeviceMoved: boolean;
   pressedID: number;
-  longPressedID: number;
 }
 
 interface DeleteAccountState {
@@ -30,7 +29,6 @@ const initialState: State = {
     },
     isDeviceMoved: true,
     pressedID: 0,
-    longPressedID: 0,
   },
   deleteAccount: {
     body: [],

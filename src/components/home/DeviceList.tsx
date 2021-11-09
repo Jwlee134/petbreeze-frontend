@@ -39,10 +39,10 @@ const Address = styled(Animated.View)<{ rpWidth: RpWidth }>`
 
 const DeviceList = () => {
   const deviceList = useDevice();
-  const pressedID = useAppSelector(state => state.common.home.pressedID);
-  const longPressedID = useAppSelector(
-    state => state.common.home.longPressedID,
+  const { latitude, longitude } = useAppSelector(
+    state => state.common.home.deviceCoord,
   );
+  const pressedID = useAppSelector(state => state.common.home.pressedID);
   const address = useAppSelector(state => state.common.home.address);
   const value = useRef(new Animated.Value(0)).current;
   const dispatch = useDispatch();
@@ -50,12 +50,14 @@ const DeviceList = () => {
     deviceApi.useLazyGetDeviceCoordQuery();
   const [
     getDeviceSetting,
-    { data: deviceSetting, isFetching: isDeviceSettingFetching },
+    { data: deviceSetting, isFetching: isDeviceSettingFetching, originalArgs },
   ] = deviceApi.useLazyGetDeviceSettingQuery();
   const timeout = useRef<NodeJS.Timeout>();
   const isFocused = useIsFocused();
   const appState = useAppState();
+
   const [interval, setInterval] = useState(0);
+  const [longPressedID, setLongPressedID] = useState(0);
 
   const { rpWidth, width, isTablet } = useContext(DimensionsContext);
 
@@ -75,16 +77,24 @@ const DeviceList = () => {
   // 가 디바이스가 여러개일 경우 문제가 생기므로 isFetching 인자 추가하여 같은 데이터라도 매번 실행
 
   useEffect(() => {
-    if (isDeviceSettingFetching) return;
+    if (isDeviceSettingFetching || !originalArgs) return;
     if (deviceSetting) {
-      const period = deviceSetting.Period;
-      setInterval(deviceSetting.Period === 0 ? 1000 : period * 60000);
-      getDeviceCoord(pressedID);
+      const period =
+        deviceSetting.Period === 0 ? 1000 : deviceSetting.Period * 60000;
+      if (period !== interval || pressedID !== originalArgs) {
+        setInterval(period);
+        dispatch(commonActions.setHome({ pressedID: originalArgs }));
+        getDeviceCoord(originalArgs);
+      } else {
+        dispatch(
+          commonActions.setHome({ deviceCoord: { latitude, longitude } }),
+        );
+      }
     }
   }, [deviceSetting, isDeviceSettingFetching]);
 
   useEffect(() => {
-    if (isCoordFetching) return;
+    if (isCoordFetching || !interval) return;
     if (coord?.coordinate?.coordinates) {
       const latitude = coord.coordinate.coordinates[1];
       const longitude = coord.coordinate.coordinates[0];
@@ -109,15 +119,15 @@ const DeviceList = () => {
         clearTimeout(timeout.current);
       }
     };
-  }, [coord, isCoordFetching]);
+  }, [coord, isCoordFetching, interval]);
 
   const onAvatarPress = useCallback((id: number) => {
-    dispatch(commonActions.setHome({ pressedID: id, isDeviceMoved: false }));
+    dispatch(commonActions.setHome({ isDeviceMoved: false }));
     getDeviceSetting(id);
   }, []);
 
   const onAvatarLongPress = useCallback((id: number) => {
-    dispatch(commonActions.setHome({ longPressedID: id }));
+    setLongPressedID(id);
     open();
   }, []);
 
