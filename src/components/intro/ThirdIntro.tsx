@@ -20,7 +20,7 @@ const ImageContainer = styled.View`
 
 const Image = styled.Image<{ rpWidth: RpWidth; isTablet: boolean }>`
   max-width: ${({ rpWidth, isTablet }) =>
-    isTablet ? `${rpWidth(320)}px` : "90%"};
+    isTablet ? `${rpWidth(320)}px` : "85%"};
   width: 100%;
 `;
 
@@ -28,7 +28,7 @@ const ThirdIntro = () => {
   const navigation = useNavigation<IntroScreenNavigationProp>();
   const dispatch = useDispatch();
   const { top, bottom } = useSafeAreaInsets();
-  const { isTablet, rpWidth } = useContext(DimensionsContext);
+  const { isTablet, rpWidth, rpHeight } = useContext(DimensionsContext);
 
   return (
     <>
@@ -54,7 +54,7 @@ const ThirdIntro = () => {
           backgroundColor="white"
           fontColor={palette.blue_7b}
           style={{
-            marginBottom: rpWidth(94) + bottom,
+            marginBottom: rpHeight(94) + bottom,
             borderWidth: 2,
             borderColor: palette.blue_7b_90,
           }}

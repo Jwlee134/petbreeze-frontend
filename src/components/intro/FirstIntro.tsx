@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import Dog from "~/assets/svg/dog/dog-question-mark.svg";
 import MyText from "~/components/common/MyText";
 import { View } from "react-native";
@@ -9,7 +9,7 @@ import { DimensionsContext } from "~/context/DimensionsContext";
 
 const FirstIntro = () => {
   const { top, bottom } = useSafeAreaInsets();
-  const { rpWidth } = useContext(DimensionsContext);
+  const { rpWidth, rpHeight } = useContext(DimensionsContext);
 
   return (
     <GradientContainer isBlackStatusBar>
@@ -23,7 +23,7 @@ const FirstIntro = () => {
             fontSize={24}
             color="white"
             style={{
-              marginBottom: rpWidth(53),
+              marginBottom: rpHeight(53),
             }}>
             가까이 있는 문제입니다.
           </MyText>
@@ -34,9 +34,9 @@ const FirstIntro = () => {
         </View>
         <Dog
           width={rpWidth(175)}
-          height={rpWidth(256)}
+          height={rpHeight(256)}
           style={{
-            marginBottom: rpWidth(145) + bottom,
+            marginBottom: rpHeight(145) + bottom,
             marginLeft: "auto",
             marginRight: rpWidth(46),
           }}

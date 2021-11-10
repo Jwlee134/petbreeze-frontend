@@ -9,11 +9,21 @@ import PhoneVibrate from "~/assets/svg/intro/phone-vibrate.svg";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { IntroContainer } from "./styles";
 import { View } from "react-native";
-import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
+import {
+  DimensionsContext,
+  RpHeight,
+  RpWidth,
+} from "~/context/DimensionsContext";
 
-const IconContainer = styled.View<{ isLast?: boolean; rpWidth: RpWidth }>`
-  ${({ rpWidth, isLast }) => css`
-    margin-bottom: ${!isLast ? rpWidth(33) : 0}px;
+interface IconContainerProps {
+  isLast?: boolean;
+  rpWidth: RpWidth;
+  rpHeight: RpHeight;
+}
+
+const IconContainer = styled.View<IconContainerProps>`
+  ${({ rpWidth, rpHeight, isLast }) => css`
+    margin-bottom: ${!isLast ? rpHeight(33) : 0}px;
     margin-left: ${rpWidth(15)}px;
   `}
 `;
@@ -29,7 +39,7 @@ const Svg = styled.View<{ rpWidth: RpWidth }>`
 
 const SecondIntro = () => {
   const { top } = useSafeAreaInsets();
-  const { rpWidth } = useContext(DimensionsContext);
+  const { rpWidth, rpHeight } = useContext(DimensionsContext);
 
   return (
     <IntroContainer rpWidth={rpWidth} topInset={top}>
@@ -41,9 +51,9 @@ const SecondIntro = () => {
           fontWeight="bold"
           fontSize={24}
           style={{ marginBottom: rpWidth(58) }}>
-          ‘어디개’ 가 함께라면?
+          ‘펫브리즈’ 가 함께라면?
         </MyText>
-        <IconContainer rpWidth={rpWidth}>
+        <IconContainer rpWidth={rpWidth} rpHeight={rpHeight}>
           <SvgContainer rpWidth={rpWidth}>
             <Svg rpWidth={rpWidth}>
               <PhoneVibrate width={rpWidth(36)} height={rpWidth(39)} />
@@ -59,7 +69,7 @@ const SecondIntro = () => {
             반려동물이 지정된 안심구역을{"\n"}이탈할 시 알림을 전송해드립니다.
           </MyText>
         </IconContainer>
-        <IconContainer rpWidth={rpWidth}>
+        <IconContainer rpWidth={rpWidth} rpHeight={rpHeight}>
           <SvgContainer rpWidth={rpWidth}>
             <Svg rpWidth={rpWidth}>
               <SharePeople width={rpWidth(34)} height={rpWidth(39)} />
@@ -76,7 +86,7 @@ const SecondIntro = () => {
             있습니다.
           </MyText>
         </IconContainer>
-        <IconContainer rpWidth={rpWidth}>
+        <IconContainer rpWidth={rpWidth} rpHeight={rpHeight}>
           <SvgContainer rpWidth={rpWidth}>
             <Svg rpWidth={rpWidth}>
               <FootpringPath width={rpWidth(37)} height={rpWidth(42)} />
@@ -92,7 +102,7 @@ const SecondIntro = () => {
             외출을 감지하여 산책시작 푸쉬알림을{"\n"}전송해드립니다.
           </MyText>
         </IconContainer>
-        <IconContainer rpWidth={rpWidth}>
+        <IconContainer rpWidth={rpWidth} rpHeight={rpHeight}>
           <SvgContainer rpWidth={rpWidth}>
             <Svg rpWidth={rpWidth}>
               <ShareFamily width={rpWidth(30)} height={rpWidth(39)} />

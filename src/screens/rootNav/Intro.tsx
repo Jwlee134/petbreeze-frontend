@@ -10,7 +10,6 @@ import SecondIntro from "~/components/intro/SecondIntro";
 import ThirdIntro from "~/components/intro/ThirdIntro";
 import { DimensionsContext } from "~/context/DimensionsContext";
 import usePagingFlatList from "~/hooks/usePagingFlatList";
-import { navigatorActions } from "~/store/navigator";
 import { storageActions } from "~/store/storage";
 import { IntroScreenNavigationProp } from "~/types/navigator";
 
@@ -35,7 +34,7 @@ const Intro = ({ navigation }: { navigation: IntroScreenNavigationProp }) => {
   const { PagingFlatList } = usePagingFlatList();
   const { top, bottom } = useSafeAreaInsets();
   const dispatch = useDispatch();
-  const { width, rpWidth } = useContext(DimensionsContext);
+  const { width, rpWidth, rpHeight } = useContext(DimensionsContext);
 
   const [currentPage, setCurrentPage] = useState(1);
   const value = useRef(new Animated.Value(0)).current;
@@ -85,7 +84,7 @@ const Intro = ({ navigation }: { navigation: IntroScreenNavigationProp }) => {
       />
       <PageIndicator
         style={{
-          marginBottom: rpWidth(54) + bottom,
+          marginBottom: rpHeight(54) + bottom,
         }}>
         <PageIndicatorCircle isFocused={currentPage === 1} />
         <PageIndicatorCircle isFocused={currentPage === 2} />
