@@ -10,13 +10,13 @@ import MyText from "~/components/common/MyText";
 import SelectableButton from "~/components/common/SelectableButton";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import { useAppSelector } from "~/store";
-import { deviceSettingActions } from "~/store/deviceSetting";
 import { RegisterProfileFirstScreenNavigationProp } from "~/types/navigator";
 import AvatarCircle from "./AvatarCircle";
 import Modal from "react-native-modal";
 import useModal from "~/hooks/useModal";
 import CommonCenterModal from "~/components/modal/CommonCenterModal";
 import DatePicker from "react-native-date-picker";
+import { formActions } from "~/store/form";
 
 const InputContainer = styled.View<{ rpWidth: RpWidth }>`
   ${({ rpWidth }) => css`
@@ -35,7 +35,7 @@ const RegisterProfileFirst = ({
   navigation: RegisterProfileFirstScreenNavigationProp;
 }) => {
   const { name, birthYear, birthMonth, birthDay } = useAppSelector(
-    state => state.deviceSetting.profile,
+    state => state.form,
   );
   const dispatch = useDispatch();
   const { rpWidth } = useContext(DimensionsContext);
@@ -66,7 +66,7 @@ const RegisterProfileFirst = ({
               maxLength={16}
               value={name}
               onChangeText={text =>
-                dispatch(deviceSettingActions.setProfile({ name: text }))
+                dispatch(formActions.setState({ name: text }))
               }
               containerStyle={{ marginBottom: rpWidth(36) }}
             />
@@ -97,7 +97,7 @@ const RegisterProfileFirst = ({
           rightButtonText="확인"
           onRightButtonPress={() => {
             dispatch(
-              deviceSettingActions.setProfile({
+              formActions.setState({
                 birthYear: date.getFullYear(),
                 birthMonth: date.getMonth() + 1,
                 birthDay: date.getDate(),

@@ -12,12 +12,12 @@ import { noAvatar, serverImageUri } from "~/constants";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import useModal from "~/hooks/useModal";
 import { useAppSelector } from "~/store";
-import { deviceSettingActions } from "~/store/deviceSetting";
 import { UpdateProfileScreenProps } from "~/types/navigator";
 import imageHandler from "~/utils/imageHandler";
 import Modal from "react-native-modal";
 import CommonCenterModal from "~/components/modal/CommonCenterModal";
 import DatePicker from "react-native-date-picker";
+import { formActions } from "~/store/form";
 
 const AvatarButton = styled.TouchableOpacity<{ rpWidth: RpWidth }>`
   ${({ rpWidth }) => css`
@@ -60,7 +60,7 @@ const UpdateProfile = ({
     photos,
     sex,
     weight,
-  } = useAppSelector(state => state.deviceSetting.profile);
+  } = useAppSelector(state => state.form);
   const dispatch = useDispatch();
   const [triggerProfile] = deviceApi.useUpdateDeviceProfileMutation();
   const [triggerAvatar] = deviceApi.useUpdateDeviceProfileAvatarMutation();
@@ -103,7 +103,7 @@ const UpdateProfile = ({
 
   useEffect(() => {
     return () => {
-      dispatch(deviceSettingActions.setProfile(null));
+      dispatch(formActions.setState(null));
     };
   }, []);
 
@@ -122,7 +122,7 @@ const UpdateProfile = ({
               maxLength={16}
               value={name}
               onChangeText={text =>
-                dispatch(deviceSettingActions.setProfile({ name: text }))
+                dispatch(formActions.setState({ name: text }))
               }
             />
             <InputTitle>생년월일</InputTitle>
@@ -139,17 +139,13 @@ const UpdateProfile = ({
             <RowContainer>
               <SelectableButton
                 style={{ flexGrow: 1, marginRight: rpWidth(20) }}
-                onPress={() =>
-                  dispatch(deviceSettingActions.setProfile({ sex: true }))
-                }
+                onPress={() => dispatch(formActions.setState({ sex: true }))}
                 selected={sex}>
                 남
               </SelectableButton>
               <SelectableButton
                 style={{ flexGrow: 1 }}
-                onPress={() =>
-                  dispatch(deviceSettingActions.setProfile({ sex: false }))
-                }
+                onPress={() => dispatch(formActions.setState({ sex: false }))}
                 selected={!sex}>
                 여
               </SelectableButton>
@@ -159,7 +155,7 @@ const UpdateProfile = ({
               maxLength={16}
               value={species}
               onChangeText={text =>
-                dispatch(deviceSettingActions.setProfile({ species: text }))
+                dispatch(formActions.setState({ species: text }))
               }
             />
             <InputTitle>체중</InputTitle>
@@ -167,7 +163,7 @@ const UpdateProfile = ({
               value={weight}
               onChangeText={text =>
                 dispatch(
-                  deviceSettingActions.setProfile({
+                  formActions.setState({
                     weight: text.replace(/[^0-9]/g, ""),
                   }),
                 )
@@ -198,7 +194,7 @@ const UpdateProfile = ({
           rightButtonText="확인"
           onRightButtonPress={() => {
             dispatch(
-              deviceSettingActions.setProfile({
+              formActions.setState({
                 birthYear: date.getFullYear(),
                 birthMonth: date.getMonth() + 1,
                 birthDay: date.getDate(),

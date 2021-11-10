@@ -16,6 +16,7 @@ import ble from "./ble";
 import deviceSetting from "./deviceSetting";
 import storage from "./storage";
 import common from "./common";
+import form from "./form";
 
 import api, { rtkQueryErrorLogger } from "~/api";
 
@@ -24,6 +25,7 @@ const rootReducer = combineReducers({
   deviceSetting,
   storage,
   common,
+  form,
   [api.reducerPath]: api.reducer,
 });
 

@@ -38,11 +38,13 @@ const Completion = ({
   navigation: CompletionScreenNavigationProp;
 }) => {
   const {
-    profile: { name, species, birthYear, sex, photos },
     safetyZone: {
       draft: { name: safetyZoneName },
     },
   } = useAppSelector(state => state.deviceSetting);
+  const { name, species, birthYear, sex, photos } = useAppSelector(
+    state => state.form,
+  );
   const deviceID = useAppSelector(state => state.ble.deviceID);
   const { rpWidth } = useContext(DimensionsContext);
 

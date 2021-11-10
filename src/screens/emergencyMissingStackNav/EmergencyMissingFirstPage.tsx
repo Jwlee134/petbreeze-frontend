@@ -10,13 +10,13 @@ import SelectableButton from "~/components/common/SelectableButton";
 import { noAvatar } from "~/constants";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import { useAppSelector } from "~/store";
-import { deviceSettingActions } from "~/store/deviceSetting";
 import palette from "~/styles/palette";
 import { EmergencyMissingFirstPageScreenNavigationProp } from "~/types/navigator";
 import Modal from "react-native-modal";
 import useModal from "~/hooks/useModal";
 import CommonCenterModal from "~/components/modal/CommonCenterModal";
 import DatePicker from "react-native-date-picker";
+import { formActions } from "~/store/form";
 
 const Avatar = styled.Image<{ rpWidth: RpWidth }>`
   ${({ rpWidth }) => css`
@@ -54,7 +54,7 @@ const EmergencyMissingFirstPage = ({
     lostDate,
     lostMonth,
     lostPlace,
-  } = useAppSelector(state => state.deviceSetting.profile);
+  } = useAppSelector(state => state.form);
   const { rpWidth } = useContext(DimensionsContext);
   const dispatch = useDispatch();
   const { open, close, modalProps } = useModal();
@@ -86,7 +86,7 @@ const EmergencyMissingFirstPage = ({
             )}
             onChangeText={text =>
               dispatch(
-                deviceSettingActions.setProfile({
+                formActions.setState({
                   phoneNumber: text.replace(/[^0-9]/g, ""),
                 }),
               )
@@ -97,17 +97,13 @@ const EmergencyMissingFirstPage = ({
           <RowContainer>
             <SelectableButton
               selected={hasTag}
-              onPress={() =>
-                dispatch(deviceSettingActions.setProfile({ hasTag: true }))
-              }
+              onPress={() => dispatch(formActions.setState({ hasTag: true }))}
               style={{ marginRight: rpWidth(20) }}>
               유
             </SelectableButton>
             <SelectableButton
               selected={!hasTag}
-              onPress={() =>
-                dispatch(deviceSettingActions.setProfile({ hasTag: false }))
-              }>
+              onPress={() => dispatch(formActions.setState({ hasTag: false }))}>
               무
             </SelectableButton>
           </RowContainer>
@@ -126,7 +122,7 @@ const EmergencyMissingFirstPage = ({
             containerStyle={{ marginBottom: rpWidth(50) }}
             onChangeText={text =>
               dispatch(
-                deviceSettingActions.setProfile({
+                formActions.setState({
                   lostPlace: text,
                 }),
               )
@@ -147,7 +143,7 @@ const EmergencyMissingFirstPage = ({
           rightButtonText="확인"
           onRightButtonPress={() => {
             dispatch(
-              deviceSettingActions.setProfile({
+              formActions.setState({
                 lostMonth: date.getMonth() + 1,
                 lostDate: date.getDate(),
                 lostHour: date.getHours(),

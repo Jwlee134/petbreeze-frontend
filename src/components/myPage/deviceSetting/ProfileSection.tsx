@@ -9,8 +9,8 @@ import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import deviceApi from "~/api/device";
 import { DeviceSettingScreenNavigationProp } from "~/types/navigator";
 import { useDispatch } from "react-redux";
-import { deviceSettingActions } from "~/store/deviceSetting";
 import { noAvatar, noName } from "~/constants";
+import { formActions } from "~/store/form";
 
 const Container = styled.View<{ rpWidth: RpWidth }>`
   align-items: center;
@@ -50,7 +50,7 @@ const ProfileSection = ({
         onPress={() => {
           if (!data) return;
           dispatch(
-            deviceSettingActions.setProfile({
+            formActions.setState({
               photos: [data.profile_image],
               name: data.name,
               species: data.species,

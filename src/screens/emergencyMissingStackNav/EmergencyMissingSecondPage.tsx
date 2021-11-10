@@ -11,7 +11,6 @@ import Plus from "~/assets/svg/plus/plus-blue.svg";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import { TouchableOpacity, View } from "react-native";
 import { EmergencyMissingSecondPageScreenNavigationProp } from "~/types/navigator";
-import { deviceSettingActions } from "~/store/deviceSetting";
 import imageHandler from "~/utils/imageHandler";
 import deviceApi from "~/api/device";
 import Modal from "react-native-modal";
@@ -19,6 +18,7 @@ import useModal from "~/hooks/useModal";
 import IosStyleBottomModal from "~/components/modal/IosStyleBottomModal";
 import Divider from "~/components/common/Divider";
 import palette from "~/styles/palette";
+import { formActions } from "~/store/form";
 
 const PaddingContainer = styled.View<{ rpWidth: RpWidth }>`
   ${({ rpWidth }) => css`
@@ -69,7 +69,7 @@ const EmergencyMissingSecondPage = ({
     phoneNumber,
     hasTag,
     emergencyKey,
-  } = useAppSelector(state => state.deviceSetting.profile);
+  } = useAppSelector(state => state.form);
   const dispatch = useDispatch();
   const { width, rpWidth } = useContext(DimensionsContext);
   const [register] = deviceApi.usePostEmergencyMissingMutation();
@@ -142,7 +142,7 @@ const EmergencyMissingSecondPage = ({
               value={message}
               onChangeText={text =>
                 dispatch(
-                  deviceSettingActions.setProfile({
+                  formActions.setState({
                     message: text,
                   }),
                 )
@@ -222,7 +222,7 @@ const EmergencyMissingSecondPage = ({
               const copy = [...photos];
               copy.splice(selectedIndex, 1);
               dispatch(
-                deviceSettingActions.setProfile({
+                formActions.setState({
                   photos: copy,
                 }),
               );

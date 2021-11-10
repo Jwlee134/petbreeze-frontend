@@ -11,7 +11,7 @@ import SelectableButton from "~/components/common/SelectableButton";
 import { serverImageUri } from "~/constants";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import { useAppSelector } from "~/store";
-import { deviceSettingActions } from "~/store/deviceSetting";
+import { formActions } from "~/store/form";
 import { RegisterProfileSecondScreenNavigationProp } from "~/types/navigator";
 import imageHandler from "~/utils/imageHandler";
 import AvatarCircle from "./AvatarCircle";
@@ -51,7 +51,7 @@ const RegisterProfileSecond = ({
     sex,
     species,
     weight,
-  } = useAppSelector(state => state.deviceSetting.profile);
+  } = useAppSelector(state => state.form);
   const deviceID = useAppSelector(state => state.ble.deviceID);
   const dispatch = useDispatch();
   const { rpWidth } = useContext(DimensionsContext);
@@ -104,16 +104,12 @@ const RegisterProfileSecond = ({
                 marginRight: rpWidth(20),
                 marginBottom: rpWidth(35),
               }}
-              onPress={() =>
-                dispatch(deviceSettingActions.setProfile({ sex: true }))
-              }>
+              onPress={() => dispatch(formActions.setState({ sex: true }))}>
               남
             </SelectableButton>
             <SelectableButton
               selected={!sex}
-              onPress={() =>
-                dispatch(deviceSettingActions.setProfile({ sex: false }))
-              }>
+              onPress={() => dispatch(formActions.setState({ sex: false }))}>
               여
             </SelectableButton>
           </RowContainer>
@@ -123,7 +119,7 @@ const RegisterProfileSecond = ({
             containerStyle={{ marginBottom: rpWidth(35) }}
             value={species}
             onChangeText={text =>
-              dispatch(deviceSettingActions.setProfile({ species: text }))
+              dispatch(formActions.setState({ species: text }))
             }
           />
           <InputTitle>체중</InputTitle>
@@ -131,7 +127,7 @@ const RegisterProfileSecond = ({
             value={weight}
             onChangeText={text =>
               dispatch(
-                deviceSettingActions.setProfile({
+                formActions.setState({
                   weight: text.replace(/[^0-9]/g, ""),
                 }),
               )
