@@ -18,6 +18,7 @@ import { DimensionsContext } from "~/context/DimensionsContext";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import SocialLogin from "~/components/auth/SocialLogin";
 import Policies from "~/components/auth/Policies";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 const TopContainer = styled.View`
   flex: 1;
@@ -146,20 +147,24 @@ const Auth = () => {
                 paddingHorizontal: rpWidth(50),
                 transform: [{ translateY: translateYInput }],
               }}>
-              <Input
-                ref={ref}
-                maxLength={32}
-                isWhiteBorder
-                value={name}
-                onChangeText={text => setName(text)}
-                textAlign="center"
-                onSubmitEditing={handleSubmit}
-                onFocus={() => {
+              <TouchableOpacity
+                activeOpacity={1}
+                onPress={() => {
                   if (showBtn) {
                     setShowBtn(false);
                   }
-                }}
-              />
+                }}>
+                <Input
+                  ref={ref}
+                  maxLength={32}
+                  isWhiteBorder
+                  value={name}
+                  editable={!showBtn}
+                  onChangeText={text => setName(text)}
+                  textAlign="center"
+                  onSubmitEditing={handleSubmit}
+                />
+              </TouchableOpacity>
             </InputContainer>
             {showBtn ? (
               <>
