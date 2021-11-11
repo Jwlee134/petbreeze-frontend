@@ -1,19 +1,11 @@
-import React, {
-  createContext,
-  ReactNode,
-  useCallback,
-  useEffect,
-  useRef,
-} from "react";
+import React, { createContext, ReactNode, useCallback, useRef } from "react";
 import { StyleSheet } from "react-native";
 import NaverMapView, { NaverMapViewProps } from "react-native-nmap";
 import ViewShotComp from "react-native-view-shot";
-import { useDispatch } from "react-redux";
 import { Device } from "~/api/device";
 import NaverMap from "~/components/common/Map";
 import useDevice from "~/hooks/useDevice";
 import { useAppSelector } from "~/store";
-import { storageActions } from "~/store/storage";
 
 interface IMap extends NaverMapViewProps {
   children: ReactNode;
@@ -42,7 +34,6 @@ const WalkContextProvider = ({ children }: { children: ReactNode }) => {
     state => state.storage.walk.selectedDeviceId,
   );
   const deviceList = useDevice();
-  const dispatch = useDispatch();
   const mapRef = useRef<NaverMapView>(null);
   const viewShotRef = useRef<ViewShotComp>(null);
 
@@ -63,12 +54,6 @@ const WalkContextProvider = ({ children }: { children: ReactNode }) => {
     ),
     [],
   );
-
-  useEffect(() => {
-    return () => {
-      dispatch(storageActions.setWalk(null));
-    };
-  }, []);
 
   return (
     <WalkContext.Provider

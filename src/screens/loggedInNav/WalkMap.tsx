@@ -24,7 +24,6 @@ const WalkMap = () => {
   const isStopped = useAppSelector(state => state.storage.walk.isStopped);
   const { top, bottom } = useSafeAreaInsets();
   const { rpWidth } = useContext(DimensionsContext);
-
   const { Map, ViewShot, mapRef } = useContext(WalkContext);
 
   const [index, setIndex] = useState(1);
@@ -69,19 +68,21 @@ const WalkMap = () => {
         minLng,
       );
 
-      if (coords.length === 1) {
-        mapRef.current?.animateToRegion({
-          latitude: coords[0][1],
-          longitude: coords[0][0],
-          latitudeDelta: delta,
-          longitudeDelta: delta,
-        });
-      } else {
-        mapRef.current?.animateToTwoCoordinates(
-          { latitude: maxLat, longitude: maxLng + distance / 100000 },
-          { latitude: minLat, longitude: minLng - distance / 100000 },
-        );
-      }
+      setTimeout(() => {
+        if (coords.length === 1) {
+          mapRef.current?.animateToRegion({
+            latitude: coords[0][1],
+            longitude: coords[0][0],
+            latitudeDelta: delta,
+            longitudeDelta: delta,
+          });
+        } else {
+          mapRef.current?.animateToTwoCoordinates(
+            { latitude: maxLat, longitude: maxLng + distance / 100000 },
+            { latitude: minLat, longitude: minLng - distance / 100000 },
+          );
+        }
+      }, 500);
     }
   }, [isStopped]);
 

@@ -16,6 +16,8 @@ import { formatWalkDistance } from "~/utils";
 import deviceApi from "~/api/device";
 import imageHandler from "~/utils/imageHandler";
 import allSettled from "promise.allsettled";
+import { storageActions } from "~/store/storage";
+import { useDispatch } from "react-redux";
 
 const Container = styled.View`
   align-items: center;
@@ -58,6 +60,7 @@ const Result = () => {
   const [postWalk] = deviceApi.usePostWalkMutation();
   const [postWalkThumbnail] = deviceApi.usePatchWalkThumbnailMutation();
   const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
 
   const { startTime, duration, meter, coords, selectedDeviceId } =
     useAppSelector(state => state.storage.walk);
@@ -103,6 +106,11 @@ const Result = () => {
           .filter(item => item !== null),
       );
     }
+
+    dispatch(deviceApi.util.invalidateTags([{ type: "Device", id: "LIST" }]));
+    setTimeout(() => {
+      dispatch(storageActions.setWalk(null));
+    }, 200);
 
     navigation.replace("BottomTabNav", {
       initialRouteName: "WalkTab",

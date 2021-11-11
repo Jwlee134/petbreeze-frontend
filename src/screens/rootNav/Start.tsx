@@ -13,6 +13,7 @@ import userApi from "~/api/user";
 import { secureItems } from "~/constants";
 import notificationHandler from "~/utils/notificationHandler";
 import MyText from "~/components/common/MyText";
+import { store } from "~/store";
 
 const Container = styled.View`
   flex: 1;
@@ -56,6 +57,13 @@ const Start = ({ navigation }: { navigation: StartScreenNavigationProp }) => {
           handleRead([parseInt(remoteMessage.data.messageId, 10)]);
         }
       } else {
+        const { coords } = store.getState().storage.walk;
+        if (coords.length) {
+          navigation.replace("LoggedInNav", {
+            initialRouteName: "WalkMap",
+          });
+          return;
+        }
         navigation.replace("LoggedInNav");
       }
     } else {

@@ -117,30 +117,28 @@ const Timer = () => {
                 deviceList.findIndex(device => device.id === result.reason)
               ].id,
           );
+
         if (rejectedIDs.length) {
-          const selectedIDsCopy = [...selectedIDs];
-          dispatch(
-            storageActions.setWalk({
-              selectedDeviceId: selectedIDsCopy.filter(
-                id => !rejectedIDs.includes(id),
-              ),
-            }),
-          );
+          const filtered = selectedIDs.filter(id => !rejectedIDs.includes(id));
+          if (!filtered.length) {
+            await backgroundTracking.stop();
+            setTimeout(() => {
+              dispatch(storageActions.setWalk(null));
+            }, 200);
+            navigation.replace("BottomTabNav", {
+              initialRouteName: "WalkTab",
+            });
+          } else {
+            dispatch(
+              storageActions.setWalk({
+                selectedDeviceId: filtered,
+              }),
+            );
+          }
         }
       })();
     }
   }, [duration]);
-
-  useEffect(() => {
-    if (!selectedIDs.length) {
-      (async () => {
-        await backgroundTracking.stop();
-        navigation.replace("BottomTabNav", {
-          initialRouteName: "WalkTab",
-        });
-      })();
-    }
-  }, [selectedIDs]);
 
   return (
     <RowContainer>

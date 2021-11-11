@@ -156,6 +156,11 @@ const Toggle = () => {
           })()}
           onRightButtonPress={() => {
             if (duration < 60) {
+              close();
+              setTimeout(() => {
+                dispatch(storageActions.setWalk(null));
+              }, 200);
+
               navigation.replace("BottomTabNav", {
                 initialRouteName: "WalkTab",
               });
