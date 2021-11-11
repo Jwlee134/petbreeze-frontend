@@ -105,8 +105,12 @@ const SafetyZoneMapBottomSheet = ({
             </InputContainer>
             <InputContainer style={{ alignItems: "center" }}>
               <ScrollPicker
+                ContainerProps={{
+                  onStartShouldSetResponder: () => true,
+                }}
                 data={data}
-                onChange={index =>
+                selectedIndex={data.findIndex(item => item === `${radius}m`)}
+                onValueChange={(value, index) =>
                   dispatch(
                     deviceSettingActions.setSafetyZone({
                       draft: { radius: parseInt(data[index], 10) },
@@ -115,7 +119,6 @@ const SafetyZoneMapBottomSheet = ({
                 }
                 width={rpWidth(88)}
                 height={rpWidth(39)}
-                selectedIndex={data.findIndex(item => item === `${radius}m`)}
               />
             </InputContainer>
           </RowContainer>

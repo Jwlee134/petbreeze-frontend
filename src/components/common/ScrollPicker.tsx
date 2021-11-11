@@ -1,18 +1,34 @@
-import React, { useContext, useEffect, useRef } from "react";
-import { Animated, StyleProp, View, ViewStyle } from "react-native";
-import Picker from "react-native-wheel-scrollview-picker";
+/* eslint-disable no-underscore-dangle */
+import React, {
+  memo,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import {
+  Animated,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+  StyleProp,
+  View,
+  ViewStyle,
+} from "react-native";
 import MyText from "./MyText";
 import styled from "styled-components/native";
 import palette from "~/styles/palette";
 import { DimensionsContext } from "~/context/DimensionsContext";
+import { isIos } from "~/utils";
+import { ScrollView } from "react-native-gesture-handler";
 
-interface IProps {
+interface ScrollPickerProps {
   width: string | number;
   height: number;
   style?: StyleProp<ViewStyle>;
   data: string[];
   selectedIndex: number;
-  onChange: (index: number) => void;
+  onValueChange?: (value: string, index: number) => void;
 }
 
 const Container = styled.View`
@@ -27,10 +43,96 @@ const ScrollPicker = ({
   height,
   style,
   data,
-  selectedIndex,
-  onChange,
-}: IProps) => {
+  ...props
+}: ScrollPickerProps) => {
   const { rpWidth } = useContext(DimensionsContext);
+
+  const [initialized, setInitialized] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(
+    props.selectedIndex && props.selectedIndex >= 0 ? props.selectedIndex : 0,
+  );
+  const sView = useRef<ScrollView>(null);
+  const [isScrollTo, setIsScrollTo] = useState(false);
+  const [dragStarted, setDragStarted] = useState(false);
+  const [momentumStarted, setMomentumStarted] = useState(false);
+  const [timer, setTimer] = useState<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    if (initialized) return;
+    setInitialized(true);
+
+    setTimeout(() => {
+      const y = height * selectedIndex;
+      sView?.current?.scrollTo({ y });
+    }, 0);
+
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
+  }, [initialized, height, selectedIndex, sView, timer]);
+
+  const scrollFix = useCallback(
+    (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+      let y = 0;
+      const h = height;
+      if (e.nativeEvent.contentOffset) {
+        y = e.nativeEvent.contentOffset.y;
+      }
+      const _selectedIndex = Math.round(y / h);
+
+      const _y = _selectedIndex * h;
+      if (_y !== y) {
+        if (isIos) {
+          setIsScrollTo(true);
+        }
+        sView?.current?.scrollTo({ y: _y });
+      }
+      if (selectedIndex === _selectedIndex) {
+        return;
+      }
+      if (props.onValueChange) {
+        const selectedValue = data[_selectedIndex];
+        setSelectedIndex(_selectedIndex);
+        props.onValueChange(selectedValue, _selectedIndex);
+      }
+    },
+    [height, props, selectedIndex],
+  );
+
+  const onScrollBeginDrag = () => {
+    setDragStarted(true);
+
+    if (isIos) {
+      setIsScrollTo(false);
+    }
+    if (timer) clearTimeout(timer);
+  };
+
+  const onScrollEndDrag = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+    setDragStarted(false);
+
+    const _e: NativeSyntheticEvent<NativeScrollEvent> = { ...e };
+    if (timer) clearTimeout(timer);
+    setTimer(
+      setTimeout(() => {
+        if (!momentumStarted) {
+          scrollFix(_e);
+        }
+      }, 50),
+    );
+  };
+  const onMomentumScrollBegin = () => {
+    setMomentumStarted(true);
+    if (timer) clearTimeout(timer);
+  };
+
+  const onMomentumScrollEnd = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+    setMomentumStarted(false);
+
+    if (!isScrollTo && !dragStarted) {
+      scrollFix(e);
+    }
+  };
 
   return (
     <Container
@@ -40,10 +142,15 @@ const ScrollPicker = ({
         borderRadius: rpWidth(28),
         ...(style as object),
       }}>
-      <Picker
-        dataSource={data}
-        selectedIndex={selectedIndex}
-        renderItem={(item, index) => {
+      <ScrollView
+        ref={sView}
+        bounces={false}
+        showsVerticalScrollIndicator={false}
+        onMomentumScrollBegin={() => onMomentumScrollBegin()}
+        onMomentumScrollEnd={e => onMomentumScrollEnd(e)}
+        onScrollBeginDrag={() => onScrollBeginDrag()}
+        onScrollEndDrag={e => onScrollEndDrag(e)}>
+        {data.map((item, index) => {
           const selected = item === data[selectedIndex];
           const value = useRef(new Animated.Value(0)).current;
 
@@ -61,23 +168,28 @@ const ScrollPicker = ({
           }, [selected]);
 
           return (
-            <View onStartShouldSetResponder={() => true}>
-              <MyText style={{ color }} fontWeight="medium" key={index}>
+            <View
+              onStartShouldSetResponder={() => true}
+              key={index}
+              style={{
+                width,
+                height,
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: "white",
+              }}>
+              <MyText
+                style={{ color, marginTop: -rpWidth(3) }}
+                fontWeight="medium"
+                key={index}>
                 {item}
               </MyText>
             </View>
           );
-        }}
-        onValueChange={(data, selectedIndex) => onChange(selectedIndex)}
-        wrapperHeight={height}
-        wrapperWidth={width}
-        wrapperBackground="red"
-        itemHeight={height}
-        wrapperColor="white"
-        highlightColor="transparent"
-      />
+        })}
+      </ScrollView>
     </Container>
   );
 };
 
-export default ScrollPicker;
+export default memo(ScrollPicker);

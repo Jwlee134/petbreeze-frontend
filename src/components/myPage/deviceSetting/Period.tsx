@@ -25,12 +25,11 @@ const Container = styled(RowContainer)<{ rpWidth: RpWidth }>`
   justify-content: space-between;
 `;
 
-const LocationInfoCollectionPeriod = ({ deviceID }: { deviceID: number }) => {
-  const period = useAppSelector(
-    state => state.deviceSetting.locationInfoCollectionPeriod,
-  );
+const Period = ({ deviceID }: { deviceID: number }) => {
+  const period = useAppSelector(state => state.deviceSetting.period);
   const { rpWidth } = useContext(DimensionsContext);
   const dispatch = useDispatch();
+
   const { data } = deviceApi.endpoints.getDeviceList.useQueryState();
 
   const periodArr = useMemo(() => {
@@ -39,16 +38,16 @@ const LocationInfoCollectionPeriod = ({ deviceID }: { deviceID: number }) => {
       data[data.findIndex(device => device.id === deviceID)]?.is_missed
     ) {
       return [
-        { text: "실시간", value: 0 },
-        { text: "5분", value: 5 },
-        { text: "10분", value: 10 },
-        { text: "30분", value: 30 },
+        { text: "실시간", value: 1 },
+        { text: "5분", value: 300 },
+        { text: "10분", value: 600 },
+        { text: "30분", value: 1800 },
       ];
     }
     return [
-      { text: "5분", value: 5 },
-      { text: "10분", value: 10 },
-      { text: "30분", value: 30 },
+      { text: "5분", value: 300 },
+      { text: "10분", value: 600 },
+      { text: "30분", value: 1800 },
     ];
   }, [data]);
 
@@ -64,12 +63,8 @@ const LocationInfoCollectionPeriod = ({ deviceID }: { deviceID: number }) => {
         <ScrollPicker
           data={periodArr.map(period => period.text)}
           selectedIndex={periodArr.findIndex(item => item.value === period)}
-          onChange={index => {
-            dispatch(
-              deviceSettingActions.setLocationInfoCollectionPeriod(
-                periodArr[index].value,
-              ),
-            );
+          onValueChange={(value, index) => {
+            dispatch(deviceSettingActions.setPeriod(periodArr[index].value));
           }}
           width={rpWidth(88)}
           height={rpWidth(36)}
@@ -80,4 +75,4 @@ const LocationInfoCollectionPeriod = ({ deviceID }: { deviceID: number }) => {
   );
 };
 
-export default LocationInfoCollectionPeriod;
+export default Period;

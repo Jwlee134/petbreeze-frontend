@@ -1,8 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
-import { ScrollView, TouchableOpacity, View } from "react-native";
+import {
+  ActivityIndicator,
+  TouchableOpacity,
+  View,
+  ScrollView,
+} from "react-native";
 import MyText from "~/components/common/MyText";
 
-import LocationInfoCollectionPeriod from "~/components/myPage/deviceSetting/LocationInfoCollectionPeriod";
+import Period from "~/components/myPage/deviceSetting/Period";
 import SafetyZone from "~/components/myPage/deviceSetting/SafetyZone";
 import { DeviceSettingScreenProps } from "~/types/navigator";
 import Divider from "~/components/common/Divider";
@@ -30,31 +35,46 @@ const DeviceSetting = ({
   const { data: settings } = deviceApi.useGetDeviceSettingQuery(deviceID, {
     refetchOnMountOrArgChange: true,
   });
-  const [updateSetting] = deviceApi.useUpdateDeviceSettingMutation();
-  const [updateSafetyZoneThumbnail] =
+  const [updateSetting, { isLoading: updatingDeviceSetting }] =
+    deviceApi.useUpdateDeviceSettingMutation();
+  const [updateSafetyZoneThumbnail, { isLoading: updatingThumbnail }] =
     deviceApi.useUpdateSafetyZoneThumbnailMutation();
   const dispatch = useDispatch();
 
+  const isLoading = updatingDeviceSetting || updatingThumbnail;
+
   useEffect(() => {
     if (!settings) return;
+    const {
+      safetyZone: { result: safetyZone },
+      wifi: { result: wifi },
+    } = store.getState().deviceSetting;
     if (settings.Period) {
-      dispatch(
-        deviceSettingActions.setLocationInfoCollectionPeriod(settings.Period),
-      );
+      dispatch(deviceSettingActions.setPeriod(settings.Period));
     }
     if (settings.Area.length) {
-      dispatch(
-        deviceSettingActions.setSafetyZone({
-          result: settings.Area,
-        }),
-      );
+      const format = safetyZone.map(area => {
+        const index = settings.Area.findIndex(
+          areaRes => areaRes.id === area.id,
+        );
+        if (index === -1) {
+          return area;
+        }
+        return settings.Area[index];
+      });
+      dispatch(deviceSettingActions.setSafetyZone({ result: format }));
     }
     if (settings.WiFi.length) {
-      dispatch(
-        deviceSettingActions.setWifi({
-          result: settings.WiFi,
-        }),
-      );
+      const format = wifi.map(wifi => {
+        const index = settings.WiFi.findIndex(
+          wifiRes => wifiRes.id === wifi.id,
+        );
+        if (index === -1) {
+          return wifi;
+        }
+        return settings.WiFi[index];
+      });
+      dispatch(deviceSettingActions.setWifi({ result: format }));
     }
   }, [settings]);
 
@@ -65,8 +85,9 @@ const DeviceSetting = ({
   }, []);
 
   const handleSubmit = async () => {
+    if (isLoading) return;
     const {
-      locationInfoCollectionPeriod,
+      period,
       safetyZone: { result: safetyZone },
       wifi: { result: wifi },
     } = store.getState().deviceSetting;
@@ -83,7 +104,7 @@ const DeviceSetting = ({
         deviceID,
         body: {
           Area: areaWithoutImage,
-          Period: locationInfoCollectionPeriod as number,
+          Period: period as number,
           WiFi: wifi,
         },
       }).unwrap();
@@ -123,7 +144,13 @@ const DeviceSetting = ({
                 handleSubmit();
               }
             }}>
-            <MyText color={palette.blue_7b}>{!isEdit ? "편집" : "완료"}</MyText>
+            {isLoading ? (
+              <ActivityIndicator color={palette.blue_7b} size={rpWidth(16)} />
+            ) : (
+              <MyText color={palette.blue_7b}>
+                {!isEdit ? "편집" : "완료"}
+              </MyText>
+            )}
           </TouchableOpacity>
         )}
         navigation={navigation}>
@@ -136,7 +163,7 @@ const DeviceSetting = ({
         }}>
         <ProfileSection deviceID={deviceID} avatar={avatar} name={name} />
         <Divider isHairline={false} />
-        <LocationInfoCollectionPeriod deviceID={deviceID} />
+        <Period deviceID={deviceID} />
         <View style={{ paddingHorizontal: rpWidth(16) }}>
           <Divider />
         </View>
