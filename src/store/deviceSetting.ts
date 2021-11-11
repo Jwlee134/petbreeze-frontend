@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-interface ISafetyZoneResult {
+interface SafetyZoneResult {
   id: number;
   name: string;
   address: string;
@@ -8,7 +8,7 @@ interface ISafetyZoneResult {
   image: string;
 }
 
-interface ISafetyZoneDraft {
+interface SafetyZoneDraft {
   name: string;
   address: string;
   image: string;
@@ -19,64 +19,40 @@ interface ISafetyZoneDraft {
   radius: number;
 }
 
-interface ISafetyZone<T> {
+interface SafetyZone<T> {
   step2: boolean;
   animateCamera: boolean;
   isSearchMode: boolean;
   isSubmitting: boolean;
   fromDeviceSetting: boolean;
   currentId: number;
-  result: ISafetyZoneResult[];
+  result: SafetyZoneResult[];
   draft: T;
 }
 
-interface IWifiDraft {
+interface WifiDraft {
   ssid: string;
   pw: string;
 }
 
-interface IWifiResult extends IWifiDraft {
+interface WifiResult extends WifiDraft {
   id: number;
 }
 
-interface IWifi<T> {
+interface Wifi<T> {
   currentId: number;
-  result: IWifiResult[];
+  result: WifiResult[];
   draft: T;
 }
 
-interface IProfile {
-  photos: string[];
-  name: string;
-  birthYear: number;
-  birthMonth: number;
-  birthDay: number;
-  sex: boolean;
-  species: string;
-  weight: string;
-  phoneNumber: string;
-  hasTag: boolean;
-  lostMonth: number;
-  lostDate: number;
-  lostHour: number;
-  lostMinute: number;
-  lostPlace: string;
-  message: string;
-  emergencyKey: string;
+interface State {
+  period: number | null;
+  safetyZone: SafetyZone<SafetyZoneDraft>;
+  wifi: Wifi<WifiDraft>;
 }
 
-interface IState {
-  locationInfoCollectionPeriod: number | null;
-  safetyZone: ISafetyZone<ISafetyZoneDraft>;
-  wifi: IWifi<IWifiDraft>;
-  profile: IProfile;
-}
-
-const numOfArea = 3;
-const numOfWiFi = 5;
-
-const initialState: IState = {
-  locationInfoCollectionPeriod: null,
+const initialState: State = {
+  period: null,
   safetyZone: {
     step2: false,
     animateCamera: false,
@@ -84,7 +60,7 @@ const initialState: IState = {
     isSubmitting: false,
     fromDeviceSetting: false,
     currentId: 0,
-    result: Array.from({ length: numOfArea }, (v, i) => ({
+    result: Array.from({ length: 3 }, (v, i) => ({
       id: i,
       name: "",
       address: "",
@@ -104,7 +80,7 @@ const initialState: IState = {
   },
   wifi: {
     currentId: 0,
-    result: Array.from({ length: numOfWiFi }, (v, i) => ({
+    result: Array.from({ length: 5 }, (v, i) => ({
       id: i,
       ssid: "",
       pw: "",
@@ -114,49 +90,27 @@ const initialState: IState = {
       pw: "",
     },
   },
-  profile: {
-    photos: [],
-    name: "",
-    birthYear: 0,
-    birthMonth: 0,
-    birthDay: 0,
-    sex: true,
-    species: "",
-    weight: "",
-    phoneNumber: "",
-    hasTag: true,
-    lostHour: new Date().getHours(),
-    lostMinute: new Date().getMinutes(),
-    lostMonth: new Date().getMonth() + 1,
-    lostDate: new Date().getDate(),
-    lostPlace: "",
-    message: "",
-    emergencyKey: "",
-  },
 };
 
 const deviceSetting = createSlice({
   name: "deviceSetting",
   initialState,
   reducers: {
-    setLocationInfoCollectionPeriod: (
-      state,
-      { payload }: PayloadAction<number>,
-    ) => {
-      state.locationInfoCollectionPeriod = payload;
+    setPeriod: (state, { payload }: PayloadAction<number>) => {
+      state.period = payload;
     },
 
     setSafetyZone: (
       state,
       {
         payload,
-      }: PayloadAction<Partial<ISafetyZone<Partial<ISafetyZoneDraft>>> | null>,
+      }: PayloadAction<Partial<SafetyZone<Partial<SafetyZoneDraft>>> | null>,
     ) => {
       if (payload) {
         state.safetyZone = {
           ...state.safetyZone,
           ...payload,
-          draft: { ...state.safetyZone.draft, ...payload.draft },
+          draft: { ...state.safetyZone.draft, ...payload?.draft },
         };
       } else {
         state.safetyZone = {
@@ -167,7 +121,7 @@ const deviceSetting = createSlice({
     },
     updateSafetyZoneResult: (
       state,
-      { payload }: PayloadAction<ISafetyZoneDraft>,
+      { payload }: PayloadAction<SafetyZoneDraft>,
     ) => {
       const { currentId } = state.safetyZone;
       const {
@@ -181,13 +135,11 @@ const deviceSetting = createSlice({
         data => data.id !== currentId,
       );
       state.safetyZone.result.push({
-        ...{
-          id: currentId,
-          name,
-          address,
-          image,
-          data: [latitude, longitude, radius],
-        },
+        id: currentId,
+        name,
+        address,
+        image,
+        data: [latitude, longitude, radius],
       });
     },
     deleteSafetyZone: (state, { payload }: PayloadAction<number>) => {
@@ -201,24 +153,24 @@ const deviceSetting = createSlice({
 
     setWifi: (
       state,
-      { payload }: PayloadAction<Partial<IWifi<Partial<IWifiDraft>>> | null>,
+      { payload }: PayloadAction<Partial<Wifi<Partial<WifiDraft>>> | null>,
     ) => {
       if (payload) {
         state.wifi = {
           ...state.wifi,
           ...payload,
-          draft: { ...state.wifi.draft, ...payload.draft },
+          draft: { ...state.wifi.draft, ...payload?.draft },
         };
       } else {
         state.wifi = { ...initialState.wifi, result: state.wifi.result };
       }
     },
-    updateWifiResult: (state, { payload }: PayloadAction<IWifiDraft>) => {
+    updateWifiResult: (state, { payload }: PayloadAction<WifiDraft>) => {
       const { currentId } = state.wifi;
       state.wifi.result = state.wifi.result.filter(
         data => data.id !== currentId,
       );
-      state.wifi.result.push({ ...{ id: currentId, ...payload } });
+      state.wifi.result.push({ id: currentId, ...payload });
     },
     deleteWiFi: (state, { payload }: PayloadAction<number>) => {
       state.wifi.result = state.wifi.result.map(wifi => {
@@ -229,21 +181,9 @@ const deviceSetting = createSlice({
       });
     },
 
-    setProfile: (
-      state,
-      { payload }: PayloadAction<Partial<IProfile> | null>,
-    ) => {
-      if (payload) {
-        state.profile = { ...state.profile, ...payload };
-      } else {
-        state.profile = initialState.profile;
-      }
-    },
-
     reset: () => initialState,
     resetResults: state => {
-      state.locationInfoCollectionPeriod =
-        initialState.locationInfoCollectionPeriod;
+      state.period = initialState.period;
       state.safetyZone.result = initialState.safetyZone.result;
       state.wifi.result = initialState.wifi.result;
     },

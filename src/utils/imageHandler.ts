@@ -1,7 +1,7 @@
 import ImagePicker from "react-native-image-crop-picker";
 import { serverImageUri } from "~/constants";
 import { store } from "~/store";
-import { deviceSettingActions } from "~/store/deviceSetting";
+import { formActions } from "~/store/form";
 import palette from "~/styles/palette";
 import { isIos } from ".";
 
@@ -26,7 +26,7 @@ export default {
       showCropGuidelines: false,
     }).then(image => {
       if (!image) return;
-      store.dispatch(deviceSettingActions.setProfile({ photos: [image.path] }));
+      store.dispatch(formActions.setState({ photos: [image.path] }));
     }),
 
   openThreeTwoRatioCropper: (
@@ -47,10 +47,10 @@ export default {
       if (index !== undefined) {
         const copy = [...photos];
         copy[index] = image.path;
-        store.dispatch(deviceSettingActions.setProfile({ photos: copy }));
+        store.dispatch(formActions.setState({ photos: copy }));
       } else {
         store.dispatch(
-          deviceSettingActions.setProfile({ photos: [...photos, image.path] }),
+          formActions.setState({ photos: [...photos, image.path] }),
         );
       }
       if (callback) {

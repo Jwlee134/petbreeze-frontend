@@ -9,7 +9,7 @@ import deviceApi from "~/api/device";
 import CustomHeader from "~/components/navigator/CustomHeader";
 import EmergencyMissingFirstPage from "~/screens/emergencyMissingStackNav/EmergencyMissingFirstPage";
 import EmergencyMissingSecondPage from "~/screens/emergencyMissingStackNav/EmergencyMissingSecondPage";
-import { deviceSettingActions } from "~/store/deviceSetting";
+import { formActions } from "~/store/form";
 import {
   EmergencyMissingStackNavParamList,
   EmergencyMissingStackNavScreenNavigationProp,
@@ -58,7 +58,7 @@ const EmergencyMissingStackNav = ({
         photo => photo !== null && photo.length !== 0,
       );
       dispatch(
-        deviceSettingActions.setProfile({
+        formActions.setState({
           emergencyKey: emergency_key,
           hasTag: has_dog_tag,
           phoneNumber: contact_number,
@@ -82,7 +82,7 @@ const EmergencyMissingStackNav = ({
 
   useEffect(() => {
     return () => {
-      dispatch(deviceSettingActions.setProfile(null));
+      dispatch(formActions.setState(null));
     };
   }, []);
 
