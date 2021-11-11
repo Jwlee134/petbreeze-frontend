@@ -7,6 +7,7 @@ interface HomeState {
     longitude: number;
   };
   isDeviceMoved: boolean;
+  isPressed: boolean;
   pressedID: number;
 }
 
@@ -28,6 +29,7 @@ const initialState: State = {
       longitude: 0,
     },
     isDeviceMoved: true,
+    isPressed: false,
     pressedID: 0,
   },
   deleteAccount: {

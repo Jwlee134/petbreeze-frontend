@@ -20,6 +20,7 @@ import MyLocationButton from "./MyLocationButton";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { isAndroid, showLocationError } from "~/utils";
 import useDevice from "~/hooks/useDevice";
+import { storageActions } from "~/store/storage";
 
 const HomeMap = () => {
   const mapRef = useRef<NaverMapView>(null);
@@ -88,27 +89,42 @@ const HomeMap = () => {
       if (trackingId.current !== null) {
         Geolocation.clearWatch(trackingId.current);
         trackingId.current = null;
-        setCoords({ latitude: 0, longitude: 0 });
       }
       if (deviceCoord.latitude) {
         dispatch(
-          commonActions.setHome({ deviceCoord: { latitude: 0, longitude: 0 } }),
+          storageActions.setLastCoord({
+            latitude: deviceCoord.latitude,
+            longitude: deviceCoord.longitude,
+          }),
+        );
+        dispatch(
+          commonActions.setHome({
+            deviceCoord: { latitude: 0, longitude: 0 },
+            pressedID: 0,
+          }),
         );
       }
+      dispatch(commonActions.setHome({ isPressed: false }));
+      setCoords({ latitude: 0, longitude: 0 });
     }
-  }, [isFocused, appState]);
+  }, [isFocused, appState, trackingId.current]);
+
+  // home initial coord
+  useEffect(() => {
+    if (!mapRef.current) return;
+    const { latitude, longitude } = store.getState().storage.lastCoord;
+    mapRef.current.animateToRegion({
+      latitude: latitude || 37.479314,
+      longitude: longitude || 126.952792,
+      latitudeDelta: 0.1,
+      longitudeDelta: 0.1,
+    });
+  }, [mapRef.current]);
 
   return (
     <>
       <Map
         ref={mapRef}
-        center={(() => {
-          const { latitude, longitude } = store.getState().storage.lastCoord;
-          if (latitude) {
-            return { latitude, longitude, zoom: 15 };
-          }
-          return { latitude: 37.479314, longitude: 126.952792, zoom: 15 };
-        })()}
         mapPadding={{ top: isAndroid ? top : 0 }}
         onMapClick={() => {
           dispatch(commonActions.setHome({ address: "" }));

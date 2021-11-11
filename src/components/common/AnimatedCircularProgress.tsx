@@ -129,6 +129,7 @@ const AnimatedCircularProgress = ({
         {() => (
           <Image
             rpWidth={rpWidth}
+            fadeDuration={0}
             preventRpHeight={preventRpHeight}
             circleWidth={circleWidth - lineWidth}
             source={avatar ? { uri: avatar } : noAvatar}
