@@ -10,6 +10,17 @@ import {
 import { MaterialTopTabNavigationProp } from "@react-navigation/material-top-tabs";
 import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
 
+interface WalkDetailDayParams {
+  deviceID: number;
+  date: string;
+  avatarUrl: string;
+}
+
+interface BatteryAlertParams {
+  battery: string;
+  avatarUrl: string;
+}
+
 export type RootNavParamList = {
   FirmwareUpdate: undefined;
   Start: undefined;
@@ -20,11 +31,8 @@ export type RootNavParamList = {
         initialRouteName?: keyof LoggedInNavParamList;
         initialBottomTabRouteName?: keyof BottomTabParamList;
         initialBleWithHeaderStackNavRouteName?: keyof BleWithHeaderStackNavParamList;
-        initialWalkDetailDayParams?: {
-          deviceID: number;
-          date: string;
-          avatarUrl: string;
-        };
+        initialWalkDetailDayParams?: WalkDetailDayParams;
+        initialBatteryAlertParams?: BatteryAlertParams;
       }
     | undefined;
   Loading: {
@@ -80,13 +88,9 @@ export type LoggedInNavParamList = {
   };
   DeleteAccountStackNav: undefined;
   UpdateWiFi: undefined;
-  DeviceAlert: undefined;
+  BatteryAlert: BatteryAlertParams;
   UserRequestSuccess: { text: string; key?: string };
-  WalkDetailDay: {
-    deviceID: number;
-    avatarUrl: string;
-    date: string;
-  };
+  WalkDetailDay: WalkDetailDayParams;
 };
 export type BottomTabNavRouteProp = RouteProp<
   LoggedInNavParamList,
@@ -110,6 +114,10 @@ export type UpdateWiFiScreenNavigationProp = CompositeNavigationProp<
 >;
 export type UpdateProfileScreenProps = CompositeScreenProps<
   StackScreenProps<LoggedInNavParamList, "UpdateProfile">,
+  StackScreenProps<RootNavParamList>
+>;
+export type BatteryAlertScreenProps = CompositeScreenProps<
+  StackScreenProps<LoggedInNavParamList, "BatteryAlert">,
   StackScreenProps<RootNavParamList>
 >;
 export type UserRequestSuccessScreenProps = CompositeScreenProps<

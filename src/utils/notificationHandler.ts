@@ -59,8 +59,7 @@ export default (
 
   if (
     message.notification?.title?.includes("산책을 끝냈어요") &&
-    message.data?.deviceID &&
-    message.data?.profileImageURL
+    message.data?.deviceID
   ) {
     let year: number;
     let month: number;
@@ -77,23 +76,31 @@ export default (
     const params = {
       deviceID: parseInt(message.data.deviceID, 10),
       date: `${year}-${month}-${date}`,
-      avatarUrl: message.data.profileImageURL,
+      avatarUrl: message.data.profileImageURL || "",
     };
     if (isStartNavigation(navigation)) {
-      if (coords.length) {
-        navigation.replace("LoggedInNav", {
-          initialRouteName: "WalkMap",
-        });
-      } else {
-        navigation.replace("LoggedInNav", {
-          initialWalkDetailDayParams: params,
-        });
-      }
+      navigation.replace("LoggedInNav", {
+        ...(coords.length && { initialRouteName: "WalkMap" }),
+        initialWalkDetailDayParams: params,
+      });
     } else {
       navigation.navigate("WalkDetailDay", params);
     }
   }
 
-  if (message.notification?.title?.includes("Test")) {
+  if (message.notification?.title?.includes("배터리")) {
+    const battery = message.notification.title.split(" ")[2];
+    const params = {
+      battery,
+      avatarUrl: message.data?.profileImageURL || "",
+    };
+    if (isStartNavigation(navigation)) {
+      navigation.replace("LoggedInNav", {
+        ...(coords.length && { initialRouteName: "WalkMap" }),
+        initialBatteryAlertParams: params,
+      });
+    } else {
+      navigation.navigate("BatteryAlert", params);
+    }
   }
 };
