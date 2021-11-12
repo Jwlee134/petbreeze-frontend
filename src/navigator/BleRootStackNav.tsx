@@ -14,6 +14,7 @@ import { useAppSelector } from "~/store";
 import { useDispatch } from "react-redux";
 import { deviceSettingActions } from "~/store/deviceSetting";
 import { bleActions } from "~/store/ble";
+import { formActions } from "~/store/form";
 
 const forFade = ({ current }: StackCardInterpolationProps) => ({
   cardStyle: {
@@ -44,7 +45,7 @@ const BleRootStackNav = ({
     return () => {
       if (!fromDeviceSetting) {
         dispatch(bleActions.reset());
-        dispatch(deviceSettingActions.setProfile(null));
+        dispatch(formActions.setState(null));
         dispatch(deviceSettingActions.setWifi(null));
       }
       dispatch(deviceSettingActions.setSafetyZone(null));

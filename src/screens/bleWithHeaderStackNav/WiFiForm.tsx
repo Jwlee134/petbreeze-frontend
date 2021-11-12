@@ -78,9 +78,7 @@ const WiFiForm = ({
             disabled={!ssid || (!!pw && pw.length < 8)}
             onPress={() => {
               if (disconnected) {
-                navigation.navigate("BleWithoutHeaderStackNav", {
-                  initialRouteName: "BleLoading",
-                });
+                navigation.navigate("PreSafetyZone");
               } else {
                 dispatch(bleActions.setStatus("connectingToWifi"));
                 navigation.navigate("BleWithoutHeaderStackNav", {

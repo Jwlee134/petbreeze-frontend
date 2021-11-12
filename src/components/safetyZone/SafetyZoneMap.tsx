@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Keyboard, StyleSheet } from "react-native";
 import NaverMapView, { Circle } from "react-native-nmap";
 import { getLeftRightPointsOfCircle } from "~/utils";
@@ -15,6 +15,8 @@ import Map from "../common/Map";
 import palette from "~/styles/palette";
 import { getAddressByCoord } from "~/api/place";
 import Animated from "react-native-reanimated";
+import deviceApi from "~/api/device";
+import imageHandler from "~/utils/imageHandler";
 
 interface IProps {
   mapPadding: {
@@ -28,7 +30,10 @@ interface IProps {
 
 const SafetyZoneMap = ({ mapPadding, style }: IProps) => {
   const navigation = useNavigation<SafetyZoneScreenNavigationProp>();
-
+  const [updateDeviceSetting] = deviceApi.useUpdateDeviceSettingMutation();
+  const [updateAreaThumbnail] =
+    deviceApi.useUpdateSafetyZoneThumbnailMutation();
+  const deviceID = useAppSelector(state => state.ble.deviceID);
   const {
     step2,
     draft: { coord, radius },
@@ -37,6 +42,8 @@ const SafetyZoneMap = ({ mapPadding, style }: IProps) => {
   } = useAppSelector(state => state.deviceSetting.safetyZone);
   const status = useAppSelector(state => state.ble.status);
   const dispatch = useDispatch();
+  const [address, setAddress] = useState("");
+  const [thumbnail, setThumbnail] = useState("");
 
   const mapRef = useRef<NaverMapView>(null);
   const viewShotRef = useRef<ViewShot>(null);
@@ -71,27 +78,27 @@ const SafetyZoneMap = ({ mapPadding, style }: IProps) => {
     if (!isSubmitting || !viewShotRef.current) return;
     const submit = async () => {
       const uri = await viewShotRef.current?.capture();
+      if (uri) setThumbnail(uri);
       const {
-        draft: { name, address },
+        draft: { name },
         fromDeviceSetting,
       } = store.getState().deviceSetting.safetyZone;
 
-      let addr = "";
-      if (!address) {
-        const data = await getAddressByCoord(coord.latitude, coord.longitude);
-        if (data) {
-          addr = data;
-        } else {
-          addr = "주소 없음";
-        }
+      let address = "";
+      const data = await getAddressByCoord(coord.latitude, coord.longitude);
+      if (data) {
+        address = data;
+      } else {
+        address = "주소 없음";
       }
+      setAddress(address);
 
       if (fromDeviceSetting) {
         dispatch(
           deviceSettingActions.updateSafetyZoneResult({
             name,
-            address: address || addr,
-            image: uri || "",
+            address,
+            thumbnail: uri || "",
             coord: {
               latitude: parseFloat(coord.latitude.toFixed(4)),
               longitude: parseFloat(coord.longitude.toFixed(4)),
@@ -102,21 +109,54 @@ const SafetyZoneMap = ({ mapPadding, style }: IProps) => {
         navigation.goBack();
       } else {
         dispatch(bleActions.setStatus("sendingSafetyZone"));
-        navigation.replace("BleWithHeaderStackNav", {
-          initialRouteName: "RegisterProfileFirst",
-        });
       }
     };
     submit();
   }, [isSubmitting, viewShotRef.current]);
 
   useEffect(() => {
-    if (status === "safetyZoneSuccess") {
-      /* api 리퀘스트 with device에 적용 x */
-    }
-    if (status === "safetyZoneFail") {
-      /* api 리퀘스트 with device에 적용 o */
-    }
+    if (status !== "safetyZoneDone") return;
+    const {
+      safetyZone: {
+        draft: { name },
+      },
+      wifi: {
+        draft: { ssid, pw },
+      },
+    } = store.getState().deviceSetting;
+    const sendData = async () => {
+      await updateDeviceSetting({
+        deviceID,
+        body: {
+          Area: [
+            {
+              safety_area_id: 0,
+              name,
+              address,
+              coordinate: {
+                type: "Point",
+                coordinates: [
+                  parseFloat(coord.longitude.toFixed(4)),
+                  parseFloat(coord.latitude.toFixed(4)),
+                ],
+              },
+              radius,
+            },
+          ],
+          WiFi: [{ wifi_id: 0, ssid, pw }],
+        },
+      }).unwrap();
+      const body = imageHandler.handleFormData(
+        thumbnail,
+        "safety_area_0_thumbnail",
+      );
+      await updateAreaThumbnail({ deviceID, body }).unwrap();
+
+      navigation.replace("BleWithHeaderStackNav", {
+        initialRouteName: "RegisterProfileFirst",
+      });
+    };
+    sendData();
   }, [status]);
 
   return (

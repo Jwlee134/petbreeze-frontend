@@ -11,7 +11,7 @@ import { decode } from "base64-arraybuffer";
 import { store, useAppSelector } from "~/store";
 import { useDispatch } from "react-redux";
 import { bleActions } from "~/store/ble";
-import { deviceSettingActions } from "~/store/deviceSetting";
+import { formActions } from "~/store/form";
 
 const BleManagerModule = NativeModules.BleManager;
 const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
@@ -81,7 +81,10 @@ const useBleMaganer = () => {
   };
 
   const sendSafetyZone = useCallback(async () => {
-    if (disconnected) return;
+    if (disconnected) {
+      dispatch(bleActions.setStatus("safetyZoneDone"));
+      return;
+    }
     const {
       coord: { latitude, longitude },
       radius,
@@ -97,9 +100,8 @@ const useBleMaganer = () => {
         stringToBytes(JSON.stringify(obj)),
         512,
       );
-      dispatch(bleActions.setStatus("safetyZoneSuccess"));
-    } catch (error) {
-      dispatch(bleActions.setStatus("safetyZoneFail"));
+    } finally {
+      dispatch(bleActions.setStatus("safetyZoneDone"));
     }
   }, [status]);
 
@@ -211,7 +213,7 @@ const useBleMaganer = () => {
     if (profile) {
       const { name, profile_image, birthdate, sex, species } = profile;
       dispatch(
-        deviceSettingActions.setProfile({
+        formActions.setState({
           name,
           photos: [profile_image],
           birthYear: new Date(birthdate).getFullYear(),

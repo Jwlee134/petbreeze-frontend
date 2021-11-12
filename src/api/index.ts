@@ -17,9 +17,6 @@ const baseQuery = retry(
       return headers;
     },
   }),
-  {
-    maxRetries: 5,
-  },
 );
 
 const api = createApi({
@@ -44,6 +41,15 @@ export const rtkQueryErrorLogger: Middleware = () => next => action => {
       }
       if (detail.includes("not in emergency")) {
         Toast.show({ type: "error", text1: "긴급실종 상태가 아닙니다." });
+      }
+      if (detail.includes("member user can be owner user")) {
+        Toast.show({ type: "error", text1: "디바이스의 멤버가 아닙니다." });
+      }
+      if (detail.includes("Setting changes")) {
+        Toast.show({
+          type: "error",
+          text1: "변경된 설정이 아직 반영되지 않았습니다.",
+        });
       }
       if (detail === "This device is already walking.") {
         Toast.show({ type: "error", text1: "이미 산책중입니다." });
