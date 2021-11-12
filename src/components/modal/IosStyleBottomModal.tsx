@@ -6,7 +6,7 @@ import Button from "../common/Button";
 import Divider from "../common/Divider";
 import MyText from "../common/MyText";
 
-interface IProps {
+interface Props {
   children: ReactNode;
   close: () => void;
   title?: string;
@@ -37,7 +37,7 @@ const IosStyleBottomModal = ({
   close,
   title,
   closeButtonText = "취소",
-}: IProps) => {
+}: Props) => {
   const { rpWidth, width } = useContext(DimensionsContext);
 
   return (

@@ -32,10 +32,8 @@ const Block = styled.View<{ rpWidth: RpWidth }>`
 `;
 
 const PreviousValueBlock = () => {
-  const name = useAppSelector(state => state.deviceSetting.profile.name);
-  const birthYear = useAppSelector(
-    state => state.deviceSetting.profile.birthYear,
-  );
+  const name = useAppSelector(state => state.form.name);
+  const birthYear = useAppSelector(state => state.form.birthYear);
   const { rpWidth } = useContext(DimensionsContext);
 
   return (

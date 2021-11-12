@@ -7,19 +7,19 @@ import NaverMap from "~/components/common/Map";
 import useDevice from "~/hooks/useDevice";
 import { useAppSelector } from "~/store";
 
-interface IMap extends NaverMapViewProps {
+interface MapProps extends NaverMapViewProps {
   children: ReactNode;
 }
 
-interface IContext {
+interface Context {
   mapRef: React.RefObject<NaverMapView>;
-  Map: ({ children, ...props }: IMap) => JSX.Element;
+  Map: ({ children, ...props }: MapProps) => JSX.Element;
   viewShotRef: React.RefObject<ViewShotComp>;
   ViewShot: ({ children }: { children: ReactNode }) => JSX.Element;
   deviceList: Device[];
 }
 
-const initialContext: IContext = {
+const initialContext: Context = {
   mapRef: { current: null },
   Map: () => <></>,
   viewShotRef: { current: null },
@@ -47,7 +47,7 @@ const WalkContextProvider = ({ children }: { children: ReactNode }) => {
   );
 
   const Map = useCallback(
-    ({ children, ...props }: IMap) => (
+    ({ children, ...props }: MapProps) => (
       <NaverMap ref={mapRef} {...props}>
         {children}
       </NaverMap>

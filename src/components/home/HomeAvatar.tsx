@@ -5,7 +5,7 @@ import { Device } from "~/api/device";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import AnimatedCircularProgress from "../common/AnimatedCircularProgress";
 
-interface IProps {
+interface Props {
   index: number;
   length: number;
   onAvatarPress: (id: number) => void;
@@ -14,13 +14,13 @@ interface IProps {
   device: Device;
 }
 
-interface IPressable {
+interface PressableProps {
   index?: number;
   length?: number;
   rpWidth: RpWidth;
 }
 
-const Pressable = styled.Pressable<IPressable>`
+const Pressable = styled.Pressable<PressableProps>`
   position: absolute;
   bottom: ${({ rpWidth }) => rpWidth(40)}px;
   ${({ index, length, rpWidth }) => {
@@ -60,7 +60,7 @@ const HomeAvatar = ({
   onAvatarPress,
   onAvatarLongPress,
   style,
-}: IProps) => {
+}: Props) => {
   const { rpWidth } = useContext(DimensionsContext);
 
   return (

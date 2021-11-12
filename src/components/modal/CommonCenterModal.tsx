@@ -6,7 +6,7 @@ import palette from "~/styles/palette";
 import Divider from "../common/Divider";
 import MyText from "../common/MyText";
 
-interface IProps {
+interface Props {
   title?: string;
   description?: string;
   onRightButtonPress: () => void;
@@ -41,7 +41,7 @@ const CommonCenterModal = ({
   close,
   children,
   style,
-}: IProps) => {
+}: Props) => {
   const { rpWidth } = useContext(DimensionsContext);
 
   return (

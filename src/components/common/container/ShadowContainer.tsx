@@ -2,7 +2,7 @@ import React, { ReactNode } from "react";
 import { StyleProp, ViewStyle } from "react-native";
 import DropShadow from "react-native-drop-shadow";
 
-interface IProps {
+interface Props {
   children: ReactNode;
   style?: StyleProp<ViewStyle>;
   shadowOpacity?: number;
@@ -14,7 +14,7 @@ const ShadowContainer = ({
   style,
   shadowOpacity,
   shadowRadius,
-}: IProps) => (
+}: Props) => (
   <DropShadow
     style={{
       shadowColor: "#000",

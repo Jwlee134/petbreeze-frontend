@@ -8,7 +8,7 @@ import Footprint from "~/assets/svg/common/footprint.svg";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import { mapButtonSize } from "~/styles/constants";
 
-interface IProps extends TouchableOpacityProps {
+interface Props extends TouchableOpacityProps {
   icon: "myLocation" | "footprint";
   style?: StyleProp<ViewStyle>;
 }
@@ -24,7 +24,7 @@ const Container = styled.TouchableOpacity<{ rpWidth: RpWidth }>`
   align-items: center;
 `;
 
-const MapButton = ({ icon, style, ...props }: IProps) => {
+const MapButton = ({ icon, style, ...props }: Props) => {
   const { rpHeight, rpWidth } = useContext(DimensionsContext);
 
   return (

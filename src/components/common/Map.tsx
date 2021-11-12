@@ -2,12 +2,12 @@ import React, { ForwardedRef, forwardRef, ReactNode } from "react";
 import { StyleSheet } from "react-native";
 import NaverMapView, { NaverMapViewProps } from "react-native-nmap";
 
-export interface IMapProps extends NaverMapViewProps {
+export interface Props extends NaverMapViewProps {
   children?: ReactNode;
 }
 
 const Map = forwardRef(
-  ({ children, ...props }: IMapProps, ref: ForwardedRef<NaverMapView>) => {
+  ({ children, ...props }: Props, ref: ForwardedRef<NaverMapView>) => {
     return (
       <NaverMapView
         ref={ref}

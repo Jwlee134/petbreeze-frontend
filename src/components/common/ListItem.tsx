@@ -8,7 +8,7 @@ import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import CheckCircle from "./CheckCircle";
 import Dissolve from "./Dissolve";
 
-interface IProps extends TouchableOpacityProps {
+interface Props extends TouchableOpacityProps {
   selected?: boolean;
   isIconArrow?: boolean;
   isGrayArrow?: boolean;
@@ -34,7 +34,7 @@ const ListItem = ({
   children,
   showIcon = true,
   ...props
-}: IProps) => {
+}: Props) => {
   const { rpWidth } = useContext(DimensionsContext);
 
   return (

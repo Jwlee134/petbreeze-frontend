@@ -5,7 +5,7 @@ import MyText from "~/components/common/MyText";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import palette from "~/styles/palette";
 
-interface IBorderProps {
+interface BorderProps {
   rpWidth: RpWidth;
   isFocused: boolean;
 }
@@ -21,7 +21,7 @@ const TabButton = styled.TouchableOpacity`
   align-items: center;
 `;
 
-const Border = styled.View<IBorderProps>`
+const Border = styled.View<BorderProps>`
   position: absolute;
   bottom: 0;
   ${({ rpWidth, isFocused }) => css`

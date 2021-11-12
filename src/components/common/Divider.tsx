@@ -3,7 +3,7 @@ import { StyleProp, StyleSheet, ViewStyle } from "react-native";
 import styled, { css } from "styled-components/native";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 
-interface IProps {
+interface ContainerProps {
   isVertical: boolean;
   isHairline: boolean;
   width?: number;
@@ -11,7 +11,7 @@ interface IProps {
   rpWidth: RpWidth;
 }
 
-const Container = styled.View<IProps>`
+const Container = styled.View<ContainerProps>`
   background-color: ${({ isHairline }) =>
     isHairline ? "rgba(0, 0, 0, 0.3)" : "rgba(0, 0, 0, 0.03)"};
   ${({ isVertical, isHairline, rpWidth }) =>

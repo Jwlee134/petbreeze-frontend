@@ -10,7 +10,7 @@ import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import palette from "~/styles/palette";
 import MyText from "./MyText";
 
-interface IProps extends TouchableOpacityProps {
+interface Props extends TouchableOpacityProps {
   selected: boolean;
   children: ReactNode;
   containerStyle?: Animated.AnimatedProps<StyleProp<ViewStyle>>;
@@ -40,7 +40,7 @@ const SelectableButton = ({
   containerStyle,
   fontColor,
   ...props
-}: IProps) => {
+}: Props) => {
   const { rpWidth } = useContext(DimensionsContext);
   const value = useRef(new Animated.Value(selected ? 1 : 0)).current;
 

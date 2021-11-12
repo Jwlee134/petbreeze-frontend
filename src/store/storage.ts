@@ -1,13 +1,13 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { isAndroid } from "~/utils";
 
-interface IInit {
+interface Init {
   isCodePushUpdated: boolean;
   isIntroPassed: boolean;
   isPermissionAllowed: boolean;
 }
 
-interface IWalk {
+interface Walk {
   selectedDeviceId: number[];
   trackingId: number | null;
   duration: number;
@@ -20,22 +20,22 @@ interface IWalk {
   totalPauseDuration: number;
 }
 
-interface IHistory {
+interface History {
   safetyZoneSearch: { address: string; latitude: number; longitude: number }[];
 }
 
-interface IStorage {
+interface State {
   numOfDevice: number;
   lastCoord: {
     latitude: number;
     longitude: number;
   };
-  init: IInit;
-  walk: IWalk;
-  history: IHistory;
+  init: Init;
+  walk: Walk;
+  history: History;
 }
 
-const initialState: IStorage = {
+const initialState: State = {
   numOfDevice: 0,
   lastCoord: {
     latitude: 0,
@@ -67,7 +67,7 @@ const storage = createSlice({
   name: "storage",
   initialState,
   reducers: {
-    setInit: (state, { payload }: PayloadAction<Partial<IInit>>) => {
+    setInit: (state, { payload }: PayloadAction<Partial<Init>>) => {
       state.init = { ...state.init, ...payload };
     },
 
@@ -82,7 +82,7 @@ const storage = createSlice({
       state.numOfDevice = payload;
     },
 
-    setWalk: (state, { payload }: PayloadAction<Partial<IWalk> | null>) => {
+    setWalk: (state, { payload }: PayloadAction<Partial<Walk> | null>) => {
       if (payload) {
         state.walk = { ...state.walk, ...payload };
       } else {

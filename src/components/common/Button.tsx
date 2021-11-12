@@ -16,7 +16,12 @@ import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import palette from "~/styles/palette";
 import MyText, { FontWeight } from "./MyText";
 
-interface IButton extends TouchableOpacityProps {
+interface SButtonProps {
+  width: number;
+  rpWidth: RpWidth;
+}
+
+interface Props extends TouchableOpacityProps {
   children?: ReactNode;
   RightIcon?: () => JSX.Element;
   isLoading?: boolean;
@@ -28,10 +33,7 @@ interface IButton extends TouchableOpacityProps {
   delay?: number;
 }
 
-const TouchableOpacity = styled.TouchableOpacity<{
-  width: number;
-  rpWidth: RpWidth;
-}>`
+const SButton = styled.TouchableOpacity<SButtonProps>`
   ${({ width, rpWidth }) => css`
     width: ${width - rpWidth(32)}px;
     height: ${rpWidth(50.5)}px;
@@ -60,7 +62,7 @@ const Button = ({
   backgroundColor,
   delay,
   ...props
-}: IButton) => {
+}: Props) => {
   const { bottom } = useSafeAreaInsets();
   const { rpWidth, width } = useContext(DimensionsContext);
   const [enableAfterDelay, setEnableAfterDelay] = useState(delay ?? false);
@@ -92,7 +94,7 @@ const Button = ({
   }, [props.disabled, enableAfterDelay]);
 
   return (
-    <TouchableOpacity
+    <SButton
       width={width}
       rpWidth={rpWidth}
       style={{
@@ -118,7 +120,7 @@ const Button = ({
           </>
         )}
       </Container>
-    </TouchableOpacity>
+    </SButton>
   );
 };
 

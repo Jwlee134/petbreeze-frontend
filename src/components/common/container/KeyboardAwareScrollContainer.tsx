@@ -7,7 +7,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { isIos } from "~/utils";
 import SafeAreaContainer from "./SafeAreaContainer";
 
-interface IProps extends KeyboardAwareScrollViewProps {
+interface Props extends KeyboardAwareScrollViewProps {
   children: ReactNode;
   isSpaceBetween?: boolean;
 }
@@ -16,7 +16,7 @@ const KeyboardAwareScrollContainer = ({
   children,
   isSpaceBetween = false,
   ...props
-}: IProps) => {
+}: Props) => {
   const { bottom } = useSafeAreaInsets();
 
   if (isIos) {

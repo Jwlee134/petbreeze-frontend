@@ -3,7 +3,7 @@ import MyText, { FontWeight } from "./MyText";
 import styled from "styled-components/native";
 import { Animated, StyleProp, ViewStyle } from "react-native";
 
-interface IProps {
+interface Props {
   color?: string;
   value1?: Animated.Value;
   value2: Animated.Value;
@@ -27,32 +27,32 @@ const Points = ({
   fontWeight,
   text,
   style,
-}: IProps) => {
+}: Props) => {
   return (
     <Container style={style}>
       <MyText
-        color={color ? color : "black"}
+        color={color || "black"}
         fontSize={fontSize}
         fontWeight={fontWeight}>
         {text}
       </MyText>
       <MyText
-        style={{ opacity: value1 ? value1 : 1 }}
-        color={color ? color : "black"}
+        style={{ opacity: value1 || 1 }}
+        color={color || "black"}
         fontSize={fontSize}
         fontWeight={fontWeight}>
         .
       </MyText>
       <MyText
         style={{ opacity: value2 }}
-        color={color ? color : "black"}
+        color={color || "black"}
         fontSize={fontSize}
         fontWeight={fontWeight}>
         .
       </MyText>
       <MyText
         style={{ opacity: value3 }}
-        color={color ? color : "black"}
+        color={color || "black"}
         fontSize={fontSize}
         fontWeight={fontWeight}>
         .

@@ -6,10 +6,6 @@ import { bottomModalOutTiming, centerModalOutTiming } from "~/styles/constants";
 
 const { height } = Dimensions.get("screen");
 
-interface IModalProps extends Partial<ModalProps> {
-  type: "bottom" | "center";
-}
-
 const useModal = () => {
   const [isModalVisible, setModalVisible] = useState(false);
   const { rpWidth, width } = useContext(DimensionsContext);
@@ -26,7 +22,9 @@ const useModal = () => {
   const modalProps = ({
     type,
     ...props
-  }: IModalProps): Partial<ModalProps> => ({
+  }: Partial<ModalProps> & {
+    type: "bottom" | "center";
+  }): Partial<ModalProps> => ({
     isVisible: isModalVisible,
     backdropTransitionOutTiming: 0,
     onBackdropPress: close,

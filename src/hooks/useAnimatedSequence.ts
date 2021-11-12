@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { Animated } from "react-native";
 
-interface IProps {
+interface Props {
   firstDuration?: number;
   secondDuration?: number;
   thirdDuration?: number;
@@ -41,7 +41,7 @@ const useAnimatedSequence = ({
   numOfValues,
   dependencies = [],
   startAnimation = true,
-}: IProps) => {
+}: Props) => {
   const valueArr = Array.from(
     { length: numOfValues },
     () => useRef(new Animated.Value(0)).current,

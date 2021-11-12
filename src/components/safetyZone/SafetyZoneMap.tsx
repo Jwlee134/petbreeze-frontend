@@ -18,7 +18,7 @@ import Animated from "react-native-reanimated";
 import deviceApi from "~/api/device";
 import imageHandler from "~/utils/imageHandler";
 
-interface IProps {
+interface Props {
   mapPadding: {
     top: number;
     bottom: number;
@@ -28,7 +28,7 @@ interface IProps {
   };
 }
 
-const SafetyZoneMap = ({ mapPadding, style }: IProps) => {
+const SafetyZoneMap = ({ mapPadding, style }: Props) => {
   const navigation = useNavigation<SafetyZoneScreenNavigationProp>();
   const [updateDeviceSetting] = deviceApi.useUpdateDeviceSettingMutation();
   const [updateAreaThumbnail] =

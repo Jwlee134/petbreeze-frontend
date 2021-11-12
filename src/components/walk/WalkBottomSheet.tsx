@@ -10,7 +10,7 @@ import backgroundTracking from "~/utils/backgroundTracking";
 import BottomSheet from "../common/BottomSheet";
 import Result from "./Result";
 
-interface IProps {
+interface Props {
   handleChange: (index: number) => void;
   snapPoints: number[];
 }
@@ -20,7 +20,7 @@ const RowContainer = styled.View`
   justify-content: space-evenly;
 `;
 
-const WalkBottomSheet = ({ handleChange, snapPoints }: IProps) => {
+const WalkBottomSheet = ({ handleChange, snapPoints }: Props) => {
   const isWalking = useAppSelector(state => state.storage.walk.isWalking);
   const startTime = useAppSelector(state => state.storage.walk.startTime);
   const isStopped = useAppSelector(state => state.storage.walk.isStopped);

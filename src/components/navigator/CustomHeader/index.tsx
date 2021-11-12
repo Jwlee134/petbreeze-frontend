@@ -11,7 +11,7 @@ import PageCount from "./PageCount";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import { customHeaderHeight } from "~/styles/constants";
 
-interface IProps extends Partial<StackHeaderProps> {
+interface Props extends Partial<StackHeaderProps> {
   children?: ReactNode;
   disableBackButton?: boolean;
   onBackButtonPress?: () => void;
@@ -45,7 +45,7 @@ const CustomHeader = ({
   totalPage = 0,
   RightButton,
   style,
-}: IProps) => {
+}: Props) => {
   const { top } = useSafeAreaInsets();
   const { rpWidth } = useContext(DimensionsContext);
   const showPage = currentPage !== 0 && totalPage !== 0;

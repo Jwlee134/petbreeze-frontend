@@ -9,7 +9,7 @@ import AnimatedCircularProgress from "../common/AnimatedCircularProgress";
 import Divider from "../common/Divider";
 import MyText from "../common/MyText";
 
-interface IProps {
+interface Props {
   device: Device;
   close: () => void;
 }
@@ -30,7 +30,7 @@ const Button = styled.TouchableOpacity<{ rpWidth: RpWidth }>`
   height: ${({ rpWidth }) => rpWidth(50)}px;
 `;
 
-const HomeBottomModal = ({ device, close }: IProps) => {
+const HomeBottomModal = ({ device, close }: Props) => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
   const { rpWidth } = useContext(DimensionsContext);
   const [trigger] = deviceApi.useDeleteEmergencyMissingMutation();

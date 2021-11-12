@@ -105,9 +105,6 @@ const SafetyZoneMapBottomSheet = ({
             </InputContainer>
             <InputContainer style={{ alignItems: "center" }}>
               <ScrollPicker
-                ContainerProps={{
-                  onStartShouldSetResponder: () => true,
-                }}
                 data={data}
                 selectedIndex={data.findIndex(item => item === `${radius}m`)}
                 onValueChange={(value, index) =>

@@ -6,7 +6,7 @@ import palette from "~/styles/palette";
 import ShadowContainer from "../common/container/ShadowContainer";
 import Animated from "react-native-reanimated";
 
-interface IProps {
+interface Props {
   mapPadding: {
     top: number;
     bottom: number;
@@ -34,7 +34,7 @@ const InnerMarker = styled.View<{ rpWidth: RpWidth }>`
   background-color: ${palette.blue_7b};
 `;
 
-const FakeMarker = ({ mapPadding, style }: IProps) => {
+const FakeMarker = ({ mapPadding, style }: Props) => {
   const { rpWidth } = useContext(DimensionsContext);
 
   return (

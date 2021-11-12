@@ -23,7 +23,7 @@ export type BleStatus =
   | "sendingSafetyZone"
   | "safetyZoneDone";
 
-interface IState {
+interface State {
   status: BleStatus;
   progress: number;
   isOtaUpdate: boolean;
@@ -31,7 +31,7 @@ interface IState {
   deviceID: number;
 }
 
-const initialState: IState = {
+const initialState: State = {
   status: "",
   progress: 0,
   isOtaUpdate: false,

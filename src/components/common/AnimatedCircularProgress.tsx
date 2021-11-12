@@ -7,7 +7,7 @@ import { Animated, StyleProp, View, ViewStyle } from "react-native";
 import Icon from "~/assets/svg/exclamation/exclamation-mark-white.svg";
 import { noAvatar } from "~/constants";
 
-interface IProps {
+interface Props {
   battery: number;
   lineWidth: number;
   circleWidth: number;
@@ -19,13 +19,13 @@ interface IProps {
   style?: StyleProp<ViewStyle>;
 }
 
-interface Image {
+interface ImageProps {
   circleWidth?: number;
   preventRpHeight: boolean;
   rpWidth: RpWidth;
 }
 
-const Image = styled.Image<Image>`
+const Image = styled.Image<ImageProps>`
   ${({ circleWidth, preventRpHeight, rpWidth }) => css`
     width: ${circleWidth
       ? rpWidth(circleWidth)
@@ -62,7 +62,7 @@ const AnimatedCircularProgress = ({
   preventRpHeight = false,
   highlightOnEmergency = false,
   style,
-}: IProps) => {
+}: Props) => {
   const batteryValue = battery || 0;
   const { rpWidth } = useContext(DimensionsContext);
   const value = useRef(new Animated.Value(0)).current;

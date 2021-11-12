@@ -1,4 +1,4 @@
-import React, { ForwardedRef, forwardRef, useContext } from "react";
+import React, { ForwardedRef, forwardRef, ReactNode, useContext } from "react";
 import Sheet, { BottomSheetProps, BottomSheetView } from "@gorhom/bottom-sheet";
 import styled, { css } from "styled-components/native";
 import ShadowContainer from "~/components/common/container/ShadowContainer";
@@ -25,10 +25,12 @@ const BackgroundContainer = styled.View`
   background-color: white;
 `;
 
-interface IProps extends BottomSheetProps {}
+interface Props extends BottomSheetProps {
+  children: ReactNode;
+}
 
 const BottomSheet = forwardRef(
-  ({ children, ...props }: IProps, ref: ForwardedRef<Sheet>) => {
+  ({ children, ...props }: Props, ref: ForwardedRef<Sheet>) => {
     const { rpWidth } = useContext(DimensionsContext);
 
     return (

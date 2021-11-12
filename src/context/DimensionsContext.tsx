@@ -6,7 +6,7 @@ import { isAndroid } from "~/utils";
 export type RpWidth = (size: number, preventRpHeight?: boolean) => number;
 export type RpHeight = (size: number) => number;
 
-interface IContext {
+interface Context {
   width: number;
   height: number;
   rpWidth: RpWidth;
@@ -14,7 +14,7 @@ interface IContext {
   isTablet: boolean;
 }
 
-const initialContext: IContext = {
+const initialContext: Context = {
   width: 0,
   height: 0,
   rpWidth: () => 0,

@@ -5,7 +5,7 @@ import { DimensionsContext } from "~/context/DimensionsContext";
 
 export type FontWeight = "light" | "medium" | "bold";
 
-interface IProps extends Animated.AnimatedProps<TextProps> {
+interface Props extends Animated.AnimatedProps<TextProps> {
   children: ReactNode;
   fontWeight?: FontWeight;
   fontSize?: number | undefined;
@@ -13,11 +13,11 @@ interface IProps extends Animated.AnimatedProps<TextProps> {
   style?: Animated.AnimatedProps<TextStyle>;
 }
 
-interface IText {
+interface STextProps {
   fontWeight: FontWeight | undefined;
 }
 
-const Text = styled(Animated.Text)<IText>`
+const SText = styled(Animated.Text)<STextProps>`
   font-family: ${({ fontWeight }) => {
     switch (fontWeight) {
       case "bold":
@@ -39,11 +39,11 @@ const MyText = ({
   color,
   style,
   ...props
-}: IProps) => {
+}: Props) => {
   const { rpWidth } = useContext(DimensionsContext);
 
   return (
-    <Text
+    <SText
       fontWeight={fontWeight}
       style={{
         includeFontPadding: false,
@@ -54,7 +54,7 @@ const MyText = ({
       }}
       {...props}>
       {children}
-    </Text>
+    </SText>
   );
 };
 

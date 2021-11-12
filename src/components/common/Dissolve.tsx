@@ -1,13 +1,13 @@
 import React, { ReactNode, useEffect, useRef, useState } from "react";
 import { Animated, StyleProp, ViewProps, ViewStyle } from "react-native";
 
-interface IProps extends ViewProps {
+interface Props extends ViewProps {
   isVisible: boolean;
   children: ReactNode;
   style?: StyleProp<ViewStyle>;
 }
 
-const Dissolve = ({ isVisible, children, style, ...props }: IProps) => {
+const Dissolve = ({ isVisible, children, style, ...props }: Props) => {
   const [isChildrenVisible, setIsChildrenVisible] = useState(isVisible);
   const value = useRef(new Animated.Value(isVisible ? 1 : 0)).current;
   const timeout = useRef<NodeJS.Timeout>();

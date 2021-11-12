@@ -12,7 +12,7 @@ import styled, { css } from "styled-components/native";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import palette from "~/styles/palette";
 
-interface IProps {
+interface Props {
   isOn: boolean;
   onToggle: () => void;
 }
@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const Switch = ({ isOn, onToggle }: IProps) => {
+const Switch = ({ isOn, onToggle }: Props) => {
   const { rpWidth } = useContext(DimensionsContext);
 
   const color = useSharedValue(0);

@@ -18,7 +18,7 @@ import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import palette from "~/styles/palette";
 import MyText from "./MyText";
 
-interface IProps extends TextInputProps {
+interface Props extends TextInputProps {
   solidPlaceholderTitle?: string;
   alignLeftSolidPlaceholderWhenFocus?: boolean;
   containerStyle?: StyleProp<ViewStyle>;
@@ -27,7 +27,7 @@ interface IProps extends TextInputProps {
   style?: StyleProp<ViewStyle>;
 }
 
-interface IContainer {
+interface ContainerProps {
   isFocused: boolean;
   rpWidth: RpWidth;
   isMultiline: boolean;
@@ -37,7 +37,7 @@ const Container = styled.View<{ rpWidth: RpWidth }>`
   margin-bottom: ${({ rpWidth }) => rpWidth(20)}px;
 `;
 
-const InputContainer = styled.View<IContainer>`
+const InputContainer = styled.View<ContainerProps>`
   ${({ rpWidth, isMultiline }) => css`
     height: ${isMultiline ? "auto" : `${rpWidth(36)}px`};
     min-height: ${isMultiline ? `${rpWidth(36)}px` : "auto"};
@@ -77,7 +77,7 @@ const Input = forwardRef(
       hasBorder = true,
       style,
       ...props
-    }: IProps,
+    }: Props,
     ref: ForwardedRef<TextInput>,
   ) => {
     const [isFocused, setIsFocused] = useState(!!props.value || false);

@@ -2,7 +2,7 @@ import React, { ReactNode, useEffect, useRef, useState } from "react";
 import { StyleProp, ViewStyle } from "react-native";
 import { Swipeable as Container } from "react-native-gesture-handler";
 
-interface IProps {
+interface Props {
   children: ReactNode;
   animate?: boolean;
   enableRightActions?: boolean;
@@ -18,7 +18,7 @@ const Swipeable = ({
   RenderRightActions,
   rightThreshold,
   style,
-}: IProps) => {
+}: Props) => {
   const swipeableRef = useRef<Container>(null);
   const [hide, setHide] = useState(false);
 
