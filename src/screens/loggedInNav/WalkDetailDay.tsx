@@ -16,6 +16,7 @@ import Modal from "react-native-modal";
 import useModal from "~/hooks/useModal";
 import IosStyleBottomModal from "~/components/modal/IosStyleBottomModal";
 import { useDispatch } from "react-redux";
+import CustomHeader from "~/components/navigator/CustomHeader";
 
 const Container = styled.View<{ rpWidth: RpWidth }>`
   ${({ rpWidth }) => css`
@@ -117,6 +118,18 @@ const WalkDetailDay = ({
 
   return (
     <>
+      <CustomHeader navigation={navigation}>
+        {`${date
+          .split("-")
+          .splice(1)
+          .map((date, i) => {
+            if (i === 1) {
+              return parseInt(date, 10) < 10 ? date.replace("0", "") : date;
+            }
+            return date;
+          })
+          .join("월 ")}일`}
+      </CustomHeader>
       <FlatList
         data={data}
         renderItem={({ item, index }) => (

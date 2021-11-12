@@ -14,13 +14,12 @@ import {
   LoggedInNavParamList,
   LoggedInNavRouteProp,
   LoggedInNavScreenNavigationProp,
-  WalkDetailDayScreenRouteProp,
 } from "~/types/navigator";
 import UpdateProfile from "~/screens/loggedInNav/UpdateProfile";
 import EmergencyMissingStackNav from "./EmergencyMissingStackNav";
 import BleRootStackNav from "./BleRootStackNav";
 import UpdateWiFi from "~/screens/loggedInNav/UpdateWiFi";
-import DeviceAlert from "~/screens/loggedInNav/DeviceAlert";
+import BatteryAlert from "~/screens/loggedInNav/BattteryAlert";
 import DeleteAccountStackNav from "./DeleteAccountStackNav";
 import WalkContextProvider from "~/context/WalkContext";
 import CodePush from "react-native-code-push";
@@ -47,6 +46,7 @@ const LoggedInNav = ({
       initialBleWithHeaderStackNavRouteName,
       initialBottomTabRouteName,
       initialWalkDetailDayParams,
+      initialBatteryAlertParams,
     } = {},
   },
 }: {
@@ -61,7 +61,10 @@ const LoggedInNav = ({
     if (initialWalkDetailDayParams) {
       navigation.navigate("WalkDetailDay", initialWalkDetailDayParams);
     }
-  }, [initialWalkDetailDayParams]);
+    if (initialBatteryAlertParams) {
+      navigation.navigate("BatteryAlert", initialBatteryAlertParams);
+    }
+  }, [initialWalkDetailDayParams, initialBatteryAlertParams]);
 
   useEffect(() => {
     CodePush.sync({
@@ -176,8 +179,8 @@ const LoggedInNav = ({
         }}
       />
       <Stack.Screen
-        name="DeviceAlert"
-        component={DeviceAlert}
+        name="BatteryAlert"
+        component={BatteryAlert}
         options={{ headerShown: false }}
       />
       <Stack.Screen
@@ -188,24 +191,7 @@ const LoggedInNav = ({
       <Stack.Screen
         name="WalkDetailDay"
         component={WalkDetailDay}
-        options={{
-          header: props => (
-            <CustomHeader {...props}>
-              {`${(props.route as WalkDetailDayScreenRouteProp).params.date
-                .split("-")
-                .splice(1)
-                .map((date, i) => {
-                  if (i === 1) {
-                    return parseInt(date, 10) < 10
-                      ? date.replace("0", "")
-                      : date;
-                  }
-                  return date;
-                })
-                .join("월 ")}일`}
-            </CustomHeader>
-          ),
-        }}
+        options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );
