@@ -537,7 +537,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.petbreeze.eodigae;
+				PRODUCT_BUNDLE_IDENTIFIER = com.petbreeze.petbreeze;
 				PRODUCT_NAME = Petbreeze;
 				SWIFT_OBJC_BRIDGING_HEADER = "Petbreeze-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -565,7 +565,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.petbreeze.eodigae;
+				PRODUCT_BUNDLE_IDENTIFIER = com.petbreeze.petbreeze;
 				PRODUCT_NAME = Petbreeze;
 				SWIFT_OBJC_BRIDGING_HEADER = "Petbreeze-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
@@ -602,7 +602,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODEPUSH_KEY = N04dY4yvPDzdyLCP7CQKjJZEOzA5qVtnEerOZ;
+				CODEPUSH_KEY = C_0qX740p5aegdd3g14ZeyVqQ2UWFtpKGIJfF;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -668,7 +668,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODEPUSH_KEY = z83j2EMSkNyVQRD0cI_9t8DU9IoC4LMVug6oe;
+				CODEPUSH_KEY = B0NYsVjSEoKsT9mNAGw_JgUmddtbBkv39UIBs;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -727,7 +727,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODEPUSH_KEY = N04dY4yvPDzdyLCP7CQKjJZEOzA5qVtnEerOZ;
+				CODEPUSH_KEY = C_0qX740p5aegdd3g14ZeyVqQ2UWFtpKGIJfF;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -776,7 +776,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.petbreeze.eodigae;
+				PRODUCT_BUNDLE_IDENTIFIER = com.petbreeze.petbreeze;
 				PRODUCT_NAME = Petbreeze;
 				SWIFT_OBJC_BRIDGING_HEADER = "Petbreeze-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;

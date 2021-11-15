@@ -1,4 +1,4 @@
-package com.petbreeze;
+package com.petbreeze.petbreeze;
 
 import android.os.Bundle;
 

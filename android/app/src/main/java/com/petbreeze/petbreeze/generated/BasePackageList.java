@@ -1,4 +1,4 @@
-package com.petbreeze.generated;
+package com.petbreeze.petbreeze.generated;
 
 import java.util.Arrays;
 import java.util.List;

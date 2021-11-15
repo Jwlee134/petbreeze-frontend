@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>171582038319-iet5jujnptt7p720juevs9vgtt4g9qm5.apps.googleusercontent.com</string>
+	<string>171582038319-o18hfv7ibredeqb9ua2e896pepuvkve6.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.171582038319-iet5jujnptt7p720juevs9vgtt4g9qm5</string>
+	<string>com.googleusercontent.apps.171582038319-o18hfv7ibredeqb9ua2e896pepuvkve6</string>
 	<key>API_KEY</key>
 	<string>AIzaSyDxcKIT_cEjQPXYZ17JgYZlsHw8mDFQWyQ</string>
 	<key>GCM_SENDER_ID</key>
@@ -13,7 +13,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.petbreeze.eodigae</string>
+	<string>com.petbreeze.petbreeze</string>
 	<key>PROJECT_ID</key>
 	<string>petbreeze-8469e</string>
 	<key>STORAGE_BUCKET</key>
@@ -29,6 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:171582038319:ios:1b97693eb016987a8281da</string>
+	<string>1:171582038319:ios:a2eef5d0e090500e8281da</string>
 </dict>
 </plist>

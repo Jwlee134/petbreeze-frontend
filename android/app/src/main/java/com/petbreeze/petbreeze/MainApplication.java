@@ -1,7 +1,7 @@
-package com.petbreeze;
+package com.petbreeze.petbreeze;
 
 import com.microsoft.codepush.react.CodePush;
-import com.petbreeze.generated.BasePackageList;
+import com.petbreeze.petbreeze.generated.BasePackageList;
 
 import android.app.Application;
 import android.content.Context;

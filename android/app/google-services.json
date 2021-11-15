@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:171582038319:android:b21c74cab08c87108281da",
+        "mobilesdk_app_id": "1:171582038319:android:c32d6ed029b178c08281da",
         "android_client_info": {
-          "package_name": "com.petbreeze"
+          "package_name": "com.petbreeze.petbreeze"
         }
       },
       "oauth_client": [
@@ -29,35 +29,13 @@
             {
               "client_id": "171582038319-dovn3gb98sk96q03e0k3fha0cvbf91ko.apps.googleusercontent.com",
               "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:171582038319:android:90aa5f0d5c745df38281da",
-        "android_client_info": {
-          "package_name": "com.pushnotification"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "171582038319-dovn3gb98sk96q03e0k3fha0cvbf91ko.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAfYp-h5Ji1MJEg43blKxz3gK1vsT4bnIo"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
+            },
             {
-              "client_id": "171582038319-dovn3gb98sk96q03e0k3fha0cvbf91ko.apps.googleusercontent.com",
-              "client_type": 3
+              "client_id": "171582038319-bkernh1o5vlq5g5ro6ds2f2vihvr6cjl.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.petbreeze"
+              }
             }
           ]
         }
