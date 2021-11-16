@@ -12,6 +12,7 @@ public class MainActivity extends ReactActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(null);
   }
+  // 뒤로 가기 버튼 눌렀다가 들어오면 앱 재시작되는 문제 수정
   @Override
   public void invokeDefaultOnBackPressed() {
     moveTaskToBack(true);
