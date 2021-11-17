@@ -43,7 +43,7 @@ const RootNav = () => {
             borderLeftColor: palette.blue_7b_90,
             borderLeftWidth: rpWidth(7),
             height: "auto",
-            marginTop: top / 2,
+            marginTop: top,
           }}
           contentContainerStyle={{
             paddingLeft: rpWidth(14),

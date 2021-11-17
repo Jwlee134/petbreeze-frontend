@@ -28,7 +28,8 @@ const UpdateWiFi = ({
 
   return (
     <KeyboardAwareScrollContainer isSpaceBetween>
-      <View style={{ paddingHorizontal: rpWidth(43) }}>
+      <View
+        style={{ paddingHorizontal: rpWidth(43), marginBottom: rpWidth(50) }}>
         <WiFi
           style={{
             alignSelf: "center",

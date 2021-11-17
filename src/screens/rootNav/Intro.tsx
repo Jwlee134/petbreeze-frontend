@@ -56,7 +56,7 @@ const Intro = ({ navigation }: { navigation: IntroScreenNavigationProp }) => {
     <>
       <SkipButton
         style={{
-          marginTop: rpWidth(18) + top,
+          marginTop: rpHeight(18) + top,
           marginRight: rpWidth(20),
           marginLeft: "auto",
         }}

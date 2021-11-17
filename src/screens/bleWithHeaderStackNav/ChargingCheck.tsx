@@ -32,7 +32,7 @@ const ChargingCheck = ({
   return (
     <SafeAreaContainer>
       <TopContainer>
-        <Device width={rpWidth(100)} height={rpWidth(156)} />
+        <Device width={rpWidth(100)} height={rpHeight(156)} />
         <MyText
           fontSize={24}
           style={{

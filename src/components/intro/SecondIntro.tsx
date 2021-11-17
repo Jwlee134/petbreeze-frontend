@@ -28,7 +28,7 @@ const IconContainer = styled.View<IconContainerProps>`
   `}
 `;
 
-const SvgContainer = styled.View<{ rpWidth: RpWidth }>`
+const SvgContainer = styled.View`
   flex-direction: row;
   align-items: center;
 `;
@@ -42,7 +42,7 @@ const SecondIntro = () => {
   const { rpWidth, rpHeight } = useContext(DimensionsContext);
 
   return (
-    <IntroContainer rpWidth={rpWidth} topInset={top}>
+    <IntroContainer rpHeight={rpHeight} topInset={top}>
       <View style={{ paddingHorizontal: rpWidth(32) }}>
         <MyText fontWeight="light" fontSize={24}>
           반려동물 전용 트래커와
@@ -50,11 +50,11 @@ const SecondIntro = () => {
         <MyText
           fontWeight="bold"
           fontSize={24}
-          style={{ marginBottom: rpWidth(58) }}>
+          style={{ marginBottom: rpHeight(58) }}>
           ‘펫브리즈’ 가 함께라면?
         </MyText>
         <IconContainer rpWidth={rpWidth} rpHeight={rpHeight}>
-          <SvgContainer rpWidth={rpWidth}>
+          <SvgContainer>
             <Svg rpWidth={rpWidth}>
               <PhoneVibrate width={rpWidth(36)} height={rpWidth(39)} />
             </Svg>
@@ -70,7 +70,7 @@ const SecondIntro = () => {
           </MyText>
         </IconContainer>
         <IconContainer rpWidth={rpWidth} rpHeight={rpHeight}>
-          <SvgContainer rpWidth={rpWidth}>
+          <SvgContainer>
             <Svg rpWidth={rpWidth}>
               <SharePeople width={rpWidth(34)} height={rpWidth(39)} />
             </Svg>
@@ -87,7 +87,7 @@ const SecondIntro = () => {
           </MyText>
         </IconContainer>
         <IconContainer rpWidth={rpWidth} rpHeight={rpHeight}>
-          <SvgContainer rpWidth={rpWidth}>
+          <SvgContainer>
             <Svg rpWidth={rpWidth}>
               <FootpringPath width={rpWidth(37)} height={rpWidth(42)} />
             </Svg>
@@ -103,7 +103,7 @@ const SecondIntro = () => {
           </MyText>
         </IconContainer>
         <IconContainer rpWidth={rpWidth} rpHeight={rpHeight}>
-          <SvgContainer rpWidth={rpWidth}>
+          <SvgContainer>
             <Svg rpWidth={rpWidth}>
               <ShareFamily width={rpWidth(30)} height={rpWidth(39)} />
             </Svg>

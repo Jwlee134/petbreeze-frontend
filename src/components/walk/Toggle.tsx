@@ -132,7 +132,7 @@ const Toggle = () => {
             rpWidth={rpWidth}
             onPress={() => {
               ImageCropPicker.openCamera({}).then(image => {
-                CameraRoll.save(image.path, { album: "어디개" }).then(() => {
+                CameraRoll.save(image.path, { album: "펫브리즈" }).then(() => {
                   ImageCropPicker.cleanSingle(image.path);
                 });
               });

@@ -10,7 +10,7 @@ import Arrow from "~/assets/svg/arrow/arrow-down-gray.svg";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import { Animated, StyleSheet } from "react-native";
 
-interface IProps {
+interface Props {
   type: "safetyZone" | "wifi" | "family";
   isEdit: boolean;
   showList?: boolean;
@@ -58,7 +58,7 @@ const DeviceSettingTitle = ({
   onArrowButtonClick,
   disablePlusButton,
   disableArrowButton = false,
-}: IProps) => {
+}: Props) => {
   const { rpWidth } = useContext(DimensionsContext);
   const value = useRef(new Animated.Value(showList ? 1 : 0)).current;
 

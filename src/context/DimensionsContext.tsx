@@ -30,12 +30,11 @@ const DimensionsContextProvider = ({ children }: { children: ReactNode }) => {
   const figmaWidth = 375;
   const figmaHeight = isAndroid ? 734 : isIphoneX() ? 812 : 778;
   const isTablet = width > 480;
-  const smallHeight = height < 700;
 
-  const rpHeight = (size: number) => Math.round((size * height) / figmaHeight);
+  const rpHeight = (size: number) => Math.floor((size * height) / figmaHeight);
 
   const rpWidth = (size: number, preventRpHeight = false) => {
-    if (!preventRpHeight && (smallHeight || isTablet)) {
+    if (!preventRpHeight && isTablet) {
       return rpHeight(size);
     }
     return Math.floor((size * width) / figmaWidth);

@@ -29,7 +29,7 @@ const DeviceCheck = ({
   return (
     <SafeAreaContainer>
       <TopContainer>
-        <Device width={rpWidth(100)} height={rpWidth(156)} />
+        <Device width={rpWidth(100)} height={rpHeight(156)} />
         <MyText
           fontSize={24}
           style={{
@@ -43,7 +43,7 @@ const DeviceCheck = ({
       <BottomContainer>
         <Button
           style={{
-            marginBottom: rpWidth(12),
+            marginBottom: rpHeight(12),
           }}
           onPress={() => {
             navigation.navigate("ChargingCheck");

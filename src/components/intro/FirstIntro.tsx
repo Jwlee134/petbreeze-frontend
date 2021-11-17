@@ -13,7 +13,7 @@ const FirstIntro = () => {
 
   return (
     <GradientContainer isBlackStatusBar>
-      <IntroContainer rpWidth={rpWidth} topInset={top} spaceBetween>
+      <IntroContainer rpHeight={rpHeight} topInset={top} spaceBetween>
         <View style={{ paddingHorizontal: rpWidth(22) }}>
           <MyText fontWeight="light" color="white" fontSize={24}>
             반려동물 실종,

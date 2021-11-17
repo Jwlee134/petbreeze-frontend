@@ -36,7 +36,7 @@ const Timer = () => {
   );
   const dispatch = useDispatch();
   const timeout = useRef<NodeJS.Timeout>();
-  const { rpHeight, rpWidth } = useContext(DimensionsContext);
+  const { rpWidth } = useContext(DimensionsContext);
   const { deviceList } = useContext(WalkContext);
 
   const getDuration = () => {
@@ -144,7 +144,7 @@ const Timer = () => {
     <RowContainer>
       <TimerSVG
         width={rpWidth(22)}
-        height={rpHeight(27)}
+        height={rpWidth(27)}
         style={{ marginRight: rpWidth(17) }}
       />
       <MyText fontSize={18} color="rgba(0, 0, 0, 0.5)">

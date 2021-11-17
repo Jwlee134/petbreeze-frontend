@@ -1,12 +1,10 @@
-import React, {
-  useEffect,
-  useRef,
-  useState,
-  useCallback,
-  useContext,
-} from "react";
-import { FlatList, FlatListProps, View } from "react-native";
-import { DimensionsContext } from "~/context/DimensionsContext";
+import React, { useEffect, useRef, useState, useCallback } from "react";
+import {
+  FlatList,
+  FlatListProps,
+  useWindowDimensions,
+  View,
+} from "react-native";
 
 interface IProps extends Partial<FlatListProps<JSX.Element>> {
   data: JSX.Element[];
@@ -16,7 +14,7 @@ interface IProps extends Partial<FlatListProps<JSX.Element>> {
 const usePagingFlatList = ({ initialIndex = 0 } = {}) => {
   const flatListRef = useRef<FlatList>(null);
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
-  const { width } = useContext(DimensionsContext);
+  const { width } = useWindowDimensions();
 
   const next = useCallback(() => setCurrentIndex(prev => prev + 1), []);
   const prev = useCallback(() => setCurrentIndex(prev => prev - 1), []);
@@ -51,7 +49,7 @@ const usePagingFlatList = ({ initialIndex = 0 } = {}) => {
         {...props}
       />
     ),
-    [],
+    [width],
   );
 
   return { PagingFlatList, next, prev };

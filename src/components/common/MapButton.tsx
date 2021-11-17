@@ -25,13 +25,13 @@ const Container = styled.TouchableOpacity<{ rpWidth: RpWidth }>`
 `;
 
 const MapButton = ({ icon, style, ...props }: Props) => {
-  const { rpHeight, rpWidth } = useContext(DimensionsContext);
+  const { rpWidth } = useContext(DimensionsContext);
 
   return (
     <ShadowContainer style={style} shadowOpacity={0.25} shadowRadius={5}>
       <Container rpWidth={rpWidth} {...props}>
         {icon === "footprint" ? (
-          <Footprint width={rpWidth(24)} height={rpHeight(23)} />
+          <Footprint width={rpWidth(24)} height={rpWidth(23)} />
         ) : (
           <MyLocation width={rpWidth(27)} height={rpWidth(27)} />
         )}

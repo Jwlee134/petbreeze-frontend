@@ -3,7 +3,7 @@ import {
   createStackNavigator,
   StackCardInterpolationProps,
 } from "@react-navigation/stack";
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import {
   Keyboard,
   StyleSheet,
@@ -37,7 +37,7 @@ const DeleteAccountStackNav = ({
   route: DeleteAccountStackNavScreenRouteProp;
 }) => {
   const currentRouteName = getFocusedRouteNameFromRoute(route);
-  const { rpWidth } = useContext(DimensionsContext);
+  const { rpWidth, rpHeight } = useContext(DimensionsContext);
 
   return (
     <>
@@ -57,16 +57,16 @@ const DeleteAccountStackNav = ({
         onPress={Keyboard.dismiss}>
         <View>
           <MyText
-            style={{ marginTop: rpWidth(45), paddingLeft: rpWidth(32) }}
+            style={{ marginTop: rpHeight(45), paddingLeft: rpWidth(32) }}
             fontWeight="medium"
             fontSize={20}>
             펫브리즈를 탈퇴하시나요?
           </MyText>
           <MyText
             style={{
-              marginTop: rpWidth(10),
+              marginTop: rpHeight(10),
               paddingLeft: rpWidth(32),
-              marginBottom: rpWidth(43),
+              marginBottom: rpHeight(43),
             }}
             color="rgba(0, 0, 0, 0.5)"
             fontSize={14}>

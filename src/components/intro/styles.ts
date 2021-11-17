@@ -1,15 +1,16 @@
+/* eslint-disable import/prefer-default-export */
 import styled from "styled-components/native";
-import { RpWidth } from "~/context/DimensionsContext";
+import { RpHeight } from "~/context/DimensionsContext";
 
 interface IntroContainerProps {
   topInset: number;
   spaceBetween?: boolean;
-  rpWidth: RpWidth;
+  rpHeight: RpHeight;
 }
 
 export const IntroContainer = styled.View<IntroContainerProps>`
   flex: 1;
-  padding-top: ${({ topInset, rpWidth }) => `${rpWidth(71) + topInset}px`};
+  padding-top: ${({ topInset, rpHeight }) => `${rpHeight(71) + topInset}px`};
   justify-content: ${({ spaceBetween }) =>
     spaceBetween ? "space-between" : "flex-start"};
 `;

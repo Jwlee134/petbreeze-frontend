@@ -60,7 +60,7 @@ const Notification = ({
   const newNotif = data.filter(notif => notif.is_new);
   const thisWeek = data.filter(notif => !notif.is_new);
 
-  if (data.length) {
+  if (data.length && deviceList.length) {
     return (
       <Container>
         {newNotif.length ? (

@@ -1,5 +1,4 @@
 import React, { useContext, useState } from "react";
-import styled from "styled-components/native";
 import { StartWalkingScreenNavigationProp } from "~/types/navigator";
 import { Device } from "~/api/device";
 import { useDispatch } from "react-redux";
@@ -13,11 +12,6 @@ import Dog from "~/assets/svg/dog/dog-with-device.svg";
 import { DimensionsContext } from "~/context/DimensionsContext";
 import WalkDeviceListItem from "~/components/walk/WalkDeviceListItem";
 
-const Container = styled.View`
-  flex: 1;
-  justify-content: space-between;
-`;
-
 const StartWalking = ({
   navigation,
   deviceList,
@@ -30,94 +24,96 @@ const StartWalking = ({
   const dispatch = useDispatch();
 
   const handleStart = () => {
-    if (!selected.length) {
-      navigation.navigate("BleRootStackNav");
-    } else {
-      permissionCheck("location").then(() => {
-        dispatch(
-          storageActions.setWalk({
-            selectedDeviceId: selected,
-          }),
-        );
-        navigation.replace("LoggedInNav", {
-          initialRouteName: "WalkMap",
-        });
+    permissionCheck("location").then(() => {
+      dispatch(
+        storageActions.setWalk({
+          selectedDeviceId: selected,
+        }),
+      );
+      navigation.replace("LoggedInNav", {
+        initialRouteName: "WalkMap",
       });
-    }
+    });
   };
 
-  return (
-    <Container>
-      {deviceList && deviceList.length ? (
-        <ScrollView
-          contentContainerStyle={{
-            paddingTop: rpHeight(31),
-            flexGrow: 1,
-          }}
-          showsVerticalScrollIndicator={false}>
-          {deviceList.map(device => (
-            <ListItem
-              key={device.id}
-              isIconArrow={false}
-              onPress={() => {
-                const selectedArr = [...selected];
-                const isSelected = selectedArr.some(
-                  selectedItem => selectedItem === device.id,
+  return deviceList && deviceList.length ? (
+    <ScrollView
+      contentContainerStyle={{
+        paddingTop: rpHeight(31),
+        flexGrow: 1,
+        justifyContent: "space-between",
+        paddingBottom: rpHeight(67),
+      }}
+      showsVerticalScrollIndicator={false}>
+      <View>
+        {deviceList.map(device => (
+          <ListItem
+            key={device.id}
+            isIconArrow={false}
+            onPress={() => {
+              const selectedArr = [...selected];
+              const isSelected = selectedArr.some(
+                selectedItem => selectedItem === device.id,
+              );
+              if (isSelected) {
+                setSelected(
+                  selectedArr.filter(
+                    selectedItem => selectedItem !== device.id,
+                  ),
                 );
-                if (isSelected) {
-                  setSelected(
-                    selectedArr.filter(
-                      selectedItem => selectedItem !== device.id,
-                    ),
-                  );
-                } else {
-                  setSelected([...selectedArr, device.id]);
-                }
-              }}
-              selected={selected.includes(device.id)}>
-              <WalkDeviceListItem device={device} />
-            </ListItem>
-          ))}
-        </ScrollView>
-      ) : (
-        <View>
-          <MyText
-            fontWeight="light"
-            fontSize={18}
-            color="rgba(0, 0, 0, 0.5)"
-            style={{ textAlign: "center", marginTop: rpWidth(84) }}>
-            산책할 반려동물이 없습니다.
-          </MyText>
-          <MyText
-            fontWeight="light"
-            fontSize={18}
-            color="rgba(0, 0, 0, 0.5)"
-            style={{ textAlign: "center", marginTop: rpWidth(5) }}>
-            기기등록을 해주세요!
-          </MyText>
-          <Dog
-            width={rpWidth(133)}
-            height={rpWidth(214)}
-            style={{
-              alignSelf: "flex-end",
-              marginRight: rpWidth(54),
-              marginTop: rpWidth(77),
+              } else {
+                setSelected([...selectedArr, device.id]);
+              }
             }}
-          />
-        </View>
-      )}
+            selected={selected.includes(device.id)}>
+            <WalkDeviceListItem device={device} />
+          </ListItem>
+        ))}
+      </View>
       <Button
-        style={{
-          width: rpWidth(126),
-          position: "absolute",
-          bottom: rpWidth(67),
-          alignSelf: "center",
-        }}
-        disabled={deviceList?.length !== 0 && !selected.length}
+        style={{ width: rpWidth(126), marginTop: rpWidth(67) }}
+        disabled={!selected.length}
         onPress={handleStart}>
-        {deviceList?.length ? "선택 완료" : "등록"}
+        선택 완료
       </Button>
-    </Container>
+    </ScrollView>
+  ) : (
+    <ScrollView
+      bounces={false}
+      contentContainerStyle={{ flexGrow: 1, justifyContent: "space-between" }}>
+      <View>
+        <MyText
+          fontWeight="light"
+          fontSize={18}
+          color="rgba(0, 0, 0, 0.5)"
+          style={{ textAlign: "center", marginTop: rpHeight(67) }}>
+          산책할 반려동물이 없습니다.
+        </MyText>
+        <MyText
+          fontWeight="light"
+          fontSize={18}
+          color="rgba(0, 0, 0, 0.5)"
+          style={{ textAlign: "center", marginTop: rpHeight(5) }}>
+          기기등록을 해주세요!
+        </MyText>
+      </View>
+      <Dog
+        width={rpWidth(163)}
+        height={rpHeight(232)}
+        style={{
+          alignSelf: "flex-end",
+          marginRight: rpWidth(46),
+          marginVertical: rpHeight(45),
+        }}
+      />
+      <Button
+        style={{ width: rpWidth(126), marginBottom: rpWidth(67) }}
+        onPress={() => {
+          navigation.navigate("BleRootStackNav");
+        }}>
+        등록
+      </Button>
+    </ScrollView>
   );
 };
 

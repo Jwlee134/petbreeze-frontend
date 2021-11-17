@@ -32,7 +32,7 @@ const ThirdIntro = () => {
 
   return (
     <>
-      <IntroContainer rpWidth={rpWidth} topInset={top} spaceBetween>
+      <IntroContainer rpHeight={rpHeight} topInset={top} spaceBetween>
         <View style={{ marginLeft: rpWidth(32) }}>
           <MyText fontWeight="light" fontSize={24} color={palette.blue_7b_80}>
             펫브리즈와 함께

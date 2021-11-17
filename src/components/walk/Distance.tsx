@@ -15,13 +15,13 @@ const RowContainer = styled.View`
 
 const Distance = () => {
   const meter = useAppSelector(state => state.storage.walk.meter);
-  const { rpHeight, rpWidth } = useContext(DimensionsContext);
+  const { rpWidth } = useContext(DimensionsContext);
 
   return (
     <RowContainer>
       <Path
         width={rpWidth(21)}
-        height={rpHeight(22)}
+        height={rpWidth(22)}
         style={{ marginRight: rpWidth(17) }}
       />
       <MyText fontSize={18} color="rgba(0, 0, 0, 0.5)">

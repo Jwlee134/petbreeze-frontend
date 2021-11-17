@@ -49,7 +49,7 @@ const MapButtons = () => {
         <FlatList
           data={deviceList}
           keyExtractor={item => `${item.id}`}
-          renderItem={({ item, index }) => (
+          renderItem={({ item }) => (
             <AnimatedCircularProgress
               avatar={item.profile_image}
               circleWidth={70}
