@@ -11,7 +11,6 @@ import Play from "~/assets/svg/walk/play.svg";
 import Pause from "~/assets/svg/walk/pause.svg";
 import Stop from "~/assets/svg/walk/stop.svg";
 import StopFill from "~/assets/svg/walk/stop-fill.svg";
-import ShadowContainer from "../common/container/ShadowContainer";
 import ImageCropPicker from "react-native-image-crop-picker";
 import CameraRoll from "@react-native-community/cameraroll";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
@@ -20,6 +19,7 @@ import Modal from "react-native-modal";
 import CommonCenterModal from "../modal/CommonCenterModal";
 import { useNavigation } from "@react-navigation/native";
 import { WalkMapScreenNavigationProp } from "~/types/navigator";
+import { Shadow } from "react-native-shadow-2";
 
 const RowContainer = styled.View<{ rpWidth: RpWidth }>`
   flex-direction: row;
@@ -88,7 +88,10 @@ const Toggle = () => {
   return (
     <>
       <RowContainer rpWidth={rpWidth}>
-        <ShadowContainer shadowOpacity={0.1} shadowRadius={10}>
+        <Shadow
+          distance={12}
+          startColor="rgba(0, 0, 0, 0.05)"
+          viewStyle={{ borderRadius: rpWidth(35.5) }}>
           <SmallButton
             rpWidth={rpWidth}
             onPress={() => {
@@ -104,8 +107,11 @@ const Toggle = () => {
               <Stop width={rpWidth(24)} height={rpWidth(24)} />
             )}
           </SmallButton>
-        </ShadowContainer>
-        <ShadowContainer shadowOpacity={0.1} shadowRadius={10}>
+        </Shadow>
+        <Shadow
+          distance={12}
+          startColor="rgba(0, 0, 0, 0.05)"
+          viewStyle={{ borderRadius: rpWidth(44.5) }}>
           <Button
             rpWidth={rpWidth}
             onPress={() => {
@@ -126,8 +132,11 @@ const Toggle = () => {
               />
             )}
           </Button>
-        </ShadowContainer>
-        <ShadowContainer shadowOpacity={0.1} shadowRadius={10}>
+        </Shadow>
+        <Shadow
+          distance={12}
+          startColor="rgba(0, 0, 0, 0.05)"
+          viewStyle={{ borderRadius: rpWidth(35.5) }}>
           <SmallButton
             rpWidth={rpWidth}
             onPress={() => {
@@ -139,7 +148,7 @@ const Toggle = () => {
             }}>
             <Camera width={rpWidth(30)} height={rpWidth(30)} />
           </SmallButton>
-        </ShadowContainer>
+        </Shadow>
       </RowContainer>
       <Modal {...modalProps({ type: "center" })}>
         <CommonCenterModal
@@ -155,8 +164,14 @@ const Toggle = () => {
             return "산책을 종료할까요?";
           })()}
           onRightButtonPress={() => {
+            dispatch(
+              storageActions.setWalk({
+                isStopped: true,
+                sheetIndex: 0,
+              }),
+            );
+            return;
             if (duration < 60) {
-              close();
               setTimeout(() => {
                 dispatch(storageActions.setWalk(null));
               }, 200);
@@ -168,6 +183,7 @@ const Toggle = () => {
               dispatch(
                 storageActions.setWalk({
                   isStopped: true,
+                  sheetIndex: 0,
                 }),
               );
             }

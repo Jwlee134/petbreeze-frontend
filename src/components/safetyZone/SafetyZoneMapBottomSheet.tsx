@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { KeyboardAvoidingView } from "react-native";
 import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Shadow } from "react-native-shadow-2";
 import { useDispatch } from "react-redux";
 import styled, { css } from "styled-components/native";
 import Button from "~/components/common/Button";
@@ -10,13 +11,12 @@ import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import { useAppSelector } from "~/store";
 import { deviceSettingActions } from "~/store/deviceSetting";
 import { isIos } from "~/utils";
-import ShadowContainer from "../common/container/ShadowContainer";
 import ScrollPicker from "../common/ScrollPicker";
 
 const Container = styled(Animated.View)<{ rpWidth: RpWidth }>`
   background-color: white;
-  border-top-left-radius: 25px;
-  border-top-right-radius: 25px;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
   padding-bottom: ${({ rpWidth }) => rpWidth(32)}px;
 `;
 
@@ -84,49 +84,55 @@ const SafetyZoneMapBottomSheet = ({
       pointerEvents={step2 ? undefined : "none"}
       behavior={isIos ? "padding" : undefined}
       keyboardVerticalOffset={-rpWidth(85) - bottom}>
-      <ShadowContainer shadowOpacity={0.15} shadowRadius={10}>
-        <Container rpWidth={rpWidth} style={[{ height }, style]}>
+      <Container rpWidth={rpWidth} style={[{ height }, style]}>
+        <Shadow
+          distance={20}
+          startColor="rgba(0, 0, 0, 0.15)"
+          sides={["top"]}
+          radius={15}
+          corners={["topLeft", "topRight"]}
+          viewStyle={{ width: "100%" }}>
           <HandleContainer rpWidth={rpWidth}>
             <Handle rpWidth={rpWidth} />
           </HandleContainer>
-          <RowContainer rpWidth={rpWidth}>
-            <InputContainer style={{ marginRight: "13%" }}>
-              <Input
-                value={name}
-                placeholder="안심존 이름"
-                onChangeText={text =>
-                  dispatch(
-                    deviceSettingActions.setSafetyZone({
-                      draft: { name: text },
-                    }),
-                  )
-                }
-              />
-            </InputContainer>
-            <InputContainer style={{ alignItems: "center" }}>
-              <ScrollPicker
-                data={data}
-                selectedIndex={data.findIndex(item => item === `${radius}m`)}
-                onValueChange={(value, index) =>
-                  dispatch(
-                    deviceSettingActions.setSafetyZone({
-                      draft: { radius: parseInt(data[index], 10) },
-                    }),
-                  )
-                }
-                width={rpWidth(88)}
-                height={rpWidth(39)}
-              />
-            </InputContainer>
-          </RowContainer>
-          <Button
-            disabled={!name || !radius}
-            isLoading={isSubmitting}
-            onPress={handleFinish}>
-            {fromDeviceSetting ? "확인" : "다음"}
-          </Button>
-        </Container>
-      </ShadowContainer>
+        </Shadow>
+        <RowContainer rpWidth={rpWidth}>
+          <InputContainer style={{ marginRight: "13%" }}>
+            <Input
+              value={name}
+              placeholder="안심존 이름"
+              onChangeText={text =>
+                dispatch(
+                  deviceSettingActions.setSafetyZone({
+                    draft: { name: text },
+                  }),
+                )
+              }
+            />
+          </InputContainer>
+          <InputContainer style={{ alignItems: "center" }}>
+            <ScrollPicker
+              data={data}
+              selectedIndex={data.findIndex(item => item === `${radius}m`)}
+              onValueChange={(value, index) =>
+                dispatch(
+                  deviceSettingActions.setSafetyZone({
+                    draft: { radius: parseInt(data[index], 10) },
+                  }),
+                )
+              }
+              width={rpWidth(88)}
+              height={rpWidth(39)}
+            />
+          </InputContainer>
+        </RowContainer>
+        <Button
+          disabled={!name || !radius}
+          isLoading={isSubmitting}
+          onPress={handleFinish}>
+          {fromDeviceSetting ? "확인" : "다음"}
+        </Button>
+      </Container>
     </KeyboardAvoidingView>
   );
 };

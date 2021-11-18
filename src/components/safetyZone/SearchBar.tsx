@@ -1,7 +1,6 @@
 import React, { useContext } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import styled from "styled-components/native";
-import ShadowContainer from "~/components/common/container/ShadowContainer";
 
 import Arrow from "~/assets/svg/arrow/arrow-left-blue.svg";
 import { Keyboard, TouchableOpacity } from "react-native";
@@ -12,6 +11,7 @@ import { deviceSettingActions } from "~/store/deviceSetting";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import { useNavigation } from "@react-navigation/native";
 import Search from "~/assets/svg/search.svg";
+import { Shadow } from "react-native-shadow-2";
 
 const Container = styled.View`
   border-radius: 100px;
@@ -53,10 +53,10 @@ const SearchBar = () => {
   return (
     <>
       {isSearchMode && <SearchResult />}
-      <ShadowContainer
-        shadowOpacity={0.1}
-        shadowRadius={10}
-        style={{
+      <Shadow
+        startColor="rgba(0, 0, 0, 0.05)"
+        viewStyle={{ borderRadius: 100 }}
+        containerViewStyle={{
           position: "absolute",
           top: rpWidth(9) + top,
           alignSelf: "center",
@@ -124,7 +124,7 @@ const SearchBar = () => {
             />
           </TouchableOpacity>
         </Container>
-      </ShadowContainer>
+      </Shadow>
     </>
   );
 };

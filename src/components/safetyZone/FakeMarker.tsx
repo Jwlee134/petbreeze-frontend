@@ -3,8 +3,8 @@ import { StyleSheet } from "react-native";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import styled, { css } from "styled-components/native";
 import palette from "~/styles/palette";
-import ShadowContainer from "../common/container/ShadowContainer";
 import Animated from "react-native-reanimated";
+import { Shadow } from "react-native-shadow-2";
 
 interface Props {
   mapPadding: {
@@ -47,10 +47,11 @@ const FakeMarker = ({ mapPadding, style }: Props) => {
         },
         style,
       ]}>
-      <ShadowContainer
-        shadowRadius={12}
-        shadowOpacity={0.3}
-        style={{
+      <Shadow
+        distance={30}
+        startColor="rgba(0, 0, 0, 0.1)"
+        viewStyle={{ borderRadius: rpWidth(11) }}
+        containerViewStyle={{
           position: "absolute",
           alignSelf: "center",
           top: "50%",
@@ -59,7 +60,7 @@ const FakeMarker = ({ mapPadding, style }: Props) => {
         <OuterMarker rpWidth={rpWidth}>
           <InnerMarker rpWidth={rpWidth} />
         </OuterMarker>
-      </ShadowContainer>
+      </Shadow>
     </Animated.View>
   );
 };

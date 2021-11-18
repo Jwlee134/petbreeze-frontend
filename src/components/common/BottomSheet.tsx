@@ -1,9 +1,9 @@
 import React, { ForwardedRef, forwardRef, ReactNode, useContext } from "react";
-import Sheet, { BottomSheetProps, BottomSheetView } from "@gorhom/bottom-sheet";
+import Sheet, { BottomSheetProps } from "@gorhom/bottom-sheet";
 import styled, { css } from "styled-components/native";
-import ShadowContainer from "~/components/common/container/ShadowContainer";
 import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import { bottomSheetHandleHeight } from "~/styles/constants";
+import { Shadow } from "react-native-shadow-2";
 
 const HandleContainer = styled.View<{ rpWidth: RpWidth }>`
   height: ${({ rpWidth }) => rpWidth(bottomSheetHandleHeight)}px;
@@ -20,11 +20,6 @@ const Handle = styled.View<{ rpWidth: RpWidth }>`
   border-radius: 100px;
 `;
 
-const BackgroundContainer = styled.View`
-  border-radius: 25px;
-  background-color: white;
-`;
-
 interface Props extends BottomSheetProps {
   children: ReactNode;
 }
@@ -36,18 +31,21 @@ const BottomSheet = forwardRef(
     return (
       <Sheet
         ref={ref}
-        backgroundComponent={({ style }) => (
-          <ShadowContainer shadowOpacity={0.15} shadowRadius={10} style={style}>
-            <BackgroundContainer style={style} />
-          </ShadowContainer>
-        )}
         handleComponent={() => (
-          <HandleContainer rpWidth={rpWidth}>
-            <Handle rpWidth={rpWidth} />
-          </HandleContainer>
+          <Shadow
+            distance={20}
+            startColor="#00000015"
+            sides={["top"]}
+            radius={15}
+            corners={["topLeft", "topRight"]}
+            viewStyle={{ width: "100%" }}>
+            <HandleContainer rpWidth={rpWidth}>
+              <Handle rpWidth={rpWidth} />
+            </HandleContainer>
+          </Shadow>
         )}
         {...props}>
-        <BottomSheetView>{children}</BottomSheetView>
+        {children}
       </Sheet>
     );
   },
