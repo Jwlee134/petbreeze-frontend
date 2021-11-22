@@ -1,7 +1,6 @@
-import React, { ReactNode, useContext } from "react";
+import React, { ReactNode } from "react";
 import { Animated, TextProps, TextStyle } from "react-native";
 import styled from "styled-components/native";
-import { DimensionsContext } from "~/context/DimensionsContext";
 
 export type FontWeight = "light" | "medium" | "bold";
 
@@ -39,23 +38,19 @@ const MyText = ({
   color,
   style,
   ...props
-}: Props) => {
-  const { rpWidth } = useContext(DimensionsContext);
-
-  return (
-    <SText
-      fontWeight={fontWeight}
-      style={{
-        includeFontPadding: false,
-        color: color || "rgba(0, 0, 0, 0.8)",
-        flexShrink: 1,
-        fontSize: fontSize !== undefined ? rpWidth(fontSize) : rpWidth(16),
-        ...(style as object),
-      }}
-      {...props}>
-      {children}
-    </SText>
-  );
-};
+}: Props) => (
+  <SText
+    fontWeight={fontWeight}
+    style={{
+      includeFontPadding: false,
+      color: color || "rgba(0, 0, 0, 0.8)",
+      flexShrink: 1,
+      fontSize: fontSize || 16,
+      ...(style as object),
+    }}
+    {...props}>
+    {children}
+  </SText>
+);
 
 export default MyText;

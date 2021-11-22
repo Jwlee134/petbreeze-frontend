@@ -1,9 +1,8 @@
-import React, { useContext, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import styled from "styled-components/native";
 import MyText from "~/components/common/MyText";
 import SuccessLottie from "~/components/lottie/Success";
-import { DimensionsContext } from "~/context/DimensionsContext";
 import { useAppSelector } from "~/store";
 import { SuccessScreenNavigationProp } from "~/types/navigator";
 
@@ -22,7 +21,6 @@ const Success = ({
 }: {
   navigation: SuccessScreenNavigationProp;
 }) => {
-  const { rpWidth } = useContext(DimensionsContext);
   const { top } = useSafeAreaInsets();
   const { status, isOtaUpdate } = useAppSelector(state => state.ble);
 
@@ -62,11 +60,11 @@ const Success = ({
             fontWeight="medium"
             fontSize={24}
             style={{
-              marginTop: top + rpWidth(99),
+              marginTop: top + 99,
             }}>
             연결에 성공했어요.
           </MyText>
-          <SuccessLottie style={{ marginBottom: -rpWidth(43) }} />
+          <SuccessLottie style={{ marginBottom: -43 }} />
         </TopContainer>
         <BottomContainer />
       </>
@@ -76,7 +74,7 @@ const Success = ({
   return (
     <>
       <TopContainer style={{ justifyContent: "flex-end" }}>
-        <SuccessLottie style={{ marginBottom: rpWidth(37) }} />
+        <SuccessLottie style={{ marginBottom: 37 }} />
       </TopContainer>
       <BottomContainer>
         <MyText style={{ textAlign: "center" }} fontSize={24}>

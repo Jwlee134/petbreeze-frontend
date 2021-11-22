@@ -1,9 +1,8 @@
-import React, { useContext, useEffect, useState } from "react";
-import styled, { css } from "styled-components/native";
+import React, { useEffect, useState } from "react";
+import styled from "styled-components/native";
 import MyText from "~/components/common/MyText";
 import { WalkDetailMonthScreenProps } from "~/types/navigator";
 import palette from "~/styles/palette";
-import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import Divider from "~/components/common/Divider";
 import { CalendarList, LocaleConfig } from "react-native-calendars";
 import { days, months, noAvatar, noName } from "~/constants";
@@ -14,7 +13,12 @@ import {
   permissionCheck,
 } from "~/utils";
 import deviceApi from "~/api/device";
-import { ScrollView, StyleSheet, View } from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  useWindowDimensions,
+  View,
+} from "react-native";
 import Dissolve from "~/components/common/Dissolve";
 import Button from "~/components/common/Button";
 import { useDispatch } from "react-redux";
@@ -24,22 +28,18 @@ const TopContainer = styled.View`
   align-items: center;
 `;
 
-const Image = styled.Image<{ rpWidth: RpWidth }>`
-  ${({ rpWidth }) => css`
-    width: ${rpWidth(70)}px;
-    height: ${rpWidth(70)}px;
-    border-radius: ${rpWidth(35)}px;
-    margin-top: ${rpWidth(25)}px;
-    margin-bottom: ${rpWidth(15)}px;
-  `}
+const Image = styled.Image`
+  width: 70px;
+  height: 70px;
+  border-radius: 35px;
+  margin-top: 25px;
+  margin-bottom: 15px;
 `;
 
-const RowContainer = styled.View<{ rpWidth: RpWidth }>`
+const RowContainer = styled.View`
   flex-direction: row;
   justify-content: space-between;
-  ${({ rpWidth }) => css`
-    padding: ${rpWidth(30)}px ${rpWidth(16)}px;
-  `}
+  padding: 30px 16px;
 `;
 
 const NoWalkRecord = styled.View`
@@ -83,7 +83,7 @@ const WalkDetailMonth = ({
       refetchOnMountOrArgChange: true,
     },
   );
-  const { rpWidth, isTablet } = useContext(DimensionsContext);
+  const { width } = useWindowDimensions();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -151,17 +151,15 @@ const WalkDetailMonth = ({
   return (
     <ScrollView>
       <TopContainer>
-        <Image
-          rpWidth={rpWidth}
-          source={avatarUrl ? { uri: avatarUrl } : noAvatar}
-        />
-        <MyText style={{ marginBottom: rpWidth(19) }} fontWeight="medium">
+        <Image source={avatarUrl ? { uri: avatarUrl } : noAvatar} />
+        <MyText style={{ marginBottom: 19 }} fontWeight="medium">
           {name || noName}
         </MyText>
       </TopContainer>
       <Divider isHairline={false} />
       <View>
         <CalendarList
+          calendarWidth={width}
           onVisibleMonthsChange={months => {
             setDate({ year: months[0].year, month: months[0].month });
           }}
@@ -183,40 +181,40 @@ const WalkDetailMonth = ({
             // @ts-ignore
             "stylesheet.calendar.header": {
               monthText: {
-                margin: rpWidth(37),
+                margin: 37,
                 fontFamily: "NotoSansKR-Medium",
-                fontSize: rpWidth(18),
+                fontSize: 18,
                 color: palette.blue_7b,
                 includeFontPadding: false,
               },
               dayHeader: {
                 fontFamily: "NotoSansKR-Regular",
-                fontSize: rpWidth(12),
+                fontSize: 12,
                 color: "rgba(0, 0, 0, 0.8)",
                 includeFontPadding: false,
               },
             },
             "stylesheet.day.basic": {
               base: {
-                width: rpWidth(32),
-                height: rpWidth(32),
+                width: 32,
+                height: 32,
                 alignItems: "center",
               },
               text: {
-                marginTop: isAndroid ? rpWidth(4) : rpWidth(6),
+                marginTop: isAndroid ? 4 : 6,
                 fontFamily: "NotoSansKR-Regular",
-                fontSize: rpWidth(16),
+                fontSize: 16,
                 color: "rgba(0, 0, 0, 0.8)",
                 includeFontPadding: false,
               },
             },
             "stylesheet.dot": {
               dot: {
-                width: isTablet ? rpWidth(4) : 4,
-                height: isTablet ? rpWidth(4) : 4,
+                width: 4,
+                height: 4,
                 marginTop: 1,
-                marginHorizontal: isTablet ? 2 : 1,
-                borderRadius: isTablet ? rpWidth(2) : 2,
+                marginHorizontal: 2,
+                borderRadius: 2,
                 opacity: 0,
               },
             },
@@ -253,12 +251,12 @@ const WalkDetailMonth = ({
                 });
               });
             }}
-            style={{ width: rpWidth(126) }}>
+            style={{ width: 126 }}>
             산책 시작
           </Button>
         </Dissolve>
         {data && data.day_count.length !== 0 ? (
-          <RowContainer rpWidth={rpWidth}>
+          <RowContainer>
             <MyText
               style={{ width: "33.3%", textAlign: "center" }}
               fontSize={24}

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import MyText from "../../common/MyText";
 import Trashcan from "~/assets/svg/trashcan/trashcan-white.svg";
 import ListItem from "../../common/ListItem";
@@ -10,7 +10,6 @@ import { DeviceSettingScreenNavigationProp } from "~/types/navigator";
 import { View } from "react-native";
 import { useAppSelector } from "~/store";
 import { deviceSettingActions } from "~/store/deviceSetting";
-import { DimensionsContext } from "~/context/DimensionsContext";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -22,16 +21,12 @@ const WiFi = ({ isEdit }: { isEdit: boolean }) => {
   const navigation = useNavigation<DeviceSettingScreenNavigationProp>();
   const dispatch = useDispatch();
   const result = useAppSelector(state => state.deviceSetting.wifi.result);
-  const { rpWidth } = useContext(DimensionsContext);
 
   const [showList, setShowList] = useState(false);
 
-  const itemHeight = rpWidth(49);
-  const listPaddingBottom = rpWidth(35);
-
   const height = useMemo(() => {
     return showList && result.filter(item => item.ssid).length
-      ? result.filter(item => item.ssid).length * itemHeight + listPaddingBottom
+      ? result.filter(item => item.ssid).length * 49 + 35
       : 1;
   }, [showList, result.filter(item => item.ssid).length]);
 
@@ -64,7 +59,7 @@ const WiFi = ({ isEdit }: { isEdit: boolean }) => {
         onPlusButtonClick={() => {
           dispatch(
             deviceSettingActions.setWifi({
-              currentId: result[result.findIndex(item => !item.ssid)].id,
+              currentId: result[result.findIndex(item => !item.ssid)].wifi_id,
             }),
           );
           navigation.navigate("UpdateWiFi");
@@ -77,7 +72,7 @@ const WiFi = ({ isEdit }: { isEdit: boolean }) => {
           },
           animatedStyle,
         ]}>
-        {result.map(({ id, pw, ssid }, i) =>
+        {result.map(({ wifi_id: id, pw, ssid }, i) =>
           ssid ? (
             <Animated.View key={id}>
               <Swipeable
@@ -88,7 +83,7 @@ const WiFi = ({ isEdit }: { isEdit: boolean }) => {
                     onPress={() => {
                       dispatch(deviceSettingActions.deleteWiFi(id));
                     }}>
-                    <Trashcan width={rpWidth(22)} height={rpWidth(24)} />
+                    <Trashcan width={22} height={24} />
                   </SwipeableButton>
                 )}
                 enableRightActions={isEdit}>
@@ -104,11 +99,11 @@ const WiFi = ({ isEdit }: { isEdit: boolean }) => {
                     navigation.navigate("UpdateWiFi");
                   }}
                   showIcon={isEdit}
-                  style={{ height: rpWidth(49), paddingRight: rpWidth(36) }}>
-                  <View style={{ flexShrink: 1, paddingRight: rpWidth(36) }}>
+                  style={{ height: 49, paddingRight: 36 }}>
+                  <View style={{ flexShrink: 1, paddingRight: 36 }}>
                     <MyText
                       numberOfLines={1}
-                      style={{ marginLeft: rpWidth(5) }}
+                      style={{ marginLeft: 5 }}
                       color="rgba(0, 0, 0, 0.7)">
                       {ssid}
                     </MyText>

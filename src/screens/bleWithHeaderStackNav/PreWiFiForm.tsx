@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import { View } from "react-native";
 import styled from "styled-components/native";
 import WiFi from "~/assets/svg/wifi/wifi-blue.svg";
@@ -9,7 +9,6 @@ import useModal from "~/hooks/useModal";
 import { PreWiFiFormScreenNavigationProp } from "~/types/navigator";
 import Modal from "react-native-modal";
 import CommonCenterModal from "~/components/modal/CommonCenterModal";
-import { DimensionsContext } from "~/context/DimensionsContext";
 import { centerModalOutTiming } from "~/styles/constants";
 
 const TopContainer = styled.View`
@@ -29,15 +28,12 @@ const PreWiFiForm = ({
   navigation: PreWiFiFormScreenNavigationProp;
 }) => {
   const { open, close, modalProps } = useModal();
-  const { rpWidth } = useContext(DimensionsContext);
 
   return (
     <>
       <TopContainer>
-        <WiFi width={rpWidth(82)} height={rpWidth(64)} />
-        <MyText
-          style={{ textAlign: "center", marginTop: rpWidth(55) }}
-          fontSize={24}>
+        <WiFi width={82} height={64} />
+        <MyText style={{ textAlign: "center", marginTop: 55 }} fontSize={24}>
           WiFi를{"\n"}등록해주세요.
         </MyText>
       </TopContainer>
@@ -56,7 +52,7 @@ const PreWiFiForm = ({
               navigation.navigate("WiFiForm");
             }}
             style={{
-              marginBottom: rpWidth(12),
+              marginBottom: 12,
             }}>
             다음
           </Button>

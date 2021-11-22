@@ -2,7 +2,7 @@ import React, { memo, useContext, useEffect, useRef } from "react";
 import styled, { css } from "styled-components/native";
 import { AnimatedCircularProgress as RNCircularProgress } from "react-native-circular-progress";
 import palette from "~/styles/palette";
-import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
+import { DimensionsContext } from "~/context/DimensionsContext";
 import { Animated, StyleProp, View, ViewStyle } from "react-native";
 import Icon from "~/assets/svg/exclamation/exclamation-mark-white.svg";
 import { noAvatar } from "~/constants";
@@ -19,23 +19,11 @@ interface Props {
   style?: StyleProp<ViewStyle>;
 }
 
-interface ImageProps {
-  circleWidth?: number;
-  preventRpHeight: boolean;
-  rpWidth: RpWidth;
-}
-
-const Image = styled.Image<ImageProps>`
-  ${({ circleWidth, preventRpHeight, rpWidth }) => css`
-    width: ${circleWidth
-      ? rpWidth(circleWidth)
-      : rpWidth(70, preventRpHeight)}px;
-    height: ${circleWidth
-      ? rpWidth(circleWidth)
-      : rpWidth(70, preventRpHeight)}px;
-    border-radius: ${circleWidth
-      ? rpWidth(circleWidth)
-      : rpWidth(35, preventRpHeight)}px;
+const Image = styled.Image<{ circleWidth?: number }>`
+  ${({ circleWidth }) => css`
+    width: ${circleWidth || 70}px;
+    height: ${circleWidth || 70}px;
+    border-radius: ${circleWidth || 35}px;
   `}
 `;
 
@@ -98,12 +86,12 @@ const AnimatedCircularProgress = ({
         <Alert
           style={{ transform: [{ scale }] }}
           width={rpWidth(circleWidth || 0)}>
-          <Icon width={rpWidth(7)} height={rpWidth(36)} />
+          <Icon width={7} height={36} />
         </Alert>
       ) : null}
       <RNCircularProgress
-        size={rpWidth(circleWidth)}
-        width={lineWidth < 3 ? lineWidth : rpWidth(lineWidth)}
+        size={circleWidth}
+        width={lineWidth}
         fill={batteryValue}
         prefill={batteryValue}
         tintColor={
@@ -121,16 +109,14 @@ const AnimatedCircularProgress = ({
         style={{
           ...(isInModal && {
             position: "absolute",
-            top: -rpWidth(45),
+            top: -45,
             left: "50%",
-            marginLeft: -rpWidth(45),
+            marginLeft: -45,
           }),
         }}>
         {() => (
           <Image
-            rpWidth={rpWidth}
             fadeDuration={0}
-            preventRpHeight={preventRpHeight}
             circleWidth={circleWidth - lineWidth}
             source={avatar ? { uri: avatar } : noAvatar}
           />

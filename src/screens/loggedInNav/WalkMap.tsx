@@ -3,7 +3,6 @@ import Path from "~/components/walk/Path";
 import { useAppSelector } from "~/store";
 import WalkBottomSheet from "~/components/walk/WalkBottomSheet";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { DimensionsContext } from "~/context/DimensionsContext";
 import { StyleSheet } from "react-native";
 import MapButtons from "~/components/walk/MapButtons";
 import { customHeaderHeight } from "~/styles/constants";
@@ -20,15 +19,12 @@ const WalkMap = () => {
   const isStopped = useAppSelector(state => state.storage.walk.isStopped);
   const sheetIndex = useAppSelector(state => state.storage.walk.sheetIndex);
   const { top, bottom } = useSafeAreaInsets();
-  const { rpWidth } = useContext(DimensionsContext);
   const { Map, ViewShot, stoppedSnapIndex } = useContext(WalkContext);
 
-  const snapPoints = isStopped
-    ? [stoppedSnapIndex]
-    : [rpWidth(92), rpWidth(238)];
+  const snapPoints = isStopped ? [stoppedSnapIndex] : [92, 238];
 
   const mapPadding = {
-    top: isStopped ? 0 : (isIos ? 0 : top) + rpWidth(customHeaderHeight),
+    top: isStopped ? 0 : (isIos ? 0 : top) + customHeaderHeight,
     bottom: isStopped ? 0 : snapPoints[sheetIndex] - bottom,
   };
 

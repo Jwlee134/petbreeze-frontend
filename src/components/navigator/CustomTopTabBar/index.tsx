@@ -1,18 +1,12 @@
 import { MaterialTopTabBarProps } from "@react-navigation/material-top-tabs";
-import React, { Fragment, useContext } from "react";
-import styled, { css } from "styled-components/native";
+import React, { Fragment } from "react";
+import styled from "styled-components/native";
 import MyText from "~/components/common/MyText";
-import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import palette from "~/styles/palette";
 
-interface BorderProps {
-  rpWidth: RpWidth;
-  isFocused: boolean;
-}
-
-const TabContainer = styled.View<{ rpWidth: RpWidth }>`
+const TabContainer = styled.View`
   flex-direction: row;
-  height: ${({ rpWidth }) => rpWidth(40)}px;
+  height: 40px;
 `;
 
 const TabButton = styled.TouchableOpacity`
@@ -21,14 +15,13 @@ const TabButton = styled.TouchableOpacity`
   align-items: center;
 `;
 
-const Border = styled.View<BorderProps>`
+const Border = styled.View<{ isFocused: boolean }>`
   position: absolute;
   bottom: 0;
-  ${({ rpWidth, isFocused }) => css`
-    width: ${rpWidth(85)}px;
-    height: ${rpWidth(3)}px;
-    background-color: ${isFocused ? palette.blue_7b : "white"};
-  `}
+  width: 85px;
+  height: 3px;
+  background-color: ${({ isFocused }) =>
+    isFocused ? palette.blue_7b : "white"};
 `;
 
 const CustomTopTabBar = ({
@@ -36,10 +29,8 @@ const CustomTopTabBar = ({
   descriptors,
   navigation,
 }: MaterialTopTabBarProps) => {
-  const { rpWidth } = useContext(DimensionsContext);
-
   return (
-    <TabContainer rpWidth={rpWidth}>
+    <TabContainer>
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
         const label =
@@ -77,7 +68,7 @@ const CustomTopTabBar = ({
                 color={isFocused ? palette.blue_7b : "rgba(0, 0, 0, 0.5)"}>
                 {label}
               </MyText>
-              <Border rpWidth={rpWidth} isFocused={isFocused} />
+              <Border isFocused={isFocused} />
             </TabButton>
           </Fragment>
         );

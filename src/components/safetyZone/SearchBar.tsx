@@ -1,14 +1,13 @@
-import React, { useContext } from "react";
+import React from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import styled from "styled-components/native";
 
 import Arrow from "~/assets/svg/arrow/arrow-left-blue.svg";
-import { Keyboard, TouchableOpacity } from "react-native";
+import { Keyboard, TouchableOpacity, useWindowDimensions } from "react-native";
 import SearchResult from "./SearchResult";
 import { useDispatch } from "react-redux";
 import { useAppSelector } from "~/store";
 import { deviceSettingActions } from "~/store/deviceSetting";
-import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import { useNavigation } from "@react-navigation/native";
 import Search from "~/assets/svg/search.svg";
 import { Shadow } from "react-native-shadow-2";
@@ -20,20 +19,20 @@ const Container = styled.View`
   align-items: center;
 `;
 
-const Button = styled.TouchableOpacity<{ rpWidth: RpWidth }>`
-  width: ${({ rpWidth }) => rpWidth(53)}px;
+const Button = styled.TouchableOpacity`
+  width: 53px;
   height: 100%;
   align-items: center;
   justify-content: center;
 `;
 
-const Input = styled.TextInput<{ rpWidth: RpWidth }>`
+const Input = styled.TextInput`
   flex-grow: 1;
   flex-shrink: 1;
   height: 100%;
   margin: 0;
   padding: 0;
-  font-size: ${({ rpWidth }) => rpWidth(16)}px;
+  font-size: 16px;
   font-family: "NotoSansKR-Medium";
   color: black;
 `;
@@ -48,7 +47,7 @@ const SearchBar = () => {
     state => state.deviceSetting.safetyZone.draft.address,
   );
   const dispatch = useDispatch();
-  const { rpWidth, width } = useContext(DimensionsContext);
+  const { width } = useWindowDimensions();
 
   return (
     <>
@@ -58,17 +57,16 @@ const SearchBar = () => {
         viewStyle={{ borderRadius: 100 }}
         containerViewStyle={{
           position: "absolute",
-          top: rpWidth(9) + top,
+          top: 9 + top,
           alignSelf: "center",
           zIndex: 3,
         }}>
         <Container
           style={{
-            width: width - rpWidth(32),
-            height: rpWidth(45),
+            width: width - 32,
+            height: 45,
           }}>
           <Button
-            rpWidth={rpWidth}
             onPress={() => {
               if (isSearchMode) {
                 dispatch(
@@ -81,10 +79,9 @@ const SearchBar = () => {
                 navigation.goBack();
               }
             }}>
-            <Arrow width={rpWidth(9)} height={rpWidth(15)} />
+            <Arrow width={9} height={15} />
           </Button>
           <Input
-            rpWidth={rpWidth}
             value={address}
             numberOfLines={1}
             onChangeText={text =>
@@ -117,10 +114,10 @@ const SearchBar = () => {
             }}>
             <Search
               style={{
-                marginHorizontal: rpWidth(18),
+                marginHorizontal: 18,
               }}
-              width={rpWidth(18)}
-              height={rpWidth(18)}
+              width={18}
+              height={18}
             />
           </TouchableOpacity>
         </Container>

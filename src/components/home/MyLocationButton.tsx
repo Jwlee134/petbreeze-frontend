@@ -30,9 +30,9 @@ const MyLocationButton = ({
     <Animated.View
       style={{
         transform: [{ translateY }],
-        marginBottom: rpWidth(157),
+        marginBottom: 157,
         alignSelf: "flex-end",
-        marginRight: rpWidth(16),
+        marginRight: 16,
       }}>
       <MapButton onPress={handleMyLocation} icon="myLocation" />
     </Animated.View>

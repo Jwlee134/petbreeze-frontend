@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
-import { Animated } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { Animated, useWindowDimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useDispatch } from "react-redux";
 import styled from "styled-components/native";
@@ -8,7 +8,6 @@ import FirstIntro from "~/components/intro/FirstIntro";
 import PageIndicatorCircle from "~/components/intro/PageIndicatorCircle";
 import SecondIntro from "~/components/intro/SecondIntro";
 import ThirdIntro from "~/components/intro/ThirdIntro";
-import { DimensionsContext } from "~/context/DimensionsContext";
 import usePagingFlatList from "~/hooks/usePagingFlatList";
 import { storageActions } from "~/store/storage";
 import { IntroScreenNavigationProp } from "~/types/navigator";
@@ -34,7 +33,7 @@ const Intro = ({ navigation }: { navigation: IntroScreenNavigationProp }) => {
   const { PagingFlatList } = usePagingFlatList();
   const { top, bottom } = useSafeAreaInsets();
   const dispatch = useDispatch();
-  const { width, rpWidth, rpHeight } = useContext(DimensionsContext);
+  const { width } = useWindowDimensions();
 
   const [currentPage, setCurrentPage] = useState(1);
   const value = useRef(new Animated.Value(0)).current;
@@ -56,8 +55,8 @@ const Intro = ({ navigation }: { navigation: IntroScreenNavigationProp }) => {
     <>
       <SkipButton
         style={{
-          marginTop: rpHeight(18) + top,
-          marginRight: rpWidth(20),
+          marginTop: 18 + top,
+          marginRight: 20,
           marginLeft: "auto",
         }}
         onPress={() => {
@@ -84,7 +83,7 @@ const Intro = ({ navigation }: { navigation: IntroScreenNavigationProp }) => {
       />
       <PageIndicator
         style={{
-          marginBottom: rpHeight(54) + bottom,
+          marginBottom: 54 + bottom,
         }}>
         <PageIndicatorCircle isFocused={currentPage === 1} />
         <PageIndicatorCircle isFocused={currentPage === 2} />

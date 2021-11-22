@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useEffect } from "react";
 import { View } from "react-native";
 import Button from "~/components/common/Button";
 import KeyboardAwareScrollContainer from "~/components/common/container/KeyboardAwareScrollContainer";
@@ -13,7 +13,6 @@ import { bleActions } from "~/store/ble";
 import { useAppSelector } from "~/store";
 import { deviceSettingActions } from "~/store/deviceSetting";
 import WifiManager from "react-native-wifi-reborn";
-import { DimensionsContext } from "~/context/DimensionsContext";
 import { centerModalOutTiming } from "~/styles/constants";
 
 const WiFiForm = ({
@@ -24,7 +23,6 @@ const WiFiForm = ({
   const { open, close, modalProps } = useModal();
   const { ssid, pw } = useAppSelector(state => state.deviceSetting.wifi.draft);
   const dispatch = useDispatch();
-  const { rpWidth } = useContext(DimensionsContext);
   const disconnected = useAppSelector(state => state.ble.disconnected);
 
   useEffect(() => {
@@ -44,9 +42,9 @@ const WiFiForm = ({
       <KeyboardAwareScrollContainer isSpaceBetween>
         <View
           style={{
-            marginTop: rpWidth(90),
-            paddingHorizontal: rpWidth(43),
-            marginBottom: rpWidth(200),
+            marginTop: 90,
+            paddingHorizontal: 43,
+            marginBottom: 200,
           }}>
           <InputTitle>WiFi 이름</InputTitle>
           <Input
@@ -88,7 +86,7 @@ const WiFiForm = ({
               }
             }}
             style={{
-              marginBottom: rpWidth(12),
+              marginBottom: 12,
             }}>
             다음
           </Button>

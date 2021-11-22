@@ -1,8 +1,7 @@
-import React, { memo, useContext } from "react";
+import React, { memo } from "react";
 import { Animated, ViewStyle } from "react-native";
 import styled, { css } from "styled-components/native";
 import { Device } from "~/api/device";
-import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import AnimatedCircularProgress from "../common/AnimatedCircularProgress";
 
 interface Props {
@@ -17,13 +16,12 @@ interface Props {
 interface PressableProps {
   index?: number;
   length?: number;
-  rpWidth: RpWidth;
 }
 
 const Pressable = styled.Pressable<PressableProps>`
   position: absolute;
-  bottom: ${({ rpWidth }) => rpWidth(40)}px;
-  ${({ index, length, rpWidth }) => {
+  bottom: 40px;
+  ${({ index, length }) => {
     switch (length) {
       case 1:
         return css`
@@ -31,7 +29,7 @@ const Pressable = styled.Pressable<PressableProps>`
         `;
       case 2:
         return css`
-          margin-left: -${rpWidth(45)}px;
+          margin-left: -45px;
           ${index === 0 ? { left: "33%" } : { left: "66%" }}
         `;
       case 3:
@@ -47,7 +45,7 @@ const Pressable = styled.Pressable<PressableProps>`
         return css`
           position: relative;
           bottom: 0;
-          margin: 0px ${rpWidth(10)}px;
+          margin: 0px 10px;
         `;
     }
   }}
@@ -60,28 +58,23 @@ const HomeAvatar = ({
   onAvatarPress,
   onAvatarLongPress,
   style,
-}: Props) => {
-  const { rpWidth } = useContext(DimensionsContext);
-
-  return (
-    <Pressable
-      onPress={() => onAvatarPress(device.id)}
-      onLongPress={() => onAvatarLongPress(device.id)}
-      rpWidth={rpWidth}
-      length={length}
-      index={index}>
-      <Animated.View style={style}>
-        <AnimatedCircularProgress
-          avatar={device.profile_image}
-          preventRpHeight
-          circleWidth={length > 2 ? 70 : 90}
-          lineWidth={length > 2 ? 5 : 7}
-          battery={device.battery}
-          highlightOnEmergency={device.is_missed}
-        />
-      </Animated.View>
-    </Pressable>
-  );
-};
+}: Props) => (
+  <Pressable
+    onPress={() => onAvatarPress(device.id)}
+    onLongPress={() => onAvatarLongPress(device.id)}
+    length={length}
+    index={index}>
+    <Animated.View style={style}>
+      <AnimatedCircularProgress
+        avatar={device.profile_image}
+        preventRpHeight
+        circleWidth={length > 2 ? 70 : 90}
+        lineWidth={length > 2 ? 5 : 7}
+        battery={device.battery}
+        highlightOnEmergency={device.is_missed}
+      />
+    </Animated.View>
+  </Pressable>
+);
 
 export default memo(HomeAvatar);

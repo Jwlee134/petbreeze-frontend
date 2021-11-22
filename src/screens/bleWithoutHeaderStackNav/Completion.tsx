@@ -1,5 +1,5 @@
-import React, { useContext } from "react";
-import styled, { css } from "styled-components/native";
+import React from "react";
+import styled from "styled-components/native";
 import SafeAreaContainer from "~/components/common/container/SafeAreaContainer";
 import MyText from "~/components/common/MyText";
 import Confetti from "~/components/lottie/Confetti";
@@ -10,21 +10,18 @@ import Divider from "~/components/common/Divider";
 import { Animated, View } from "react-native";
 import useAnimatedSequence from "~/hooks/useAnimatedSequence";
 import { CompletionScreenNavigationProp } from "~/types/navigator";
-import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import { noAvatar, noName } from "~/constants";
 
-const DeviceContainer = styled(Animated.View)<{ rpWidth: RpWidth }>`
-  margin-top: ${({ rpWidth }) => rpWidth(52)}px;
+const DeviceContainer = styled(Animated.View)`
+  margin-top: $52px;
   align-items: center;
 `;
 
-const Image = styled.Image<{ rpWidth: RpWidth }>`
-  ${({ rpWidth }) => css`
-    width: ${rpWidth(120)}px;
-    height: ${rpWidth(120)}px;
-    border-radius: ${rpWidth(60)}px;
-    margin-bottom: ${rpWidth(10)}px;
-  `}
+const Image = styled.Image`
+  width: 120px;
+  height: 120px;
+  border-radius: 60px;
+  margin-bottom: 10px;
 `;
 
 const RowContainer = styled.View`
@@ -46,7 +43,6 @@ const Completion = ({
     state => state.form,
   );
   const deviceID = useAppSelector(state => state.ble.deviceID);
-  const { rpWidth } = useContext(DimensionsContext);
 
   const [value1, value2] = useAnimatedSequence({
     numOfValues: 2,
@@ -64,7 +60,7 @@ const Completion = ({
 
   const translateY = value2.interpolate({
     inputRange: [0, 1],
-    outputRange: [rpWidth(1000), 0],
+    outputRange: [1000, 0],
   });
 
   return (
@@ -72,24 +68,19 @@ const Completion = ({
       <Confetti />
       <Animated.View style={{ opacity: value1 }}>
         <MyText
-          style={{ textAlign: "center", marginTop: rpWidth(88) }}
+          style={{ textAlign: "center", marginTop: 88 }}
           fontWeight="medium"
           fontSize={24}>
           모든 단계를{"\n"}완료했습니다!
         </MyText>
       </Animated.View>
-      <DeviceContainer
-        rpWidth={rpWidth}
-        style={{ transform: [{ translateY }] }}>
-        <Image
-          rpWidth={rpWidth}
-          source={photos[0] ? { uri: photos[0] } : noAvatar}
-        />
+      <DeviceContainer style={{ transform: [{ translateY }] }}>
+        <Image source={photos[0] ? { uri: photos[0] } : noAvatar} />
         <RowContainer>
           <Footprint
-            width={rpWidth(22)}
-            height={rpWidth(21)}
-            style={{ marginTop: rpWidth(3), marginRight: rpWidth(3) }}
+            width={22}
+            height={21}
+            style={{ marginTop: 3, marginRight: 3 }}
           />
           <MyText fontWeight="medium" fontSize={20} color={palette.blue_7b_90}>
             {name || noName}
@@ -99,43 +90,36 @@ const Completion = ({
           <MyText fontSize={14} color="rgba(0, 0, 0, 0.3)">
             {species}
           </MyText>
-          <Divider
-            isVertical
-            style={{ height: rpWidth(10), marginHorizontal: rpWidth(5) }}
-          />
+          <Divider isVertical style={{ height: 10, marginHorizontal: 5 }} />
           <MyText fontSize={14} color="rgba(0, 0, 0, 0.3)">
             {birthYear
               ? `${new Date().getFullYear() - Number(birthYear || 1997) + 1}세`
               : "나이 미상"}
           </MyText>
-          <Divider
-            isVertical
-            style={{ height: rpWidth(10), marginHorizontal: rpWidth(5) }}
-          />
+          <Divider isVertical style={{ height: 10, marginHorizontal: 5 }} />
           <MyText fontSize={14} color="rgba(0, 0, 0, 0.3)">
             {sex ? "남" : "여"}
           </MyText>
         </RowContainer>
-        <View style={{ marginTop: rpWidth(30), height: rpWidth(200) }}>
-          <RowContainer
-            style={{ alignItems: "flex-start", marginBottom: rpWidth(12) }}>
+        <View style={{ marginTop: 30, height: 200 }}>
+          <RowContainer style={{ alignItems: "flex-start", marginBottom: 12 }}>
             <MyText
-              style={{ width: rpWidth(100) }}
+              style={{ width: 100 }}
               fontSize={14}
               color="rgba(0, 0, 0, 0.5)">
               디바이스 이름
             </MyText>
-            <MyText style={{ width: rpWidth(100) }}>{deviceID}</MyText>
+            <MyText style={{ width: 100 }}>{deviceID}</MyText>
           </RowContainer>
           {safetyZoneName ? (
             <RowContainer>
               <MyText
-                style={{ width: rpWidth(100) }}
+                style={{ width: 100 }}
                 fontSize={14}
                 color="rgba(0, 0, 0, 0.5)">
                 안심존
               </MyText>
-              <MyText style={{ width: rpWidth(100) }}>{safetyZoneName}</MyText>
+              <MyText style={{ width: 100 }}>{safetyZoneName}</MyText>
             </RowContainer>
           ) : null}
         </View>

@@ -1,31 +1,26 @@
-import React, { useContext } from "react";
-import styled, { css } from "styled-components/native";
+import React from "react";
+import styled from "styled-components/native";
 import Pencil from "~/assets/svg/myPage/pencil.svg";
 import Divider from "../../common/Divider";
 import { TouchableOpacity } from "react-native";
 import MyText from "../../common/MyText";
 import { useNavigation } from "@react-navigation/native";
-import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import deviceApi from "~/api/device";
 import { DeviceSettingScreenNavigationProp } from "~/types/navigator";
 import { useDispatch } from "react-redux";
 import { noAvatar, noName } from "~/constants";
 import { formActions } from "~/store/form";
 
-const Container = styled.View<{ rpWidth: RpWidth }>`
+const Container = styled.View`
   align-items: center;
-  ${({ rpWidth }) => css`
-    padding-top: ${rpWidth(25)}px;
-    padding-bottom: ${rpWidth(14)}px;
-  `}
+  padding-top: 25px;
+  padding-bottom: 14px;
 `;
 
-const Image = styled.Image<{ rpWidth: RpWidth }>`
-  ${({ rpWidth }) => css`
-    width: ${rpWidth(70, true)}px;
-    height: ${rpWidth(70, true)}px;
-    border-radius: ${rpWidth(35, true)}px;
-  `}
+const Image = styled.Image`
+  width: 70px;
+  height: 70px;
+  border-radius: 35px;
 `;
 
 const ProfileSection = ({
@@ -38,14 +33,13 @@ const ProfileSection = ({
   name: string;
 }) => {
   const navigation = useNavigation<DeviceSettingScreenNavigationProp>();
-  const { rpWidth } = useContext(DimensionsContext);
   const { data } = deviceApi.useGetDeviceProfileQuery(deviceID, {
     refetchOnMountOrArgChange: true,
   });
   const dispatch = useDispatch();
 
   return (
-    <Container rpWidth={rpWidth}>
+    <Container>
       <TouchableOpacity
         onPress={() => {
           if (!data) return;
@@ -67,7 +61,6 @@ const ProfileSection = ({
           });
         }}>
         <Image
-          rpWidth={rpWidth}
           source={
             data?.profile_image
               ? { uri: data?.profile_image }
@@ -77,8 +70,8 @@ const ProfileSection = ({
           }
         />
         <Pencil
-          width={rpWidth(28)}
-          height={rpWidth(28)}
+          width={28}
+          height={28}
           style={{
             position: "absolute",
             bottom: 0,
@@ -86,13 +79,13 @@ const ProfileSection = ({
           }}
         />
       </TouchableOpacity>
-      <MyText style={{ marginTop: rpWidth(7) }} fontWeight="medium">
+      <MyText style={{ marginTop: 7 }} fontWeight="medium">
         {data?.name || name || noName}
       </MyText>
       <MyText fontSize={12} color="rgba(0, 0, 0, 0.3)">
         {data?.species || "품종 없음"}
         {"  "}
-        <Divider isVertical height={rpWidth(8)} />
+        <Divider isVertical height={8} />
         {"  "}
         {data?.birthdate
           ? `${
@@ -102,7 +95,7 @@ const ProfileSection = ({
             }세`
           : "나이 미상"}
         {"  "}
-        <Divider isVertical height={rpWidth(8)} />
+        <Divider isVertical height={8} />
         {"  "}
         {data?.sex ? "남" : "여"}
       </MyText>

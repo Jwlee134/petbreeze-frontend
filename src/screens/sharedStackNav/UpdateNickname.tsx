@@ -1,20 +1,18 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Keyboard, StyleSheet, TouchableWithoutFeedback } from "react-native";
 import styled from "styled-components/native";
 import userApi from "~/api/user";
 import Tag from "~/assets/svg/myPage/name-tag-blue.svg";
 import Input from "~/components/common/Input";
 import MyText from "~/components/common/MyText";
-import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import useDebounce from "~/hooks/useDebounce";
 
-const Container = styled.View<{ rpWidth: RpWidth }>`
+const Container = styled.View`
   flex: 1;
-  padding: ${({ rpWidth }) => `0 ${rpWidth(50)}px`};
+  padding: 0 50px;
 `;
 
 const UpdateNickname = () => {
-  const { rpWidth } = useContext(DimensionsContext);
   const { data } = userApi.useGetNicknameQuery();
   const [trigger] = userApi.useUpdateNicknameMutation();
 
@@ -38,11 +36,11 @@ const UpdateNickname = () => {
     <TouchableWithoutFeedback
       style={StyleSheet.absoluteFill}
       onPress={Keyboard.dismiss}>
-      <Container rpWidth={rpWidth}>
+      <Container>
         <Tag
-          width={rpWidth(83)}
-          height={rpWidth(87)}
-          style={{ alignSelf: "center", marginVertical: rpWidth(64) }}
+          width={83}
+          height={87}
+          style={{ alignSelf: "center", marginVertical: 64 }}
         />
         <Input
           maxLength={32}

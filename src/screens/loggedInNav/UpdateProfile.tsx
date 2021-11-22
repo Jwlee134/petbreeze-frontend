@@ -1,7 +1,7 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 import { useDispatch } from "react-redux";
-import styled, { css } from "styled-components/native";
+import styled from "styled-components/native";
 import deviceApi from "~/api/device";
 import Button from "~/components/common/Button";
 import KeyboardAwareScrollContainer from "~/components/common/container/KeyboardAwareScrollContainer";
@@ -9,7 +9,6 @@ import Input from "~/components/common/Input";
 import InputTitle from "~/components/common/InputTitle";
 import SelectableButton from "~/components/common/SelectableButton";
 import { noAvatar, serverImageUri } from "~/constants";
-import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import useModal from "~/hooks/useModal";
 import { useAppSelector } from "~/store";
 import { UpdateProfileScreenProps } from "~/types/navigator";
@@ -19,14 +18,12 @@ import CommonCenterModal from "~/components/modal/CommonCenterModal";
 import DatePicker from "react-native-date-picker";
 import { formActions } from "~/store/form";
 
-const AvatarButton = styled.TouchableOpacity<{ rpWidth: RpWidth }>`
-  ${({ rpWidth }) => css`
-    width: ${rpWidth(108)}px;
-    height: ${rpWidth(108)}px;
-    border-radius: ${rpWidth(54)}px;
-    margin-top: ${rpWidth(34)}px;
-    margin-bottom: ${rpWidth(28)}px;
-  `}
+const AvatarButton = styled.TouchableOpacity`
+  width: 108px;
+  height: 108px;
+  border-radius: 54px;
+  margin-top: 34px;
+  margin-bottom: 28px;
   overflow: hidden;
   align-self: center;
 `;
@@ -36,8 +33,8 @@ const Image = styled.Image`
   height: 100%;
 `;
 
-const InputContainer = styled.View<{ rpWidth: RpWidth }>`
-  padding: ${({ rpWidth }) => `0px ${rpWidth(36)}px`};
+const InputContainer = styled.View`
+  padding: 0 36px;
 `;
 
 const RowContainer = styled.View`
@@ -50,7 +47,6 @@ const UpdateProfile = ({
     params: { deviceID },
   },
 }: UpdateProfileScreenProps) => {
-  const { rpWidth } = useContext(DimensionsContext);
   const {
     name,
     birthYear,
@@ -110,13 +106,11 @@ const UpdateProfile = ({
   return (
     <>
       <KeyboardAwareScrollContainer isSpaceBetween>
-        <View style={{ marginBottom: rpWidth(30) }}>
-          <AvatarButton
-            onPress={imageHandler.openCircleCropper}
-            rpWidth={rpWidth}>
+        <View style={{ marginBottom: 30 }}>
+          <AvatarButton onPress={imageHandler.openCircleCropper}>
             <Image source={photos[0] ? { uri: photos[0] } : noAvatar} />
           </AvatarButton>
-          <InputContainer rpWidth={rpWidth}>
+          <InputContainer>
             <InputTitle>이름</InputTitle>
             <Input
               maxLength={16}
@@ -138,7 +132,7 @@ const UpdateProfile = ({
             <InputTitle>성별</InputTitle>
             <RowContainer>
               <SelectableButton
-                style={{ flexGrow: 1, marginRight: rpWidth(20) }}
+                style={{ flexGrow: 1, marginRight: 20 }}
                 onPress={() => dispatch(formActions.setState({ sex: true }))}
                 selected={sex}>
                 남
@@ -203,10 +197,10 @@ const UpdateProfile = ({
             close();
           }}
           close={close}
-          style={{ width: rpWidth(300) }}>
+          style={{ width: 300 }}>
           <DatePicker
             style={{
-              width: rpWidth(300),
+              width: 300,
             }}
             date={date}
             onDateChange={setDate}

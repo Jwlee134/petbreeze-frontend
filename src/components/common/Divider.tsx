@@ -1,20 +1,18 @@
-import React, { useContext } from "react";
+import React from "react";
 import { StyleProp, StyleSheet, ViewStyle } from "react-native";
 import styled, { css } from "styled-components/native";
-import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 
 interface ContainerProps {
   isVertical: boolean;
   isHairline: boolean;
   width?: number;
   height?: number;
-  rpWidth: RpWidth;
 }
 
 const Container = styled.View<ContainerProps>`
   background-color: ${({ isHairline }) =>
     isHairline ? "rgba(0, 0, 0, 0.3)" : "rgba(0, 0, 0, 0.03)"};
-  ${({ isVertical, isHairline, rpWidth }) =>
+  ${({ isVertical, isHairline }) =>
     isVertical
       ? css`
           height: 100%;
@@ -22,7 +20,7 @@ const Container = styled.View<ContainerProps>`
         `
       : css`
           width: 100%;
-          height: ${isHairline ? StyleSheet.hairlineWidth : rpWidth(4)}px;
+          height: ${isHairline ? StyleSheet.hairlineWidth : 4}px;
         `}
   ${({ width, height }) => {
     if (width)
@@ -48,19 +46,14 @@ const Divider = ({
   isHairline?: boolean;
   width?: number;
   height?: number;
-}) => {
-  const { rpWidth } = useContext(DimensionsContext);
-
-  return (
-    <Container
-      isHairline={isHairline}
-      isVertical={isVertical}
-      width={width}
-      height={height}
-      rpWidth={rpWidth}
-      style={style}
-    />
-  );
-};
+}) => (
+  <Container
+    isHairline={isHairline}
+    isVertical={isVertical}
+    width={width}
+    height={height}
+    style={style}
+  />
+);
 
 export default Divider;

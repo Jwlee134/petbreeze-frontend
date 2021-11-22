@@ -1,9 +1,8 @@
-import React, { useContext, useMemo } from "react";
+import React, { useMemo } from "react";
 import styled from "styled-components/native";
 import MyText from "../../common/MyText";
 import Location from "~/assets/svg/myPage/location.svg";
 import ScrollPicker from "../../common/ScrollPicker";
-import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import { useDispatch } from "react-redux";
 import { useAppSelector } from "~/store";
 import { deviceSettingActions } from "~/store/deviceSetting";
@@ -14,20 +13,19 @@ const RowContainer = styled.View`
   align-items: center;
 `;
 
-const SvgContainer = styled.View<{ rpWidth: RpWidth }>`
-  width: ${({ rpWidth }) => rpWidth(48)}px;
+const SvgContainer = styled.View`
+  width: 48px;
   align-items: center;
 `;
 
-const Container = styled(RowContainer)<{ rpWidth: RpWidth }>`
-  height: ${({ rpWidth }) => rpWidth(79)}px;
-  padding: ${({ rpWidth }) => `0px ${rpWidth(16)}px`};
+const Container = styled(RowContainer)`
+  height: 79px;
+  padding: 0 16px;
   justify-content: space-between;
 `;
 
 const Period = ({ deviceID }: { deviceID: number }) => {
   const period = useAppSelector(state => state.deviceSetting.period);
-  const { rpWidth } = useContext(DimensionsContext);
   const dispatch = useDispatch();
 
   const { data } = deviceApi.endpoints.getDeviceList.useQueryState();
@@ -52,10 +50,10 @@ const Period = ({ deviceID }: { deviceID: number }) => {
   }, [data]);
 
   return (
-    <Container rpWidth={rpWidth}>
+    <Container>
       <RowContainer>
-        <SvgContainer rpWidth={rpWidth}>
-          <Location width={rpWidth(16)} height={rpWidth(20)} />
+        <SvgContainer>
+          <Location width={16} height={20} />
         </SvgContainer>
         <MyText>위치정보 수신 주기</MyText>
       </RowContainer>
@@ -66,9 +64,9 @@ const Period = ({ deviceID }: { deviceID: number }) => {
           onValueChange={(value, index) => {
             dispatch(deviceSettingActions.setPeriod(periodArr[index].value));
           }}
-          width={rpWidth(88)}
-          height={rpWidth(36)}
-          style={{ marginRight: rpWidth(16) }}
+          width={88}
+          height={36}
+          style={{ marginRight: 16 }}
         />
       )}
     </Container>

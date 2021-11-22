@@ -1,5 +1,5 @@
-import React, { useContext } from "react";
-import styled, { css } from "styled-components/native";
+import React from "react";
+import styled from "styled-components/native";
 
 import Home from "~/assets/svg/tab/home.svg";
 import HomeOutline from "~/assets/svg/tab/home-outline.svg";
@@ -9,22 +9,19 @@ import Bell from "~/assets/svg/tab/bell.svg";
 import BellOutline from "~/assets/svg/tab/bell-outline.svg";
 import User from "~/assets/svg/tab/user.svg";
 import UserOutline from "~/assets/svg/tab/user-outline.svg";
-import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import palette from "~/styles/palette";
 
 const Container = styled.View``;
 
-const Point = styled.View<{ rpWidth: RpWidth }>`
+const Point = styled.View`
   position: absolute;
-  ${({ rpWidth }) => css`
-    width: ${rpWidth(6)}px;
-    height: ${rpWidth(6)}px;
-    border-radius: ${rpWidth(3)}px;
-    background-color: ${palette.blue_7b};
-    right: -${rpWidth(4)}px;
-    top: -${rpWidth(4)}px;
-  `}
+  width: 6px;
+  height: 6px;
+  border-radius: 3px;
+  background-color: ${palette.blue_7b};
+  right: -4px;
+  top: -4px;
 `;
 
 const Tab = ({
@@ -36,34 +33,33 @@ const Tab = ({
   name: string;
   newNotifExists: boolean;
 }) => {
-  const { rpWidth } = useContext(DimensionsContext);
   const { bottom } = useSafeAreaInsets();
 
   const Icon = () => {
     switch (name) {
       case "HomeTab":
         return isFocused ? (
-          <Home width={rpWidth(24)} height={rpWidth(23)} />
+          <Home width={24} height={23} />
         ) : (
-          <HomeOutline width={rpWidth(24)} height={rpWidth(23)} />
+          <HomeOutline width={24} height={23} />
         );
       case "WalkTab":
         return isFocused ? (
-          <Footprint width={rpWidth(25)} height={rpWidth(24)} />
+          <Footprint width={25} height={24} />
         ) : (
-          <FootprintOutline width={rpWidth(25)} height={rpWidth(24)} />
+          <FootprintOutline width={25} height={24} />
         );
       case "NotificationTab":
         return isFocused ? (
-          <Bell width={rpWidth(21)} height={rpWidth(24)} />
+          <Bell width={21} height={24} />
         ) : (
-          <BellOutline width={rpWidth(21)} height={rpWidth(24)} />
+          <BellOutline width={21} height={24} />
         );
       case "MyPageTab":
         return isFocused ? (
-          <User width={rpWidth(22)} height={rpWidth(23)} />
+          <User width={22} height={23} />
         ) : (
-          <UserOutline width={rpWidth(22)} height={rpWidth(23)} />
+          <UserOutline width={22} height={23} />
         );
       default:
         return <></>;
@@ -73,7 +69,7 @@ const Tab = ({
   return (
     <Container style={{ marginBottom: bottom }}>
       {newNotifExists && name === "NotificationTab" && !isFocused ? (
-        <Point rpWidth={rpWidth} />
+        <Point />
       ) : null}
       {Icon()}
     </Container>

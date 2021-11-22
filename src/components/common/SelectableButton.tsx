@@ -1,12 +1,11 @@
-import React, { ReactNode, useContext, useEffect, useRef } from "react";
+import React, { ReactNode, useEffect, useRef } from "react";
 import {
   Animated,
   StyleProp,
   TouchableOpacityProps,
   ViewStyle,
 } from "react-native";
-import styled, { css } from "styled-components/native";
-import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
+import styled from "styled-components/native";
 import palette from "~/styles/palette";
 import MyText from "./MyText";
 
@@ -17,18 +16,16 @@ interface Props extends TouchableOpacityProps {
   fontColor?: string;
 }
 
-const Button = styled.TouchableOpacity<{ rpWidth: RpWidth }>`
-  ${({ rpWidth }) => css`
-    height: ${rpWidth(39)}px;
-    margin-bottom: ${rpWidth(20)}px;
-  `}
+const Button = styled.TouchableOpacity`
+  height: 39px;
+  margin-bottom: 20px;
   flex-grow: 1;
 `;
 
-const Container = styled(Animated.View)<{ rpWidth: RpWidth }>`
+const Container = styled(Animated.View)`
   background-color: white;
   height: 100%;
-  border-radius: ${({ rpWidth }) => rpWidth(28)}px;
+  border-radius: 28px;
   border-width: 1px;
   justify-content: center;
   align-items: center;
@@ -41,7 +38,6 @@ const SelectableButton = ({
   fontColor,
   ...props
 }: Props) => {
-  const { rpWidth } = useContext(DimensionsContext);
   const value = useRef(new Animated.Value(selected ? 1 : 0)).current;
 
   const color = value.interpolate({
@@ -58,9 +54,8 @@ const SelectableButton = ({
   }, [selected]);
 
   return (
-    <Button rpWidth={rpWidth} {...props}>
+    <Button {...props}>
       <Container
-        rpWidth={rpWidth}
         style={{
           borderColor: color,
           ...(containerStyle as object),

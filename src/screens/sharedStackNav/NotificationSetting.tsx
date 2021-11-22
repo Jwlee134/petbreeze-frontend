@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useState } from "react";
-import styled, { css } from "styled-components/native";
+import React, { useEffect, useState } from "react";
+import styled from "styled-components/native";
 import userApi, { NotificationSettings } from "~/api/user";
 import Switch from "~/components/common/Switch";
 import * as SecureStore from "expo-secure-store";
@@ -10,15 +10,15 @@ import Battery from "~/assets/svg/myPage/battery.svg";
 import Wifi from "~/assets/svg/myPage/lost-wifi.svg";
 import Pencil from "~/assets/svg/myPage/pencil-noti.svg";
 import Check from "~/assets/svg/myPage/check.svg";
-import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import Divider from "~/components/common/Divider";
+import { useWindowDimensions } from "react-native";
 
 const Container = styled.View``;
 
-const Svg = styled.View<{ rpWidth: RpWidth }>`
-  width: ${({ rpWidth }) => rpWidth(46)}px;
+const Svg = styled.View`
+  width: 46px;
   align-items: center;
-  margin-left: ${({ rpWidth }) => rpWidth(19)}px;
+  margin-left: 19px;
 `;
 
 const RowContainer = styled.View`
@@ -26,15 +26,13 @@ const RowContainer = styled.View`
   align-items: center;
 `;
 
-const Item = styled(RowContainer)<{ rpWidth: RpWidth; isLast?: boolean }>`
+const Item = styled(RowContainer)<{ isLast?: boolean }>`
   justify-content: space-between;
-  ${({ rpWidth, isLast }) => css`
-    margin-bottom: ${isLast ? 0 : rpWidth(22)}px;
-  `}
+  margin-bottom: ${({ isLast }) => (isLast ? 0 : 22)}px;
 `;
 
 const NotificationSetting = () => {
-  const { rpWidth, width } = useContext(DimensionsContext);
+  const { width } = useWindowDimensions();
   const [token, setToken] = useState("");
   const { data } = userApi.useGetNofiticationSettingsQuery(token, {
     skip: !token.length,
@@ -54,15 +52,15 @@ const NotificationSetting = () => {
   return (
     <Container>
       <MyText
-        style={{ marginLeft: rpWidth(32), marginVertical: rpWidth(25) }}
+        style={{ marginLeft: 32, marginVertical: 25 }}
         fontSize={14}
         color="rgba(0, 0, 0, 0.3)">
         기기 알림
       </MyText>
-      <Item rpWidth={rpWidth}>
+      <Item>
         <RowContainer>
-          <Svg rpWidth={rpWidth}>
-            <Shield width={rpWidth(19)} height={rpWidth(20)} />
+          <Svg>
+            <Shield width={19} height={20} />
           </Svg>
           <MyText>안심존 이탈 알림</MyText>
         </RowContainer>
@@ -80,10 +78,10 @@ const NotificationSetting = () => {
           }}
         />
       </Item>
-      <Item rpWidth={rpWidth}>
+      <Item>
         <RowContainer>
-          <Svg rpWidth={rpWidth}>
-            <Battery width={rpWidth(13)} height={rpWidth(19)} />
+          <Svg>
+            <Battery width={13} height={19} />
           </Svg>
           <MyText>배터리 부족 알림</MyText>
         </RowContainer>
@@ -101,10 +99,10 @@ const NotificationSetting = () => {
           }}
         />
       </Item>
-      <Item rpWidth={rpWidth} isLast>
+      <Item isLast>
         <RowContainer>
-          <Svg rpWidth={rpWidth}>
-            <Wifi width={rpWidth(20)} height={rpWidth(15)} />
+          <Svg>
+            <Wifi width={20} height={15} />
           </Svg>
           <MyText>연결 끊김 알림</MyText>
         </RowContainer>
@@ -124,18 +122,18 @@ const NotificationSetting = () => {
       </Item>
       <MyText
         style={{
-          marginLeft: rpWidth(32),
-          marginTop: rpWidth(60),
-          marginBottom: rpWidth(25),
+          marginLeft: 32,
+          marginTop: 60,
+          marginBottom: 25,
         }}
         fontSize={14}
         color="rgba(0, 0, 0, 0.3)">
         산책 알림
       </MyText>
-      <Item rpWidth={rpWidth}>
+      <Item>
         <RowContainer>
-          <Svg rpWidth={rpWidth}>
-            <Pencil width={rpWidth(18)} height={rpWidth(18)} />
+          <Svg>
+            <Pencil width={18} height={18} />
           </Svg>
           <MyText>산책 시작 알림</MyText>
         </RowContainer>
@@ -153,10 +151,10 @@ const NotificationSetting = () => {
           }}
         />
       </Item>
-      <Item rpWidth={rpWidth} isLast>
+      <Item isLast>
         <RowContainer>
-          <Svg rpWidth={rpWidth}>
-            <Check width={rpWidth(17)} height={rpWidth(12)} />
+          <Svg>
+            <Check width={17} height={12} />
           </Svg>
           <MyText>산책 종료 알림</MyText>
         </RowContainer>
@@ -176,13 +174,13 @@ const NotificationSetting = () => {
       </Item>
       <Divider
         style={{
-          width: width - rpWidth(34),
+          width: width - 34,
           alignSelf: "center",
-          marginVertical: rpWidth(27),
+          marginVertical: 27,
         }}
       />
-      <Item rpWidth={rpWidth}>
-        <MyText style={{ marginLeft: rpWidth(32) }} fontWeight="medium">
+      <Item>
+        <MyText style={{ marginLeft: 32 }} fontWeight="medium">
           전체 알림 설정
         </MyText>
         <Switch

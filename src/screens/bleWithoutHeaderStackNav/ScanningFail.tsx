@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import { View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useDispatch } from "react-redux";
@@ -10,7 +10,6 @@ import { bleActions } from "~/store/ble";
 import { ScanningFailScreenNavigationProp } from "~/types/navigator";
 import Exclamation from "~/assets/svg/exclamation/exclamation-mark-white.svg";
 import ParagraphWithCheckCircle from "~/components/ble/ParagraphWithCheckCircle";
-import { DimensionsContext } from "~/context/DimensionsContext";
 
 const TopContainer = styled.View`
   flex: 1;
@@ -30,7 +29,6 @@ const ScanningFail = ({
 }) => {
   const { top } = useSafeAreaInsets();
   const dispatch = useDispatch();
-  const { rpWidth } = useContext(DimensionsContext);
 
   return (
     <GradientContainer>
@@ -41,13 +39,13 @@ const ScanningFail = ({
             fontSize={24}
             color="white"
             style={{
-              marginTop: top + rpWidth(99),
+              marginTop: top + 99,
               textAlign: "center",
-              marginBottom: rpWidth(44),
+              marginBottom: 44,
             }}>
             연결 실패{"\n"}확인해주세요.
           </MyText>
-          <Exclamation width={rpWidth(12)} height={rpWidth(58)} />
+          <Exclamation width={12} height={58} />
         </View>
       </TopContainer>
       <BottomContainer>
@@ -70,7 +68,7 @@ const ScanningFail = ({
             }}
             backgroundColor="rgba(255, 255, 255, 0.3)"
             style={{
-              marginBottom: rpWidth(12),
+              marginBottom: 12,
             }}>
             다시 시도
           </Button>

@@ -1,19 +1,19 @@
-import React, { useContext } from "react";
+import React from "react";
 import styled from "styled-components/native";
 import GradientContainer from "~/components/common/container/GradientContainer";
 import Footprint from "~/assets/svg/footprint/footprint-app-icon-blue.svg";
-import { Animated, Linking } from "react-native";
+import { Animated, Linking, useWindowDimensions } from "react-native";
 import { StartScreenNavigationProp } from "~/types/navigator";
 import useAnimatedSequence from "~/hooks/useAnimatedSequence";
 import * as SecureStore from "expo-secure-store";
 import { isAndroid, isIos } from "~/utils";
-import { DimensionsContext } from "~/context/DimensionsContext";
 import messaging from "@react-native-firebase/messaging";
 import userApi from "~/api/user";
 import { secureItems } from "~/constants";
 import notificationHandler from "~/utils/notificationHandler";
 import MyText from "~/components/common/MyText";
 import { store } from "~/store";
+import { isIphoneX } from "react-native-iphone-x-helper";
 
 const Container = styled.View`
   flex: 1;
@@ -26,8 +26,8 @@ const LogoContainer = styled(Animated.View)`
 `;
 
 const Start = ({ navigation }: { navigation: StartScreenNavigationProp }) => {
-  const { rpWidth, rpHeight } = useContext(DimensionsContext);
   const [handleRead] = userApi.useReadNotificationsMutation();
+  const { height } = useWindowDimensions();
 
   const onAnimatedFinish = async () => {
     const token = await SecureStore.getItemAsync(secureItems.token);
@@ -81,7 +81,10 @@ const Start = ({ navigation }: { navigation: StartScreenNavigationProp }) => {
 
   const translateY = footprint.interpolate({
     inputRange: [0, 1],
-    outputRange: [rpHeight(isIos ? 181 : 137), rpHeight(isIos ? 262 : 218)],
+    outputRange: [
+      isIos ? height * 0.22 - (isIphoneX() ? 0 : 34) : height * 0.25,
+      isIos ? height * 0.32 - (isIphoneX() ? 0 : 34) : height * 0.3,
+    ],
   });
 
   return (
@@ -91,9 +94,9 @@ const Start = ({ navigation }: { navigation: StartScreenNavigationProp }) => {
           <Animated.View
             style={{
               opacity: footprint,
-              width: rpWidth(60),
-              height: rpHeight(83),
-              marginBottom: rpHeight(26),
+              width: 60,
+              height: 83,
+              marginBottom: 26,
             }}>
             <Footprint width="100%" height="100%" />
           </Animated.View>

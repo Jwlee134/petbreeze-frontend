@@ -1,7 +1,7 @@
-import React, { useContext, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Keyboard, TouchableWithoutFeedback } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import styled, { css } from "styled-components/native";
+import styled from "styled-components/native";
 import Button from "~/components/common/Button";
 import FakeMarker from "~/components/safetyZone/FakeMarker";
 import SafetyZoneMap from "~/components/safetyZone/SafetyZoneMap";
@@ -13,7 +13,6 @@ import MapButton from "~/components/common/MapButton";
 import SafetyZoneMapBottomSheet from "~/components/safetyZone/SafetyZoneMapBottomSheet";
 import SearchBar from "~/components/safetyZone/SearchBar";
 import { deviceSettingActions } from "~/store/deviceSetting";
-import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import {
   useAnimatedStyle,
   useSharedValue,
@@ -27,11 +26,9 @@ const Container = styled.View`
   justify-content: flex-end;
 `;
 
-const BackButton = styled.TouchableOpacity<{ rpWidth: RpWidth }>`
-  ${({ rpWidth }) => css`
-    width: ${rpWidth(44)}px;
-    height: ${rpWidth(44)}px;
-  `}
+const BackButton = styled.TouchableOpacity`
+  width: 44px;
+  height: 44px;
   position: absolute;
   left: 0;
   z-index: 1;
@@ -40,7 +37,6 @@ const BackButton = styled.TouchableOpacity<{ rpWidth: RpWidth }>`
 `;
 
 const SafetyZone = () => {
-  const { rpWidth } = useContext(DimensionsContext);
   const { top, bottom } = useSafeAreaInsets();
 
   const step2 = useAppSelector(state => state.deviceSetting.safetyZone.step2);
@@ -67,10 +63,10 @@ const SafetyZone = () => {
     );
   };
 
-  const bottomSheetHeight = rpWidth(188) + bottom;
+  const bottomSheetHeight = 188 + bottom;
   const mapPadding = {
-    top: rpWidth(82),
-    bottom: rpWidth(82),
+    top: 82,
+    bottom: 82,
   };
 
   const mapMarginBottom = useSharedValue(0);
@@ -119,7 +115,7 @@ const SafetyZone = () => {
           isVisible={!step2}
           style={{
             position: "absolute",
-            bottom: rpWidth(32) + bottom,
+            bottom: 32 + bottom,
             alignSelf: "center",
             zIndex: 0,
           }}>
@@ -138,8 +134,8 @@ const SafetyZone = () => {
           isVisible={!step2}
           style={{
             position: "absolute",
-            right: rpWidth(17),
-            bottom: rpWidth(108) + bottom,
+            right: 17,
+            bottom: 108 + bottom,
             zIndex: 0,
           }}>
           <MapButton icon="myLocation" onPress={handleMyLocation} />
@@ -151,7 +147,6 @@ const SafetyZone = () => {
         ) : (
           <>
             <BackButton
-              rpWidth={rpWidth}
               onPress={() =>
                 dispatch(
                   deviceSettingActions.setSafetyZone({
@@ -162,7 +157,7 @@ const SafetyZone = () => {
               style={{
                 top,
               }}>
-              <Arrow width={rpWidth(12)} height={rpWidth(20)} />
+              <Arrow width={12} height={20} />
             </BackButton>
           </>
         )}

@@ -1,8 +1,7 @@
-import React, { useContext } from "react";
+import React from "react";
 import { ScrollView } from "react-native";
 import ListItem from "~/components/common/ListItem";
 import { WalkRecordScreenNavigationProp } from "~/types/navigator";
-import { DimensionsContext } from "~/context/DimensionsContext";
 import { Device } from "~/api/device";
 import WalkDeviceListItem from "~/components/walk/WalkDeviceListItem";
 
@@ -13,12 +12,10 @@ const WalkRecord = ({
   navigation: WalkRecordScreenNavigationProp;
   deviceList: Device[];
 }) => {
-  const { rpHeight } = useContext(DimensionsContext);
-
   return (
     <ScrollView
       contentContainerStyle={{
-        paddingVertical: rpHeight(31),
+        paddingVertical: 31,
         flexGrow: 1,
       }}
       showsVerticalScrollIndicator={false}>

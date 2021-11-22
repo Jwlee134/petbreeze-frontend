@@ -1,10 +1,8 @@
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import LottieView from "lottie-react-native";
 import { StyleProp, ViewStyle } from "react-native";
-import { DimensionsContext } from "~/context/DimensionsContext";
 
 const Success = ({ style }: { style?: StyleProp<ViewStyle> }) => {
-  const { rpWidth } = useContext(DimensionsContext);
   const ref = useRef<LottieView>(null);
 
   useEffect(() => {
@@ -20,8 +18,8 @@ const Success = ({ style }: { style?: StyleProp<ViewStyle> }) => {
       autoPlay
       loop={false}
       style={{
-        width: rpWidth(139),
-        height: rpWidth(139),
+        width: 139,
+        height: 139,
         ...(style as object),
       }}
     />

@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import styled from "styled-components/native";
 import Loading1 from "~/assets/svg/loading/loading1.svg";
 import Loading2 from "~/assets/svg/loading/loading2.svg";
@@ -8,16 +8,15 @@ import GradientContainer from "~/components/common/container/GradientContainer";
 import { Animated } from "react-native";
 import useAnimatedSequence from "~/hooks/useAnimatedSequence";
 import AnimatedPoints from "~/components/common/AnimatedPoints";
-import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 
-const Container = styled.View<{ rpWidth: RpWidth }>`
-  margin-bottom: ${({ rpWidth }) => rpWidth(40)}px;
+const Container = styled.View`
+  margin-bottom: 40px;
 `;
 
-const LoadingContainer = styled.View<{ rpWidth: RpWidth }>`
+const LoadingContainer = styled.View`
   position: absolute;
   align-self: center;
-  bottom: ${({ rpWidth }) => rpWidth(6)}px;
+  bottom: 6px;
 `;
 
 const LoadingView = styled(Animated.View)`
@@ -25,9 +24,9 @@ const LoadingView = styled(Animated.View)`
   align-self: center;
 `;
 
-const RowContainer = styled.View<{ rpWidth: RpWidth }>`
+const RowContainer = styled.View`
   flex-direction: row;
-  margin-top: ${({ rpWidth }) => rpWidth(80)}px;
+  margin-top: 80px;
 `;
 
 const Loading = ({ loadingText }: { loadingText: string }) => {
@@ -35,7 +34,6 @@ const Loading = ({ loadingText }: { loadingText: string }) => {
     loop: true,
     numOfValues: 3,
   });
-  const { rpWidth } = useContext(DimensionsContext);
 
   return (
     <GradientContainer
@@ -43,21 +41,21 @@ const Loading = ({ loadingText }: { loadingText: string }) => {
         justifyContent: "center",
         alignItems: "center",
       }}>
-      <Container rpWidth={rpWidth}>
-        <Marker width={rpWidth(63)} height={rpWidth(83)} />
-        <LoadingContainer rpWidth={rpWidth}>
+      <Container>
+        <Marker width={63} height={83} />
+        <LoadingContainer>
           <LoadingView style={{ opacity: value1 }}>
-            <Loading1 width={rpWidth(134)} height={rpWidth(32)} />
+            <Loading1 width={134} height={32} />
           </LoadingView>
-          <LoadingView style={{ top: -rpWidth(5), opacity: value2 }}>
-            <Loading2 width={rpWidth(195)} height={rpWidth(51)} />
+          <LoadingView style={{ top: -5, opacity: value2 }}>
+            <Loading2 width={195} height={51} />
           </LoadingView>
-          <LoadingView style={{ top: -rpWidth(10), opacity: value3 }}>
-            <Loading3 width={rpWidth(251)} height={rpWidth(71)} />
+          <LoadingView style={{ top: -10, opacity: value3 }}>
+            <Loading3 width={251} height={71} />
           </LoadingView>
         </LoadingContainer>
       </Container>
-      <RowContainer rpWidth={rpWidth}>
+      <RowContainer>
         <AnimatedPoints
           color="white"
           value1={value1}

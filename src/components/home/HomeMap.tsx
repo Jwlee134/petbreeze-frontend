@@ -1,12 +1,5 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import NaverMapView, { Marker } from "react-native-nmap";
-import { DimensionsContext } from "~/context/DimensionsContext";
 import Geolocation from "react-native-geolocation-service";
 import { delta } from "~/constants";
 import useAppState from "~/hooks/useAppState";
@@ -24,7 +17,6 @@ import { storageActions } from "~/store/storage";
 
 const HomeMap = () => {
   const mapRef = useRef<NaverMapView>(null);
-  const { rpWidth } = useContext(DimensionsContext);
   const { top } = useSafeAreaInsets();
   const trackingId = useRef<number | null>(null);
   const appState = useAppState();
@@ -133,8 +125,8 @@ const HomeMap = () => {
           <Marker
             coordinate={coords}
             image={require("~/assets/image/my-location-marker.png")}
-            width={rpWidth(100)}
-            height={rpWidth(100)}
+            width={100}
+            height={100}
             anchor={{ x: 0.5, y: 0.5 }}
           />
         ) : null}
@@ -160,8 +152,8 @@ const HomeMap = () => {
                 ? require("~/assets/image/footprint-marker-red.png")
                 : require("~/assets/image/footprint-marker.png")
             }
-            width={rpWidth(41)}
-            height={rpWidth(57)}
+            width={41}
+            height={57}
             anchor={{
               x: 0.5,
               y: 0.96,

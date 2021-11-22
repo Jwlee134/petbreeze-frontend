@@ -1,6 +1,6 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import styled, { css } from "styled-components/native";
+import styled from "styled-components/native";
 import Button from "~/components/common/Button";
 import KeyboardAwareScrollContainer from "~/components/common/container/KeyboardAwareScrollContainer";
 import Input from "~/components/common/Input";
@@ -8,7 +8,6 @@ import InputTitle from "~/components/common/InputTitle";
 import MyText from "~/components/common/MyText";
 import SelectableButton from "~/components/common/SelectableButton";
 import { noAvatar } from "~/constants";
-import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import { useAppSelector } from "~/store";
 import palette from "~/styles/palette";
 import { EmergencyMissingFirstPageScreenNavigationProp } from "~/types/navigator";
@@ -18,19 +17,17 @@ import CommonCenterModal from "~/components/modal/CommonCenterModal";
 import DatePicker from "react-native-date-picker";
 import { formActions } from "~/store/form";
 
-const Avatar = styled.Image<{ rpWidth: RpWidth }>`
-  ${({ rpWidth }) => css`
-    width: ${rpWidth(108)}px;
-    height: ${rpWidth(108)}px;
-    border-radius: ${rpWidth(54)}px;
-    margin-top: ${rpWidth(43)}px;
-    margin-bottom: ${rpWidth(10)}px;
-  `}
+const Avatar = styled.Image`
+  width: 108px;
+  height: 108px;
+  border-radius: 54px;
+  margin-top: 43px;
+  margin-bottom: 10px;
   align-self: center;
 `;
 
-const PaddingContainer = styled.View<{ rpWidth: RpWidth }>`
-  padding: ${({ rpWidth }) => `0px ${rpWidth(42)}px`};
+const PaddingContainer = styled.View`
+  padding: 0 42px;
 `;
 
 const RowContainer = styled.View`
@@ -55,7 +52,6 @@ const EmergencyMissingFirstPage = ({
     lostMonth,
     lostPlace,
   } = useAppSelector(state => state.form);
-  const { rpWidth } = useContext(DimensionsContext);
   const dispatch = useDispatch();
   const { open, close, modalProps } = useModal();
   const [date, setDate] = useState(
@@ -65,13 +61,10 @@ const EmergencyMissingFirstPage = ({
   return (
     <>
       <KeyboardAwareScrollContainer isSpaceBetween>
-        <PaddingContainer rpWidth={rpWidth}>
-          <Avatar
-            rpWidth={rpWidth}
-            source={avatar ? { uri: avatar } : noAvatar}
-          />
+        <PaddingContainer>
+          <Avatar source={avatar ? { uri: avatar } : noAvatar} />
           <MyText
-            style={{ textAlign: "center", marginBottom: rpWidth(30) }}
+            style={{ textAlign: "center", marginBottom: 30 }}
             color={palette.blue_7b_90}
             fontSize={18}
             fontWeight="medium">
@@ -98,7 +91,7 @@ const EmergencyMissingFirstPage = ({
             <SelectableButton
               selected={hasTag}
               onPress={() => dispatch(formActions.setState({ hasTag: true }))}
-              style={{ marginRight: rpWidth(20) }}>
+              style={{ marginRight: 20 }}>
               유
             </SelectableButton>
             <SelectableButton
@@ -119,7 +112,7 @@ const EmergencyMissingFirstPage = ({
           <Input
             maxLength={50}
             value={lostPlace}
-            containerStyle={{ marginBottom: rpWidth(50) }}
+            containerStyle={{ marginBottom: 50 }}
             onChangeText={text =>
               dispatch(
                 formActions.setState({

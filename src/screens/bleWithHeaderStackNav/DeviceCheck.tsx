@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import styled from "styled-components/native";
 
 import Device from "~/assets/svg/device/device.svg";
@@ -6,7 +6,6 @@ import Button from "~/components/common/Button";
 import MyText from "~/components/common/MyText";
 import SafeAreaContainer from "~/components/common/container/SafeAreaContainer";
 import { DeviceCheckScreenNavigationProp } from "~/types/navigator";
-import { DimensionsContext } from "~/context/DimensionsContext";
 
 const TopContainer = styled.View`
   flex: 1;
@@ -24,16 +23,14 @@ const DeviceCheck = ({
 }: {
   navigation: DeviceCheckScreenNavigationProp;
 }) => {
-  const { rpHeight, rpWidth } = useContext(DimensionsContext);
-
   return (
     <SafeAreaContainer>
       <TopContainer>
-        <Device width={rpWidth(100)} height={rpHeight(156)} />
+        <Device width={100} height={156} />
         <MyText
           fontSize={24}
           style={{
-            marginTop: rpHeight(56),
+            marginTop: 56,
             textAlign: "center",
           }}>
           디바이스가{"\n"}
@@ -43,7 +40,8 @@ const DeviceCheck = ({
       <BottomContainer>
         <Button
           style={{
-            marginBottom: rpHeight(12),
+            marginTop: 50,
+            marginBottom: 12,
           }}
           onPress={() => {
             navigation.navigate("ChargingCheck");

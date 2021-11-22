@@ -1,14 +1,13 @@
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
-import styled, { css } from "styled-components/native";
+import styled from "styled-components/native";
 import deviceApi from "~/api/device";
 import MyText from "~/components/common/MyText";
 import Swipeable from "~/components/common/Swipeable";
-import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import palette from "~/styles/palette";
 import DeviceSettingTitle from "./DeviceSettingTitle";
 import Bye from "~/assets/svg/myPage/bye.svg";
@@ -18,18 +17,16 @@ import { secureItems } from "~/constants";
 import KeyWhite from "~/assets/svg/myPage/key-white.svg";
 import KeyBlue from "~/assets/svg/myPage/key-blue.svg";
 
-const Item = styled.View<{ rpWidth: RpWidth }>`
-  ${({ rpWidth }) => css`
-    height: ${rpWidth(49)}px;
-    padding-left: ${rpWidth(28)}px;
-  `}
+const Item = styled.View`
+  height: 49px;
+  padding-left: 28px;
   flex-direction: row;
   align-items: center;
   background-color: white;
 `;
 
-const Li = styled.View<{ rpWidth: RpWidth }>`
-  width: ${({ rpWidth }) => rpWidth(47)}px;
+const Li = styled.View`
+  width: 47px;
   align-items: center;
 `;
 
@@ -45,7 +42,6 @@ const Family = ({
   });
   const [deleteMember] = deviceApi.useDeleteDeviceMemberMutation();
   const [updateOwner] = deviceApi.useUpdateDeviceOwnerMutation();
-  const { rpWidth } = useContext(DimensionsContext);
   const [myID, setMyID] = useState(0);
 
   useEffect(() => {
@@ -60,10 +56,8 @@ const Family = ({
     if (isEdit) setShowList(true);
   }, [isEdit]);
 
-  const itemHeight = rpWidth(49);
-
   const height = useMemo(() => {
-    return showList && data ? data.members.length * itemHeight : 1;
+    return showList && data ? data.members.length * 49 : 1;
   }, [showList, data]);
 
   const heightValue = useSharedValue(height);
@@ -93,7 +87,7 @@ const Family = ({
         {data?.members.map((member, i) => (
           <Animated.View key={`${member.id}-${i}`}>
             <Swipeable
-              rightThreshold={rpWidth(36)}
+              rightThreshold={36}
               enableRightActions={isEdit}
               RenderRightActions={() =>
                 myID === member.id || myID !== data?.owner_id ? (
@@ -105,23 +99,23 @@ const Family = ({
                       onPress={() => {
                         deleteMember({ deviceID, userID: member.id });
                       }}>
-                      <Bye width={rpWidth(37)} height={rpWidth(32)} />
+                      <Bye width={37} height={32} />
                     </SwipeableButton>
                     <SwipeableButton
                       backgroundColor="blue"
                       onPress={() => {
                         updateOwner({ deviceID, userID: member.id });
                       }}>
-                      <KeyWhite width={rpWidth(22)} height={rpWidth(22)} />
+                      <KeyWhite width={22} height={22} />
                     </SwipeableButton>
                   </>
                 )
               }>
-              <Item rpWidth={rpWidth}>
-                <Li rpWidth={rpWidth}>
-                  <MyText style={{ marginHorizontal: rpWidth(12) }}>
+              <Item>
+                <Li>
+                  <MyText style={{ marginHorizontal: 12 }}>
                     {data?.owner_id === member.id ? (
-                      <KeyBlue width={rpWidth(19)} height={rpWidth(19)} />
+                      <KeyBlue width={19} height={19} />
                     ) : (
                       "•"
                     )}

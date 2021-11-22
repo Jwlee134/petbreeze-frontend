@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import { useDispatch } from "react-redux";
 import styled from "styled-components/native";
 import Button from "~/components/common/Button";
@@ -8,7 +8,6 @@ import { FailScreenNavigationProp } from "~/types/navigator";
 import Exclamation from "~/assets/svg/exclamation/exclamation-mark-gray.svg";
 import { View } from "react-native";
 import { bleActions } from "~/store/ble";
-import { DimensionsContext } from "~/context/DimensionsContext";
 
 const TopContainer = styled.View`
   flex: 1;
@@ -25,16 +24,11 @@ const BottomContainer = styled.View`
 const Fail = ({ navigation }: { navigation: FailScreenNavigationProp }) => {
   const status = useAppSelector(state => state.ble.status);
   const dispatch = useDispatch();
-  const { rpWidth } = useContext(DimensionsContext);
 
   return (
     <>
       <TopContainer>
-        <Exclamation
-          width={rpWidth(12)}
-          height={rpWidth(58)}
-          style={{ marginBottom: rpWidth(112) }}
-        />
+        <Exclamation width={12} height={58} style={{ marginBottom: 112 }} />
       </TopContainer>
       <BottomContainer>
         <MyText style={{ textAlign: "center" }} fontSize={24}>
@@ -72,7 +66,7 @@ const Fail = ({ navigation }: { navigation: FailScreenNavigationProp }) => {
               }
             }}
             style={{
-              marginBottom: rpWidth(12),
+              marginBottom: 12,
             }}>
             다시 시도
           </Button>

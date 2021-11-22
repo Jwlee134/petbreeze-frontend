@@ -1,6 +1,8 @@
-import React, { ReactNode, useContext } from "react";
-import styled, { css } from "styled-components/native";
-import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
+import React, { ReactNode } from "react";
+import { useWindowDimensions } from "react-native";
+import { isIphoneX } from "react-native-iphone-x-helper";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import styled from "styled-components/native";
 import palette from "~/styles/palette";
 import Button from "../common/Button";
 import Divider from "../common/Divider";
@@ -13,21 +15,18 @@ interface Props {
   closeButtonText?: string;
 }
 
-const Container = styled.View<{ rpWidth: RpWidth }>`
-  ${({ rpWidth }) => css`
-    padding: 0px ${rpWidth(9)}px;
-    margin-bottom: ${rpWidth(34)}px;
-  `}
+const Container = styled.View`
+  padding: 0 9px;
 `;
 
-const MenuContainer = styled.View<{ rpWidth: RpWidth }>`
+const MenuContainer = styled.View`
   background-color: ${palette.gray_f0};
-  border-radius: ${({ rpWidth }) => rpWidth(15)}px;
+  border-radius: 15px;
   width: 100%;
 `;
 
-const NameContainer = styled.View<{ rpWidth: RpWidth }>`
-  height: ${({ rpWidth }) => rpWidth(41)}px;
+const NameContainer = styled.View`
+  height: 41px;
   justify-content: center;
   align-items: center;
 `;
@@ -38,15 +37,17 @@ const IosStyleBottomModal = ({
   title,
   closeButtonText = "취소",
 }: Props) => {
-  const { rpWidth, width } = useContext(DimensionsContext);
+  const { bottom } = useSafeAreaInsets();
+  const { width } = useWindowDimensions();
 
   return (
-    <Container rpWidth={rpWidth}>
-      <MenuContainer rpWidth={rpWidth}>
+    <Container style={{ marginBottom: isIphoneX() ? bottom : 9 }}>
+      <MenuContainer>
         {title && (
           <>
-            <NameContainer rpWidth={rpWidth}>
+            <NameContainer>
               <MyText
+                preventRpWidth
                 fontSize={14}
                 fontWeight="medium"
                 color="rgba(0, 0, 0, 0.3)">
@@ -62,9 +63,10 @@ const IosStyleBottomModal = ({
         activeOpacity={1}
         onPress={close}
         style={{
-          width: width - rpWidth(18),
-          borderRadius: rpWidth(12),
-          marginTop: rpWidth(9),
+          width: width - 18,
+          marginTop: 9,
+          borderRadius: 12,
+          height: 56,
         }}
         backgroundColor="white"
         fontColor={palette.blue_7b}>

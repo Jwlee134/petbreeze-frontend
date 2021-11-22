@@ -1,11 +1,10 @@
-import React, { useContext, useEffect } from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components/native";
 import Button from "~/components/common/Button";
 import MyText from "~/components/common/MyText";
 import palette from "~/styles/palette";
 import Dog from "~/assets/svg/dog/dog-crying.svg";
 import { View } from "react-native";
-import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import { DeleteAccountSecondPageScreenNavigationProp } from "~/types/navigator";
 import { useAppSelector } from "~/store";
 import userApi from "~/api/user";
@@ -21,8 +20,8 @@ const RowContainer = styled.View`
   flex-direction: row;
 `;
 
-const TextContainer = styled.View<{ rpWidth: RpWidth }>`
-  padding: ${({ rpWidth }) => `0px ${rpWidth(32)}px`};
+const TextContainer = styled.View`
+  padding: 0 32px;
 `;
 
 const DeleteAccountSecondPage = ({
@@ -31,7 +30,6 @@ const DeleteAccountSecondPage = ({
   navigation: DeleteAccountSecondPageScreenNavigationProp;
 }) => {
   const { body } = useAppSelector(state => state.common.deleteAccount);
-  const { rpWidth } = useContext(DimensionsContext);
   const [deleteAccount, { isLoading, isSuccess }] =
     userApi.useDeleteAccountMutation();
   const dispatch = useDispatch();
@@ -47,11 +45,9 @@ const DeleteAccountSecondPage = ({
 
   return (
     <Container>
-      <TextContainer rpWidth={rpWidth}>
-        <RowContainer style={{ marginBottom: rpWidth(25) }}>
-          <MyText
-            color={palette.blue_7b}
-            style={{ marginHorizontal: rpWidth(12) }}>
+      <TextContainer>
+        <RowContainer style={{ marginBottom: 25 }}>
+          <MyText color={palette.blue_7b} style={{ marginHorizontal: 12 }}>
             •
           </MyText>
           <MyText>
@@ -60,9 +56,7 @@ const DeleteAccountSecondPage = ({
           </MyText>
         </RowContainer>
         <RowContainer>
-          <MyText
-            color={palette.blue_7b}
-            style={{ marginHorizontal: rpWidth(12) }}>
+          <MyText color={palette.blue_7b} style={{ marginHorizontal: 12 }}>
             •
           </MyText>
           <MyText>
@@ -72,12 +66,12 @@ const DeleteAccountSecondPage = ({
       </TextContainer>
       <View>
         <Dog
-          width={rpWidth(133)}
-          height={rpWidth(129)}
+          width={133}
+          height={129}
           style={{
-            marginBottom: rpWidth(50),
+            marginBottom: 50,
             alignSelf: "flex-end",
-            marginRight: rpWidth(50),
+            marginRight: 50,
           }}
         />
         <Button

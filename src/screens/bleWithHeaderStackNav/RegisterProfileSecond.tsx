@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { Keyboard, View } from "react-native";
 import { useDispatch } from "react-redux";
 import styled, { css } from "styled-components/native";
@@ -9,7 +9,6 @@ import Input from "~/components/common/Input";
 import InputTitle from "~/components/common/InputTitle";
 import SelectableButton from "~/components/common/SelectableButton";
 import { serverImageUri } from "~/constants";
-import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import { useAppSelector } from "~/store";
 import { formActions } from "~/store/form";
 import { RegisterProfileSecondScreenNavigationProp } from "~/types/navigator";
@@ -17,23 +16,21 @@ import imageHandler from "~/utils/imageHandler";
 import AvatarCircle from "./AvatarCircle";
 import PreviousValueBlock from "./PreviousValueBlock";
 
-const InputContainer = styled.View<{ rpWidth: RpWidth }>`
+const InputContainer = styled.View`
   padding: 0px 42px;
-  ${({ rpWidth }) => css`
-    margin-top: ${rpWidth(56)}px;
-    margin-bottom: ${rpWidth(50)}px;
-  `}
+  margin-top: 56px;
+  margin-bottom: 50px;
 `;
 
 const RowContainer = styled.View`
   flex-direction: row;
 `;
 
-const AvatarContainer = styled(RowContainer)<{ rpWidth: RpWidth }>`
-  ${({ rpWidth }) => css`
-    padding-right: ${rpWidth(30)}px;
-    padding-left: ${rpWidth(37)}px;
-    margin-top: ${rpWidth(51)}px;
+const AvatarContainer = styled(RowContainer)`
+  ${({}) => css`
+    padding-right: 30px;
+    padding-left: 37px;
+    margin-top: 51px;
   `}
 `;
 
@@ -54,7 +51,6 @@ const RegisterProfileSecond = ({
   } = useAppSelector(state => state.form);
   const deviceID = useAppSelector(state => state.ble.deviceID);
   const dispatch = useDispatch();
-  const { rpWidth } = useContext(DimensionsContext);
   const [loading, setLoading] = useState(false);
   const [trigger] = deviceApi.useUpdateDeviceProfileMutation();
   const [triggerAvatar] = deviceApi.useUpdateDeviceProfileAvatarMutation();
@@ -91,18 +87,18 @@ const RegisterProfileSecond = ({
   return (
     <KeyboardAwareScrollContainer isSpaceBetween>
       <View>
-        <AvatarContainer rpWidth={rpWidth}>
+        <AvatarContainer>
           <AvatarCircle />
           <PreviousValueBlock />
         </AvatarContainer>
-        <InputContainer rpWidth={rpWidth}>
+        <InputContainer>
           <InputTitle>성별</InputTitle>
           <RowContainer>
             <SelectableButton
               selected={sex}
               style={{
-                marginRight: rpWidth(20),
-                marginBottom: rpWidth(35),
+                marginRight: 20,
+                marginBottom: 35,
               }}
               onPress={() => dispatch(formActions.setState({ sex: true }))}>
               남
@@ -116,7 +112,7 @@ const RegisterProfileSecond = ({
           <InputTitle>품종</InputTitle>
           <Input
             maxLength={16}
-            containerStyle={{ marginBottom: rpWidth(35) }}
+            containerStyle={{ marginBottom: 35 }}
             value={species}
             onChangeText={text =>
               dispatch(formActions.setState({ species: text }))

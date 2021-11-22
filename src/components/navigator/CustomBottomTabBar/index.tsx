@@ -1,25 +1,20 @@
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
-import React, { useContext } from "react";
+import React from "react";
 import { TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { DimensionsContext } from "~/context/DimensionsContext";
 import palette from "~/styles/palette";
 import Tab from "./Tab";
 
 const CustomBottomTabBar = ({
   state,
-  descriptors,
   navigation,
   newNotifExists,
 }: BottomTabBarProps & { newNotifExists: boolean }) => {
   const { bottom } = useSafeAreaInsets();
-  const { rpWidth } = useContext(DimensionsContext);
 
   return (
     <View style={{ flexDirection: "row" }}>
       {state.routes.map((route, index) => {
-        const { options } = descriptors[route.key];
-
         const isFocused = state.index === index;
 
         const onPress = () => {
@@ -50,7 +45,7 @@ const CustomBottomTabBar = ({
             key={index}
             style={{
               flex: 1,
-              height: rpWidth(52) + bottom,
+              height: 52 + bottom,
               borderTopWidth: 1,
               borderTopColor: palette.gray_e5,
               alignItems: "center",

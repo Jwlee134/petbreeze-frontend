@@ -1,8 +1,7 @@
-import React, { Fragment, useContext, useEffect, useState } from "react";
-import { FlatList, View } from "react-native";
-import styled, { css } from "styled-components/native";
+import React, { Fragment, useEffect, useState } from "react";
+import { FlatList, useWindowDimensions, View } from "react-native";
+import styled from "styled-components/native";
 import MyText from "~/components/common/MyText";
-import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import palette from "~/styles/palette";
 import { WalkDetailDayScreenProps } from "~/types/navigator";
 import Trashcan from "~/assets/svg/trashcan/trashcan-red.svg";
@@ -18,11 +17,9 @@ import IosStyleBottomModal from "~/components/modal/IosStyleBottomModal";
 import { useDispatch } from "react-redux";
 import CustomHeader from "~/components/navigator/CustomHeader";
 
-const Container = styled.View<{ rpWidth: RpWidth }>`
-  ${({ rpWidth }) => css`
-    padding-top: ${rpWidth(35)}px;
-    padding-bottom: ${rpWidth(65)}px;
-  `}
+const Container = styled.View`
+  padding-top: 35px;
+  padding-bottom: 65px;
 `;
 
 const RowContainer = styled.View`
@@ -30,25 +27,21 @@ const RowContainer = styled.View`
   align-items: center;
 `;
 
-const SvgContainer = styled(RowContainer)<{ rpWidth: RpWidth }>`
+const SvgContainer = styled(RowContainer)`
   justify-content: space-evenly;
-  ${({ rpWidth }) => css`
-    margin-top: ${rpWidth(40)}px;
-    margin-bottom: ${rpWidth(25)}px;
-  `}
+  margin-top: 40px;
+  margin-bottom: 25px;
 `;
 
-const Avatar = styled.Image<{ rpWidth: RpWidth }>`
-  ${({ rpWidth }) => css`
-    width: ${rpWidth(70)}px;
-    height: ${rpWidth(70)}px;
-    border-radius: ${rpWidth(35)}px;
-    margin-right: ${rpWidth(25)}px;
-  `}
+const Avatar = styled.Image`
+  width: 70px;
+  height: 70px;
+  border-radius: 35px;
+  margin-right: 25px;
 `;
 
-const MapContainer = styled.View<{ rpWidth: RpWidth }>`
-  padding: ${({ rpWidth }) => `0 ${rpWidth(28)}px`};
+const MapContainer = styled.View`
+  padding: 0 28px;
 `;
 
 const Map = styled.Image`
@@ -56,19 +49,15 @@ const Map = styled.Image`
   height: 100%;
 `;
 
-const Delete = styled.TouchableOpacity<{ rpWidth: RpWidth }>`
-  ${({ rpWidth }) => css`
-    width: ${rpWidth(30)}px;
-    height: ${rpWidth(30)}px;
-  `}
+const Delete = styled.TouchableOpacity`
+  width: 30px;
+  height: 30px;
   justify-content: center;
   align-items: center;
 `;
 
-const ModalDeleteButton = styled.TouchableOpacity<{ rpWidth: RpWidth }>`
-  ${({ rpWidth }) => css`
-    height: ${rpWidth(55)}px;
-  `}
+const ModalDeleteButton = styled.TouchableOpacity`
+  height: 55px;
   justify-content: center;
   align-items: center;
 `;
@@ -80,7 +69,7 @@ const WalkDetailDay = ({
   },
 }: WalkDetailDayScreenProps) => {
   const dispatch = useDispatch();
-  const { rpWidth, width } = useContext(DimensionsContext);
+  const { width } = useWindowDimensions();
   const { data } = deviceApi.useGetDailyWalkRecordQuery(
     {
       deviceID,
@@ -134,21 +123,16 @@ const WalkDetailDay = ({
         data={data}
         renderItem={({ item, index }) => (
           <Fragment key={item.id}>
-            <Container rpWidth={rpWidth}>
+            <Container>
               <RowContainer
                 style={{
-                  paddingHorizontal: rpWidth(32),
+                  paddingHorizontal: 32,
                   justifyContent: "space-between",
                 }}>
                 <RowContainer>
-                  <Avatar
-                    rpWidth={rpWidth}
-                    source={avatarUrl ? { uri: avatarUrl } : noAvatar}
-                  />
+                  <Avatar source={avatarUrl ? { uri: avatarUrl } : noAvatar} />
                   <View>
-                    <MyText
-                      color={palette.blue_7b}
-                      style={{ marginBottom: rpWidth(5) }}>
+                    <MyText color={palette.blue_7b} style={{ marginBottom: 5 }}>
                       {item.handler_name}
                     </MyText>
                     <MyText color="rgba(0, 0, 0, 0.5)">
@@ -157,44 +141,33 @@ const WalkDetailDay = ({
                   </View>
                 </RowContainer>
                 <Delete
-                  rpWidth={rpWidth}
                   onPress={() => {
                     setWalkID(item.id);
                     open();
                   }}>
-                  <Trashcan width={rpWidth(22)} height={rpWidth(23)} />
+                  <Trashcan width={22} height={23} />
                 </Delete>
               </RowContainer>
-              <SvgContainer rpWidth={rpWidth}>
+              <SvgContainer>
                 <RowContainer>
-                  <Timer
-                    width={rpWidth(22)}
-                    height={rpWidth(27)}
-                    style={{ marginRight: rpWidth(17) }}
-                  />
+                  <Timer width={22} height={27} style={{ marginRight: 17 }} />
                   <MyText color={palette.blue_7b} fontSize={24}>
                     {formatWalkTime(item.time)}
                   </MyText>
                 </RowContainer>
                 <RowContainer>
-                  <Path
-                    width={rpWidth(21)}
-                    height={rpWidth(22)}
-                    style={{ marginRight: rpWidth(17) }}
-                  />
+                  <Path width={21} height={22} style={{ marginRight: 17 }} />
                   <MyText color={palette.blue_7b} fontSize={24}>
                     {formatWalkDistance(item.distance)}
                   </MyText>
                 </RowContainer>
               </SvgContainer>
-              <MapContainer rpWidth={rpWidth} style={{ height: width * 0.66 }}>
+              <MapContainer style={{ height: width * 0.66 }}>
                 <Map fadeDuration={0} source={{ uri: item.path_image }} />
               </MapContainer>
             </Container>
             {data && data.length > 1 && index !== data.length - 1 ? (
-              <Divider
-                style={{ width: width - rpWidth(34), alignSelf: "center" }}
-              />
+              <Divider style={{ width: width - 34, alignSelf: "center" }} />
             ) : null}
           </Fragment>
         )}
@@ -203,7 +176,7 @@ const WalkDetailDay = ({
         <IosStyleBottomModal
           close={close}
           title="이 산책 기록을 삭제하시겠습니까?">
-          <ModalDeleteButton onPress={deleteRecord} rpWidth={rpWidth}>
+          <ModalDeleteButton onPress={deleteRecord}>
             <MyText color={palette.red_f0}>삭제</MyText>
           </ModalDeleteButton>
         </IosStyleBottomModal>

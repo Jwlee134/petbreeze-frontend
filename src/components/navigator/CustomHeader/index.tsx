@@ -1,5 +1,5 @@
 import { StackHeaderProps } from "@react-navigation/stack";
-import React, { ReactNode, useContext } from "react";
+import React, { ReactNode } from "react";
 import styled from "styled-components/native";
 import MyText from "../../common/MyText";
 
@@ -8,7 +8,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import BackButton from "./BackButton";
 import PageIndicator from "./PageIndicator";
 import PageCount from "./PageCount";
-import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import { customHeaderHeight } from "~/styles/constants";
 
 interface Props extends Partial<StackHeaderProps> {
@@ -29,9 +28,9 @@ const Container = styled(Animated.View)`
   background-color: white;
 `;
 
-const RightButtonContainer = styled.View<{ rpWidth: RpWidth }>`
+const RightButtonContainer = styled.View`
   position: absolute;
-  right: ${({ rpWidth }) => rpWidth(13.5)}px;
+  right: 13.5px;
   justify-content: center;
   height: 100%;
 `;
@@ -47,7 +46,6 @@ const CustomHeader = ({
   style,
 }: Props) => {
   const { top } = useSafeAreaInsets();
-  const { rpWidth } = useContext(DimensionsContext);
   const showPage = currentPage !== 0 && totalPage !== 0;
 
   return (
@@ -55,7 +53,7 @@ const CustomHeader = ({
       <Container
         style={{
           marginTop: navigation ? top : 0,
-          height: rpWidth(customHeaderHeight),
+          height: customHeaderHeight,
           ...(style as object),
         }}>
         <>
@@ -73,7 +71,7 @@ const CustomHeader = ({
             <PageCount currentPage={currentPage} totalPage={totalPage} />
           ) : null}
           {RightButton ? (
-            <RightButtonContainer rpWidth={rpWidth}>
+            <RightButtonContainer>
               <RightButton />
             </RightButtonContainer>
           ) : null}

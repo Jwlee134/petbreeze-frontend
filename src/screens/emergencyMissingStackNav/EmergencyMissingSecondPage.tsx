@@ -1,6 +1,6 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import styled, { css } from "styled-components/native";
+import styled from "styled-components/native";
 import Button from "~/components/common/Button";
 import KeyboardAwareScrollContainer from "~/components/common/container/KeyboardAwareScrollContainer";
 import Input from "~/components/common/Input";
@@ -8,8 +8,7 @@ import InputTitle from "~/components/common/InputTitle";
 import MyText from "~/components/common/MyText";
 import { useAppSelector } from "~/store";
 import Plus from "~/assets/svg/plus/plus-blue.svg";
-import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
-import { TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, useWindowDimensions, View } from "react-native";
 import { EmergencyMissingSecondPageScreenNavigationProp } from "~/types/navigator";
 import imageHandler from "~/utils/imageHandler";
 import deviceApi from "~/api/device";
@@ -20,15 +19,13 @@ import Divider from "~/components/common/Divider";
 import palette from "~/styles/palette";
 import { formActions } from "~/store/form";
 
-const PaddingContainer = styled.View<{ rpWidth: RpWidth }>`
-  ${({ rpWidth }) => css`
-    padding: 0px ${rpWidth(42)}px;
-    margin-top: ${rpWidth(50)}px;
-  `}
+const PaddingContainer = styled.View`
+  padding: 0 42px;
+  margin-top: 50px;
 `;
 
-const PhotoContainer = styled.View<{ rpWidth: RpWidth }>`
-  padding: ${({ rpWidth }) => `0px ${rpWidth(32)}px`};
+const PhotoContainer = styled.View`
+  padding: 0 32px;
 `;
 
 const AddPhotoBox = styled.TouchableOpacity`
@@ -43,8 +40,8 @@ const Photo = styled.Image`
   width: 100%;
 `;
 
-const ModalButton = styled.TouchableOpacity<{ rpWidth: RpWidth }>`
-  height: ${({ rpWidth }) => rpWidth(50)}px;
+const ModalButton = styled.TouchableOpacity`
+  height: 50px;
   justify-content: center;
   align-items: center;
 `;
@@ -71,7 +68,7 @@ const EmergencyMissingSecondPage = ({
     emergencyKey,
   } = useAppSelector(state => state.form);
   const dispatch = useDispatch();
-  const { width, rpWidth } = useContext(DimensionsContext);
+  const { width } = useWindowDimensions();
   const [register] = deviceApi.usePostEmergencyMissingMutation();
   const [updateAvatar] = deviceApi.useUpdateEmergencyMissingThumbnailMutation();
   const [update] = deviceApi.useUpdateEmergencyMissingMutation();
@@ -135,7 +132,7 @@ const EmergencyMissingSecondPage = ({
     <>
       <KeyboardAwareScrollContainer isSpaceBetween>
         <View>
-          <PaddingContainer rpWidth={rpWidth}>
+          <PaddingContainer>
             <InputTitle>메시지</InputTitle>
             <Input
               maxLength={512}
@@ -147,10 +144,10 @@ const EmergencyMissingSecondPage = ({
                   }),
                 )
               }
-              containerStyle={{ marginBottom: rpWidth(40) }}
+              containerStyle={{ marginBottom: 40 }}
             />
           </PaddingContainer>
-          <PhotoContainer rpWidth={rpWidth}>
+          <PhotoContainer>
             {photos.length
               ? photos.map((photo, i) => (
                   <TouchableOpacity
@@ -164,9 +161,9 @@ const EmergencyMissingSecondPage = ({
                       style={{
                         marginBottom:
                           i === photos.length - 1 && photos.length === 4
-                            ? rpWidth(40)
-                            : rpWidth(11),
-                        height: (width - rpWidth(64)) * 0.67,
+                            ? 40
+                            : 11,
+                        height: (width - 64) * 0.67,
                       }}
                     />
                   </TouchableOpacity>
@@ -175,7 +172,7 @@ const EmergencyMissingSecondPage = ({
             {photos.length < 4 ? (
               <>
                 <AddPhotoBox
-                  style={{ height: (width - rpWidth(64)) * (2 / 3) }}
+                  style={{ height: (width - 64) * (2 / 3) }}
                   onPress={() => {
                     imageHandler.openThreeTwoRatioCropper(photos);
                   }}>
@@ -186,8 +183,8 @@ const EmergencyMissingSecondPage = ({
                   fontSize={14}
                   style={{
                     textAlign: "right",
-                    marginTop: rpWidth(8),
-                    marginBottom: rpWidth(24),
+                    marginTop: 8,
+                    marginBottom: 24,
                   }}>
                   최대 4장까지 가능
                 </MyText>
@@ -212,8 +209,7 @@ const EmergencyMissingSecondPage = ({
                 selectedIndex,
                 close,
               );
-            }}
-            rpWidth={rpWidth}>
+            }}>
             <MyText color={palette.blue_7b}>변경</MyText>
           </ModalButton>
           <Divider />
@@ -227,8 +223,7 @@ const EmergencyMissingSecondPage = ({
                 }),
               );
               close();
-            }}
-            rpWidth={rpWidth}>
+            }}>
             <MyText color={palette.red_f0}>삭제</MyText>
           </ModalButton>
         </IosStyleBottomModal>

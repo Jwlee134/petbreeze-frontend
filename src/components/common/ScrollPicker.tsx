@@ -179,7 +179,7 @@ const ScrollPicker = ({
                 backgroundColor: "white",
               }}>
               <MyText
-                style={{ color, marginTop: -rpWidth(3) }}
+                style={{ color, marginTop: -3 }}
                 fontWeight="medium"
                 key={index}>
                 {item}

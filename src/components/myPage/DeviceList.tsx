@@ -1,55 +1,47 @@
 import { useNavigation } from "@react-navigation/native";
-import React, { useContext } from "react";
-import { TouchableOpacity, View } from "react-native";
-import styled, { css } from "styled-components/native";
+import React from "react";
+import { TouchableOpacity, useWindowDimensions, View } from "react-native";
+import styled from "styled-components/native";
 import { MyPageScreenNavigationProp } from "~/types/navigator";
 import MyText from "../common/MyText";
 import Footprint from "~/assets/svg/tab/footprint-outline.svg";
-import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import { Device } from "~/api/device";
 import { noAvatar, noName } from "~/constants";
 
-const DeviceContainer = styled.ScrollView<{ rpWidth: RpWidth }>`
-  ${({ rpWidth }) => css`
-    padding-top: ${rpWidth(25)}px;
-    padding-bottom: ${rpWidth(21)}px;
-  `}
+const DeviceContainer = styled.ScrollView`
+  padding-top: 25px;
+  padding-bottom: 21px;
 `;
 
 const AvatarButton = styled.TouchableOpacity`
   align-items: center;
 `;
 
-const Svg = styled.View<{ rpWidth: RpWidth }>`
+const Svg = styled.View`
   background-color: rgba(0, 0, 0, 0.03);
   justify-content: center;
   align-items: center;
-  ${({ rpWidth }) => css`
-    width: ${rpWidth(70)}px;
-    height: ${rpWidth(70)}px;
-    border-radius: ${rpWidth(35)}px;
-    margin-top: ${rpWidth(25)}px;
-    margin-bottom: ${rpWidth(15)}px;
-  `}
+  width: 70px;
+  height: 70px;
+  border-radius: 35px;
+  margin-top: 25px;
+  margin-bottom: 15px;
 `;
 
-const Image = styled.Image<{ rpWidth: RpWidth }>`
-  ${({ rpWidth }) => css`
-    width: ${rpWidth(70, true)}px;
-    height: ${rpWidth(70, true)}px;
-    border-radius: ${rpWidth(35, true)}px;
-  `}
+const Image = styled.Image`
+  width: 70px;
+  height: 70px;
+  border-radius: 35px;
 `;
 
 const DeviceList = ({ deviceList }: { deviceList: Device[] | undefined }) => {
   const navigation = useNavigation<MyPageScreenNavigationProp>();
-  const { rpWidth, width } = useContext(DimensionsContext);
+  const { width } = useWindowDimensions();
 
   return (
     <View>
       {deviceList?.length ? (
         <DeviceContainer
-          rpWidth={rpWidth}
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{
@@ -78,16 +70,13 @@ const DeviceList = ({ deviceList }: { deviceList: Device[] | undefined }) => {
               }}
               key={device.id}>
               <Image
-                rpWidth={rpWidth}
                 source={
                   device.profile_image
                     ? { uri: device.profile_image }
                     : noAvatar
                 }
               />
-              <MyText style={{ marginTop: rpWidth(15) }}>
-                {device.name || noName}
-              </MyText>
+              <MyText style={{ marginTop: 15 }}>{device.name || noName}</MyText>
             </AvatarButton>
           ))}
         </DeviceContainer>
@@ -97,11 +86,11 @@ const DeviceList = ({ deviceList }: { deviceList: Device[] | undefined }) => {
             navigation.navigate("BleRootStackNav");
           }}
           style={{ alignItems: "center" }}>
-          <Svg rpWidth={rpWidth}>
-            <Footprint width={rpWidth(44)} height={rpWidth(42)} opacity={0.3} />
+          <Svg>
+            <Footprint width={44} height={42} opacity={0.3} />
           </Svg>
           <MyText
-            style={{ marginBottom: rpWidth(21) }}
+            style={{ marginBottom: 21 }}
             fontWeight="light"
             color="rgba(0, 0, 0, 0.3)">
             디바이스를 등록해주세요.

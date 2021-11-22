@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { getAddress } from "~/api/place";
@@ -8,7 +8,6 @@ import { useAppSelector } from "~/store";
 import SearchResultItem from "./SearchResultItem";
 import MyText from "~/components/common/MyText";
 import { storageActions } from "~/store/storage";
-import { DimensionsContext } from "~/context/DimensionsContext";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 const SearchResult = () => {
@@ -28,7 +27,6 @@ const SearchResult = () => {
     }[]
   >([]);
   const dispatch = useDispatch();
-  const { rpWidth } = useContext(DimensionsContext);
 
   useEffect(() => {
     if (value) {
@@ -47,8 +45,8 @@ const SearchResult = () => {
         zIndex: 2,
       }}
       contentContainerStyle={{
-        paddingTop: top + rpWidth(71),
-        paddingHorizontal: rpWidth(17),
+        paddingTop: top + 71,
+        paddingHorizontal: 17,
       }}>
       {data.length ? (
         data.map((item, i) => <SearchResultItem item={item} key={i} />)
@@ -62,7 +60,7 @@ const SearchResult = () => {
               onPress={() =>
                 dispatch(storageActions.setSafetyZoneSearchHistory(null))
               }
-              style={{ marginVertical: rpWidth(25), textAlign: "center" }}
+              style={{ marginVertical: 25, textAlign: "center" }}
               fontSize={14}
               color="rgba(0, 0, 0, 0.5)">
               검색 히스토리 삭제

@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import { useDispatch } from "react-redux";
 import styled from "styled-components/native";
 import Button from "~/components/common/Button";
@@ -6,19 +6,18 @@ import CheckCircle from "~/components/common/CheckCircle";
 import KeyboardAwareScrollContainer from "~/components/common/container/KeyboardAwareScrollContainer";
 import Input from "~/components/common/Input";
 import MyText from "~/components/common/MyText";
-import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import { useAppSelector } from "~/store";
 import { commonActions } from "~/store/common";
 import { DeleteAccountFirstPageScreenNavigationProp } from "~/types/navigator";
 import { isAndroid } from "~/utils";
 
-const TextContainer = styled.View<{ rpWidth: RpWidth }>`
-  padding: ${({ rpWidth }) => `0px ${rpWidth(32)}px`};
+const TextContainer = styled.View`
+  padding: 0 32px;
 `;
 
-const Item = styled.TouchableOpacity<{ rpWidth: RpWidth }>`
+const Item = styled.TouchableOpacity`
   flex-direction: row;
-  margin-bottom: ${({ rpWidth }) => rpWidth(27)}px;
+  margin-bottom: 27px;
   justify-content: space-between;
 `;
 
@@ -35,17 +34,15 @@ const DeleteAccountFirstPage = ({
 }: {
   navigation: DeleteAccountFirstPageScreenNavigationProp;
 }) => {
-  const { rpWidth } = useContext(DimensionsContext);
   const { body, text } = useAppSelector(state => state.common.deleteAccount);
   const dispatch = useDispatch();
 
   return (
     <KeyboardAwareScrollContainer isSpaceBetween>
-      <TextContainer rpWidth={rpWidth}>
+      <TextContainer>
         {reasons.map((reason, i) => (
           <Item
             key={i}
-            rpWidth={rpWidth}
             onPress={() => {
               if (body.includes(i)) {
                 dispatch(
@@ -79,7 +76,7 @@ const DeleteAccountFirstPage = ({
           scrollEnabled={false}
           style={{
             paddingHorizontal: 0,
-            marginBottom: isAndroid ? rpWidth(50) : 0,
+            marginBottom: isAndroid ? 50 : 0,
           }}
           hasBorder={false}
           placeholderTextColor="rgba(0, 0, 0, 0.8)"

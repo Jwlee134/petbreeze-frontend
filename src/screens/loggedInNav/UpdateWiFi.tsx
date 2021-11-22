@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useEffect } from "react";
 import { View } from "react-native";
 import { useDispatch } from "react-redux";
 import WiFi from "~/assets/svg/wifi/wifi-blue.svg";
@@ -6,7 +6,6 @@ import Button from "~/components/common/Button";
 import KeyboardAwareScrollContainer from "~/components/common/container/KeyboardAwareScrollContainer";
 import Input from "~/components/common/Input";
 import InputTitle from "~/components/common/InputTitle";
-import { DimensionsContext } from "~/context/DimensionsContext";
 import { useAppSelector } from "~/store";
 import { deviceSettingActions } from "~/store/deviceSetting";
 import { UpdateWiFiScreenNavigationProp } from "~/types/navigator";
@@ -18,7 +17,6 @@ const UpdateWiFi = ({
 }) => {
   const { ssid, pw } = useAppSelector(state => state.deviceSetting.wifi.draft);
   const dispatch = useDispatch();
-  const { rpWidth } = useContext(DimensionsContext);
 
   useEffect(() => {
     return () => {
@@ -28,16 +26,15 @@ const UpdateWiFi = ({
 
   return (
     <KeyboardAwareScrollContainer isSpaceBetween>
-      <View
-        style={{ paddingHorizontal: rpWidth(43), marginBottom: rpWidth(50) }}>
+      <View style={{ paddingHorizontal: 43, marginBottom: 50 }}>
         <WiFi
           style={{
             alignSelf: "center",
-            marginTop: rpWidth(91),
-            marginBottom: rpWidth(53),
+            marginTop: 91,
+            marginBottom: 53,
           }}
-          width={rpWidth(82)}
-          height={rpWidth(64)}
+          width={82}
+          height={64}
         />
         <InputTitle>WiFi 이름</InputTitle>
         <Input

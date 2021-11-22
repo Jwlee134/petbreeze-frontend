@@ -1,10 +1,9 @@
-import React, { useContext, useEffect } from "react";
+import React, { useEffect } from "react";
 import { NotificationScreenNavigationProp } from "~/types/navigator";
-import styled, { css } from "styled-components/native";
+import styled from "styled-components/native";
 
 import Empty from "~/components/notification/Empty";
 import MyText from "~/components/common/MyText";
-import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import Divider from "~/components/common/Divider";
 import NotificationItem from "~/components/notification/NotificationItem";
 import userApi from "~/api/user";
@@ -16,12 +15,10 @@ const Container = styled.ScrollView`
   flex: 1;
 `;
 
-const CategoryTitle = styled.View<{ rpWidth: RpWidth }>`
-  ${({ rpWidth }) => css`
-    margin-top: ${rpWidth(25)}px;
-    margin-left: ${rpWidth(41)}px;
-    margin-bottom: ${rpWidth(30)}px;
-  `}
+const CategoryTitle = styled.View`
+  margin-top: 25px;
+  margin-left: 41px;
+  margin-bottom: 30px;
 `;
 
 const Notification = ({
@@ -32,7 +29,6 @@ const Notification = ({
   const deviceList = useDevice();
   const { data, refetch } = userApi.useGetNotificationsQuery();
   const [postRead] = userApi.useReadNotificationsMutation();
-  const { rpWidth } = useContext(DimensionsContext);
   const isFocused = useIsFocused();
   const appState = useAppState();
 
@@ -65,7 +61,7 @@ const Notification = ({
       <Container>
         {newNotif.length ? (
           <>
-            <CategoryTitle rpWidth={rpWidth}>
+            <CategoryTitle>
               <MyText fontWeight="medium" fontSize={18}>
                 새로운 알림
               </MyText>
@@ -88,7 +84,7 @@ const Notification = ({
         ) : null}
         {thisWeek.length ? (
           <>
-            <CategoryTitle rpWidth={rpWidth}>
+            <CategoryTitle>
               <MyText fontWeight="medium" fontSize={18}>
                 이번주
               </MyText>

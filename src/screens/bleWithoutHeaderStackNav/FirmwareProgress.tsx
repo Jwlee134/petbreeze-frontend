@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useRef } from "react";
-import styled, { css } from "styled-components/native";
+import React, { useEffect, useRef } from "react";
+import styled from "styled-components/native";
 import { useAppSelector } from "~/store";
 import AnimatedPoints from "~/components/common/AnimatedPoints";
 import useAnimatedSequence from "~/hooks/useAnimatedSequence";
@@ -7,7 +7,6 @@ import { Animated } from "react-native";
 import palette from "~/styles/palette";
 import Footprint from "~/assets/svg/footprint/footprint-app-icon-white.svg";
 import { FirmwareProgressScreenNavigationProp } from "~/types/navigator";
-import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 
 const TopContainer = styled.View`
   flex: 1;
@@ -20,12 +19,10 @@ const BottomContainer = styled.View`
   align-items: center;
 `;
 
-const BarBackground = styled.View<{ rpWidth: RpWidth }>`
-  ${({ rpWidth }) => css`
-    width: ${rpWidth(268)}px;
-    height: ${rpWidth(12)}px;
-    margin-bottom: ${rpWidth(42)}px;
-  `}
+const BarBackground = styled.View`
+  width: 268px;
+  height: 12px;
+  margin-bottom: 42px;
   border-radius: 100px;
   background-color: rgba(0, 0, 0, 0.05);
   overflow: hidden;
@@ -42,7 +39,6 @@ const FirmwareProgress = ({
 }: {
   navigation: FirmwareProgressScreenNavigationProp;
 }) => {
-  const { rpWidth } = useContext(DimensionsContext);
   const { status, progress } = useAppSelector(state => state.ble);
   const [value1] = useAnimatedSequence({
     numOfValues: 1,
@@ -75,7 +71,7 @@ const FirmwareProgress = ({
 
   const translateY = value1.interpolate({
     inputRange: [0, 1],
-    outputRange: [-rpWidth(46), -rpWidth(23)],
+    outputRange: [-46, -23],
   });
 
   useEffect(() => {
@@ -100,9 +96,9 @@ const FirmwareProgress = ({
             opacity: value1,
             transform: [{ translateY }],
           }}>
-          <Footprint width={rpWidth(60)} height={rpWidth(83)} />
+          <Footprint width={60} height={83} />
         </Animated.View>
-        <BarBackground rpWidth={rpWidth}>
+        <BarBackground>
           <Bar style={{ width: widthInterpolate }} />
         </BarBackground>
       </TopContainer>

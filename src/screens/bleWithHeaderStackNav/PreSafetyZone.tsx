@@ -1,6 +1,6 @@
-import React, { useContext } from "react";
+import React from "react";
 import Button from "~/components/common/Button";
-import styled, { css } from "styled-components/native";
+import styled from "styled-components/native";
 
 import Shield from "~/assets/svg/safetyZone/footprint-shield.svg";
 import CheckCircle from "~/assets/svg/check/check-circle-black50.svg";
@@ -9,7 +9,6 @@ import SafeAreaContainer from "~/components/common/container/SafeAreaContainer";
 import { PreSafetyZoneScreenNavigationProp } from "~/types/navigator";
 import { Animated } from "react-native";
 import useAnimatedSequence from "~/hooks/useAnimatedSequence";
-import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 
 const DescriptionContainer = styled(Animated.View)`
   width: 100%;
@@ -26,14 +25,12 @@ const BottomContainer = styled.View`
   justify-content: space-between;
 `;
 
-const Description = styled.View<{ rpWidth: RpWidth }>`
+const Description = styled.View`
   background-color: white;
   flex-direction: row;
   align-items: center;
-  ${({ rpWidth }) => css`
-    margin-bottom: ${rpWidth(32)}px;
-    margin-left: ${rpWidth(40)}px;
-  `}
+  margin-bottom: 32px;
+  margin-left: 40px;
 `;
 
 const PreSafetyZone = ({
@@ -45,47 +42,34 @@ const PreSafetyZone = ({
     numOfValues: 2,
     secondDuration: 300,
   });
-  const { rpHeight, rpWidth } = useContext(DimensionsContext);
 
   return (
     <SafeAreaContainer>
       <TopContainer style={{ opacity: value1 }}>
-        <Shield width={rpWidth(106)} height={rpWidth(112)} />
+        <Shield width={106} height={112} />
         <MyText
           fontSize={24}
           color="rgba(0, 0, 0, 0.8)"
-          style={{ textAlign: "center", marginTop: rpHeight(32) }}>
+          style={{ textAlign: "center", marginTop: 32 }}>
           안심존을{"\n"}설정해주세요.
         </MyText>
       </TopContainer>
       <BottomContainer>
         <DescriptionContainer style={{ opacity: value2 }}>
-          <Description rpWidth={rpWidth}>
-            <CheckCircle
-              width={rpWidth(24)}
-              height={rpWidth(24)}
-              style={{ marginRight: rpWidth(23) }}
-            />
+          <Description>
+            <CheckCircle width={24} height={24} style={{ marginRight: 23 }} />
             <MyText fontSize={14} fontWeight="light">
               안심존 이탈 시 푸시알림을 보내드립니다.
             </MyText>
           </Description>
-          <Description rpWidth={rpWidth}>
-            <CheckCircle
-              width={rpWidth(24)}
-              height={rpWidth(24)}
-              style={{ marginRight: rpWidth(23) }}
-            />
+          <Description>
+            <CheckCircle width={24} height={24} style={{ marginRight: 23 }} />
             <MyText fontSize={14} fontWeight="light">
               실내 및 지하에서는 오차가 있을 수 있습니다.
             </MyText>
           </Description>
-          <Description rpWidth={rpWidth}>
-            <CheckCircle
-              width={rpWidth(24)}
-              height={rpWidth(24)}
-              style={{ marginRight: rpWidth(23) }}
-            />
+          <Description>
+            <CheckCircle width={24} height={24} style={{ marginRight: 23 }} />
             <MyText fontSize={14} fontWeight="light">
               마이페이지에서 3개까지 설정할 수 있습니다.
             </MyText>

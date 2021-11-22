@@ -1,48 +1,43 @@
-import React, { useContext } from "react";
+import React from "react";
 import { KeyboardAvoidingView } from "react-native";
 import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Shadow } from "react-native-shadow-2";
 import { useDispatch } from "react-redux";
-import styled, { css } from "styled-components/native";
+import styled from "styled-components/native";
 import Button from "~/components/common/Button";
 import Input from "~/components/common/Input";
-import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import { useAppSelector } from "~/store";
 import { deviceSettingActions } from "~/store/deviceSetting";
 import { isIos } from "~/utils";
 import ScrollPicker from "../common/ScrollPicker";
 
-const Container = styled(Animated.View)<{ rpWidth: RpWidth }>`
+const Container = styled(Animated.View)`
   background-color: white;
   border-top-left-radius: 15px;
   border-top-right-radius: 15px;
-  padding-bottom: ${({ rpWidth }) => rpWidth(32)}px;
+  padding-bottom: 32px;
 `;
 
-const RowContainer = styled.View<{ rpWidth: RpWidth }>`
+const RowContainer = styled.View`
   flex-direction: row;
-  ${({ rpWidth }) => css`
-    padding: 0px ${rpWidth(38)}px;
-    margin-bottom: ${rpWidth(13)}px;
-  `}
+  padding: 0px 38px;
+  margin-bottom: 13px;
 `;
 
 const InputContainer = styled.View`
   width: 43%;
 `;
 
-const HandleContainer = styled.View<{ rpWidth: RpWidth }>`
-  height: ${({ rpWidth }) => rpWidth(36)}px;
+const HandleContainer = styled.View`
+  height: 36px;
   align-items: center;
 `;
 
-const Handle = styled.View<{ rpWidth: RpWidth }>`
-  ${({ rpWidth }) => css`
-    width: ${rpWidth(29)}px;
-    height: ${rpWidth(3)}px;
-    margin-top: ${rpWidth(8)}px;
-  `}
+const Handle = styled.View`
+  width: 29px;
+  height: 3px;
+  margin-top: 8px;
   background-color: rgba(0, 0, 0, 0.1);
   border-radius: 100px;
 `;
@@ -60,8 +55,6 @@ const SafetyZoneMapBottomSheet = ({
     }[];
   };
 }) => {
-  const { rpWidth } = useContext(DimensionsContext);
-
   const {
     step2,
     draft: { name, radius },
@@ -83,8 +76,8 @@ const SafetyZoneMapBottomSheet = ({
     <KeyboardAvoidingView
       pointerEvents={step2 ? undefined : "none"}
       behavior={isIos ? "padding" : undefined}
-      keyboardVerticalOffset={-rpWidth(85) - bottom}>
-      <Container rpWidth={rpWidth} style={[{ height }, style]}>
+      keyboardVerticalOffset={-85 - bottom}>
+      <Container style={[{ height }, style]}>
         <Shadow
           distance={20}
           startColor="rgba(0, 0, 0, 0.15)"
@@ -92,11 +85,11 @@ const SafetyZoneMapBottomSheet = ({
           radius={15}
           corners={["topLeft", "topRight"]}
           viewStyle={{ width: "100%" }}>
-          <HandleContainer rpWidth={rpWidth}>
-            <Handle rpWidth={rpWidth} />
+          <HandleContainer>
+            <Handle />
           </HandleContainer>
         </Shadow>
-        <RowContainer rpWidth={rpWidth}>
+        <RowContainer>
           <InputContainer style={{ marginRight: "13%" }}>
             <Input
               value={name}
@@ -121,8 +114,8 @@ const SafetyZoneMapBottomSheet = ({
                   }),
                 )
               }
-              width={rpWidth(88)}
-              height={rpWidth(39)}
+              width={88}
+              height={39}
             />
           </InputContainer>
         </RowContainer>

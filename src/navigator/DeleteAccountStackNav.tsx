@@ -3,7 +3,7 @@ import {
   createStackNavigator,
   StackCardInterpolationProps,
 } from "@react-navigation/stack";
-import React, { useContext } from "react";
+import React from "react";
 import {
   Keyboard,
   StyleSheet,
@@ -12,7 +12,6 @@ import {
 } from "react-native";
 import MyText from "~/components/common/MyText";
 import CustomHeader from "~/components/navigator/CustomHeader";
-import { DimensionsContext } from "~/context/DimensionsContext";
 import DeleteAccountFirstPage from "~/screens/deleteAccountStackNav/DeleteAccountFirstPage";
 import DeleteAccountSecondPage from "~/screens/deleteAccountStackNav/DeleteAccountSecondPage";
 import {
@@ -37,7 +36,6 @@ const DeleteAccountStackNav = ({
   route: DeleteAccountStackNavScreenRouteProp;
 }) => {
   const currentRouteName = getFocusedRouteNameFromRoute(route);
-  const { rpWidth, rpHeight } = useContext(DimensionsContext);
 
   return (
     <>
@@ -57,16 +55,16 @@ const DeleteAccountStackNav = ({
         onPress={Keyboard.dismiss}>
         <View>
           <MyText
-            style={{ marginTop: rpHeight(45), paddingLeft: rpWidth(32) }}
+            style={{ marginTop: 45, paddingLeft: 32 }}
             fontWeight="medium"
             fontSize={20}>
             펫브리즈를 탈퇴하시나요?
           </MyText>
           <MyText
             style={{
-              marginTop: rpHeight(10),
-              paddingLeft: rpWidth(32),
-              marginBottom: rpHeight(43),
+              marginTop: 10,
+              paddingLeft: 32,
+              marginBottom: 43,
             }}
             color="rgba(0, 0, 0, 0.5)"
             fontSize={14}>

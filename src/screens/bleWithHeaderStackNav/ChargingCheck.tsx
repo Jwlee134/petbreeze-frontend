@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import { useDispatch } from "react-redux";
 import styled from "styled-components/native";
 
@@ -8,7 +8,6 @@ import MyText from "~/components/common/MyText";
 import SafeAreaContainer from "~/components/common/container/SafeAreaContainer";
 import { ChargingCheckScreenNavigationProp } from "~/types/navigator";
 import { bleActions } from "~/store/ble";
-import { DimensionsContext } from "~/context/DimensionsContext";
 
 const TopContainer = styled.View`
   flex: 1;
@@ -27,16 +26,15 @@ const ChargingCheck = ({
   navigation: ChargingCheckScreenNavigationProp;
 }) => {
   const dispatch = useDispatch();
-  const { rpWidth, rpHeight } = useContext(DimensionsContext);
 
   return (
     <SafeAreaContainer>
       <TopContainer>
-        <Device width={rpWidth(100)} height={rpHeight(156)} />
+        <Device width={100} height={156} />
         <MyText
           fontSize={24}
           style={{
-            marginTop: rpHeight(56),
+            marginTop: 56,
             textAlign: "center",
           }}>
           충전기를{"\n"}

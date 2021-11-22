@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useRef } from "react";
-import styled, { css } from "styled-components/native";
+import React, { useEffect, useRef } from "react";
+import styled from "styled-components/native";
 import MyText from "../../common/MyText";
 import Shield from "~/assets/svg/myPage/shield.svg";
 import WiFiIcon from "~/assets/svg/wifi/wifi-black.svg";
@@ -7,7 +7,6 @@ import Plus from "~/assets/svg/plus/plus-blue.svg";
 import Dissolve from "../../common/Dissolve";
 import People from "~/assets/svg/myPage/people.svg";
 import Arrow from "~/assets/svg/arrow/arrow-down-gray.svg";
-import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import { Animated, StyleSheet } from "react-native";
 
 interface Props {
@@ -25,16 +24,14 @@ const RowContainer = styled.View`
   align-items: center;
 `;
 
-const SvgContainer = styled.View<{ rpWidth: RpWidth }>`
-  width: ${({ rpWidth }) => rpWidth(48)}px;
+const SvgContainer = styled.View`
+  width: 48px;
   align-items: center;
 `;
 
-const Container = styled(RowContainer)<{ rpWidth: RpWidth }>`
-  ${({ rpWidth }) => css`
-    height: ${rpWidth(79)}px;
-    padding: 0 ${rpWidth(16)}px;
-  `}
+const Container = styled(RowContainer)`
+  height: 79px;
+  padding: 0 16px;
   justify-content: space-between;
   background-color: white;
 `;
@@ -59,7 +56,6 @@ const DeviceSettingTitle = ({
   disablePlusButton,
   disableArrowButton = false,
 }: Props) => {
-  const { rpWidth } = useContext(DimensionsContext);
   const value = useRef(new Animated.Value(showList ? 1 : 0)).current;
 
   const rotateZ = value.interpolate({
@@ -76,15 +72,15 @@ const DeviceSettingTitle = ({
   }, [showList]);
 
   return (
-    <Container rpWidth={rpWidth}>
+    <Container>
       <RowContainer>
-        <SvgContainer rpWidth={rpWidth}>
+        <SvgContainer>
           {type === "safetyZone" ? (
-            <Shield width={rpWidth(19)} height={rpWidth(20)} />
+            <Shield width={19} height={20} />
           ) : type === "wifi" ? (
-            <WiFiIcon width={rpWidth(22)} height={rpWidth(17)} />
+            <WiFiIcon width={22} height={17} />
           ) : (
-            <People width={rpWidth(20)} height={rpWidth(19)} />
+            <People width={20} height={19} />
           )}
         </SvgContainer>
         <MyText>
@@ -95,11 +91,11 @@ const DeviceSettingTitle = ({
             : "WiFi"}
         </MyText>
       </RowContainer>
-      <RightSvgContainer rpWidth={rpWidth}>
+      <RightSvgContainer>
         {!disablePlusButton ? (
           <Dissolve style={StyleSheet.absoluteFill} isVisible={isEdit}>
             <PlusContainer onPress={onPlusButtonClick}>
-              <Plus width={rpWidth(14)} height={rpWidth(14)} />
+              <Plus width={14} height={14} />
             </PlusContainer>
           </Dissolve>
         ) : null}
@@ -111,7 +107,7 @@ const DeviceSettingTitle = ({
             }}
             isVisible={!isEdit}>
             <PlusContainer onPress={onArrowButtonClick}>
-              <Arrow width={rpWidth(12)} height={rpWidth(8)} />
+              <Arrow width={12} height={8} />
             </PlusContainer>
           </Dissolve>
         ) : null}

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useEffect } from "react";
 import styled, { css } from "styled-components/native";
 import GradientContainer from "~/components/common/container/GradientContainer";
 import AnimatedPoints from "~/components/common/AnimatedPoints";
@@ -8,7 +8,6 @@ import useAnimatedSequence from "~/hooks/useAnimatedSequence";
 import { ScanningScreenNavigationProp } from "~/types/navigator";
 import { useAppSelector } from "~/store";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 
 const TopContainer = styled.View`
   flex: 1;
@@ -20,12 +19,10 @@ const BottomContainer = styled.View`
   flex: 1;
 `;
 
-const FootPrintBorder = styled(Animated.View)<{ rpWidth: RpWidth }>`
-  ${({ rpWidth }) => css`
-    width: ${rpWidth(248)}px;
-    height: ${rpWidth(248)}px;
-    border-radius: ${rpWidth(124)}px;
-  `}
+const FootPrintBorder = styled(Animated.View)`
+  width: 248px;
+  height: 248px;
+  border-radius: 124px;
   border-width: 1px;
   justify-content: center;
   align-items: center;
@@ -33,11 +30,11 @@ const FootPrintBorder = styled(Animated.View)<{ rpWidth: RpWidth }>`
   position: absolute;
 `;
 
-const FootPrintOuter = styled(Animated.View)<{ rpWidth: RpWidth }>`
-  ${({ rpWidth }) => css`
-    width: ${rpWidth(178)}px;
-    height: ${rpWidth(178)}px;
-    border-radius: ${rpWidth(89)}px;
+const FootPrintOuter = styled(Animated.View)`
+  ${({}) => css`
+    width: ${178}px;
+    height: ${178}px;
+    border-radius: ${89}px;
   `}
   background-color: rgba(255, 255, 255, 0.1);
   justify-content: center;
@@ -45,12 +42,12 @@ const FootPrintOuter = styled(Animated.View)<{ rpWidth: RpWidth }>`
   position: absolute;
 `;
 
-const FootPrintInner = styled.View<{ rpWidth: RpWidth }>`
-  ${({ rpWidth }) => css`
-    width: ${rpWidth(98)}px;
-    height: ${rpWidth(98)}px;
-    border-radius: ${rpWidth(49)}px;
-    margin-bottom: ${-rpWidth(20)}px;
+const FootPrintInner = styled.View`
+  ${({}) => css`
+    width: ${98}px;
+    height: ${98}px;
+    border-radius: ${49}px;
+    margin-bottom: ${-20}px;
   `}
   background-color: white;
   justify-content: center;
@@ -62,7 +59,6 @@ const Scanning = ({
 }: {
   navigation: ScanningScreenNavigationProp;
 }) => {
-  const { rpWidth } = useContext(DimensionsContext);
   const { top } = useSafeAreaInsets();
   const status = useAppSelector(state => state.ble.status);
   const [value1, value2] = useAnimatedSequence({
@@ -91,13 +87,13 @@ const Scanning = ({
           color="white"
           text="디바이스 검색중"
           style={{
-            marginTop: top + rpWidth(99),
+            marginTop: top + 99,
           }}
         />
-        <FootPrintInner rpWidth={rpWidth}>
-          <Footprint width={rpWidth(58)} height={rpWidth(56)} />
-          <FootPrintBorder rpWidth={rpWidth} style={{ opacity: value2 }} />
-          <FootPrintOuter rpWidth={rpWidth} style={{ opacity: value1 }} />
+        <FootPrintInner>
+          <Footprint width={58} height={56} />
+          <FootPrintBorder style={{ opacity: value2 }} />
+          <FootPrintOuter style={{ opacity: value1 }} />
         </FootPrintInner>
       </TopContainer>
       <BottomContainer />

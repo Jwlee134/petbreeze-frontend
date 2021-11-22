@@ -1,7 +1,6 @@
 import React, {
   ForwardedRef,
   forwardRef,
-  useContext,
   useEffect,
   useRef,
   useState,
@@ -14,7 +13,6 @@ import {
   ViewStyle,
 } from "react-native";
 import styled, { css } from "styled-components/native";
-import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import palette from "~/styles/palette";
 import MyText from "./MyText";
 
@@ -29,28 +27,25 @@ interface Props extends TextInputProps {
 
 interface ContainerProps {
   isFocused: boolean;
-  rpWidth: RpWidth;
   isMultiline: boolean;
 }
 
-const Container = styled.View<{ rpWidth: RpWidth }>`
-  margin-bottom: ${({ rpWidth }) => rpWidth(20)}px;
+const Container = styled.View`
+  margin-bottom: 20px;
 `;
 
 const InputContainer = styled.View<ContainerProps>`
-  ${({ rpWidth, isMultiline }) => css`
-    height: ${isMultiline ? "auto" : `${rpWidth(36)}px`};
-    min-height: ${isMultiline ? `${rpWidth(36)}px` : "auto"};
+  ${({ isMultiline }) => css`
+    height: ${isMultiline ? "auto" : "36px"};
+    min-height: ${isMultiline ? "36px" : "auto"};
   `}
   width: 100%;
   flex-direction: row;
   align-items: center;
 `;
 
-const TextInputComponent = styled.TextInput<{ rpWidth: RpWidth }>`
-  ${({ rpWidth }) => css`
-    font-size: ${rpWidth(16)}px;
-  `}
+const TextInputComponent = styled.TextInput`
+  font-size: 16px;
   margin: 0;
   width: 100%;
   height: 100%;
@@ -82,7 +77,6 @@ const Input = forwardRef(
   ) => {
     const [isFocused, setIsFocused] = useState(!!props.value || false);
     const value = useRef(new Animated.Value(isFocused ? 1 : 0)).current;
-    const { rpWidth } = useContext(DimensionsContext);
 
     const borderWidth = value.interpolate({
       inputRange: [0, 1],
@@ -105,19 +99,17 @@ const Input = forwardRef(
     };
 
     return (
-      <Container rpWidth={rpWidth} style={containerStyle}>
+      <Container style={containerStyle}>
         <InputContainer
           isMultiline={props.multiline || false}
-          rpWidth={rpWidth}
           isFocused={isFocused}>
           <TextInputComponent
-            rpWidth={rpWidth}
             ref={ref}
             onFocus={handleFocus}
             onBlur={handleBlur}
             style={{
               paddingVertical: 0,
-              paddingHorizontal: rpWidth(9),
+              paddingHorizontal: 9,
               includeFontPadding: false,
               color: isWhiteBorder ? "white" : "rgba(0, 0, 0, 0.7)",
               ...(style as object),
@@ -133,10 +125,10 @@ const Input = forwardRef(
               style={{
                 position: "absolute",
                 zIndex: -1,
-                right: rpWidth(9),
+                right: 9,
                 ...(alignLeftSolidPlaceholderWhenFocus &&
                   isFocused && {
-                    left: rpWidth(35),
+                    left: 35,
                   }),
               }}
               fontSize={14}

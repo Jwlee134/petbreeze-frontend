@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components/native";
 import CodePush, { DownloadProgress } from "react-native-code-push";
 import { useDispatch } from "react-redux";
@@ -8,7 +8,6 @@ import FootPrint from "~/assets/svg/footprint/footprint-outline-white.svg";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import GradientContainer from "~/components/common/container/GradientContainer";
 import { FirmwareUpdateScreenNavigationProp } from "~/types/navigator";
-import { DimensionsContext } from "~/context/DimensionsContext";
 import { delay } from "~/utils";
 import useAnimatedSequence from "~/hooks/useAnimatedSequence";
 
@@ -21,7 +20,6 @@ const FirmwareUpdate = ({
 }: {
   navigation: FirmwareUpdateScreenNavigationProp;
 }) => {
-  const { rpWidth } = useContext(DimensionsContext);
   const [progress, setProgress] = useState(0);
   const dispatch = useDispatch();
   const [text, setText] = useState("업데이트 확인 중");
@@ -87,15 +85,15 @@ const FirmwareUpdate = ({
       <HalfContainer style={{ justifyContent: "flex-end" }}>
         <AnimatedCircularProgress
           style={{
-            marginBottom: rpWidth(60),
+            marginBottom: 60,
           }}
           tintColor="white"
-          size={rpWidth(160)}
-          width={rpWidth(7)}
+          size={160}
+          width={7}
           fill={progress}
           lineCap="round"
           rotation={0}>
-          {() => <FootPrint width={rpWidth(75)} height={rpWidth(72)} />}
+          {() => <FootPrint width={75} height={72} />}
         </AnimatedCircularProgress>
       </HalfContainer>
       <HalfContainer>

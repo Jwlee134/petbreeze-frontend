@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useAppSelector } from "~/store";
 import LoggedInNav from "./LoggedInNav";
 import { StatusBar } from "react-native";
@@ -17,7 +17,6 @@ import Loading from "~/screens/rootNav/Loading";
 import Toast, { BaseToast, BaseToastProps } from "react-native-toast-message";
 import palette from "~/styles/palette";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { DimensionsContext } from "~/context/DimensionsContext";
 import { isAndroid } from "~/utils";
 
 const Stack = createStackNavigator<RootNavParamList>();
@@ -31,7 +30,6 @@ const forFade = ({ current }: StackCardInterpolationProps) => ({
 const RootNav = () => {
   const { isCodePushUpdated, isIntroPassed, isPermissionAllowed } =
     useAppSelector(state => state.storage.init);
-  const { rpWidth } = useContext(DimensionsContext);
   const { top } = useSafeAreaInsets();
 
   const toastConfig = useMemo(
@@ -41,32 +39,32 @@ const RootNav = () => {
           {...rest}
           style={{
             borderLeftColor: palette.blue_7b_90,
-            borderLeftWidth: rpWidth(7),
+            borderLeftWidth: 7,
             height: "auto",
             marginTop: top,
           }}
           contentContainerStyle={{
-            paddingLeft: rpWidth(14),
-            paddingVertical: rpWidth(10),
+            paddingLeft: 14,
+            paddingVertical: 10,
             height: "auto",
           }}
           text1Style={{
             ...(isAndroid && { fontWeight: "normal" }),
-            fontSize: rpWidth(15),
+            fontSize: 15,
             fontFamily: "NotoSansKR-Bold",
             includeFontPadding: false,
           }}
           text2Style={{
-            fontSize: rpWidth(15),
+            fontSize: 15,
             fontFamily: "NotoSansKR-Regular",
             includeFontPadding: false,
           }}
           trailingIconContainerStyle={{
-            width: rpWidth(40),
+            width: 40,
           }}
           trailingIconStyle={{
-            width: rpWidth(10),
-            height: rpWidth(10),
+            width: 10,
+            height: 10,
           }}
           onTrailingIconPress={Toast.hide}
         />
@@ -76,32 +74,32 @@ const RootNav = () => {
           {...props}
           style={{
             borderLeftColor: palette.red_f0,
-            borderLeftWidth: rpWidth(7),
+            borderLeftWidth: 7,
             height: "auto",
             marginTop: top / 2,
           }}
           contentContainerStyle={{
-            paddingLeft: rpWidth(14),
-            paddingVertical: rpWidth(10),
+            paddingLeft: 14,
+            paddingVertical: 10,
             height: "auto",
           }}
           text1Style={{
             ...(isAndroid && { fontWeight: "normal" }),
-            fontSize: rpWidth(15),
+            fontSize: 15,
             fontFamily: "NotoSansKR-Bold",
             includeFontPadding: false,
           }}
           text2Style={{
-            fontSize: rpWidth(15),
+            fontSize: 15,
             fontFamily: "NotoSansKR-Regular",
             includeFontPadding: false,
           }}
           trailingIconContainerStyle={{
-            width: rpWidth(40),
+            width: 40,
           }}
           trailingIconStyle={{
-            width: rpWidth(10),
-            height: rpWidth(10),
+            width: 10,
+            height: 10,
           }}
           onTrailingIconPress={Toast.hide}
         />

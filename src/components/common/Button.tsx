@@ -1,25 +1,14 @@
-import React, {
-  ReactNode,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { ReactNode, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Animated,
   TouchableOpacityProps,
+  useWindowDimensions,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import styled, { css } from "styled-components/native";
-import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import palette from "~/styles/palette";
 import MyText, { FontWeight } from "./MyText";
-
-interface SButtonProps {
-  width: number;
-  rpWidth: RpWidth;
-}
 
 interface Props extends TouchableOpacityProps {
   children?: ReactNode;
@@ -33,11 +22,11 @@ interface Props extends TouchableOpacityProps {
   delay?: number;
 }
 
-const SButton = styled.TouchableOpacity<SButtonProps>`
-  ${({ width, rpWidth }) => css`
-    width: ${width - rpWidth(32)}px;
-    height: ${rpWidth(50.5)}px;
-    border-radius: ${rpWidth(25)}px;
+const SButton = styled.TouchableOpacity<{ width: number }>`
+  ${({ width }) => css`
+    width: ${width - 32}px;
+    height: ${50.5}px;
+    border-radius: ${25}px;
   `}
   margin: 0 auto;
   overflow: hidden;
@@ -64,7 +53,7 @@ const Button = ({
   ...props
 }: Props) => {
   const { bottom } = useSafeAreaInsets();
-  const { rpWidth, width } = useContext(DimensionsContext);
+  const { width } = useWindowDimensions();
   const [enableAfterDelay, setEnableAfterDelay] = useState(delay ?? false);
   const value = useRef(
     new Animated.Value(props.disabled || delay ? 0 : 1),
@@ -96,17 +85,16 @@ const Button = ({
   return (
     <SButton
       width={width}
-      rpWidth={rpWidth}
       style={{
         ...(useCommonMarginBottom && {
-          marginBottom: useBottomInset ? rpWidth(31.5) + bottom : rpWidth(31.5),
+          marginBottom: useBottomInset ? 31.5 + bottom : 31.5,
         }),
       }}
       disabled={enableAfterDelay ? true : props.disabled}
       {...props}>
       <Container style={{ backgroundColor: backgroundColorInterpolate }}>
         {isLoading ? (
-          <ActivityIndicator color="white" size={rpWidth(25)} />
+          <ActivityIndicator color="white" size={25} />
         ) : (
           <>
             {RightIcon && <RightIcon />}
