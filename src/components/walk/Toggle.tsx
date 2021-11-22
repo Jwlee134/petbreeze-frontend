@@ -164,13 +164,6 @@ const Toggle = () => {
             return "산책을 종료할까요?";
           })()}
           onRightButtonPress={() => {
-            dispatch(
-              storageActions.setWalk({
-                isStopped: true,
-                sheetIndex: 0,
-              }),
-            );
-            return;
             if (duration < 60) {
               setTimeout(() => {
                 dispatch(storageActions.setWalk(null));

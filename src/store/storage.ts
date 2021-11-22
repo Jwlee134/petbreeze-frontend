@@ -18,6 +18,7 @@ interface Walk {
   isStopped: boolean;
   currentPauseTime: string;
   totalPauseDuration: number;
+  sheetIndex: number;
 }
 
 interface History {
@@ -57,6 +58,7 @@ const initialState: State = {
     isStopped: false,
     currentPauseTime: "",
     totalPauseDuration: 0,
+    sheetIndex: 0,
   },
   history: {
     safetyZoneSearch: [],

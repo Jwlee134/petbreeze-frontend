@@ -1,4 +1,10 @@
-import React, { createContext, ReactNode, useCallback, useRef } from "react";
+import React, {
+  createContext,
+  ReactNode,
+  useCallback,
+  useContext,
+  useRef,
+} from "react";
 import { StyleSheet } from "react-native";
 import NaverMapView, { NaverMapViewProps } from "react-native-nmap";
 import ViewShotComp from "react-native-view-shot";
@@ -6,6 +12,7 @@ import { Device } from "~/api/device";
 import NaverMap from "~/components/common/Map";
 import useDevice from "~/hooks/useDevice";
 import { useAppSelector } from "~/store";
+import { DimensionsContext } from "./DimensionsContext";
 
 interface MapProps extends NaverMapViewProps {
   children: ReactNode;
@@ -17,6 +24,7 @@ interface Context {
   viewShotRef: React.RefObject<ViewShotComp>;
   ViewShot: ({ children }: { children: ReactNode }) => JSX.Element;
   deviceList: Device[];
+  stoppedSnapIndex: number;
 }
 
 const initialContext: Context = {
@@ -25,17 +33,21 @@ const initialContext: Context = {
   viewShotRef: { current: null },
   ViewShot: () => <></>,
   deviceList: [],
+  stoppedSnapIndex: 0,
 };
 
 export const WalkContext = createContext(initialContext);
 
 const WalkContextProvider = ({ children }: { children: ReactNode }) => {
+  const { rpWidth } = useContext(DimensionsContext);
   const selectedIds = useAppSelector(
     state => state.storage.walk.selectedDeviceId,
   );
   const deviceList = useDevice();
   const mapRef = useRef<NaverMapView>(null);
   const viewShotRef = useRef<ViewShotComp>(null);
+
+  const stoppedSnapIndex = rpWidth(316);
 
   const ViewShot = useCallback(
     ({ children }: { children: ReactNode }) => (
@@ -66,6 +78,7 @@ const WalkContextProvider = ({ children }: { children: ReactNode }) => {
           deviceList?.filter(device =>
             selectedIds.some(id => device.id === id),
           ) || [],
+        stoppedSnapIndex,
       }}>
       {children}
     </WalkContext.Provider>
