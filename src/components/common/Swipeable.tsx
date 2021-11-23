@@ -1,6 +1,7 @@
 import React, { ReactNode, useEffect, useRef, useState } from "react";
 import { StyleProp, ViewStyle } from "react-native";
 import { Swipeable as Container } from "react-native-gesture-handler";
+import { useAppSelector } from "~/store";
 
 interface Props {
   children: ReactNode;
@@ -13,29 +14,33 @@ interface Props {
 
 const Swipeable = ({
   children,
-  animate = false,
   enableRightActions,
   RenderRightActions,
   rightThreshold,
+  animate = false,
   style,
 }: Props) => {
+  const showRightButton = useAppSelector(
+    state => state.common.animateSwipeable,
+  );
   const swipeableRef = useRef<Container>(null);
   const [hide, setHide] = useState(false);
 
   useEffect(() => {
-    if (!animate) return;
+    if (!animate || !showRightButton) return;
     const timeout1 = setTimeout(() => {
       swipeableRef.current?.openRight();
     }, 400);
     const timeout2 = setTimeout(() => {
       swipeableRef.current?.close();
     }, 1400);
+
     return () => {
       clearTimeout(timeout1);
       clearTimeout(timeout2);
       swipeableRef.current?.close();
     };
-  }, [animate, swipeableRef.current]);
+  }, [animate, showRightButton, swipeableRef.current]);
 
   useEffect(() => {
     let timeout: NodeJS.Timeout;

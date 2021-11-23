@@ -72,11 +72,11 @@ const WiFi = ({ isEdit }: { isEdit: boolean }) => {
           },
           animatedStyle,
         ]}>
-        {result.map(({ wifi_id: id, pw, ssid }, i) =>
+        {result.map(({ wifi_id: id, password, ssid }, i) =>
           ssid ? (
             <Animated.View key={id}>
               <Swipeable
-                animate={isEdit && i === 0}
+                animate={i === 0}
                 RenderRightActions={() => (
                   <SwipeableButton
                     backgroundColor="red"
@@ -93,7 +93,7 @@ const WiFi = ({ isEdit }: { isEdit: boolean }) => {
                     dispatch(
                       deviceSettingActions.setWifi({
                         currentId: id,
-                        draft: { ssid, pw },
+                        draft: { ssid, password: password || "" },
                       }),
                     );
                     navigation.navigate("UpdateWiFi");

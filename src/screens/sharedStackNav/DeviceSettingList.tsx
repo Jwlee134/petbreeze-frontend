@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { ScrollView, TouchableOpacity } from "react-native";
 import MyText from "~/components/common/MyText";
 import CustomHeader from "~/components/navigator/CustomHeader";
@@ -11,6 +11,8 @@ import DeviceSettingListItem from "~/components/myPage/deviceSetting/DeviceSetti
 import SwipeableButton from "~/components/common/SwipeableButton";
 import deviceApi from "~/api/device";
 import useDevice from "~/hooks/useDevice";
+import { useDispatch } from "react-redux";
+import { commonActions } from "~/store/common";
 
 const DeviceSettingList = ({
   navigation,
@@ -20,6 +22,8 @@ const DeviceSettingList = ({
   const [isEdit, setIsEdit] = useState(false);
   const [deleteDevice] = deviceApi.useDeleteDeviceMutation();
   const deviceList = useDevice();
+  const dispatch = useDispatch();
+  const timeout = useRef<NodeJS.Timeout>();
 
   useEffect(() => {
     if (deviceList && !deviceList.length) {
@@ -27,11 +31,25 @@ const DeviceSettingList = ({
     }
   }, [deviceList]);
 
+  useEffect(() => {
+    return () => {
+      if (timeout.current) clearTimeout(timeout.current);
+      dispatch(commonActions.setAnimateSwipeable(false));
+    };
+  }, []);
+
   return (
     <>
       <CustomHeader
         RightButton={() => (
-          <TouchableOpacity onPress={() => setIsEdit(prev => !prev)}>
+          <TouchableOpacity
+            onPress={() => {
+              setIsEdit(prev => !prev);
+              dispatch(commonActions.setAnimateSwipeable(true));
+              timeout.current = setTimeout(() => {
+                dispatch(commonActions.setAnimateSwipeable(false));
+              }, 1800);
+            }}>
             <MyText color={palette.blue_7b}>{!isEdit ? "편집" : "완료"}</MyText>
           </TouchableOpacity>
         )}
@@ -45,7 +63,7 @@ const DeviceSettingList = ({
         }}>
         {deviceList?.map((device, i) => (
           <Swipeable
-            animate={i === 0 && isEdit}
+            animate={i === 0}
             key={device.id}
             RenderRightActions={() => (
               <SwipeableButton

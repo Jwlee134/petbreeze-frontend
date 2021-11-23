@@ -19,6 +19,7 @@ interface DeleteAccountState {
 interface State {
   home: HomeState;
   deleteAccount: DeleteAccountState;
+  animateSwipeable: boolean;
 }
 
 const initialState: State = {
@@ -36,6 +37,7 @@ const initialState: State = {
     body: [],
     text: "",
   },
+  animateSwipeable: false,
 };
 
 const common = createSlice({
@@ -54,6 +56,9 @@ const common = createSlice({
       } else {
         state.deleteAccount = initialState.deleteAccount;
       }
+    },
+    setAnimateSwipeable: (state, { payload }: PayloadAction<boolean>) => {
+      state.animateSwipeable = payload;
     },
   },
 });

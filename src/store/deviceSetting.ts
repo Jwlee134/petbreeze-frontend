@@ -1,17 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
-interface SafetyZoneResult {
-  id: number;
-  name: string;
-  address: string;
-  data: number[];
-  image: string;
-}
+import { AreaResponse, WiFiBody } from "~/api/device";
 
 interface SafetyZoneDraft {
   name: string;
   address: string;
-  image: string;
+  thumbnail: string;
   coord: {
     latitude: number;
     longitude: number;
@@ -26,22 +19,18 @@ interface SafetyZone<T> {
   isSubmitting: boolean;
   fromDeviceSetting: boolean;
   currentId: number;
-  result: SafetyZoneResult[];
+  result: AreaResponse[];
   draft: T;
 }
 
 interface WifiDraft {
   ssid: string;
-  pw: string;
-}
-
-interface WifiResult extends WifiDraft {
-  id: number;
+  password: string;
 }
 
 interface Wifi<T> {
   currentId: number;
-  result: WifiResult[];
+  result: WiFiBody[];
   draft: T;
 }
 
@@ -61,16 +50,20 @@ const initialState: State = {
     fromDeviceSetting: false,
     currentId: 0,
     result: Array.from({ length: 3 }, (v, i) => ({
-      id: i,
-      name: "",
-      address: "",
-      image: "",
-      data: [0, 0, 0],
+      safety_area_id: i,
+      name: null,
+      address: null,
+      thumbnail: "",
+      coordinate: {
+        type: "Point",
+        coordinates: [0, 0],
+      },
+      radius: 0,
     })),
     draft: {
       name: "",
       address: "",
-      image: "",
+      thumbnail: "",
       coord: {
         latitude: 0,
         longitude: 0,
@@ -81,13 +74,13 @@ const initialState: State = {
   wifi: {
     currentId: 0,
     result: Array.from({ length: 5 }, (v, i) => ({
-      id: i,
-      ssid: "",
-      pw: "",
+      wifi_id: i,
+      ssid: null,
+      password: null,
     })),
     draft: {
       ssid: "",
-      pw: "",
+      password: "",
     },
   },
 };
@@ -128,24 +121,39 @@ const deviceSetting = createSlice({
         name,
         address,
         coord: { latitude, longitude },
-        image,
+        thumbnail,
         radius,
       } = payload;
-      state.safetyZone.result = state.safetyZone.result.filter(
-        data => data.id !== currentId,
-      );
-      state.safetyZone.result.push({
-        id: currentId,
-        name,
-        address,
-        image,
-        data: [latitude, longitude, radius],
+      state.safetyZone.result = state.safetyZone.result.map(data => {
+        if (data.safety_area_id === currentId) {
+          return {
+            safety_area_id: currentId,
+            name,
+            address,
+            thumbnail,
+            coordinate: {
+              type: "Point",
+              coordinates: [longitude, latitude],
+            },
+            radius,
+          };
+        }
+        return data;
       });
     },
     deleteSafetyZone: (state, { payload }: PayloadAction<number>) => {
       state.safetyZone.result = state.safetyZone.result.map(area => {
-        if (area.id === payload) {
-          return { ...area, name: "", address: "", data: [0, 0, 0], image: "" };
+        if (area.safety_area_id === payload) {
+          return {
+            ...area,
+            name: null,
+            address: null,
+            coordinate: {
+              type: "Point",
+              coordinates: [0, 0],
+            },
+            radius: 0,
+          };
         }
         return area;
       });
@@ -167,15 +175,17 @@ const deviceSetting = createSlice({
     },
     updateWifiResult: (state, { payload }: PayloadAction<WifiDraft>) => {
       const { currentId } = state.wifi;
-      state.wifi.result = state.wifi.result.filter(
-        data => data.id !== currentId,
-      );
-      state.wifi.result.push({ id: currentId, ...payload });
+      state.wifi.result = state.wifi.result.map(data => {
+        if (data.wifi_id === currentId) {
+          return { wifi_id: currentId, ...payload };
+        }
+        return data;
+      });
     },
     deleteWiFi: (state, { payload }: PayloadAction<number>) => {
       state.wifi.result = state.wifi.result.map(wifi => {
-        if (wifi.id === payload) {
-          return { ...wifi, ssid: "", pw: "" };
+        if (wifi.wifi_id === payload) {
+          return { ...wifi, ssid: null, password: null };
         }
         return wifi;
       });

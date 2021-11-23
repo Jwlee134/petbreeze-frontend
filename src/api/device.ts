@@ -62,18 +62,31 @@ export interface DeviceProfile extends DeviceProfileBody {
   profile_image: string;
 }
 
-interface Area {
-  id: number;
-  name: string;
-  address: string;
-  data: number[];
+export interface AreaBody {
+  safety_area_id: number;
+  name: string | null;
+  address: string | null;
+  coordinate: {
+    type: "Point";
+    coordinates: number[];
+  };
+  radius: number;
+}
+
+export interface AreaResponse extends AreaBody {
+  thumbnail: string;
+}
+
+export interface WiFiBody {
+  wifi_id: number;
+  ssid: string | null;
+  password: string | null;
 }
 
 interface DeviceSetting<A> {
   Period: number;
   Area: A[];
-  WiFi: { id: number; ssid: string; pw: string }[];
-  setting_confirmation: boolean;
+  WiFi: WiFiBody[];
 }
 
 interface DailyWalkRecord {
@@ -106,6 +119,10 @@ interface WalkBody {
 
 const shouldInvalidateDeviceList = (error: FetchBaseQueryError | undefined) =>
   error?.status === 403 || error?.data?.detail === "Device id does not exist.";
+
+const shouldInvalidateUserList = (error: FetchBaseQueryError | undefined) =>
+  error?.data?.detail?.includes("user") ||
+  error?.data?.detail?.includes("User");
 
 const deviceApi = api.injectEndpoints({
   endpoints: builder => ({
@@ -347,7 +364,7 @@ const deviceApi = api.injectEndpoints({
         if (shouldInvalidateDeviceList(error)) {
           return [{ type: "Device", id: deviceID }];
         }
-        if (!error || error?.data?.detail === "User id does not exist.") {
+        if (!error || shouldInvalidateUserList(error)) {
           return [{ type: "Member", id: userID }];
         }
         return [];
@@ -381,7 +398,7 @@ const deviceApi = api.injectEndpoints({
         if (shouldInvalidateDeviceList(error)) {
           return [{ type: "Device", id: deviceID }];
         }
-        if (!error) {
+        if (!error || shouldInvalidateUserList(error)) {
           return [{ type: "Member", id: userID }];
         }
         return [];
@@ -471,7 +488,9 @@ const deviceApi = api.injectEndpoints({
     }),
 
     getDeviceSetting: builder.query<
-      DeviceSetting<Area & { image: string }>,
+      DeviceSetting<AreaResponse> & {
+        setting_confirmation: boolean;
+      },
       number
     >({
       query: deviceID => ({
@@ -494,7 +513,7 @@ const deviceApi = api.injectEndpoints({
 
     updateDeviceSetting: builder.mutation<
       void,
-      { deviceID: number; body: DeviceSetting<Area> }
+      { deviceID: number; body: Partial<DeviceSetting<AreaBody>> }
     >({
       query: ({ deviceID, body }) => ({
         url: `/device/${deviceID}/setting/`,
@@ -579,7 +598,7 @@ const deviceApi = api.injectEndpoints({
 
     startWalking: builder.mutation<void, number>({
       query: deviceID => ({
-        url: `/device/${deviceID}/walk/start/`,
+        url: `/device/${deviceID}/start-walk/`,
         method: "POST",
         body: {},
       }),
@@ -589,6 +608,22 @@ const deviceApi = api.injectEndpoints({
         }
         return [];
       },
+    }),
+
+    stopWalking: builder.mutation<void, number>({
+      query: deviceID => ({
+        url: `/device/${deviceID}/finish-walk/`,
+        method: "POST",
+        body: {},
+      }),
+    }),
+
+    sendWalkNotification: builder.mutation<void, number>({
+      query: deviceID => ({
+        url: `/device/${deviceID}/notify-walk/`,
+        method: "POST",
+        body: {},
+      }),
     }),
 
     postWalk: builder.mutation<

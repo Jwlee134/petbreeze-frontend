@@ -18,6 +18,7 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
+import { noAvatar } from "~/constants";
 
 const RowContainer = styled.View`
   flex-shrink: 1;
@@ -76,7 +77,8 @@ const SafetyZone = ({ isEdit }: { isEdit: boolean }) => {
         onPlusButtonClick={() => {
           dispatch(
             deviceSettingActions.setSafetyZone({
-              currentId: result[result.findIndex(item => !item.name)].id,
+              currentId:
+                result[result.findIndex(item => !item.name)].safety_area_id,
               fromDeviceSetting: true,
             }),
           );
@@ -87,73 +89,87 @@ const SafetyZone = ({ isEdit }: { isEdit: boolean }) => {
         }}
       />
       <Animated.View style={[animatedStyle]}>
-        {result.map(({ id, name, address, data, image }, i) =>
-          name ? (
-            <Swipeable
-              key={id}
-              animate={isEdit && i === 0}
-              RenderRightActions={() => (
-                <SwipeableButton
-                  backgroundColor="red"
+        {result.map(
+          (
+            {
+              safety_area_id: id,
+              name,
+              address,
+              coordinate: { coordinates },
+              thumbnail,
+              radius,
+            },
+            i,
+          ) =>
+            name ? (
+              <Swipeable
+                key={id}
+                animate={i === 0}
+                RenderRightActions={() => (
+                  <SwipeableButton
+                    backgroundColor="red"
+                    onPress={() => {
+                      dispatch(deviceSettingActions.deleteSafetyZone(id));
+                    }}>
+                    <Trashcan width={rpWidth(22)} height={rpWidth(24)} />
+                  </SwipeableButton>
+                )}
+                enableRightActions={isEdit}>
+                <ListItem
+                  style={{ paddingRight: rpWidth(36) }}
                   onPress={() => {
-                    dispatch(deviceSettingActions.deleteSafetyZone(id));
-                  }}>
-                  <Trashcan width={rpWidth(22)} height={rpWidth(24)} />
-                </SwipeableButton>
-              )}
-              enableRightActions={isEdit}>
-              <ListItem
-                style={{ paddingRight: rpWidth(36) }}
-                onPress={() => {
-                  if (!isEdit) return;
-                  dispatch(
-                    deviceSettingActions.setSafetyZone({
-                      draft: {
-                        name,
-                        address,
-                        coord: {
-                          latitude: data[0],
-                          longitude: data[1],
+                    if (!isEdit) return;
+                    dispatch(
+                      deviceSettingActions.setSafetyZone({
+                        draft: {
+                          name,
+                          address: address || "",
+                          coord: {
+                            latitude: coordinates[1],
+                            longitude: coordinates[0],
+                          },
+                          radius,
                         },
-                        radius: data[2],
-                      },
-                      fromDeviceSetting: true,
-                      currentId: id,
-                    }),
-                  );
-                  navigation.navigate("BleRootStackNav", {
-                    initialRouteName: "BleWithoutHeaderStackNav",
-                    initialBleWithoutHeaderStackNavRouteName: "SafetyZone",
-                  });
-                }}
-                showIcon={isEdit}>
-                <RowContainer>
-                  <Image rpWidth={rpWidth} source={{ uri: image }} />
-                  <TextContainer rpWidth={rpWidth}>
-                    <MyText
-                      numberOfLines={1}
-                      fontSize={rpWidth(12)}
-                      color="rgba(0, 0, 0, 0.3)">
-                      {address}
-                    </MyText>
-                    <RowContainer style={{ marginTop: rpWidth(10) }}>
+                        fromDeviceSetting: true,
+                        currentId: id,
+                      }),
+                    );
+                    navigation.navigate("BleRootStackNav", {
+                      initialRouteName: "BleWithoutHeaderStackNav",
+                      initialBleWithoutHeaderStackNavRouteName: "SafetyZone",
+                    });
+                  }}
+                  showIcon={isEdit}>
+                  <RowContainer>
+                    <Image
+                      rpWidth={rpWidth}
+                      source={thumbnail ? { uri: thumbnail } : noAvatar}
+                    />
+                    <TextContainer rpWidth={rpWidth}>
                       <MyText
-                        color="rgba(0, 0, 0, 0.7)"
                         numberOfLines={1}
-                        style={{ width: "50%" }}>
-                        {name}
+                        fontSize={rpWidth(12)}
+                        color="rgba(0, 0, 0, 0.3)">
+                        {address || "주소 없음"}
                       </MyText>
-                      <MyText
-                        style={{ width: "50%" }}
-                        color="rgba(0, 0, 0, 0.7)">
-                        {data[2]}m
-                      </MyText>
-                    </RowContainer>
-                  </TextContainer>
-                </RowContainer>
-              </ListItem>
-            </Swipeable>
-          ) : null,
+                      <RowContainer style={{ marginTop: rpWidth(10) }}>
+                        <MyText
+                          color="rgba(0, 0, 0, 0.7)"
+                          numberOfLines={1}
+                          style={{ width: "50%" }}>
+                          {name}
+                        </MyText>
+                        <MyText
+                          style={{ width: "50%" }}
+                          color="rgba(0, 0, 0, 0.7)">
+                          {radius}m
+                        </MyText>
+                      </RowContainer>
+                    </TextContainer>
+                  </RowContainer>
+                </ListItem>
+              </Swipeable>
+            ) : null,
         )}
       </Animated.View>
     </>

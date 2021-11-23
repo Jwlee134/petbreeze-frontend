@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   TouchableOpacity,
@@ -17,12 +17,13 @@ import WiFi from "~/components/myPage/deviceSetting/WiFi";
 import ProfileSection from "~/components/myPage/deviceSetting/ProfileSection";
 import { store } from "~/store";
 import { DimensionsContext } from "~/context/DimensionsContext";
-import deviceApi from "~/api/device";
+import deviceApi, { AreaResponse } from "~/api/device";
 import { useDispatch } from "react-redux";
 import { deviceSettingActions } from "~/store/deviceSetting";
 import Family from "~/components/myPage/deviceSetting/Family";
 import imageHandler from "~/utils/imageHandler";
 import { serverImageUri } from "~/constants";
+import { commonActions } from "~/store/common";
 
 const DeviceSetting = ({
   navigation,
@@ -40,6 +41,7 @@ const DeviceSetting = ({
   const [updateSafetyZoneThumbnail, { isLoading: updatingThumbnail }] =
     deviceApi.useUpdateSafetyZoneThumbnailMutation();
   const dispatch = useDispatch();
+  const timeout = useRef<NodeJS.Timeout>();
 
   const isLoading = updatingDeviceSetting || updatingThumbnail;
 
@@ -55,7 +57,7 @@ const DeviceSetting = ({
     if (settings.Area.length) {
       const format = safetyZone.map(area => {
         const index = settings.Area.findIndex(
-          areaRes => areaRes.id === area.id,
+          areaRes => areaRes.safety_area_id === area.safety_area_id,
         );
         if (index === -1) {
           return area;
@@ -67,7 +69,7 @@ const DeviceSetting = ({
     if (settings.WiFi.length) {
       const format = wifi.map(wifi => {
         const index = settings.WiFi.findIndex(
-          wifiRes => wifiRes.id === wifi.id,
+          wifiRes => wifiRes.wifi_id === wifi.wifi_id,
         );
         if (index === -1) {
           return wifi;
@@ -81,6 +83,8 @@ const DeviceSetting = ({
   useEffect(() => {
     return () => {
       dispatch(deviceSettingActions.resetResults());
+      if (timeout.current) clearTimeout(timeout.current);
+      dispatch(commonActions.setAnimateSwipeable(false));
     };
   }, []);
 
@@ -92,12 +96,11 @@ const DeviceSetting = ({
       wifi: { result: wifi },
     } = store.getState().deviceSetting;
 
-    const areaWithoutImage = safetyZone.map(area => ({
-      address: area.address,
-      data: area.data,
-      id: area.id,
-      name: area.name,
-    }));
+    const areaWithoutImage = safetyZone.map(area => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const excludeImage = ({ thumbnail, ...rest }: AreaResponse) => rest;
+      return excludeImage(area);
+    });
 
     try {
       await updateSetting({
@@ -114,10 +117,10 @@ const DeviceSetting = ({
 
     const areaImages = safetyZone
       .map(area => ({
-        id: area.id,
-        data: area.image,
+        id: area.safety_area_id,
+        data: area.thumbnail,
       }))
-      .filter(area => !area.data.includes(serverImageUri) && area.data);
+      .filter(area => area.data && !area.data.includes(serverImageUri));
 
     if (areaImages.length) {
       const generateKey = (i: number) => `safety_area_${i}_thumbnail`;
@@ -140,6 +143,10 @@ const DeviceSetting = ({
             onPress={() => {
               if (!isEdit) {
                 setIsEdit(true);
+                dispatch(commonActions.setAnimateSwipeable(true));
+                timeout.current = setTimeout(() => {
+                  dispatch(commonActions.setAnimateSwipeable(false));
+                }, 1800);
               } else {
                 handleSubmit();
               }

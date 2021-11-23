@@ -4,7 +4,7 @@ import { isRejectedWithValue, Middleware } from "@reduxjs/toolkit";
 import { secureItems } from "~/constants";
 import Toast from "react-native-toast-message";
 
-export const baseUrl = "http://3.36.100.60/wheredog-api";
+export const baseUrl = "http://3.36.100.60/api";
 
 const baseQuery = retry(
   fetchBaseQuery({
@@ -17,6 +17,7 @@ const baseQuery = retry(
       return headers;
     },
   }),
+  { maxRetries: 3 },
 );
 
 const api = createApi({
@@ -31,7 +32,7 @@ export const rtkQueryErrorLogger: Middleware = () => next => action => {
     const status = action.payload?.status;
     const detail = action.payload?.data?.detail;
 
-    if (originalStatus === 500) {
+    if (originalStatus === 500 || originalStatus === 502) {
       Toast.show({ type: "error", text1: "서버에 연결할 수 없습니다." });
     }
 
@@ -50,9 +51,6 @@ export const rtkQueryErrorLogger: Middleware = () => next => action => {
           type: "error",
           text1: "변경된 설정이 아직 반영되지 않았습니다.",
         });
-      }
-      if (detail === "This device is already walking.") {
-        Toast.show({ type: "error", text1: "이미 산책중입니다." });
       }
     }
 
