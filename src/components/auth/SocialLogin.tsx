@@ -1,28 +1,24 @@
-import React, { useContext } from "react";
-import styled, { css } from "styled-components/native";
+import React from "react";
+import styled from "styled-components/native";
 
 import { LoginManager, AccessToken } from "react-native-fbsdk-next";
 import { login } from "@react-native-seoul/kakao-login";
 
 import KakaoIcon from "~/assets/svg/auth/kakao.svg";
 import FbIcon from "~/assets/svg/auth/fb.svg";
-import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import { useNavigation } from "@react-navigation/native";
 import { AuthScreenNavigationProp } from "~/types/navigator";
 
-const AuthButton = styled.TouchableOpacity<{ rpWidth: RpWidth }>`
+const AuthButton = styled.TouchableOpacity`
   justify-content: center;
   align-items: center;
-  ${({ rpWidth }) => css`
-    width: ${rpWidth(60)}px;
-    height: ${rpWidth(60)}px;
-    border-radius: ${rpWidth(30)}px;
-  `}
+  width: 60px;
+  height: 60px;
+  border-radius: 30px;
 `;
 
 const SocialLogin = ({ name }: { name: string }) => {
   const navigation = useNavigation<AuthScreenNavigationProp>();
-  const { rpWidth } = useContext(DimensionsContext);
 
   const handleKakaoLogin = async () => {
     try {
@@ -37,6 +33,7 @@ const SocialLogin = ({ name }: { name: string }) => {
   };
 
   const handleFbLogin = async () => {
+    LoginManager.logOut();
     try {
       await LoginManager.logInWithPermissions(["public_profile", "openid"]);
       const data = await AccessToken.getCurrentAccessToken();
@@ -60,16 +57,14 @@ const SocialLogin = ({ name }: { name: string }) => {
         onPress={handleKakaoLogin}
         style={{
           backgroundColor: "#f7cf48",
-          marginRight: rpWidth(40),
-        }}
-        rpWidth={rpWidth}>
-        <KakaoIcon width={rpWidth(22)} height={rpWidth(22)} />
+          marginRight: 40,
+        }}>
+        <KakaoIcon width={22} height={22} />
       </AuthButton>
       <AuthButton
         onPress={handleFbLogin}
-        style={{ backgroundColor: "#2850b6" }}
-        rpWidth={rpWidth}>
-        <FbIcon width={rpWidth(12)} height={rpWidth(24)} />
+        style={{ backgroundColor: "#2850b6" }}>
+        <FbIcon width={12} height={24} />
       </AuthButton>
     </>
   );

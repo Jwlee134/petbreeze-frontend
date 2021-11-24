@@ -71,7 +71,7 @@ const Auth = () => {
   });
 
   const ref = useRef<TextInput>(null);
-  const timeout = useRef<NodeJS.Timeout>();
+  const timeout = useRef<NodeJS.Timeout | null>(null);
   const [name, setName] = useState("");
   const [showBtn, setShowBtn] = useState(false);
   const value = useRef(new Animated.Value(0)).current;
@@ -98,9 +98,10 @@ const Auth = () => {
     return () => {
       if (timeout.current) {
         clearTimeout(timeout.current);
+        timeout.current = null;
       }
     };
-  }, [ref.current, timeout.current, showBtn]);
+  }, [ref.current, showBtn]);
 
   const handleSubmit = () => {
     if (!name) return;
@@ -110,7 +111,14 @@ const Auth = () => {
 
   return (
     <GradientContainer>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <TouchableWithoutFeedback
+        onPress={() => {
+          if (timeout.current) {
+            clearTimeout(timeout.current);
+            timeout.current = null;
+          }
+          Keyboard.dismiss();
+        }}>
         <KeyboardAvoidingView
           style={{ flex: 1 }}
           behavior={isIos ? "padding" : undefined}>
