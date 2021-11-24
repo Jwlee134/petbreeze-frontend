@@ -6,7 +6,7 @@ import BleManager, { Peripheral } from "react-native-ble-manager";
 import deviceApi from "~/api/device";
 import { bytesToString, stringToBytes, isAndroid, isIos } from "~/utils";
 
-import { FileSystem } from "react-native-unimodules";
+import FileSystem from "expo-file-system";
 import { decode } from "base64-arraybuffer";
 import { store, useAppSelector } from "~/store";
 import { useDispatch } from "react-redux";

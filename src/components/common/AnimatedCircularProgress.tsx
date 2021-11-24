@@ -1,8 +1,7 @@
-import React, { memo, useContext, useEffect, useRef } from "react";
+import React, { memo, useEffect, useRef } from "react";
 import styled, { css } from "styled-components/native";
 import { AnimatedCircularProgress as RNCircularProgress } from "react-native-circular-progress";
 import palette from "~/styles/palette";
-import { DimensionsContext } from "~/context/DimensionsContext";
 import { Animated, StyleProp, View, ViewStyle } from "react-native";
 import Icon from "~/assets/svg/exclamation/exclamation-mark-white.svg";
 import { noAvatar } from "~/constants";
@@ -14,7 +13,6 @@ interface Props {
   avatar: string;
   isInModal?: boolean;
   isBackgroundTransparent?: boolean;
-  preventRpHeight?: boolean;
   highlightOnEmergency?: boolean;
   style?: StyleProp<ViewStyle>;
 }
@@ -47,12 +45,10 @@ const AnimatedCircularProgress = ({
   isBackgroundTransparent,
   avatar,
   isInModal = false,
-  preventRpHeight = false,
   highlightOnEmergency = false,
   style,
 }: Props) => {
   const batteryValue = battery || 0;
-  const { rpWidth } = useContext(DimensionsContext);
   const value = useRef(new Animated.Value(0)).current;
 
   const scale = value.interpolate({
@@ -83,9 +79,7 @@ const AnimatedCircularProgress = ({
   return (
     <View style={style}>
       {highlightOnEmergency ? (
-        <Alert
-          style={{ transform: [{ scale }] }}
-          width={rpWidth(circleWidth || 0)}>
+        <Alert style={{ transform: [{ scale }] }} width={circleWidth || 0}>
           <Icon width={7} height={36} />
         </Alert>
       ) : null}
