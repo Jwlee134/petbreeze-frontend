@@ -50,6 +50,7 @@ const Button = ({
   useBottomInset = false,
   backgroundColor,
   delay,
+  style,
   ...props
 }: Props) => {
   const { bottom } = useSafeAreaInsets();
@@ -89,6 +90,7 @@ const Button = ({
         ...(useCommonMarginBottom && {
           marginBottom: useBottomInset ? 31.5 + bottom : 31.5,
         }),
+        ...(style as object),
       }}
       disabled={enableAfterDelay ? true : props.disabled}
       {...props}>

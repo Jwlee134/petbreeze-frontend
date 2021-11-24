@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
-import styled, { css } from "styled-components/native";
+import styled from "styled-components/native";
 import GradientContainer from "~/components/common/container/GradientContainer";
 import AnimatedPoints from "~/components/common/AnimatedPoints";
-import Footprint from "~/assets/svg/footprint/footprint-outline-blue.svg";
+import Footprint from "~/assets/svg/footprint/footprint-blue.svg";
 import { Animated } from "react-native";
 import useAnimatedSequence from "~/hooks/useAnimatedSequence";
 import { ScanningScreenNavigationProp } from "~/types/navigator";
@@ -31,11 +31,9 @@ const FootPrintBorder = styled(Animated.View)`
 `;
 
 const FootPrintOuter = styled(Animated.View)`
-  ${({}) => css`
-    width: ${178}px;
-    height: ${178}px;
-    border-radius: ${89}px;
-  `}
+  width: 178px;
+  height: 178px;
+  border-radius: 89px;
   background-color: rgba(255, 255, 255, 0.1);
   justify-content: center;
   align-items: center;
@@ -43,12 +41,10 @@ const FootPrintOuter = styled(Animated.View)`
 `;
 
 const FootPrintInner = styled.View`
-  ${({}) => css`
-    width: ${98}px;
-    height: ${98}px;
-    border-radius: ${49}px;
-    margin-bottom: ${-20}px;
-  `}
+  width: 98px;
+  height: 98px;
+  border-radius: 49px;
+  margin-bottom: -20px;
   background-color: white;
   justify-content: center;
   align-items: center;

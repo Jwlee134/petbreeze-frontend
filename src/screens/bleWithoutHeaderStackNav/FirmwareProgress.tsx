@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components/native";
 import { useAppSelector } from "~/store";
 import AnimatedPoints from "~/components/common/AnimatedPoints";
@@ -7,6 +7,13 @@ import { Animated } from "react-native";
 import palette from "~/styles/palette";
 import Footprint from "~/assets/svg/footprint/footprint-app-icon-white.svg";
 import { FirmwareProgressScreenNavigationProp } from "~/types/navigator";
+import Reanimated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
+
+const barWidth = 268;
 
 const TopContainer = styled.View`
   flex: 1;
@@ -20,7 +27,7 @@ const BottomContainer = styled.View`
 `;
 
 const BarBackground = styled.View`
-  width: 268px;
+  width: ${barWidth}px;
   height: 12px;
   margin-bottom: 42px;
   border-radius: 100px;
@@ -28,7 +35,7 @@ const BarBackground = styled.View`
   overflow: hidden;
 `;
 
-const Bar = styled(Animated.View)`
+const Bar = styled(Reanimated.View)`
   height: 100%;
   background-color: ${palette.blue_7b_90};
   border-radius: 100px;
@@ -62,25 +69,17 @@ const FirmwareProgress = ({
     resetDuration: 400,
     delayAfterReset: 800,
   });
-  const widthValue = useRef(new Animated.Value(progress)).current;
+  const percentage = useSharedValue(progress);
 
-  const widthInterpolate = widthValue.interpolate({
-    inputRange: [0, progress],
-    outputRange: [`${0}%`, `${progress}%`],
-  });
+  const animatedStyles = useAnimatedStyle(() => {
+    percentage.value = barWidth * (progress / 100);
+    return { width: withTiming(percentage.value, { duration: 400 }) };
+  }, [progress]);
 
   const translateY = value1.interpolate({
     inputRange: [0, 1],
     outputRange: [-46, -23],
   });
-
-  useEffect(() => {
-    Animated.timing(widthValue, {
-      toValue: progress,
-      useNativeDriver: false,
-      duration: 400,
-    }).start();
-  }, [progress]);
 
   useEffect(() => {
     if (status === "downloadingFail" || status === "installingFail")
@@ -99,7 +98,7 @@ const FirmwareProgress = ({
           <Footprint width={60} height={83} />
         </Animated.View>
         <BarBackground>
-          <Bar style={{ width: widthInterpolate }} />
+          <Bar style={[animatedStyles]} />
         </BarBackground>
       </TopContainer>
       <BottomContainer>

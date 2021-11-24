@@ -13,7 +13,7 @@ import { CompletionScreenNavigationProp } from "~/types/navigator";
 import { noAvatar, noName } from "~/constants";
 
 const DeviceContainer = styled(Animated.View)`
-  margin-top: $52px;
+  margin-top: 52px;
   align-items: center;
 `;
 
@@ -42,7 +42,6 @@ const Completion = ({
   const { name, species, birthYear, sex, photos } = useAppSelector(
     state => state.form,
   );
-  const deviceID = useAppSelector(state => state.ble.deviceID);
 
   const [value1, value2] = useAnimatedSequence({
     numOfValues: 2,
@@ -101,30 +100,19 @@ const Completion = ({
             {sex ? "남" : "여"}
           </MyText>
         </RowContainer>
-        <View style={{ marginTop: 30, height: 200 }}>
-          <RowContainer style={{ alignItems: "flex-start", marginBottom: 12 }}>
+        <View style={{ marginTop: 30 }}>
+          <RowContainer>
             <MyText
               style={{ width: 100 }}
               fontSize={14}
               color="rgba(0, 0, 0, 0.5)">
-              디바이스 이름
+              안심존
             </MyText>
-            <MyText style={{ width: 100 }}>{deviceID}</MyText>
+            <MyText style={{ width: 100 }}>{safetyZoneName}</MyText>
           </RowContainer>
-          {safetyZoneName ? (
-            <RowContainer>
-              <MyText
-                style={{ width: 100 }}
-                fontSize={14}
-                color="rgba(0, 0, 0, 0.5)">
-                안심존
-              </MyText>
-              <MyText style={{ width: 100 }}>{safetyZoneName}</MyText>
-            </RowContainer>
-          ) : null}
         </View>
         <MyText
-          style={{ textAlign: "center" }}
+          style={{ textAlign: "center", marginTop: 54 }}
           fontSize={12}
           color="rgba(0, 0, 0, 0.3)">
           마이페이지에서 안심존 및 기기 추가 등록을 하실 수 있습니다.

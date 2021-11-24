@@ -6,3 +6,5 @@ export const centerModalOutTiming = 200;
 export const bottomModalOutTiming = 400;
 
 export const mapButtonSize = 48;
+
+export const minSpace = 50;

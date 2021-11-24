@@ -16,6 +16,7 @@ import useModal from "~/hooks/useModal";
 import CommonCenterModal from "~/components/modal/CommonCenterModal";
 import DatePicker from "react-native-date-picker";
 import { formActions } from "~/store/form";
+import { minSpace } from "~/styles/constants";
 
 const InputContainer = styled.View`
   padding: 0px 42px;
@@ -43,7 +44,7 @@ const RegisterProfileFirst = ({
   return (
     <>
       <KeyboardAwareScrollContainer isSpaceBetween>
-        <View style={{ marginBottom: 30 }}>
+        <View style={{ marginBottom: minSpace }}>
           <MyText
             style={{
               textAlign: "center",
