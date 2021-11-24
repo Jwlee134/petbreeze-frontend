@@ -79,7 +79,7 @@ const Notification = ({
                 }
               />
             ))}
-            <Divider />
+            {thisWeek.length ? <Divider /> : null}
           </>
         ) : null}
         {thisWeek.length ? (

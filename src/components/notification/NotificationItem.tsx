@@ -10,7 +10,7 @@ import { Notification } from "~/api/user";
 import { noAvatar } from "~/constants";
 import { Device } from "~/api/device";
 
-const Container = styled.TouchableOpacity<{ rpWidth: RpWidth }>`
+const Container = styled.View<{ rpWidth: RpWidth }>`
   padding: ${({ rpWidth }) => `0 ${rpWidth(32)}px`};
   margin-bottom: ${({ rpWidth }) => rpWidth(20)}px;
   flex-direction: row;
@@ -82,13 +82,13 @@ const NotificationItem = ({
           </View>
         </MyText>
       </TextContainer>
-      {showArrow ? (
+      {/* {showArrow ? (
         <Arrow
           width={rpWidth(7)}
           height={rpWidth(12)}
           style={{ marginTop: rpWidth(3) }}
         />
-      ) : null}
+      ) : null} */}
     </Container>
   );
 };

@@ -1,19 +1,17 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components/native";
-import userApi, { NotificationSettings } from "~/api/user";
+import userApi from "~/api/user";
 import Switch from "~/components/common/Switch";
 import * as SecureStore from "expo-secure-store";
 import MyText from "~/components/common/MyText";
 
 import Shield from "~/assets/svg/myPage/shield.svg";
 import Battery from "~/assets/svg/myPage/battery.svg";
-import Wifi from "~/assets/svg/myPage/lost-wifi.svg";
 import Pencil from "~/assets/svg/myPage/pencil-noti.svg";
-import Check from "~/assets/svg/myPage/check.svg";
-import Divider from "~/components/common/Divider";
-import { useWindowDimensions } from "react-native";
 
-const Container = styled.View``;
+const Container = styled.View`
+  padding-top: 35px;
+`;
 
 const Svg = styled.View`
   width: 46px;
@@ -28,11 +26,10 @@ const RowContainer = styled.View`
 
 const Item = styled(RowContainer)<{ isLast?: boolean }>`
   justify-content: space-between;
-  margin-bottom: ${({ isLast }) => (isLast ? 0 : 22)}px;
+  margin-bottom: ${({ isLast }) => (isLast ? 0 : 27.5)}px;
 `;
 
 const NotificationSetting = () => {
-  const { width } = useWindowDimensions();
   const [token, setToken] = useState("");
   const { data } = userApi.useGetNofiticationSettingsQuery(token, {
     skip: !token.length,
@@ -47,16 +44,8 @@ const NotificationSetting = () => {
     });
   }, []);
 
-  const isEntireOn = (data && !Object.values(data).includes(false)) || false;
-
   return (
     <Container>
-      <MyText
-        style={{ marginLeft: 32, marginVertical: 25 }}
-        fontSize={14}
-        color="rgba(0, 0, 0, 0.3)">
-        기기 알림
-      </MyText>
       <Item>
         <RowContainer>
           <Svg>
@@ -102,104 +91,20 @@ const NotificationSetting = () => {
       <Item isLast>
         <RowContainer>
           <Svg>
-            <Wifi width={20} height={15} />
-          </Svg>
-          <MyText>연결 끊김 알림</MyText>
-        </RowContainer>
-        <Switch
-          isOn={data?.disconnect_notification || false}
-          onToggle={() => {
-            if (!data) return;
-            update({
-              firebaseToken: token,
-              body: {
-                ...data,
-                disconnect_notification: !data?.disconnect_notification,
-              },
-            });
-          }}
-        />
-      </Item>
-      <MyText
-        style={{
-          marginLeft: 32,
-          marginTop: 60,
-          marginBottom: 25,
-        }}
-        fontSize={14}
-        color="rgba(0, 0, 0, 0.3)">
-        산책 알림
-      </MyText>
-      <Item>
-        <RowContainer>
-          <Svg>
             <Pencil width={18} height={18} />
           </Svg>
-          <MyText>산책 시작 알림</MyText>
+          <MyText>산책 알림</MyText>
         </RowContainer>
         <Switch
-          isOn={data?.start_walk_notification || false}
+          isOn={data?.walk_notification || false}
           onToggle={() => {
             if (!data) return;
             update({
               firebaseToken: token,
               body: {
                 ...data,
-                start_walk_notification: !data?.start_walk_notification,
+                walk_notification: !data?.walk_notification,
               },
-            });
-          }}
-        />
-      </Item>
-      <Item isLast>
-        <RowContainer>
-          <Svg>
-            <Check width={17} height={12} />
-          </Svg>
-          <MyText>산책 종료 알림</MyText>
-        </RowContainer>
-        <Switch
-          isOn={data?.stop_walk_notification || false}
-          onToggle={() => {
-            if (!data) return;
-            update({
-              firebaseToken: token,
-              body: {
-                ...data,
-                stop_walk_notification: !data?.stop_walk_notification,
-              },
-            });
-          }}
-        />
-      </Item>
-      <Divider
-        style={{
-          width: width - 34,
-          alignSelf: "center",
-          marginVertical: 27,
-        }}
-      />
-      <Item>
-        <MyText style={{ marginLeft: 32 }} fontWeight="medium">
-          전체 알림 설정
-        </MyText>
-        <Switch
-          isOn={isEntireOn}
-          onToggle={() => {
-            if (!data) return;
-            const body = { ...data };
-            if (isEntireOn) {
-              Object.keys(body).forEach(value => {
-                body[value as keyof NotificationSettings] = false;
-              });
-            } else {
-              Object.keys(body).forEach(value => {
-                body[value as keyof NotificationSettings] = true;
-              });
-            }
-            update({
-              firebaseToken: token,
-              body,
             });
           }}
         />

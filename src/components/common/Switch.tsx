@@ -1,5 +1,5 @@
-import React, { useContext } from "react";
-import { Pressable, StyleSheet } from "react-native";
+import React from "react";
+import { Pressable } from "react-native";
 import Animated, {
   Easing,
   interpolate,
@@ -8,8 +8,7 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
-import styled, { css } from "styled-components/native";
-import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
+import styled from "styled-components/native";
 import palette from "~/styles/palette";
 
 interface Props {
@@ -17,51 +16,29 @@ interface Props {
   onToggle: () => void;
 }
 
-const Wrap = styled.View<{ rpWidth: RpWidth }>`
+const Wrap = styled.View`
   flex-direction: row;
   align-items: center;
-  margin-right: ${({ rpWidth }) => rpWidth(32)}px;
+  margin-right: 32px;
 `;
 
-const ToggleContainer = styled(Animated.View)<{ rpWidth: RpWidth }>`
-  ${({ rpWidth }) => css`
-  width:${rpWidth(51)}px
-  height:${rpWidth(31)}px;
-  border-radius:${rpWidth(25.5)}px;
-  `}
+const ToggleContainer = styled(Animated.View)`
+  width: 51px;
+  height: 23px;
+  border-radius: 25.5px;
   justify-content: center;
 `;
 
-const ToggleWheel = styled(Animated.View)<{ rpWidth: RpWidth }>`
-  ${({ rpWidth }) => css`
-  width:${rpWidth(27)}px
-  height:${rpWidth(27)}px;
-  border-radius:${rpWidth(13.5)}px;
-  `}
+const ToggleWheel = styled(Animated.View)`
+  width: 16px;
+  height: 15px;
+  border-radius: 8px;
   background-color: white;
 `;
 
-const styles = StyleSheet.create({
-  toggleWheel: {
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 2.5,
-    elevation: 1.5,
-  },
-});
-
 const Switch = ({ isOn, onToggle }: Props) => {
-  const { rpWidth } = useContext(DimensionsContext);
-
   const color = useSharedValue(0);
   const trans = useSharedValue(0);
-
-  const off = rpWidth(2);
-  const on = rpWidth(22);
 
   const backgroundColorToggle = useAnimatedStyle(() => {
     color.value = isOn ? 1 : 0;
@@ -80,7 +57,7 @@ const Switch = ({ isOn, onToggle }: Props) => {
 
   const moveSwitchToggle = useAnimatedStyle(() => {
     trans.value = isOn ? 1 : 0;
-    const translateX = interpolate(trans.value, [0, 1], [off, on]);
+    const translateX = interpolate(trans.value, [0, 1], [5, 30]);
     return {
       transform: [
         {
@@ -94,13 +71,10 @@ const Switch = ({ isOn, onToggle }: Props) => {
   }, [isOn]);
 
   return (
-    <Wrap rpWidth={rpWidth}>
+    <Wrap>
       <Pressable onPress={onToggle}>
-        <ToggleContainer rpWidth={rpWidth} style={[backgroundColorToggle]}>
-          <ToggleWheel
-            rpWidth={rpWidth}
-            style={[styles.toggleWheel, moveSwitchToggle]}
-          />
+        <ToggleContainer style={[backgroundColorToggle]}>
+          <ToggleWheel style={[moveSwitchToggle]} />
         </ToggleContainer>
       </Pressable>
     </Wrap>

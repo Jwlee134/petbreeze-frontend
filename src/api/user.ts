@@ -19,11 +19,9 @@ export interface Notification {
 }
 
 export interface NotificationSettings {
-  low_battery_notification: boolean;
   exit_notification: boolean;
-  start_walk_notification: boolean;
-  stop_walk_notification: boolean;
-  disconnect_notification: boolean;
+  walk_notification: boolean;
+  low_battery_notification: boolean;
 }
 
 const userApi = api.injectEndpoints({
