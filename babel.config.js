@@ -1,6 +1,6 @@
-module.exports = {
-  presets: ["module:metro-react-native-babel-preset"],
-  plugins: [
+module.exports = api => {
+  const babelEnv = api.env();
+  const plugins = [
     [
       "module-resolver",
       {
@@ -10,5 +10,16 @@ module.exports = {
       },
     ],
     "react-native-reanimated/plugin",
-  ],
+  ];
+
+  if (babelEnv !== "development") {
+    plugins.unshift([
+      "transform-remove-console",
+      { exclude: ["error", "warn"] },
+    ]);
+  }
+  return {
+    presets: ["module:metro-react-native-babel-preset"],
+    plugins,
+  };
 };
