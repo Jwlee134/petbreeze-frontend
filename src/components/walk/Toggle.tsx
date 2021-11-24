@@ -1,6 +1,6 @@
-import React, { useContext } from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import styled, { css } from "styled-components/native";
+import styled from "styled-components/native";
 import { storageActions } from "~/store/storage";
 import palette from "~/styles/palette";
 
@@ -13,38 +13,36 @@ import Stop from "~/assets/svg/walk/stop.svg";
 import StopFill from "~/assets/svg/walk/stop-fill.svg";
 import ImageCropPicker from "react-native-image-crop-picker";
 import CameraRoll from "@react-native-community/cameraroll";
-import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import useModal from "~/hooks/useModal";
 import Modal from "react-native-modal";
 import CommonCenterModal from "../modal/CommonCenterModal";
 import { useNavigation } from "@react-navigation/native";
 import { WalkMapScreenNavigationProp } from "~/types/navigator";
 import { Shadow } from "react-native-shadow-2";
+import deviceApi from "~/api/device";
+import allSettled from "promise.allsettled";
+import { ActivityIndicator } from "react-native";
 
-const RowContainer = styled.View<{ rpWidth: RpWidth }>`
+const RowContainer = styled.View`
   flex-direction: row;
   align-items: flex-end;
   justify-content: space-evenly;
-  margin-top: ${({ rpWidth }) => rpWidth(30)}px;
+  margin-top: 30px;
 `;
 
-const SmallButton = styled.TouchableOpacity<{ rpWidth: RpWidth }>`
-  ${({ rpWidth }) => css`
-    width: ${rpWidth(71)}px;
-    height: ${rpWidth(71)}px;
-    border-radius: ${rpWidth(35.5)}px;
-  `};
+const SmallButton = styled.TouchableOpacity`
+  width: 71px;
+  height: 71px;
+  border-radius: 35.5px;
   justify-content: center;
   align-items: center;
   background-color: white;
 `;
 
-const Button = styled.TouchableOpacity<{ rpWidth: RpWidth }>`
-  ${({ rpWidth }) => css`
-    width: ${rpWidth(89)}px;
-    height: ${rpWidth(89)}px;
-    border-radius: ${rpWidth(44.5)}px;
-  `};
+const Button = styled.TouchableOpacity`
+  width: 89px;
+  height: 89px;
+  border-radius: 44.5px;
   justify-content: center;
   align-items: center;
   background-color: white;
@@ -57,11 +55,15 @@ const Toggle = () => {
   const currentPauseTime = useAppSelector(
     state => state.storage.walk.currentPauseTime,
   );
+  const selectedID = useAppSelector(
+    state => state.storage.walk.selectedDeviceId,
+  );
   const duration = useAppSelector(state => state.storage.walk.duration);
   const isWalking = useAppSelector(state => state.storage.walk.isWalking);
   const dispatch = useDispatch();
-  const { rpWidth } = useContext(DimensionsContext);
   const { open, close, modalProps } = useModal();
+  const [stopWalking] = deviceApi.useStopWalkingMutation();
+  const [loading, setLoading] = useState(false);
 
   const pause = () => {
     dispatch(
@@ -87,13 +89,12 @@ const Toggle = () => {
 
   return (
     <>
-      <RowContainer rpWidth={rpWidth}>
+      <RowContainer>
         <Shadow
           distance={12}
           startColor="rgba(0, 0, 0, 0.05)"
-          viewStyle={{ borderRadius: rpWidth(35.5) }}>
+          viewStyle={{ borderRadius: 35.5 }}>
           <SmallButton
-            rpWidth={rpWidth}
             onPress={() => {
               if (isWalking) {
                 pause();
@@ -102,18 +103,17 @@ const Toggle = () => {
               }
             }}>
             {isWalking ? (
-              <Pause width={rpWidth(17)} height={rpWidth(21)} />
+              <Pause width={17} height={21} />
             ) : (
-              <Stop width={rpWidth(24)} height={rpWidth(24)} />
+              <Stop width={24} height={24} />
             )}
           </SmallButton>
         </Shadow>
         <Shadow
           distance={12}
           startColor="rgba(0, 0, 0, 0.05)"
-          viewStyle={{ borderRadius: rpWidth(44.5) }}>
+          viewStyle={{ borderRadius: 44.5 }}>
           <Button
-            rpWidth={rpWidth}
             onPress={() => {
               if (isWalking) {
                 pause();
@@ -123,22 +123,17 @@ const Toggle = () => {
               }
             }}>
             {isWalking ? (
-              <StopFill width={rpWidth(35)} height={rpWidth(35)} />
+              <StopFill width={35} height={35} />
             ) : (
-              <Play
-                width={rpWidth(32)}
-                height={rpWidth(40)}
-                style={{ marginLeft: rpWidth(4) }}
-              />
+              <Play width={32} height={40} style={{ marginLeft: 4 }} />
             )}
           </Button>
         </Shadow>
         <Shadow
           distance={12}
           startColor="rgba(0, 0, 0, 0.05)"
-          viewStyle={{ borderRadius: rpWidth(35.5) }}>
+          viewStyle={{ borderRadius: 35.5 }}>
           <SmallButton
-            rpWidth={rpWidth}
             onPress={() => {
               ImageCropPicker.openCamera({}).then(image => {
                 CameraRoll.save(image.path, { album: "펫브리즈" }).then(() => {
@@ -146,7 +141,7 @@ const Toggle = () => {
                 });
               });
             }}>
-            <Camera width={rpWidth(30)} height={rpWidth(30)} />
+            <Camera width={30} height={30} />
           </SmallButton>
         </Shadow>
       </RowContainer>
@@ -156,15 +151,19 @@ const Toggle = () => {
             close();
             resume();
           }}
-          rightButtonText="종료"
+          rightButtonText={loading ? <ActivityIndicator /> : "종료"}
           title={(() => {
             if (duration < 60) {
               return `1분 미만의 산책은 기록되지 않습니다.\n산책을 종료할까요?`;
             }
             return "산책을 종료할까요?";
           })()}
-          onRightButtonPress={() => {
+          onRightButtonPress={async () => {
+            if (loading) return;
             if (duration < 60) {
+              setLoading(true);
+              await allSettled(selectedID.map(id => stopWalking(id).unwrap()));
+              setLoading(false);
               setTimeout(() => {
                 dispatch(storageActions.setWalk(null));
               }, 200);

@@ -1,15 +1,17 @@
 import React, { useState } from "react";
 import { StartWalkingScreenNavigationProp } from "~/types/navigator";
-import { Device } from "~/api/device";
+import deviceApi, { Device } from "~/api/device";
 import { useDispatch } from "react-redux";
 import { storageActions } from "~/store/storage";
-import { permissionCheck } from "~/utils";
+import { isEndWithConsonant, permissionCheck } from "~/utils";
 import Button from "~/components/common/Button";
 import { ScrollView, View } from "react-native";
 import ListItem from "~/components/common/ListItem";
 import MyText from "~/components/common/MyText";
 import Dog from "~/assets/svg/dog/dog-with-device.svg";
 import WalkDeviceListItem from "~/components/walk/WalkDeviceListItem";
+import allSettled from "promise.allsettled";
+import Toast from "react-native-toast-message";
 
 const StartWalking = ({
   navigation,
@@ -20,18 +22,54 @@ const StartWalking = ({
 }) => {
   const [selected, setSelected] = useState<number[]>([]);
   const dispatch = useDispatch();
+  const [startWalking] = deviceApi.useStartWalkingMutation();
+  const [stopWalking] = deviceApi.useStopWalkingMutation();
+  const [loading, setLoading] = useState(false);
 
-  const handleStart = () => {
-    permissionCheck("location").then(() => {
-      dispatch(
-        storageActions.setWalk({
-          selectedDeviceId: selected,
-        }),
+  const handleStart = async () => {
+    setLoading(true);
+    try {
+      await permissionCheck("location");
+      const results = await allSettled(
+        selected.map(id => startWalking(id).unwrap()),
       );
-      navigation.replace("LoggedInNav", {
-        initialRouteName: "WalkMap",
-      });
-    });
+      // 거절된 시작 요청이 있으면 거절된 디바이스의 id 토스트로 출력 및 성공한 디바이스
+      // 의 산책 종료 요청, 아니면 바로 산책 시작
+      if (results.some(result => result.status === "rejected")) {
+        const rejectedNames = selected
+          .filter((id, i) => results[i].status === "rejected")
+          .map(
+            id =>
+              deviceList[deviceList.findIndex(device => device.id === id)].name,
+          )
+          .join(", ");
+        Toast.show({
+          type: "error",
+          text1: `${rejectedNames}${
+            isEndWithConsonant(rejectedNames) ? "은" : "는"
+          } 이미 산책중입니다.`,
+        });
+        await allSettled(
+          selected
+            .map((id, i) => {
+              if (results[i].status === "rejected") return null;
+              return stopWalking(id);
+            })
+            .filter(item => item !== null),
+        );
+      } else {
+        dispatch(
+          storageActions.setWalk({
+            selectedDeviceId: selected,
+          }),
+        );
+        navigation.replace("LoggedInNav", {
+          initialRouteName: "WalkMap",
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return deviceList && deviceList.length ? (
@@ -69,6 +107,7 @@ const StartWalking = ({
         ))}
       </View>
       <Button
+        isLoading={loading}
         style={{ width: 126, marginTop: 67 }}
         disabled={!selected.length}
         onPress={handleStart}>

@@ -5,7 +5,6 @@ import MyText from "../common/MyText";
 import styled from "styled-components/native";
 import { useDispatch } from "react-redux";
 import { storageActions } from "~/store/storage";
-import { DimensionsContext } from "~/context/DimensionsContext";
 import { useNavigation } from "@react-navigation/native";
 import { WalkMapScreenNavigationProp } from "~/types/navigator";
 import deviceApi from "~/api/device";
@@ -21,7 +20,7 @@ const RowContainer = styled.View`
 `;
 
 const Timer = () => {
-  const [startWalking] = deviceApi.useStartWalkingMutation();
+  const [sendNotification] = deviceApi.useSendWalkNotificationMutation();
   const selectedIDs = useAppSelector(
     state => state.storage.walk.selectedDeviceId,
   );
@@ -36,7 +35,6 @@ const Timer = () => {
   );
   const dispatch = useDispatch();
   const timeout = useRef<NodeJS.Timeout>();
-  const { rpWidth } = useContext(DimensionsContext);
   const { deviceList } = useContext(WalkContext);
 
   const getDuration = () => {
@@ -95,32 +93,20 @@ const Timer = () => {
     if (duration === 60) {
       (async () => {
         const results = await allSettled(
-          selectedIDs.map(
-            id =>
-              new Promise((resolve, reject) => {
-                startWalking(id)
-                  .unwrap()
-                  .then(() => {
-                    resolve(id);
-                  })
-                  .catch(() => {
-                    reject(id);
-                  });
-              }),
-          ),
+          selectedIDs.map(id => sendNotification(id).unwrap()),
         );
-        const rejectedIDs = results
-          .filter(result => result.status === "rejected")
-          ?.map(
-            result =>
-              deviceList[
-                deviceList.findIndex(device => device.id === result.reason)
-              ].id,
+        const rejectedIDs = selectedIDs
+          .filter((id, i) => results[i].status === "rejected")
+          .map(
+            id =>
+              deviceList[deviceList.findIndex(device => device.id === id)].id,
           );
 
         if (rejectedIDs.length) {
-          const filtered = selectedIDs.filter(id => !rejectedIDs.includes(id));
-          if (!filtered.length) {
+          const fulfilledIDs = selectedIDs.filter(
+            id => !rejectedIDs.includes(id),
+          );
+          if (!fulfilledIDs.length) {
             await backgroundTracking.stop();
             setTimeout(() => {
               dispatch(storageActions.setWalk(null));
@@ -131,7 +117,7 @@ const Timer = () => {
           } else {
             dispatch(
               storageActions.setWalk({
-                selectedDeviceId: filtered,
+                selectedDeviceId: fulfilledIDs,
               }),
             );
           }
@@ -142,11 +128,7 @@ const Timer = () => {
 
   return (
     <RowContainer>
-      <TimerSVG
-        width={rpWidth(22)}
-        height={rpWidth(27)}
-        style={{ marginRight: rpWidth(17) }}
-      />
+      <TimerSVG width={22} height={27} style={{ marginRight: 17 }} />
       <MyText fontSize={18} color="rgba(0, 0, 0, 0.5)">
         {hour} : {min.toString().padStart(2, "0")} :{" "}
         {sec.toString().padStart(2, "0")}

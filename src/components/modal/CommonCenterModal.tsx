@@ -9,7 +9,7 @@ interface Props {
   title?: string;
   description?: string;
   onRightButtonPress: () => void;
-  rightButtonText: string;
+  rightButtonText: string | JSX.Element;
   close: () => void;
   children?: ReactNode;
   style?: StyleProp<ViewStyle>;
@@ -42,17 +42,13 @@ const CommonCenterModal = ({
   <Container style={style}>
     {title ? (
       <MyText
-        preventRpWidth
         style={{ marginVertical: 27, textAlign: "center" }}
         fontWeight="medium">
         {title}
       </MyText>
     ) : null}
     {description ? (
-      <MyText
-        preventRpWidth
-        style={{ textAlign: "center", marginBottom: 27 }}
-        fontSize={12}>
+      <MyText style={{ textAlign: "center", marginBottom: 27 }} fontSize={12}>
         {description}
       </MyText>
     ) : null}
@@ -64,9 +60,13 @@ const CommonCenterModal = ({
       </Button>
       <Divider isVertical />
       <Button onPress={onRightButtonPress}>
-        <MyText fontWeight="medium" color={palette.blue_7b}>
-          {rightButtonText}
-        </MyText>
+        {typeof rightButtonText === "string" ? (
+          <MyText fontWeight="medium" color={palette.blue_7b}>
+            {rightButtonText}
+          </MyText>
+        ) : (
+          rightButtonText
+        )}
       </Button>
     </View>
   </Container>

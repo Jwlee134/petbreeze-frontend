@@ -1,9 +1,8 @@
-import React, { useContext } from "react";
+import React from "react";
 import styled from "styled-components/native";
 import { useAppSelector } from "~/store";
 import MyText from "../common/MyText";
 import Path from "~/assets/svg/walk/path.svg";
-import { DimensionsContext } from "~/context/DimensionsContext";
 import { formatWalkDistance } from "~/utils";
 
 const RowContainer = styled.View`
@@ -15,15 +14,10 @@ const RowContainer = styled.View`
 
 const Distance = () => {
   const meter = useAppSelector(state => state.storage.walk.meter);
-  const { rpWidth } = useContext(DimensionsContext);
 
   return (
     <RowContainer>
-      <Path
-        width={rpWidth(21)}
-        height={rpWidth(22)}
-        style={{ marginRight: rpWidth(17) }}
-      />
+      <Path width={21} height={22} style={{ marginRight: 17 }} />
       <MyText fontSize={18} color="rgba(0, 0, 0, 0.5)">
         {formatWalkDistance(meter)}
       </MyText>

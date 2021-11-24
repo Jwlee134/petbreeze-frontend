@@ -1,6 +1,5 @@
 import React, { useContext, useEffect } from "react";
 import { Path as Polyline, Marker } from "react-native-nmap";
-import { DimensionsContext } from "~/context/DimensionsContext";
 import { WalkContext } from "~/context/WalkContext";
 import { delta } from "~/constants";
 import { useAppSelector } from "~/store";
@@ -8,7 +7,6 @@ import palette from "~/styles/palette";
 
 const Path = ({ isStopped }: { isStopped: boolean }) => {
   const coords = useAppSelector(state => state.storage.walk.coords);
-  const { rpWidth } = useContext(DimensionsContext);
   const { mapRef } = useContext(WalkContext);
 
   useEffect(() => {
@@ -50,8 +48,8 @@ const Path = ({ isStopped }: { isStopped: boolean }) => {
               longitude: coords[coords.length - 1][0],
             }}
             image={require("~/assets/image/footprint-marker.png")}
-            width={rpWidth(41)}
-            height={rpWidth(57)}
+            width={41}
+            height={57}
             anchor={{
               x: 0.5,
               y: 0.96,
@@ -63,8 +61,8 @@ const Path = ({ isStopped }: { isStopped: boolean }) => {
               <Marker
                 coordinate={{ latitude: coords[0][1], longitude: coords[0][0] }}
                 image={require("~/assets/image/walk/walk-start.png")}
-                width={rpWidth(20)}
-                height={rpWidth(20)}
+                width={20}
+                height={20}
                 anchor={{
                   x: 0.5,
                   y: 0.5,
@@ -77,8 +75,8 @@ const Path = ({ isStopped }: { isStopped: boolean }) => {
                 longitude: coords[coords.length - 1][0],
               }}
               image={require("~/assets/image/walk/walk-end.png")}
-              width={rpWidth(20)}
-              height={rpWidth(20)}
+              width={20}
+              height={20}
               anchor={{
                 x: 0.5,
                 y: 0.5,

@@ -59,6 +59,7 @@ const Result = () => {
   const navigation = useNavigation<WalkMapScreenNavigationProp>();
   const [postWalk] = deviceApi.usePostWalkMutation();
   const [postWalkThumbnail] = deviceApi.usePatchWalkThumbnailMutation();
+  const [stopWalking] = deviceApi.useStopWalkingMutation();
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
 
@@ -106,6 +107,15 @@ const Result = () => {
           .filter(item => item !== null),
       );
     }
+
+    await allSettled(
+      selectedDeviceId
+        .map((id, i) => {
+          if (results[i].status === "rejected") return null;
+          return stopWalking(id);
+        })
+        .filter(item => item !== null),
+    );
 
     dispatch(deviceApi.util.invalidateTags([{ type: "Device", id: "LIST" }]));
     setTimeout(() => {

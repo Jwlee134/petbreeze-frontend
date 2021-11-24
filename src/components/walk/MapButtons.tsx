@@ -1,7 +1,6 @@
 import React, { useContext, useState } from "react";
 import { FlatList } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { DimensionsContext } from "~/context/DimensionsContext";
 import { WalkContext } from "~/context/WalkContext";
 import { store, useAppSelector } from "~/store";
 import { customHeaderHeight, mapButtonSize } from "~/styles/constants";
@@ -10,7 +9,6 @@ import Dissolve from "../common/Dissolve";
 import MapButton from "../common/MapButton";
 
 const MapButtons = () => {
-  const { rpWidth } = useContext(DimensionsContext);
   const { top } = useSafeAreaInsets();
   const isStopped = useAppSelector(state => state.storage.walk.isStopped);
   const [showDevice, setShowDevice] = useState(false);
@@ -30,8 +28,8 @@ const MapButtons = () => {
       <Dissolve
         style={{
           position: "absolute",
-          top: top + rpWidth(customHeaderHeight) + rpWidth(26),
-          right: rpWidth(16),
+          top: top + customHeaderHeight + 26,
+          right: 16,
         }}
         isVisible={!isStopped}>
         <MapButton
@@ -43,8 +41,8 @@ const MapButtons = () => {
         isVisible={showDevice}
         style={{
           position: "absolute",
-          top: top + rpWidth(customHeaderHeight),
-          right: rpWidth(mapButtonSize + 32),
+          top: top + customHeaderHeight,
+          right: mapButtonSize + 32,
         }}>
         <FlatList
           data={deviceList}
@@ -56,7 +54,7 @@ const MapButtons = () => {
               lineWidth={5}
               battery={item.battery}
               style={{
-                marginLeft: rpWidth(11),
+                marginLeft: 11,
               }}
             />
           )}
@@ -65,7 +63,7 @@ const MapButtons = () => {
           horizontal
           bounces={false}
           style={{
-            height: rpWidth(102),
+            height: 102,
           }}
           contentContainerStyle={{
             alignItems: "center",
@@ -76,8 +74,8 @@ const MapButtons = () => {
         isVisible={!isStopped}
         style={{
           position: "absolute",
-          top: top + rpWidth(customHeaderHeight) + rpWidth(86),
-          right: rpWidth(16),
+          top: top + customHeaderHeight + 86,
+          right: 16,
         }}>
         <MapButton icon="myLocation" onPress={animateToMyLocation} />
       </Dissolve>
