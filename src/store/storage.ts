@@ -26,7 +26,6 @@ interface History {
 }
 
 interface State {
-  numOfDevice: number;
   lastCoord: {
     latitude: number;
     longitude: number;
@@ -37,7 +36,6 @@ interface State {
 }
 
 const initialState: State = {
-  numOfDevice: 0,
   lastCoord: {
     latitude: 0,
     longitude: 0,
@@ -78,10 +76,6 @@ const storage = createSlice({
       { payload }: PayloadAction<{ latitude: number; longitude: number }>,
     ) => {
       state.lastCoord = payload;
-    },
-
-    setNumOfDevice: (state, { payload }: PayloadAction<number>) => {
-      state.numOfDevice = payload;
     },
 
     setWalk: (state, { payload }: PayloadAction<Partial<Walk> | null>) => {

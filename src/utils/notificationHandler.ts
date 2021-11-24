@@ -13,7 +13,6 @@ export default (
   isStartScreen = false,
 ) => {
   const {
-    numOfDevice,
     walk: { coords },
   } = store.getState().storage;
 
@@ -22,38 +21,24 @@ export default (
   ): navigation is StartScreenNavigationProp => isStartScreen;
 
   if (message.notification?.title?.includes("안심존을 벗어났어요")) {
-    if (numOfDevice < 2) {
-      if (isStartNavigation(navigation)) {
+    if (isStartNavigation(navigation)) {
+      if (coords.length) {
         navigation.replace("LoggedInNav", {
           initialRouteName: "WalkMap",
         });
-      } else {
-        if (coords.length) return;
-        navigation.reset({
-          index: 0,
-          routes: [{ name: "WalkMap" }],
-        });
+        return;
       }
+      navigation.replace("LoggedInNav", {
+        initialBottomTabRouteName: "WalkTab",
+      });
     } else {
-      if (isStartNavigation(navigation)) {
-        if (coords.length) {
-          navigation.replace("LoggedInNav", {
-            initialRouteName: "WalkMap",
-          });
-          return;
-        }
-        navigation.replace("LoggedInNav", {
-          initialBottomTabRouteName: "WalkTab",
-        });
-      } else {
-        if (coords.length) return;
-        navigation.reset({
-          index: 0,
-          routes: [
-            { name: "BottomTabNav", params: { initialRouteName: "WalkTab" } },
-          ],
-        });
-      }
+      if (coords.length) return;
+      navigation.reset({
+        index: 0,
+        routes: [
+          { name: "BottomTabNav", params: { initialRouteName: "WalkTab" } },
+        ],
+      });
     }
   }
 
