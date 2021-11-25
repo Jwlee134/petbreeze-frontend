@@ -100,7 +100,7 @@
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>산책 중 위치를 추적하여 기록합니다.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>산책 중 위치를 추적하여 기록합니다.</string>
+	<string>현재 위치를 지도에 표시합니다.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>산책 중 찍은 사진을 앨범에 저장합니다.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
