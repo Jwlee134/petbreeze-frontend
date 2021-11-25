@@ -21,7 +21,9 @@ const WiFiForm = ({
   navigation: WiFiFormScreenNavigationProp;
 }) => {
   const { open, close, modalProps } = useModal();
-  const { ssid, pw } = useAppSelector(state => state.deviceSetting.wifi.draft);
+  const { ssid, password } = useAppSelector(
+    state => state.deviceSetting.wifi.draft,
+  );
   const dispatch = useDispatch();
   const disconnected = useAppSelector(state => state.ble.disconnected);
 
@@ -60,12 +62,12 @@ const WiFiForm = ({
           />
           <InputTitle>암호</InputTitle>
           <Input
-            value={pw}
+            value={password}
             maxLength={63}
             onChangeText={text =>
               dispatch(
                 deviceSettingActions.setWifi({
-                  draft: { pw: text },
+                  draft: { password: text },
                 }),
               )
             }
@@ -73,7 +75,7 @@ const WiFiForm = ({
         </View>
         <View>
           <Button
-            disabled={!ssid || (!!pw && pw.length < 8)}
+            disabled={!ssid || (!!password && password.length < 8)}
             onPress={() => {
               if (disconnected) {
                 navigation.navigate("PreSafetyZone");

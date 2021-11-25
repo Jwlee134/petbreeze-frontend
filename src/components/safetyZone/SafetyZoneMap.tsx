@@ -120,9 +120,6 @@ const SafetyZoneMap = ({ mapPadding, style }: Props) => {
       safetyZone: {
         draft: { name },
       },
-      wifi: {
-        draft: { ssid, pw },
-      },
     } = store.getState().deviceSetting;
     const sendData = async () => {
       await updateDeviceSetting({
@@ -143,7 +140,6 @@ const SafetyZoneMap = ({ mapPadding, style }: Props) => {
               radius,
             },
           ],
-          WiFi: [{ wifi_id: 0, ssid, pw }],
         },
       }).unwrap();
       const body = imageHandler.handleFormData(
