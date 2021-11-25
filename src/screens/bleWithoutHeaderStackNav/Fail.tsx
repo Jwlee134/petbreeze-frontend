@@ -41,7 +41,7 @@ const Fail = ({ navigation }: { navigation: FailScreenNavigationProp }) => {
             : status === "wifiFail"
             ? "WiFi 연결에 실패했어요."
             : status === "devEUIFail"
-            ? "디바이스의 IMEI가\n유효하지 않습니다."
+            ? "이미 등록된 디바이스입니다."
             : ""}
         </MyText>
         <View>

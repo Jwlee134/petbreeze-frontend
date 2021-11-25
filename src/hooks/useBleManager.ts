@@ -11,7 +11,6 @@ import { decode } from "base64-arraybuffer";
 import { store, useAppSelector } from "~/store";
 import { useDispatch } from "react-redux";
 import { bleActions } from "~/store/ble";
-import { formActions } from "~/store/form";
 
 const BleManagerModule = NativeModules.BleManager;
 const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
@@ -46,8 +45,6 @@ const useBleMaganer = () => {
   const timeout = useRef<NodeJS.Timeout | null>(null);
 
   const [registerDevice, { data, error }] = deviceApi.usePostDeviceMutation();
-  const [getProfile, { data: profile }] =
-    deviceApi.useLazyGetDeviceProfileQuery();
 
   const startNotification = async (type: "WiFi" | "OTA") => {
     try {
@@ -210,22 +207,6 @@ const useBleMaganer = () => {
   }, [status]);
 
   useEffect(() => {
-    if (profile) {
-      const { name, profile_image, birthdate, sex, species } = profile;
-      dispatch(
-        formActions.setState({
-          name,
-          photos: [profile_image],
-          birthYear: new Date(birthdate).getFullYear(),
-          sex,
-          species,
-        }),
-      );
-      dispatch(bleActions.setStatus("relationAdded"));
-    }
-  }, [profile]);
-
-  useEffect(() => {
     const handleDevEUIResult = async () => {
       console.log(data, error);
       if (data) {
@@ -233,11 +214,7 @@ const useBleMaganer = () => {
           data: { device_id },
         } = data;
         dispatch(bleActions.setDeviceID(device_id));
-        if (data.status === 200) {
-          getProfile(device_id);
-        } else {
-          await startNotification("OTA");
-        }
+        await startNotification("OTA");
       }
       if (error && "status" in error && error.status === 400) {
         dispatch(bleActions.setStatus("devEUIFail"));
@@ -254,7 +231,6 @@ const useBleMaganer = () => {
         DeviceInformation.CharacteristicA,
       );
       console.log("Succeded to read devEUI: ", bytesToString(devEUI));
-      await startNotification("OTA");
       registerDevice(bytesToString(devEUI));
     } catch (error) {
       console.warn("Failed to read devEUI", error);
