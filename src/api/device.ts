@@ -343,7 +343,7 @@ const deviceApi = api.injectEndpoints({
       { deviceID: number; userID: number }
     >({
       query: ({ deviceID, userID }) => ({
-        url: `/device/${deviceID}/member/${userID}`,
+        url: `/device/${deviceID}/member/${userID}/`,
         method: "DELETE",
       }),
       onQueryStarted: ({ deviceID, userID }, { dispatch, queryFulfilled }) => {

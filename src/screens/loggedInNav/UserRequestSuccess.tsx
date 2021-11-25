@@ -1,3 +1,4 @@
+import { CommonActions } from "@react-navigation/native";
 import React, { useEffect } from "react";
 import { Linking, View } from "react-native";
 import Button from "~/components/common/Button";
@@ -16,10 +17,9 @@ const Success = ({
     // 탈퇴
     if (!key) {
       setTimeout(() => {
-        navigation.reset({
-          index: 0,
-          routes: [{ name: "Start" }],
-        });
+        navigation.dispatch(
+          CommonActions.reset({ index: 0, routes: [{ name: "Start" }] }),
+        );
       }, 1700);
     }
   }, [key]);

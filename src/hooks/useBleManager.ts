@@ -6,7 +6,7 @@ import BleManager, { Peripheral } from "react-native-ble-manager";
 import deviceApi from "~/api/device";
 import { bytesToString, stringToBytes, isAndroid, isIos } from "~/utils";
 
-import FileSystem from "expo-file-system";
+import * as FileSystem from "expo-file-system";
 import { decode } from "base64-arraybuffer";
 import { store, useAppSelector } from "~/store";
 import { useDispatch } from "react-redux";
@@ -43,7 +43,7 @@ const useBleMaganer = () => {
 
   const [peripheral, setPeripheral] = useState<Peripheral | null>(null);
   const [firmware, setFirmware] = useState<number[]>([]);
-  const timeout = useRef<NodeJS.Timeout>();
+  const timeout = useRef<NodeJS.Timeout | null>(null);
 
   const [registerDevice, { data, error }] = deviceApi.usePostDeviceMutation();
   const [getProfile, { data: profile }] =
@@ -107,11 +107,11 @@ const useBleMaganer = () => {
 
   const sendWifi = useCallback(async () => {
     if (disconnected) return;
-    const { ssid, pw } = store.getState().deviceSetting.wifi.draft;
+    const { ssid, password } = store.getState().deviceSetting.wifi.draft;
     const obj: { WiFi0: { [key: string]: string } } = {
       WiFi0: {},
     };
-    obj.WiFi0[ssid] = pw;
+    obj.WiFi0[ssid] = password;
     console.log(obj, stringToBytes(JSON.stringify(obj)));
     try {
       await BleManager.write(
@@ -179,7 +179,7 @@ const useBleMaganer = () => {
   }, [firmware]);
 
   const downloadFirmware = useCallback(async () => {
-    const downloadResumable = new FileSystem.DownloadResumable(
+    const downloadResumable = FileSystem.createDownloadResumable(
       `https://next-bnb-jw.s3.ap-northeast-2.amazonaws.com/Release.bin`,
       `${FileSystem.cacheDirectory}Release.bin`,
       {},
@@ -254,6 +254,7 @@ const useBleMaganer = () => {
         DeviceInformation.CharacteristicA,
       );
       console.log("Succeded to read devEUI: ", bytesToString(devEUI));
+      await startNotification("OTA");
       registerDevice(bytesToString(devEUI));
     } catch (error) {
       console.warn("Failed to read devEUI", error);
@@ -277,7 +278,14 @@ const useBleMaganer = () => {
   const handleConnect = async (peripheral: Peripheral) => {
     console.log(peripheral);
     try {
+      timeout.current = setTimeout(async () => {
+        await BleManager.stopScan();
+        dispatch(bleActions.setStatus("scanningFail"));
+      }, 10000);
+      console.log("Connecting to: ", peripheral.id);
       await BleManager.connect(peripheral.id);
+      clearTimeout(timeout.current);
+      timeout.current = null;
       setPeripheral(peripheral);
       console.log("Connected to: ", peripheral.id);
       dispatch(bleActions.setDisconnected(false));
@@ -300,7 +308,10 @@ const useBleMaganer = () => {
       return;
     }
     await BleManager.stopScan();
-    if (timeout.current) clearTimeout(timeout.current);
+    if (timeout.current) {
+      clearTimeout(timeout.current);
+      timeout.current = null;
+    }
     handleConnect(peripheral);
   };
 

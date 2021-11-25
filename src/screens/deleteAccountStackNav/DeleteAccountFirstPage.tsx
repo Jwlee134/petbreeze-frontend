@@ -84,7 +84,7 @@ const DeleteAccountFirstPage = ({
       </TextContainer>
       <Button
         useCommonMarginBottom
-        disabled={!body.length}
+        disabled={!body.length && !text}
         onPress={() => {
           if (text) {
             const filtered = body.filter(item => typeof item === "number");
