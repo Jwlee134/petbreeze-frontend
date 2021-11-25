@@ -168,7 +168,7 @@ const WalkDetailMonth = ({
               navigation.navigate("WalkDetailDay", {
                 deviceID,
                 avatarUrl,
-                date: day.dateString,
+                date: new Date(day.dateString).toISOString(),
               });
             }
           }}

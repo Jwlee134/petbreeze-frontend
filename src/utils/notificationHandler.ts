@@ -46,21 +46,11 @@ export default (
     message.notification?.title?.includes("산책을 끝냈어요") &&
     message.data?.deviceID
   ) {
-    let year: number;
-    let month: number;
-    let date: number;
-    if (message?.sentTime) {
-      year = new Date(message.sentTime).getFullYear();
-      month = new Date(message.sentTime).getMonth() + 1;
-      date = new Date(message.sentTime).getDate();
-    } else {
-      year = new Date().getFullYear();
-      month = new Date().getMonth() + 1;
-      date = new Date().getDate();
-    }
     const params = {
       deviceID: parseInt(message.data.deviceID, 10),
-      date: `${year}-${month}-${date}`,
+      date: message.sentTime
+        ? new Date(message.sentTime).toISOString()
+        : new Date().toISOString(),
       avatarUrl: message.data.profileImageURL || "",
     };
     if (isStartNavigation(navigation)) {

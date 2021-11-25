@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { NotificationScreenNavigationProp } from "~/types/navigator";
 import styled from "styled-components/native";
 
 import Empty from "~/components/notification/Empty";
@@ -21,11 +20,7 @@ const CategoryTitle = styled.View`
   margin-bottom: 30px;
 `;
 
-const Notification = ({
-  navigation,
-}: {
-  navigation: NotificationScreenNavigationProp;
-}) => {
+const Notification = () => {
   const deviceList = useDevice();
   const { data, refetch } = userApi.useGetNotificationsQuery();
   const [postRead] = userApi.useReadNotificationsMutation();
@@ -53,62 +48,60 @@ const Notification = ({
 
   if (!data || !deviceList) return null;
 
+  if (!deviceList.length || !data.length) return <Empty />;
+
   const newNotif = data.filter(notif => notif.is_new);
   const thisWeek = data.filter(notif => !notif.is_new);
 
-  if (data.length && deviceList.length) {
-    return (
-      <Container>
-        {newNotif.length ? (
-          <>
-            <CategoryTitle>
-              <MyText fontWeight="medium" fontSize={18}>
-                새로운 알림
-              </MyText>
-            </CategoryTitle>
-            {newNotif.map(notif => (
-              <NotificationItem
-                key={notif.id}
-                data={notif}
-                device={
-                  deviceList[
-                    deviceList.findIndex(
-                      device => device.id === notif.related_device_id,
-                    )
-                  ]
-                }
-              />
-            ))}
-            {thisWeek.length ? <Divider /> : null}
-          </>
-        ) : null}
-        {thisWeek.length ? (
-          <>
-            <CategoryTitle>
-              <MyText fontWeight="medium" fontSize={18}>
-                이번주
-              </MyText>
-            </CategoryTitle>
-            {thisWeek.map(notif => (
-              <NotificationItem
-                key={notif.id}
-                data={notif}
-                device={
-                  deviceList[
-                    deviceList.findIndex(
-                      device => device.id === notif.related_device_id,
-                    )
-                  ]
-                }
-              />
-            ))}
-          </>
-        ) : null}
-      </Container>
-    );
-  }
-
-  return <Empty />;
+  return (
+    <Container>
+      {newNotif.length ? (
+        <>
+          <CategoryTitle>
+            <MyText fontWeight="medium" fontSize={18}>
+              새로운 알림
+            </MyText>
+          </CategoryTitle>
+          {newNotif.map(notif => (
+            <NotificationItem
+              key={notif.id}
+              data={notif}
+              device={
+                deviceList[
+                  deviceList.findIndex(
+                    device => device.id === notif.related_device_id,
+                  )
+                ]
+              }
+            />
+          ))}
+          {thisWeek.length ? <Divider /> : null}
+        </>
+      ) : null}
+      {thisWeek.length ? (
+        <>
+          <CategoryTitle>
+            <MyText fontWeight="medium" fontSize={18}>
+              이번주
+            </MyText>
+          </CategoryTitle>
+          {thisWeek.map(notif => (
+            <NotificationItem
+              key={notif.id}
+              data={notif}
+              device={
+                deviceList[
+                  deviceList.findIndex(
+                    device => device.id === notif.related_device_id,
+                  )
+                ]
+              }
+            />
+          ))}
+        </>
+      ) : null}
+    </Container>
+  );
 };
 
 export default Notification;

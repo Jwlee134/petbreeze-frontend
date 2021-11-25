@@ -108,16 +108,7 @@ const WalkDetailDay = ({
   return (
     <>
       <CustomHeader navigation={navigation}>
-        {`${date
-          .split("-")
-          .splice(1)
-          .map((date, i) => {
-            if (i === 1) {
-              return parseInt(date, 10) < 10 ? date.replace("0", "") : date;
-            }
-            return date;
-          })
-          .join("월 ")}일`}
+        {`${new Date(date).getMonth() + 1}월 ${new Date(date).getDate()}일`}
       </CustomHeader>
       <FlatList
         data={data}
