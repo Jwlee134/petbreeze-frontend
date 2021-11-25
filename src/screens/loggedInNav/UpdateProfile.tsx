@@ -17,6 +17,7 @@ import Modal from "react-native-modal";
 import CommonCenterModal from "~/components/modal/CommonCenterModal";
 import DatePicker from "react-native-date-picker";
 import { formActions } from "~/store/form";
+import permissionCheck from "~/utils/permissionCheck";
 
 const AvatarButton = styled.TouchableOpacity`
   width: 108px;
@@ -107,7 +108,12 @@ const UpdateProfile = ({
     <>
       <KeyboardAwareScrollContainer isSpaceBetween>
         <View style={{ marginBottom: 30 }}>
-          <AvatarButton onPress={imageHandler.openCircleCropper}>
+          <AvatarButton
+            onPress={() => {
+              permissionCheck.library().then(() => {
+                imageHandler.openCircleCropper();
+              });
+            }}>
             <Image source={photos[0] ? { uri: photos[0] } : noAvatar} />
           </AvatarButton>
           <InputContainer>

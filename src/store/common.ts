@@ -20,6 +20,7 @@ interface State {
   home: HomeState;
   deleteAccount: DeleteAccountState;
   animateSwipeable: boolean;
+  isBleManagerInitialized: boolean;
 }
 
 const initialState: State = {
@@ -38,6 +39,7 @@ const initialState: State = {
     text: "",
   },
   animateSwipeable: false,
+  isBleManagerInitialized: false,
 };
 
 const common = createSlice({
@@ -59,6 +61,12 @@ const common = createSlice({
     },
     setAnimateSwipeable: (state, { payload }: PayloadAction<boolean>) => {
       state.animateSwipeable = payload;
+    },
+    setIsBleManagerInitialized: (
+      state,
+      { payload }: PayloadAction<boolean>,
+    ) => {
+      state.isBleManagerInitialized = payload;
     },
   },
 });

@@ -18,6 +18,7 @@ import IosStyleBottomModal from "~/components/modal/IosStyleBottomModal";
 import Divider from "~/components/common/Divider";
 import palette from "~/styles/palette";
 import { formActions } from "~/store/form";
+import permissionCheck from "~/utils/permissionCheck";
 
 const PaddingContainer = styled.View`
   padding: 0 42px;
@@ -174,7 +175,9 @@ const EmergencyMissingSecondPage = ({
                 <AddPhotoBox
                   style={{ height: (width - 64) * (2 / 3) }}
                   onPress={() => {
-                    imageHandler.openThreeTwoRatioCropper(photos);
+                    permissionCheck.library().then(() => {
+                      imageHandler.openThreeTwoRatioCropper(photos);
+                    });
                   }}>
                   <Plus />
                 </AddPhotoBox>

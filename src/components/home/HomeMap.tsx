@@ -11,9 +11,11 @@ import { commonActions } from "~/store/common";
 import { getAddressByCoord } from "~/api/place";
 import MyLocationButton from "./MyLocationButton";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { isAndroid, showLocationError } from "~/utils";
+import { isAndroid } from "~/utils";
 import useDevice from "~/hooks/useDevice";
 import { storageActions } from "~/store/storage";
+import permissionCheck from "~/utils/permissionCheck";
+import Toast from "react-native-toast-message";
 
 const HomeMap = () => {
   const mapRef = useRef<NaverMapView>(null);
@@ -48,23 +50,26 @@ const HomeMap = () => {
   };
 
   const handleMyLocation = useCallback(() => {
-    setIsMyLocationMoved(false);
-    if (trackingId.current !== null) {
-      animateToRegion("myLocation");
-    } else {
-      trackingId.current = Geolocation.watchPosition(
-        ({ coords }) => {
-          setCoords(coords);
-        },
-        () => {
-          showLocationError();
-        },
-        {
-          enableHighAccuracy: true,
-          distanceFilter: 5,
-        },
-      );
-    }
+    permissionCheck.location().then(() => {
+      setIsMyLocationMoved(false);
+      if (trackingId.current !== null) {
+        if (!coords.latitude || !coords.longitude) return;
+        animateToRegion("myLocation");
+      } else {
+        trackingId.current = Geolocation.watchPosition(
+          ({ coords }) => {
+            setCoords(coords);
+          },
+          () => {
+            Toast.show({ type: "error", text1: "위치를 불러올 수 없습니다." });
+          },
+          {
+            enableHighAccuracy: true,
+            distanceFilter: 5,
+          },
+        );
+      }
+    });
   }, [trackingId.current, coords]);
 
   useEffect(() => {

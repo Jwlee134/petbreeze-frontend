@@ -3,7 +3,7 @@ import { StartWalkingScreenNavigationProp } from "~/types/navigator";
 import deviceApi, { Device } from "~/api/device";
 import { useDispatch } from "react-redux";
 import { storageActions } from "~/store/storage";
-import { isEndWithConsonant, permissionCheck } from "~/utils";
+import { isEndWithConsonant } from "~/utils";
 import Button from "~/components/common/Button";
 import { ScrollView, View } from "react-native";
 import ListItem from "~/components/common/ListItem";
@@ -12,6 +12,7 @@ import Dog from "~/assets/svg/dog/dog-with-device.svg";
 import WalkDeviceListItem from "~/components/walk/WalkDeviceListItem";
 import allSettled from "promise.allsettled";
 import Toast from "react-native-toast-message";
+import permissionCheck from "~/utils/permissionCheck";
 
 const StartWalking = ({
   navigation,
@@ -29,7 +30,7 @@ const StartWalking = ({
   const handleStart = async () => {
     setLoading(true);
     try {
-      await permissionCheck("location");
+      await permissionCheck.locationAlways();
       const results = await allSettled(
         selected.map(id => startWalking(id).unwrap()),
       );

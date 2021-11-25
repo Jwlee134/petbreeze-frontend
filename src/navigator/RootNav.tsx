@@ -1,9 +1,8 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useMemo } from "react";
 import { useAppSelector } from "~/store";
 import LoggedInNav from "./LoggedInNav";
 import { StatusBar } from "react-native";
 
-import Blemanager from "react-native-ble-manager";
 import {
   createStackNavigator,
   StackCardInterpolationProps,
@@ -28,8 +27,9 @@ const forFade = ({ current }: StackCardInterpolationProps) => ({
 });
 
 const RootNav = () => {
-  const { isCodePushUpdated, isIntroPassed, isPermissionAllowed } =
-    useAppSelector(state => state.storage.init);
+  const { isCodePushUpdated, isIntroPassed } = useAppSelector(
+    state => state.storage.init,
+  );
   const { top } = useSafeAreaInsets();
 
   const toastConfig = useMemo(
@@ -76,7 +76,7 @@ const RootNav = () => {
             borderLeftColor: palette.red_f0,
             borderLeftWidth: 7,
             height: "auto",
-            marginTop: top / 2,
+            marginTop: top,
           }}
           contentContainerStyle={{
             paddingLeft: 14,
@@ -107,14 +107,6 @@ const RootNav = () => {
     }),
     [],
   );
-
-  useEffect(() => {
-    if (isPermissionAllowed) {
-      Blemanager.start({ showAlert: false }).then(() => {
-        console.log("BLE Module is initialized.");
-      });
-    }
-  }, [isPermissionAllowed]);
 
   return (
     <>

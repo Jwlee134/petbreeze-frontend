@@ -1,12 +1,5 @@
 /* eslint-disable default-case */
-import { Alert, Platform } from "react-native";
-import {
-  check,
-  openSettings,
-  PERMISSIONS,
-  request,
-} from "react-native-permissions";
-import Toast from "react-native-toast-message";
+import { Platform } from "react-native";
 import { store } from "~/store";
 import { bleActions } from "~/store/ble";
 import { deviceSettingActions } from "~/store/deviceSetting";
@@ -119,62 +112,4 @@ export const getDistanceBetween2Points = (
     (c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p))) / 2;
 
   return 12742 * Math.asin(Math.sqrt(a)) * 1000; // 2 * R; R = 6371 km
-};
-
-export const permissionCheck = (type: "location" | "gallery" | "bluetooth") => {
-  const permission = () => {
-    switch (type) {
-      case "location":
-        return isAndroid
-          ? PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION
-          : PERMISSIONS.IOS.LOCATION_ALWAYS;
-      case "gallery":
-        return isAndroid
-          ? PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE
-          : PERMISSIONS.IOS.PHOTO_LIBRARY;
-      case "bluetooth":
-        return PERMISSIONS.IOS.BLUETOOTH_PERIPHERAL;
-    }
-  };
-  const permissionName = () => {
-    switch (type) {
-      case "location":
-        return isAndroid ? "위치" : "위치 항상 사용";
-      case "gallery":
-        return isAndroid ? "저장소 접근" : "사진 접근";
-      case "bluetooth":
-        return "블루투스 사용";
-    }
-  };
-
-  return new Promise<void>((resolve, reject) => {
-    if (type === "bluetooth" && isAndroid) resolve();
-
-    check(permission()).then(status => {
-      if (status === "granted") resolve();
-      if (status === "blocked") {
-        Alert.alert("경고", `${permissionName()} 권한을 허용해 주세요.`, [
-          { text: "설정", onPress: openSettings },
-        ]);
-        reject();
-      }
-      if (status === "denied") {
-        request(permission()).then(result => {
-          if (result === "granted") {
-            resolve();
-          } else {
-            reject();
-          }
-        });
-      }
-    });
-  });
-};
-
-export const showLocationError = () => {
-  Toast.show({
-    type: "error",
-    text1: "위치를 불러올 수 없습니다.",
-    text2: "위치가 켜져 있거나 위치 권한이 허용되어 있는지 확인하세요.",
-  });
 };

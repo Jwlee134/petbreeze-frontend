@@ -22,6 +22,7 @@ import { Shadow } from "react-native-shadow-2";
 import deviceApi from "~/api/device";
 import allSettled from "promise.allsettled";
 import { ActivityIndicator } from "react-native";
+import permissionCheck from "~/utils/permissionCheck";
 
 const RowContainer = styled.View`
   flex-direction: row;
@@ -135,9 +136,15 @@ const Toggle = () => {
           viewStyle={{ borderRadius: 35.5 }}>
           <SmallButton
             onPress={() => {
-              ImageCropPicker.openCamera({}).then(image => {
-                CameraRoll.save(image.path, { album: "펫브리즈" }).then(() => {
-                  ImageCropPicker.cleanSingle(image.path);
+              permissionCheck.camera().then(() => {
+                permissionCheck.library().then(() => {
+                  ImageCropPicker.openCamera({}).then(image => {
+                    CameraRoll.save(image.path, { album: "펫브리즈" }).then(
+                      () => {
+                        ImageCropPicker.cleanSingle(image.path);
+                      },
+                    );
+                  });
                 });
               });
             }}>

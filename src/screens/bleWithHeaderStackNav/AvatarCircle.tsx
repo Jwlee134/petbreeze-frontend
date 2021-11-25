@@ -4,6 +4,7 @@ import { useAppSelector } from "~/store";
 import PlusCircle from "~/assets/svg/plus/plus-circle-blue.svg";
 import imageHandler from "~/utils/imageHandler";
 import { noAvatar } from "~/constants";
+import permissionCheck from "~/utils/permissionCheck";
 
 const Container = styled.TouchableOpacity`
   width: 124px;
@@ -30,7 +31,12 @@ const AvatarCircle = () => {
   const photos = useAppSelector(state => state.form.photos);
 
   return (
-    <Container onPress={imageHandler.openCircleCropper}>
+    <Container
+      onPress={() => {
+        permissionCheck.library().then(() => {
+          imageHandler.openCircleCropper();
+        });
+      }}>
       <Image source={!photos[0] ? noAvatar : { uri: photos[0] }} />
       <Svg>
         <PlusCircle width={28} height={28} />
