@@ -11,7 +11,7 @@ import {
   RESULTS,
 } from "react-native-permissions";
 import Toast from "react-native-toast-message";
-import { isIos } from ".";
+import { isAndroid, isIos } from ".";
 
 export default {
   location: async () => {
@@ -44,7 +44,7 @@ export default {
             type: "error",
             onPress: openSettings,
             text1: "위치 권한을 허용해 주세요.",
-            text2: "클릭하여 설정으로 이동합니다.",
+            text2: "클릭하여 설정으로 이동합니다. 허용 후 다시 시도해 주세요.",
           });
           reject();
           break;
@@ -62,15 +62,25 @@ export default {
     return new Promise<void>(async (resolve, reject) => {
       switch (result) {
         case RESULTS.DENIED:
-          const result = await request(perm);
-          if (result === "granted") {
+          if (isAndroid) {
             Toast.show({
               type: "error",
               onPress: openSettings,
               text1: "위치 항상 사용 권한을 허용해 주세요.",
-              text2: "클릭하여 설정으로 이동합니다.",
+              text2:
+                "클릭하여 설정으로 이동합니다. 허용 후 다시 시도해 주세요.",
             });
-            reject();
+          } else {
+            const result = await request(perm);
+            if (result === "granted") {
+              Toast.show({
+                type: "error",
+                onPress: openSettings,
+                text1: "위치 항상 사용 권한을 허용해 주세요.",
+                text2:
+                  "클릭하여 설정으로 이동합니다. 허용 후 다시 시도해 주세요.",
+              });
+            }
           }
           reject();
           break;
@@ -82,7 +92,7 @@ export default {
             type: "error",
             onPress: openSettings,
             text1: "위치 항상 사용 권한을 허용해 주세요.",
-            text2: "클릭하여 설정으로 이동합니다.",
+            text2: "클릭하여 설정으로 이동합니다. 허용 후 다시 시도해 주세요.",
           });
           reject();
           break;
@@ -121,7 +131,7 @@ export default {
             type: "error",
             onPress: openSettings,
             text1: "블루투스 사용 권한을 허용해 주세요.",
-            text2: "클릭하여 설정으로 이동합니다.",
+            text2: "클릭하여 설정으로 이동합니다. 허용 후 다시 시도해 주세요.",
           });
           reject();
         }
@@ -143,7 +153,7 @@ export default {
             type: "error",
             onPress: openSettings,
             text1: "블루투스 사용 권한을 허용해 주세요.",
-            text2: "클릭하여 설정으로 이동합니다.",
+            text2: "클릭하여 설정으로 이동합니다. 허용 후 다시 시도해 주세요.",
           });
           reject();
           break;
@@ -172,7 +182,7 @@ export default {
           type: "error",
           onPress: openSettings,
           text1: "카메라 사용 권한을 허용해 주세요.",
-          text2: "클릭하여 설정으로 이동합니다.",
+          text2: "클릭하여 설정으로 이동합니다. 허용 후 다시 시도해 주세요.",
         });
         reject();
       }
@@ -203,7 +213,7 @@ export default {
           type: "error",
           onPress: openSettings,
           text1: "저장소 접근 권한을 허용해 주세요.",
-          text2: "클릭하여 설정으로 이동합니다.",
+          text2: "클릭하여 설정으로 이동합니다. 허용 후 다시 시도해 주세요.",
         });
         reject();
       }

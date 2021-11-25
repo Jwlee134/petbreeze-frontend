@@ -34,33 +34,27 @@ const ChargingCheck = ({
     state => state.common.isBleManagerInitialized,
   );
   const dispatch = useDispatch();
-  const [allowed, setAllowed] = useState(false);
 
-  const initialize = () => {
+  const initialize = async () => {
     if (!isBleManagerInitialized) {
-      BleManager.start({ showAlert: false }).then(() => {
-        console.log("Module initialized");
-        dispatch(commonActions.setIsBleManagerInitialized(true));
-        setAllowed(true);
-      });
-    } else {
-      setAllowed(true);
+      await BleManager.start({ showAlert: false });
+      console.log("Module initialized");
+      dispatch(commonActions.setIsBleManagerInitialized(true));
     }
+    navigation.replace("BleWithoutHeaderStackNav");
+    dispatch(bleActions.setStatus("scanning"));
   };
 
-  useEffect(() => {
-    permissionCheck.bluetooth().then(() => {
+  const handlePress = async () => {
+    try {
+      await permissionCheck.bluetooth();
       if (isAndroid) {
-        permissionCheck.location().then(() => {
-          permissionCheck.locationAlways().then(() => {
-            initialize();
-          });
-        });
-      } else {
-        initialize();
+        await permissionCheck.location();
+        await permissionCheck.locationAlways();
       }
-    });
-  }, []);
+      initialize();
+    } catch {}
+  };
 
   return (
     <SafeAreaContainer>
@@ -77,13 +71,7 @@ const ChargingCheck = ({
         </MyText>
       </TopContainer>
       <BottomContainer>
-        <Button
-          disabled={!allowed}
-          useCommonMarginBottom
-          onPress={() => {
-            navigation.replace("BleWithoutHeaderStackNav");
-            dispatch(bleActions.setStatus("scanning"));
-          }}>
+        <Button useCommonMarginBottom onPress={handlePress}>
           다음
         </Button>
       </BottomContainer>

@@ -268,6 +268,9 @@ const useBleMaganer = () => {
         (peripheral as Peripheral).id,
       );
       console.log("Succeeded to retrieve data: ", data);
+      if (isAndroid) {
+        await BleManager.requestMTU((peripheral as Peripheral).id, 515);
+      }
       dispatch(bleActions.setStatus("retrieveSuccess"));
     } catch (error) {
       console.warn("Failed to retrieve data: ", error);
@@ -289,9 +292,6 @@ const useBleMaganer = () => {
       setPeripheral(peripheral);
       console.log("Connected to: ", peripheral.id);
       dispatch(bleActions.setDisconnected(false));
-      if (isAndroid) {
-        await BleManager.requestMTU(peripheral.id, 515);
-      }
       dispatch(bleActions.setStatus("connected"));
     } catch (error) {
       console.warn("Failed to connect: ", error);
