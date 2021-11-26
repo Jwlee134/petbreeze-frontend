@@ -6,12 +6,7 @@ import palette from "~/styles/palette";
 import Divider from "~/components/common/Divider";
 import { CalendarList, LocaleConfig } from "react-native-calendars";
 import { days, months, noAvatar, noName } from "~/constants";
-import {
-  formatWalkDistance,
-  formatWalkTime,
-  isAndroid,
-  permissionCheck,
-} from "~/utils";
+import { formatWalkDistance, formatWalkTime, isAndroid } from "~/utils";
 import deviceApi from "~/api/device";
 import {
   ScrollView,
@@ -21,8 +16,6 @@ import {
 } from "react-native";
 import Dissolve from "~/components/common/Dissolve";
 import Button from "~/components/common/Button";
-import { useDispatch } from "react-redux";
-import { storageActions } from "~/store/storage";
 
 const TopContainer = styled.View`
   align-items: center;
@@ -39,14 +32,13 @@ const Image = styled.Image`
 const RowContainer = styled.View`
   flex-direction: row;
   justify-content: space-between;
-  padding: 30px 16px;
+  padding: 30px 16px 0 16px;
 `;
 
 const NoWalkRecord = styled.View`
-  align-items: center;
   background-color: rgba(255, 255, 255, 0.9);
   flex-grow: 1;
-  justify-content: center;
+  justify-content: flex-end;
 `;
 
 LocaleConfig.locales["ko"] = {
@@ -73,7 +65,7 @@ const WalkDetailMonth = ({
     month: new Date().getMonth() + 1,
   });
   const [dateObj, setDateObj] = useState<DateObj>({});
-  const { data, isFetching } = deviceApi.useGetMonthlyWalkRecordQuery(
+  const { data } = deviceApi.useGetMonthlyWalkRecordQuery(
     {
       deviceID,
       year: date.year,
@@ -84,7 +76,6 @@ const WalkDetailMonth = ({
     },
   );
   const { width } = useWindowDimensions();
-  const dispatch = useDispatch();
 
   useEffect(() => {
     if (!data) return;
@@ -146,10 +137,10 @@ const WalkDetailMonth = ({
     data !== undefined &&
     !data.day_count.length &&
     date.month === new Date().getMonth() + 1 &&
-    !isFetching;
+    date.year === new Date().getFullYear();
 
   return (
-    <ScrollView>
+    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <TopContainer>
         <Image source={avatarUrl ? { uri: avatarUrl } : noAvatar} />
         <MyText style={{ marginBottom: 19 }} fontWeight="medium">
@@ -157,7 +148,7 @@ const WalkDetailMonth = ({
         </MyText>
       </TopContainer>
       <Divider isHairline={false} />
-      <View>
+      <View style={{ flexGrow: 1, paddingBottom: 30 }}>
         <CalendarList
           calendarWidth={width}
           onVisibleMonthsChange={months => {
@@ -181,7 +172,7 @@ const WalkDetailMonth = ({
             // @ts-ignore
             "stylesheet.calendar.header": {
               monthText: {
-                margin: 37,
+                margin: 31,
                 fontFamily: "NotoSansKR-Medium",
                 fontSize: 18,
                 color: palette.blue_7b,
@@ -210,11 +201,11 @@ const WalkDetailMonth = ({
             },
             "stylesheet.dot": {
               dot: {
-                width: 4,
-                height: 4,
+                width: 5,
+                height: 5,
                 marginTop: 1,
-                marginHorizontal: 2,
-                borderRadius: 2,
+                marginHorizontal: 1.5,
+                borderRadius: 2.5,
                 opacity: 0,
               },
             },
@@ -230,25 +221,26 @@ const WalkDetailMonth = ({
               color="rgba(0, 0, 0, 0.5)"
               fontWeight="light"
               fontSize={18}
-              style={{ textAlign: "center" }}>
+              style={{ textAlign: "center", marginBottom: 249 }}>
               산책 기록이 없습니다.{"\n"}첫 산책을 시작해보세요!
             </MyText>
           </NoWalkRecord>
         </Dissolve>
         <Dissolve
-          style={{ position: "absolute", bottom: 0, alignSelf: "center" }}
+          style={{ position: "absolute", alignSelf: "center", bottom: 84 }}
           isVisible={isNoWalkRecordVisible}>
           <Button
             onPress={() => {
-              permissionCheck("location").then(() => {
-                dispatch(
-                  storageActions.setWalk({
-                    selectedDeviceId: [deviceID],
-                  }),
-                );
-                navigation.replace("LoggedInNav", {
-                  initialRouteName: "WalkMap",
-                });
+              navigation.reset({
+                index: 0,
+                routes: [
+                  {
+                    name: "WalkTopTabNav",
+                    params: {
+                      initialStartWalkingParams: { preSelectedID: deviceID },
+                    },
+                  },
+                ],
               });
             }}
             style={{ width: 126 }}>

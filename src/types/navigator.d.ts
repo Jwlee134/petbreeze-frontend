@@ -10,6 +10,10 @@ import {
 import { MaterialTopTabNavigationProp } from "@react-navigation/material-top-tabs";
 import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
 
+interface StartWalkingParams {
+  preSelectedID?: number;
+}
+
 interface WalkDetailDayParams {
   deviceID: number;
   date: string;
@@ -402,7 +406,11 @@ export type BottomTabParamList = {
 
 export type SharedStackNavParamList = {
   Home: undefined;
-  WalkTopTabNav: undefined;
+  WalkTopTabNav:
+    | {
+        initialStartWalkingParams?: StartWalkingParams;
+      }
+    | undefined;
   Notification: undefined;
   MyPage: undefined;
   NotificationSetting: undefined;
@@ -419,6 +427,10 @@ export type SharedStackNavParamList = {
   DeviceSettingList: undefined;
   UpdateNickname: undefined;
 };
+export type WalkTopTabNavRouteProp = RouteProp<
+  SharedStackNavParamList,
+  "WalkTopTabNav"
+>;
 export type HomeScreenNavigationProp = CompositeNavigationProp<
   StackNavigationProp<SharedStackNavParamList, "Home">,
   CompositeNavigationProp<
@@ -483,7 +495,7 @@ export type DeviceSettingScreenNavigationProp =
   DeviceSettingScreenProps["navigation"];
 
 export type WalkTopTabParamList = {
-  StartWalking: undefined;
+  StartWalking: StartWalkingParams | undefined;
   WalkRecord: undefined;
 };
 export type StartWalkingScreenNavigationProp = CompositeNavigationProp<
@@ -498,6 +510,10 @@ export type StartWalkingScreenNavigationProp = CompositeNavigationProp<
       >
     >
   >
+>;
+export type StartWalkingScreenRouteProp = RouteProp<
+  WalkTopTabParamList,
+  "StartWalking"
 >;
 export type WalkRecordScreenNavigationProp = CompositeNavigationProp<
   MaterialTopTabNavigationProp<WalkTopTabParamList, "WalkRecord">,

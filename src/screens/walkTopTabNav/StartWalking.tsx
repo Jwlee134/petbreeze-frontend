@@ -1,5 +1,8 @@
-import React, { useState } from "react";
-import { StartWalkingScreenNavigationProp } from "~/types/navigator";
+import React, { useEffect, useState } from "react";
+import {
+  StartWalkingScreenNavigationProp,
+  StartWalkingScreenRouteProp,
+} from "~/types/navigator";
 import deviceApi, { Device } from "~/api/device";
 import { useDispatch } from "react-redux";
 import { storageActions } from "~/store/storage";
@@ -13,12 +16,15 @@ import WalkDeviceListItem from "~/components/walk/WalkDeviceListItem";
 import allSettled from "promise.allsettled";
 import Toast from "react-native-toast-message";
 import permissionCheck from "~/utils/permissionCheck";
+import { useIsFocused } from "@react-navigation/native";
 
 const StartWalking = ({
   navigation,
+  route: { params: { preSelectedID } = {} },
   deviceList,
 }: {
   navigation: StartWalkingScreenNavigationProp;
+  route: StartWalkingScreenRouteProp;
   deviceList: Device[];
 }) => {
   const [selected, setSelected] = useState<number[]>([]);
@@ -26,6 +32,7 @@ const StartWalking = ({
   const [startWalking] = deviceApi.useStartWalkingMutation();
   const [stopWalking] = deviceApi.useStopWalkingMutation();
   const [loading, setLoading] = useState(false);
+  const isFocused = useIsFocused();
 
   const handleStart = async () => {
     setLoading(true);
@@ -72,6 +79,12 @@ const StartWalking = ({
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (!isFocused || !preSelectedID) return;
+    setSelected([preSelectedID]);
+    preSelectedID = undefined;
+  }, [preSelectedID, isFocused]);
 
   return deviceList && deviceList.length ? (
     <ScrollView

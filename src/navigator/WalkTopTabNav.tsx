@@ -7,10 +7,15 @@ import StartWalking from "~/screens/walkTopTabNav/StartWalking";
 import CustomTopTabBar from "~/components/navigator/CustomTopTabBar";
 import WalkRecord from "~/screens/walkTopTabNav/WalkRecord";
 import useDevice from "~/hooks/useDevice";
+import { WalkTopTabNavRouteProp } from "~/types/navigator";
 
 const Tab = createMaterialTopTabNavigator();
 
-const WalkTopTabNav = () => {
+const WalkTopTabNav = ({
+  route: { params: { initialStartWalkingParams } = {} },
+}: {
+  route: WalkTopTabNavRouteProp;
+}) => {
   const deviceList = useDevice();
 
   return (
@@ -18,7 +23,10 @@ const WalkTopTabNav = () => {
       tabBar={(props: MaterialTopTabBarProps) => (
         <CustomTopTabBar {...props} />
       )}>
-      <Tab.Screen name="StartWalking" options={{ tabBarLabel: "산책하기" }}>
+      <Tab.Screen
+        name="StartWalking"
+        initialParams={initialStartWalkingParams}
+        options={{ tabBarLabel: "산책하기" }}>
         {props => <StartWalking {...props} deviceList={deviceList || []} />}
       </Tab.Screen>
       <Tab.Screen name="WalkRecord" options={{ tabBarLabel: "산책기록" }}>
