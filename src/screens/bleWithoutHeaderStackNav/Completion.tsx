@@ -49,7 +49,7 @@ const Completion = ({
     onAnimatedFinish: () => {
       setTimeout(() => {
         if (navigation.canGoBack()) {
-          navigation.goBack();
+          navigation.reset({ index: 0, routes: [{ name: "LoggedInNav" }] });
         } else {
           navigation.replace("LoggedInNav");
         }

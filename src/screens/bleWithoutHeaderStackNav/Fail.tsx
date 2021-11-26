@@ -60,9 +60,7 @@ const Fail = ({ navigation }: { navigation: FailScreenNavigationProp }) => {
                 dispatch(bleActions.setStatus("scanning"));
               }
               if (status === "wifiFail") {
-                navigation.replace("BleWithHeaderStackNav", {
-                  initialRouteName: "WiFiForm",
-                });
+                navigation.goBack();
               }
             }}
             style={{
