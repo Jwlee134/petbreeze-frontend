@@ -207,20 +207,13 @@ const useBleMaganer = () => {
   }, [status]);
 
   useEffect(() => {
-    const handleDevEUIResult = async () => {
-      console.log(data, error);
-      if (data) {
-        const {
-          data: { device_id },
-        } = data;
-        dispatch(bleActions.setDeviceID(device_id));
-        await startNotification("OTA");
-      }
-      if (error && "status" in error && error.status === 400) {
-        dispatch(bleActions.setStatus("devEUIFail"));
-      }
-    };
-    handleDevEUIResult();
+    if (data) {
+      dispatch(bleActions.setDeviceID(data.device_id));
+      startNotification("OTA");
+    }
+    if (error && "status" in error && error.status === 400) {
+      dispatch(bleActions.setStatus("devEUIFail"));
+    }
   }, [data, error]);
 
   const handleReadDevEUI = useCallback(async () => {

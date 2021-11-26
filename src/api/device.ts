@@ -131,23 +131,16 @@ const deviceApi = api.injectEndpoints({
       providesTags: result => providesList(result, "Device"),
     }),
 
-    postDevice: builder.mutation<
-      { status: number; data: { device_id: number } },
-      string
-    >({
+    postDevice: builder.mutation<{ device_id: number }, string>({
       query: IMEInumber => ({
         url: "/device/",
         method: "POST",
         body: {
           IMEInumber,
         },
-        responseHandler: async res => {
-          const data: { device_id: number } = await res.json();
-          return { status: res.status, data };
-        },
       }),
-      invalidatesTags: res => {
-        if (res?.status === 200 || res?.status === 201) {
+      invalidatesTags: (result, error) => {
+        if (!error) {
           return [{ type: "Device", id: "LIST" }];
         }
         return [];
