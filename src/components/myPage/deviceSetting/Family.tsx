@@ -88,7 +88,7 @@ const Family = ({
           <Animated.View key={`${member.id}-${i}`}>
             <Swipeable
               rightThreshold={36}
-              enableRightActions={isEdit}
+              enableRightActions
               RenderRightActions={() =>
                 myID === member.id || myID !== data?.owner_id ? (
                   <></>

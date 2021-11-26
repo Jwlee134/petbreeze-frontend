@@ -314,7 +314,7 @@ const deviceApi = api.injectEndpoints({
         method: "GET",
         responseHandler: async res => {
           const data: DeviceMembers = await res.json();
-          if (data.members.length > 1) {
+          if (data.members.length) {
             const ownerIndex = data.members.findIndex(
               member => member.id === data.owner_id,
             );
