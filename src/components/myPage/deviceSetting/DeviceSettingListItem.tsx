@@ -20,7 +20,7 @@ const DeviceSettingListItem = ({ device }: { device: Device }) => (
     }}>
     <RowContainer>
       <AnimatedCircularProgress
-        lineWidth={2}
+        lineWidth={3}
         circleWidth={70}
         battery={device.battery}
         avatar={device.profile_image}

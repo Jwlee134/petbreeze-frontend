@@ -88,15 +88,13 @@ const AnimatedCircularProgress = ({
         width={lineWidth}
         fill={batteryValue}
         prefill={batteryValue}
-        tintColor={
-          batteryValue > 25 ? `${palette.blue_7b}E6` : `${palette.red_f0}E6`
-        }
+        tintColor={batteryValue > 25 ? palette.blue_85 : palette.red_f1}
         backgroundColor={
           isBackgroundTransparent
             ? "transparent"
             : battery > 25
-            ? `${palette.blue_7b}33`
-            : `${palette.red_f0}33`
+            ? palette.blue_e5
+            : palette.red_fc
         }
         lineCap="round"
         rotation={0}
@@ -110,7 +108,7 @@ const AnimatedCircularProgress = ({
         }}>
         {() => (
           <Image
-            fadeDuration={0}
+            resizeMode="cover"
             circleWidth={circleWidth - lineWidth}
             source={avatar ? { uri: avatar } : noAvatar}
           />

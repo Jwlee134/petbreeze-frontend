@@ -8,8 +8,8 @@ import Input from "~/components/common/Input";
 import MyText from "~/components/common/MyText";
 import { useAppSelector } from "~/store";
 import { commonActions } from "~/store/common";
+import { minSpace } from "~/styles/constants";
 import { DeleteAccountFirstPageScreenNavigationProp } from "~/types/navigator";
-import { isAndroid } from "~/utils";
 
 const TextContainer = styled.View`
   padding: 0 32px;
@@ -74,15 +74,14 @@ const DeleteAccountFirstPage = ({
           placeholder="직접 입력"
           multiline
           scrollEnabled={false}
-          style={{
-            paddingHorizontal: 0,
-            marginBottom: isAndroid ? 50 : 0,
-          }}
+          textAlignVertical="top"
+          style={{ paddingHorizontal: 0 }}
           hasBorder={false}
           placeholderTextColor="rgba(0, 0, 0, 0.8)"
         />
       </TextContainer>
       <Button
+        style={{ marginTop: minSpace }}
         useCommonMarginBottom
         disabled={!body.length && !text}
         onPress={() => {

@@ -17,7 +17,7 @@ const Container = styled.ScrollView`
 const CategoryTitle = styled.View`
   margin-top: 25px;
   margin-left: 41px;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 `;
 
 const Notification = () => {
@@ -58,7 +58,7 @@ const Notification = () => {
       {newNotif.length ? (
         <>
           <CategoryTitle>
-            <MyText fontWeight="medium" fontSize={18}>
+            <MyText fontWeight="medium" fontSize={18} color="#333333">
               새로운 알림
             </MyText>
           </CategoryTitle>
@@ -81,7 +81,7 @@ const Notification = () => {
       {thisWeek.length ? (
         <>
           <CategoryTitle>
-            <MyText fontWeight="medium" fontSize={18}>
+            <MyText fontWeight="medium" fontSize={18} color="#333333">
               이번주
             </MyText>
           </CategoryTitle>

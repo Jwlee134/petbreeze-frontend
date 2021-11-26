@@ -4,7 +4,7 @@ import styled from "styled-components/native";
 import palette from "~/styles/palette";
 import { formatCreatedAt } from "~/utils";
 import MyText from "../common/MyText";
-import Arrow from "~/assets/svg/arrow/arrow-right-blue.svg";
+import Arrow from "~/assets/svg/arrow/arrow-right-b2.svg";
 import { Notification } from "~/api/user";
 import { noAvatar } from "~/constants";
 import { Device } from "~/api/device";
@@ -13,8 +13,8 @@ import { NotificationScreenNavigationProp } from "~/types/navigator";
 
 const Container = styled.View`
   padding: 0 32px;
-  margin-bottom: 20px;
   flex-direction: row;
+  height: 70px;
   align-items: center;
 `;
 
@@ -67,11 +67,7 @@ const NotificationItem = ({
               );
               return parts.map((text, i) =>
                 text === device.name ? (
-                  <MyText
-                    color={color}
-                    fontSize={14}
-                    fontWeight="medium"
-                    key={i}>
+                  <MyText color={color} fontSize={14} fontWeight="bold" key={i}>
                     {text}
                   </MyText>
                 ) : (
@@ -85,7 +81,6 @@ const NotificationItem = ({
             <View>
               <MyText
                 style={{
-                  marginTop: 3,
                   marginBottom: -2,
                 }}
                 fontSize={12}
@@ -95,9 +90,7 @@ const NotificationItem = ({
             </View>
           </MyText>
         </TextContainer>
-        {showArrow ? (
-          <Arrow width={7} height={12} style={{ marginTop: 3 }} />
-        ) : null}
+        {showArrow ? <Arrow width={7} height={12} /> : null}
       </Container>
     </TouchableWithoutFeedback>
   );

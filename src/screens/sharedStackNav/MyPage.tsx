@@ -1,5 +1,5 @@
 import React from "react";
-import { ScrollView } from "react-native";
+import { ScrollView, useWindowDimensions } from "react-native";
 import MyText from "~/components/common/MyText";
 import styled from "styled-components/native";
 
@@ -24,7 +24,9 @@ const Button = styled.TouchableOpacity<{ isLast?: boolean }>`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding: 13.5px 0;
+  height: 54px;
+  padding-right: 32px;
+  padding-left: 17px;
 `;
 
 const RowContainer = styled.View`
@@ -37,94 +39,86 @@ const SvgContainer = styled.View`
   align-items: center;
 `;
 
-const Section = styled.View`
-  padding: 29px 32px 32px 17px;
-`;
-
 const MyPage = ({ navigation }: { navigation: MyPageScreenNavigationProp }) => {
   const deviceList = useDevice();
   const { open, close, modalProps } = useModal();
+  const { width } = useWindowDimensions();
 
   return (
     <>
       <ScrollView>
         <DeviceList deviceList={deviceList} />
         <Divider isHairline={false} />
-        <Section>
-          <MyText
-            style={{
-              marginBottom: 6.5,
-              paddingLeft: 15,
-            }}
-            color="rgba(0, 0, 0, 0.3)"
-            fontSize={14}>
-            계정관리
-          </MyText>
-          <Button
-            disabled={!deviceList?.length}
-            onPress={() => {
-              navigation.navigate("DeviceSettingList");
-            }}>
-            <RowContainer style={{ opacity: !deviceList?.length ? 0.2 : 1 }}>
-              <SvgContainer>
-                <Setting width={19} height={20} />
-              </SvgContainer>
-              <MyText>기기설정</MyText>
-            </RowContainer>
-            <Arrow
-              width={7}
-              height={12}
-              style={{ opacity: !deviceList?.length ? 0.5 : 1 }}
-            />
-          </Button>
-          <Button
-            onPress={() => {
-              navigation.navigate("BleRootStackNav");
-            }}>
-            <RowContainer>
-              <SvgContainer>
-                <Plus width={17} height={18} />
-              </SvgContainer>
-              <MyText>기기등록</MyText>
-            </RowContainer>
-            <Arrow width={7} height={12} />
-          </Button>
-          <Button
-            onPress={() => {
-              navigation.navigate("NotificationSetting");
-            }}>
-            <RowContainer>
-              <SvgContainer>
-                <Bell width={17} height={21} />
-              </SvgContainer>
-              <MyText>알림설정</MyText>
-            </RowContainer>
-            <Arrow width={7} height={12} />
-          </Button>
-          <Button
-            onPress={() => {
-              navigation.navigate("UpdateNickname");
-            }}>
-            <RowContainer>
-              <SvgContainer>
-                <Tag width={12} height={19} />
-              </SvgContainer>
-              <MyText>이름변경</MyText>
-            </RowContainer>
-            <Arrow width={7} height={12} />
-          </Button>
-        </Section>
-        <Divider isHairline={false} />
-        <Section>
-          <Button onPress={open} style={{ paddingTop: 0, paddingLeft: 15 }}>
-            <MyText>로그아웃</MyText>
-          </Button>
-          <Button
-            style={{ paddingLeft: 15 }}
-            onPress={() => navigation.navigate("DeleteAccountStackNav")}>
-            <MyText color="rgba(0, 0, 0, 0.3)">탈퇴하기</MyText>
-          </Button>
-        </Section>
+        <MyText
+          style={{ paddingLeft: 32, paddingTop: 29, paddingBottom: 11 }}
+          color="rgba(0, 0, 0, 0.3)"
+          fontSize={14}>
+          계정관리
+        </MyText>
+        <Button
+          disabled={!deviceList?.length}
+          onPress={() => {
+            navigation.navigate("DeviceSettingList");
+          }}>
+          <RowContainer style={{ opacity: !deviceList?.length ? 0.2 : 1 }}>
+            <SvgContainer>
+              <Setting width={19} height={20} />
+            </SvgContainer>
+            <MyText>기기설정</MyText>
+          </RowContainer>
+          <Arrow
+            width={7}
+            height={12}
+            style={{ opacity: !deviceList?.length ? 0.5 : 1 }}
+          />
+        </Button>
+        <Button
+          onPress={() => {
+            navigation.navigate("BleRootStackNav");
+          }}>
+          <RowContainer>
+            <SvgContainer>
+              <Plus width={17} height={18} />
+            </SvgContainer>
+            <MyText>기기등록</MyText>
+          </RowContainer>
+          <Arrow width={7} height={12} />
+        </Button>
+        <Button
+          onPress={() => {
+            navigation.navigate("NotificationSetting");
+          }}>
+          <RowContainer>
+            <SvgContainer>
+              <Bell width={17} height={21} />
+            </SvgContainer>
+            <MyText>알림설정</MyText>
+          </RowContainer>
+          <Arrow width={7} height={12} />
+        </Button>
+        <Button
+          onPress={() => {
+            navigation.navigate("UpdateNickname");
+          }}>
+          <RowContainer>
+            <SvgContainer>
+              <Tag width={12} height={19} />
+            </SvgContainer>
+            <MyText>이름변경</MyText>
+          </RowContainer>
+          <Arrow width={7} height={12} />
+        </Button>
+        <Divider
+          style={{ width: width - 34, alignSelf: "center", marginVertical: 17 }}
+        />
+        <Button onPress={open} style={{ paddingLeft: 32 }}>
+          <MyText fontWeight="medium">로그아웃</MyText>
+        </Button>
+        <Button
+          style={{ paddingLeft: 32, marginBottom: 17 }}
+          onPress={() => navigation.navigate("DeleteAccountStackNav")}>
+          <MyText color="rgba(0, 0, 0, 0.3)">탈퇴하기</MyText>
+        </Button>
       </ScrollView>
       <Modal {...modalProps({ type: "center" })}>
         <CommonCenterModal

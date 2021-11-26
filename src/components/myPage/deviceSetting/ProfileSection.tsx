@@ -13,8 +13,8 @@ import { formActions } from "~/store/form";
 
 const Container = styled.View`
   align-items: center;
-  padding-top: 25px;
-  padding-bottom: 14px;
+  padding-top: 20px;
+  padding-bottom: 20px;
 `;
 
 const Image = styled.Image`

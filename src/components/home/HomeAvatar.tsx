@@ -67,7 +67,6 @@ const HomeAvatar = ({
     <Animated.View style={style}>
       <AnimatedCircularProgress
         avatar={device.profile_image}
-        preventRpHeight
         circleWidth={length > 2 ? 70 : 90}
         lineWidth={length > 2 ? 5 : 7}
         battery={device.battery}

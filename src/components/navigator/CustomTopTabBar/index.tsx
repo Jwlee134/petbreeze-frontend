@@ -65,6 +65,7 @@ const CustomTopTabBar = ({
             <TabButton onPress={onPress} onLongPress={onLongPress}>
               <MyText
                 fontSize={14}
+                fontWeight={isFocused ? "medium" : undefined}
                 color={isFocused ? palette.blue_7b : "rgba(0, 0, 0, 0.5)"}>
                 {label}
               </MyText>

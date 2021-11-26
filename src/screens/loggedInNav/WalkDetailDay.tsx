@@ -10,17 +10,14 @@ import Path from "~/assets/svg/walk/path.svg";
 import Divider from "~/components/common/Divider";
 import deviceApi from "~/api/device";
 import { formatWalkDistance, formatWalkTime } from "~/utils";
-import { noAvatar } from "~/constants";
+import { noAvatar, noName } from "~/constants";
 import Modal from "react-native-modal";
 import useModal from "~/hooks/useModal";
 import IosStyleBottomModal from "~/components/modal/IosStyleBottomModal";
 import { useDispatch } from "react-redux";
 import CustomHeader from "~/components/navigator/CustomHeader";
 
-const Container = styled.View`
-  padding-top: 35px;
-  padding-bottom: 65px;
-`;
+const Container = styled.View``;
 
 const RowContainer = styled.View`
   flex-direction: row;
@@ -29,8 +26,8 @@ const RowContainer = styled.View`
 
 const SvgContainer = styled(RowContainer)`
   justify-content: space-evenly;
-  margin-top: 40px;
-  margin-bottom: 25px;
+  padding-top: 18px;
+  padding-bottom: 27px;
 `;
 
 const Avatar = styled.Image`
@@ -119,12 +116,13 @@ const WalkDetailDay = ({
                 style={{
                   paddingHorizontal: 32,
                   justifyContent: "space-between",
+                  paddingVertical: 18,
                 }}>
                 <RowContainer>
                   <Avatar source={avatarUrl ? { uri: avatarUrl } : noAvatar} />
                   <View>
                     <MyText color={palette.blue_7b} style={{ marginBottom: 5 }}>
-                      {item.handler_name}
+                      {item.handler_name || noName}
                     </MyText>
                     <MyText color="rgba(0, 0, 0, 0.5)">
                       {formatPeriod(item.start_date_time, item.time)}
@@ -139,6 +137,9 @@ const WalkDetailDay = ({
                   <Trashcan width={22} height={23} />
                 </Delete>
               </RowContainer>
+              <MapContainer style={{ height: width * 0.66 }}>
+                <Map fadeDuration={0} source={{ uri: item.path_image }} />
+              </MapContainer>
               <SvgContainer>
                 <RowContainer>
                   <Timer width={22} height={27} style={{ marginRight: 17 }} />
@@ -153,9 +154,6 @@ const WalkDetailDay = ({
                   </MyText>
                 </RowContainer>
               </SvgContainer>
-              <MapContainer style={{ height: width * 0.66 }}>
-                <Map fadeDuration={0} source={{ uri: item.path_image }} />
-              </MapContainer>
             </Container>
             {data && data.length > 1 && index !== data.length - 1 ? (
               <Divider style={{ width: width - 34, alignSelf: "center" }} />

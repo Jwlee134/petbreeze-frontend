@@ -23,10 +23,10 @@ const OuterMarker = styled.View`
 `;
 
 const InnerMarker = styled.View`
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   border-radius: 8px;
-  background-color: ${palette.blue_7b};
+  background-color: ${palette.blue_86};
 `;
 
 const FakeMarker = ({ mapPadding, style }: Props) => (

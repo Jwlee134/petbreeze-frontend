@@ -19,7 +19,7 @@ const WalkDeviceListItem = ({ device }: { device: Device }) => {
       <AnimatedCircularProgress
         avatar={device.profile_image}
         isBackgroundTransparent
-        lineWidth={2}
+        lineWidth={3}
         circleWidth={70}
         battery={device.battery}
       />
@@ -35,7 +35,7 @@ const WalkDeviceListItem = ({ device }: { device: Device }) => {
         </RowContainer>
         {device.last_walk ? (
           <MyText
-            style={{ marginTop: 5 }}
+            style={{ marginTop: 8 }}
             fontSize={12}
             color="rgba(0, 0, 0, 0.5)">
             마지막 산책{"   "}
