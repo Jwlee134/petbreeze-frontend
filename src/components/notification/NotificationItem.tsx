@@ -11,11 +11,12 @@ import { Device } from "~/api/device";
 import { useNavigation } from "@react-navigation/native";
 import { NotificationScreenNavigationProp } from "~/types/navigator";
 
-const Container = styled.View`
+const Container = styled.View<{ isLast: boolean }>`
   padding: 0 32px;
   flex-direction: row;
   height: 70px;
   align-items: center;
+  margin-bottom: ${({ isLast }) => (isLast ? 20 : 0)}px;
 `;
 
 const Image = styled.Image`
@@ -33,9 +34,11 @@ const TextContainer = styled.View`
 const NotificationItem = ({
   data,
   device,
+  isLast,
 }: {
   data: Notification;
   device: Device;
+  isLast: boolean;
 }) => {
   const navigation = useNavigation<NotificationScreenNavigationProp>();
   const showArrow = data.title.includes("산책을 끝냈어요");
@@ -50,7 +53,7 @@ const NotificationItem = ({
           avatarUrl: device.profile_image || "",
         });
       }}>
-      <Container>
+      <Container isLast={isLast}>
         <Image
           source={
             device.profile_image ? { uri: device.profile_image } : noAvatar

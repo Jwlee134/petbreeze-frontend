@@ -62,7 +62,7 @@ const Notification = () => {
               새로운 알림
             </MyText>
           </CategoryTitle>
-          {newNotif.map(notif => (
+          {newNotif.map((notif, i) => (
             <NotificationItem
               key={notif.id}
               data={notif}
@@ -73,6 +73,7 @@ const Notification = () => {
                   )
                 ]
               }
+              isLast={i === newNotif.length - 1}
             />
           ))}
           {thisWeek.length ? <Divider /> : null}
@@ -85,7 +86,7 @@ const Notification = () => {
               이번주
             </MyText>
           </CategoryTitle>
-          {thisWeek.map(notif => (
+          {thisWeek.map((notif, i) => (
             <NotificationItem
               key={notif.id}
               data={notif}
@@ -96,6 +97,7 @@ const Notification = () => {
                   )
                 ]
               }
+              isLast={i === thisWeek.length - 1}
             />
           ))}
         </>
