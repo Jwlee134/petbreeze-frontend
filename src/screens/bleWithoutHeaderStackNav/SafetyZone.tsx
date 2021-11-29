@@ -19,7 +19,8 @@ import {
   withTiming,
 } from "react-native-reanimated";
 import Dissolve from "~/components/common/Dissolve";
-import { showLocationError } from "~/utils";
+import Toast from "react-native-toast-message";
+import permissionCheck from "~/utils/permissionCheck";
 
 const Container = styled.View`
   flex: 1;
@@ -42,25 +43,28 @@ const SafetyZone = () => {
   const step2 = useAppSelector(state => state.deviceSetting.safetyZone.step2);
   const dispatch = useDispatch();
 
-  const handleMyLocation = () => {
-    Geolocation.getCurrentPosition(
-      ({ coords: { latitude, longitude } }) => {
-        dispatch(
-          deviceSettingActions.setSafetyZone({
-            animateCamera: true,
-          }),
-        );
-        dispatch(
-          deviceSettingActions.setSafetyZone({
-            draft: { coord: { latitude, longitude } },
-          }),
-        );
-      },
-      () => {
-        showLocationError();
-      },
-      { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
-    );
+  const handleMyLocation = async () => {
+    try {
+      await permissionCheck.location();
+      Geolocation.getCurrentPosition(
+        ({ coords: { latitude, longitude } }) => {
+          dispatch(
+            deviceSettingActions.setSafetyZone({
+              animateCamera: true,
+            }),
+          );
+          dispatch(
+            deviceSettingActions.setSafetyZone({
+              draft: { coord: { latitude, longitude } },
+            }),
+          );
+        },
+        () => {
+          Toast.show({ type: "error", text1: "위치를 불러올 수 없습니다." });
+        },
+        { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
+      );
+    } catch {}
   };
 
   const bottomSheetHeight = 188 + bottom;
