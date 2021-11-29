@@ -45,26 +45,35 @@ const DeviceSetting = ({
 
   const isLoading = updatingDeviceSetting || updatingThumbnail;
 
+  const formatResponse = (res: AreaResponse[]) => {
+    const {
+      safetyZone: { result: safetyZone },
+    } = store.getState().deviceSetting;
+    return safetyZone.map(area => {
+      const index = res.findIndex(
+        areaRes => areaRes.safety_area_id === area.safety_area_id,
+      );
+      if (index === -1) {
+        return area;
+      }
+      return res[index];
+    });
+  };
+
   useEffect(() => {
     if (!settings) return;
     const {
-      safetyZone: { result: safetyZone },
       wifi: { result: wifi },
     } = store.getState().deviceSetting;
     if (settings.Period) {
       dispatch(deviceSettingActions.setPeriod(settings.Period));
     }
     if (settings.Area.length) {
-      const format = safetyZone.map(area => {
-        const index = settings.Area.findIndex(
-          areaRes => areaRes.safety_area_id === area.safety_area_id,
-        );
-        if (index === -1) {
-          return area;
-        }
-        return settings.Area[index];
-      });
-      dispatch(deviceSettingActions.setSafetyZone({ result: format }));
+      dispatch(
+        deviceSettingActions.setSafetyZone({
+          result: formatResponse(settings.Area),
+        }),
+      );
     }
     if (settings.WiFi.length) {
       const format = wifi.map(wifi => {
@@ -89,12 +98,29 @@ const DeviceSetting = ({
   }, []);
 
   const handleSubmit = async () => {
-    if (isLoading) return;
+    if (isLoading || !settings) return;
     const {
       period,
       safetyZone: { result: safetyZone },
       wifi: { result: wifi },
     } = store.getState().deviceSetting;
+
+    // 변경사항 없는데 put 요청 방지
+    if (
+      settings.Period === period &&
+      formatResponse(settings.Area).every(area => {
+        const currentArea =
+          safetyZone[
+            safetyZone.findIndex(
+              storeArea => storeArea.safety_area_id === area.safety_area_id,
+            )
+          ];
+        return currentArea.thumbnail === area.thumbnail;
+      })
+    ) {
+      setIsEdit(false);
+      return;
+    }
 
     const areaWithoutImage = safetyZone.map(area => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars

@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { AreaResponse, WiFiBody } from "~/api/device";
+import { AreaResponse, WiFiResponse } from "~/api/device";
 
 interface SafetyZoneDraft {
   name: string;
@@ -30,7 +30,7 @@ interface WifiDraft {
 
 interface Wifi<T> {
   currentId: number;
-  result: WiFiBody[];
+  result: WiFiResponse[];
   draft: T;
 }
 

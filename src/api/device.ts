@@ -77,7 +77,7 @@ export interface AreaResponse extends AreaBody {
   thumbnail: string;
 }
 
-export interface WiFiBody {
+export interface WiFiResponse {
   wifi_id: number;
   ssid: string | null;
   password: string | null;
@@ -86,7 +86,7 @@ export interface WiFiBody {
 interface DeviceSetting<A> {
   Period: number;
   Area: A[];
-  WiFi: WiFiBody[];
+  WiFi: WiFiResponse[];
 }
 
 interface DailyWalkRecord {
@@ -482,7 +482,7 @@ const deviceApi = api.injectEndpoints({
 
     getDeviceSetting: builder.query<
       DeviceSetting<AreaResponse> & {
-        setting_confirmation: boolean;
+        Setting_confirmation: boolean;
       },
       number
     >({
