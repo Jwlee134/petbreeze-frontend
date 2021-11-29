@@ -159,12 +159,11 @@ const Toggle = () => {
             resume();
           }}
           rightButtonText={loading ? <ActivityIndicator /> : "종료"}
-          title={(() => {
-            if (duration < 60) {
-              return `1분 미만의 산책은 기록되지 않습니다.\n산책을 종료할까요?`;
-            }
-            return "산책을 종료할까요?";
-          })()}
+          title={
+            duration < 60
+              ? `1분 미만의 산책은\n기록되지 않습니다.\n산책을 종료할까요?`
+              : "산책을 종료할까요?"
+          }
           onRightButtonPress={async () => {
             if (loading) return;
             if (duration < 60) {
