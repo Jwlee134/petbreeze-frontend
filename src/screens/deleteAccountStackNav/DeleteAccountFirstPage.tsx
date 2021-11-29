@@ -1,4 +1,5 @@
 import React from "react";
+import { View } from "react-native";
 import { useDispatch } from "react-redux";
 import styled from "styled-components/native";
 import Button from "~/components/common/Button";
@@ -11,14 +12,16 @@ import { commonActions } from "~/store/common";
 import { minSpace } from "~/styles/constants";
 import { DeleteAccountFirstPageScreenNavigationProp } from "~/types/navigator";
 
-const TextContainer = styled.View`
+const Item = styled.TouchableOpacity`
+  flex-direction: row;
+  justify-content: space-between;
+  height: 54px;
+  align-items: center;
   padding: 0 32px;
 `;
 
-const Item = styled.TouchableOpacity`
-  flex-direction: row;
-  margin-bottom: 27px;
-  justify-content: space-between;
+const InputContainer = styled.View`
+  padding: 0 32px;
 `;
 
 const reasons = [
@@ -39,10 +42,13 @@ const DeleteAccountFirstPage = ({
 
   return (
     <KeyboardAwareScrollContainer isSpaceBetween>
-      <TextContainer>
+      <View>
         {reasons.map((reason, i) => (
           <Item
             key={i}
+            style={{
+              ...(i === reasons.length - 1 && { marginBottom: 13.5 }),
+            }}
             onPress={() => {
               if (body.includes(i)) {
                 dispatch(
@@ -62,24 +68,26 @@ const DeleteAccountFirstPage = ({
             <CheckCircle selected={body.includes(i)} />
           </Item>
         ))}
-        <Input
-          value={text}
-          onChangeText={text => {
-            dispatch(
-              commonActions.setDeleteAccount({
-                text,
-              }),
-            );
-          }}
-          placeholder="직접 입력"
-          multiline
-          scrollEnabled={false}
-          textAlignVertical="top"
-          style={{ paddingHorizontal: 0 }}
-          hasBorder={false}
-          placeholderTextColor="rgba(0, 0, 0, 0.8)"
-        />
-      </TextContainer>
+        <InputContainer>
+          <Input
+            value={text}
+            onChangeText={text => {
+              dispatch(
+                commonActions.setDeleteAccount({
+                  text,
+                }),
+              );
+            }}
+            placeholder="직접 입력"
+            multiline
+            scrollEnabled={false}
+            textAlignVertical="top"
+            style={{ paddingHorizontal: 0 }}
+            hasBorder={false}
+            placeholderTextColor="rgba(0, 0, 0, 0.8)"
+          />
+        </InputContainer>
+      </View>
       <Button
         style={{ marginTop: minSpace }}
         useCommonMarginBottom
