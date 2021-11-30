@@ -27,8 +27,8 @@ const BottomSheet = forwardRef(
       ref={ref}
       handleComponent={() => (
         <Shadow
-          distance={20}
-          startColor="#00000015"
+          distance={15}
+          startColor="rgba(0, 0, 0, 0.05)"
           sides={["top"]}
           radius={15}
           corners={["topLeft", "topRight"]}

@@ -23,8 +23,8 @@ const Container = styled.TouchableOpacity`
 
 const MapButton = ({ icon, style, ...props }: Props) => (
   <Shadow
-    distance={8}
-    startColor="rgba(0, 0, 0, 0.15)"
+    distance={10}
+    startColor="rgba(0, 0, 0, 0.05)"
     viewStyle={{
       ...(style as object),
       borderRadius: mapButtonSize / 2,
