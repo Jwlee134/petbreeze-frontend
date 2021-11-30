@@ -1,8 +1,8 @@
 import React, { useMemo } from "react";
 import styled from "styled-components/native";
-import MyText from "../../common/MyText";
+import MyText from "../common/MyText";
 import Location from "~/assets/svg/myPage/location.svg";
-import ScrollPicker from "../../common/ScrollPicker";
+import ScrollPicker from "../common/ScrollPicker";
 import { useDispatch } from "react-redux";
 import { useAppSelector } from "~/store";
 import { deviceSettingActions } from "~/store/deviceSetting";

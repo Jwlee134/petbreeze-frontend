@@ -6,14 +6,14 @@ import {
   ScrollView,
 } from "react-native";
 import MyText from "~/components/common/MyText";
-import Period from "~/components/myPage/deviceSetting/Period";
-import SafetyZone from "~/components/myPage/deviceSetting/SafetyZone";
+import Period from "~/components/myPage/Period";
+import SafetyZone from "~/components/myPage/SafetyZone";
 import Divider from "~/components/common/Divider";
 import CustomHeader from "~/components/navigator/CustomHeader";
 import palette from "~/styles/palette";
-import WiFi from "~/components/myPage/deviceSetting/WiFi";
-import ProfileSection from "~/components/myPage/deviceSetting/ProfileSection";
-import Family from "~/components/myPage/deviceSetting/Family";
+import WiFi from "~/components/myPage/WiFi";
+import ProfileSection from "~/components/myPage/ProfileSection";
+import Family from "~/components/myPage/Family";
 import { DeviceSettingScreenProps } from "~/types/navigator";
 import { commonActions } from "~/store/common";
 import { useDispatch } from "react-redux";

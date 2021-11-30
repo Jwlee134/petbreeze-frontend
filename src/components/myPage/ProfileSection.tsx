@@ -1,9 +1,9 @@
 import React from "react";
 import styled from "styled-components/native";
 import Pencil from "~/assets/svg/myPage/pencil.svg";
-import Divider from "../../common/Divider";
+import Divider from "../common/Divider";
 import { TouchableOpacity } from "react-native";
-import MyText from "../../common/MyText";
+import MyText from "../common/MyText";
 import { useNavigation } from "@react-navigation/native";
 import deviceApi from "~/api/device";
 import { DeviceSettingScreenNavigationProp } from "~/types/navigator";

@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
-import MyText from "../../common/MyText";
+import MyText from "../common/MyText";
 import Trashcan from "~/assets/svg/trashcan/trashcan-white.svg";
-import ListItem from "../../common/ListItem";
-import Swipeable from "../../common/Swipeable";
+import ListItem from "../common/ListItem";
+import Swipeable from "../common/Swipeable";
 import DeviceSettingTitle from "./DeviceSettingTitle";
 import { useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";

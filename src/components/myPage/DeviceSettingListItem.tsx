@@ -3,8 +3,8 @@ import styled from "styled-components/native";
 import { Device } from "~/api/device";
 import { noName } from "~/constants";
 import palette from "~/styles/palette";
-import AnimatedCircularProgress from "../../common/AnimatedCircularProgress";
-import MyText from "../../common/MyText";
+import AnimatedCircularProgress from "../common/AnimatedCircularProgress";
+import MyText from "../common/MyText";
 
 const RowContainer = styled.View`
   flex-direction: row;

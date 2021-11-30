@@ -1,13 +1,13 @@
 import React, { useEffect, useRef } from "react";
 import styled from "styled-components/native";
-import MyText from "../../common/MyText";
 import Shield from "~/assets/svg/myPage/shield.svg";
 import WiFiIcon from "~/assets/svg/wifi/wifi-black.svg";
 import Plus from "~/assets/svg/plus/plus-blue.svg";
-import Dissolve from "../../common/Dissolve";
 import People from "~/assets/svg/myPage/people.svg";
 import Arrow from "~/assets/svg/arrow/arrow-down-gray.svg";
 import { Animated, StyleSheet } from "react-native";
+import Dissolve from "../common/Dissolve";
+import MyText from "../common/MyText";
 
 interface Props {
   type: "safetyZone" | "wifi" | "family";

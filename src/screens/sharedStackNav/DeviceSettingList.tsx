@@ -7,7 +7,7 @@ import { DeviceSettingListScreenNavigationProp } from "~/types/navigator";
 import Swipeable from "~/components/common/Swipeable";
 import Bye from "~/assets/svg/myPage/bye.svg";
 import ListItem from "~/components/common/ListItem";
-import DeviceSettingListItem from "~/components/myPage/deviceSetting/DeviceSettingListItem";
+import DeviceSettingListItem from "~/components/myPage/DeviceSettingListItem";
 import SwipeableButton from "~/components/common/SwipeableButton";
 import deviceApi, { Device } from "~/api/device";
 import useDevice from "~/hooks/useDevice";
