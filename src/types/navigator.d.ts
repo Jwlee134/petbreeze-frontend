@@ -424,7 +424,7 @@ export type SharedStackNavParamList = {
     avatar: string;
     name: string;
   };
-  DeviceSettingList: undefined;
+  DeviceManagement: undefined;
   UpdateNickname: undefined;
 };
 export type WalkTopTabNavRouteProp = RouteProp<
@@ -471,8 +471,8 @@ export type WalkDetailMonthScreenProps = CompositeScreenProps<
     >
   >
 >;
-export type DeviceSettingListScreenNavigationProp = CompositeNavigationProp<
-  StackNavigationProp<SharedStackNavParamList, "DeviceSettingList">,
+export type DeviceManagementScreenNavigationProp = CompositeNavigationProp<
+  StackNavigationProp<SharedStackNavParamList, "DeviceManagement">,
   CompositeNavigationProp<
     BottomTabNavigationProp<BottomTabParamList>,
     CompositeNavigationProp<

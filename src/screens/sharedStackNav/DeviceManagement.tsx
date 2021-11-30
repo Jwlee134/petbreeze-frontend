@@ -3,27 +3,33 @@ import { ScrollView, TouchableOpacity } from "react-native";
 import MyText from "~/components/common/MyText";
 import CustomHeader from "~/components/navigator/CustomHeader";
 import palette from "~/styles/palette";
-import { DeviceSettingListScreenNavigationProp } from "~/types/navigator";
+import { DeviceManagementScreenNavigationProp } from "~/types/navigator";
 import Swipeable from "~/components/common/Swipeable";
 import Bye from "~/assets/svg/myPage/bye.svg";
 import ListItem from "~/components/common/ListItem";
-import DeviceSettingListItem from "~/components/myPage/DeviceSettingListItem";
+import DeviceManagementItem from "~/components/myPage/DeviceManagementItem";
 import SwipeableButton from "~/components/common/SwipeableButton";
-import deviceApi, { Device } from "~/api/device";
+import deviceApi from "~/api/device";
 import useDevice from "~/hooks/useDevice";
 import { useDispatch } from "react-redux";
 import { commonActions } from "~/store/common";
+import useModal from "~/hooks/useModal";
+import Modal from "react-native-modal";
+import CommonCenterModal from "~/components/modal/CommonCenterModal";
+import Plus from "~/assets/svg/plus/plus-blue.svg";
 
-const DeviceSettingList = ({
+const DeviceManagement = ({
   navigation,
 }: {
-  navigation: DeviceSettingListScreenNavigationProp;
+  navigation: DeviceManagementScreenNavigationProp;
 }) => {
   const [isEdit, setIsEdit] = useState(false);
   const [deleteDevice] = deviceApi.useDeleteDeviceMutation();
   const deviceList = useDevice();
   const dispatch = useDispatch();
   const timeout = useRef<NodeJS.Timeout>();
+  const [id, setId] = useState(0);
+  const { open, close, modalProps } = useModal();
 
   useEffect(() => {
     return () => {
@@ -31,12 +37,6 @@ const DeviceSettingList = ({
       dispatch(commonActions.setAnimateSwipeable(false));
     };
   }, []);
-
-  useEffect(() => {
-    if (deviceList && !deviceList.length) {
-      navigation.goBack();
-    }
-  }, [deviceList]);
 
   const onEditButtonPress = () => {
     setIsEdit(prev => !prev);
@@ -46,8 +46,9 @@ const DeviceSettingList = ({
     }, 1800);
   };
 
-  const onDeleteDevice = (device: Device) => {
-    deleteDevice(device.id);
+  const onByeClick = (id: number) => {
+    setId(id);
+    open();
   };
 
   return (
@@ -59,7 +60,7 @@ const DeviceSettingList = ({
           </TouchableOpacity>
         )}
         navigation={navigation}>
-        기기설정
+        기기관리
       </CustomHeader>
       <ScrollView
         contentContainerStyle={{
@@ -73,7 +74,7 @@ const DeviceSettingList = ({
             RenderRightActions={() => (
               <SwipeableButton
                 backgroundColor="red"
-                onPress={() => onDeleteDevice(device)}>
+                onPress={() => onByeClick(device.id)}>
                 <Bye width={44} height={38} />
               </SwipeableButton>
             )}
@@ -86,13 +87,27 @@ const DeviceSettingList = ({
                   name: device.name,
                 });
               }}>
-              <DeviceSettingListItem device={device} />
+              <DeviceManagementItem device={device} />
             </ListItem>
           </Swipeable>
         ))}
+        <ListItem
+          onPress={() => navigation.navigate("BleRootStackNav")}
+          style={{ justifyContent: "center" }}
+          showIcon={false}>
+          <Plus width={14} height={14} />
+        </ListItem>
       </ScrollView>
+      <Modal {...modalProps({ type: "center" })}>
+        <CommonCenterModal
+          close={close}
+          title="삭제하시나요?"
+          rightButtonText="삭제"
+          onRightButtonPress={() => deleteDevice(id)}
+        />
+      </Modal>
     </>
   );
 };
 
-export default DeviceSettingList;
+export default DeviceManagement;

@@ -4,7 +4,6 @@ import MyText from "~/components/common/MyText";
 import styled from "styled-components/native";
 
 import Setting from "~/assets/svg/myPage/setting.svg";
-import Plus from "~/assets/svg/myPage/circle-plus.svg";
 import Bell from "~/assets/svg/myPage/bell.svg";
 import Arrow from "~/assets/svg/arrow/arrow-right-gray.svg";
 import Tag from "~/assets/svg/myPage/name-tag.svg";
@@ -72,31 +71,19 @@ const MyPage = ({ navigation }: { navigation: MyPageScreenNavigationProp }) => {
         <Button
           disabled={!deviceList?.length}
           onPress={() => {
-            navigation.navigate("DeviceSettingList");
+            navigation.navigate("DeviceManagement");
           }}>
           <RowContainer style={{ opacity: !deviceList?.length ? 0.2 : 1 }}>
             <SvgContainer>
               <Setting width={19} height={20} />
             </SvgContainer>
-            <MyText>기기설정</MyText>
+            <MyText>기기관리</MyText>
           </RowContainer>
           <Arrow
             width={7}
             height={12}
             style={{ opacity: !deviceList?.length ? 0.5 : 1 }}
           />
-        </Button>
-        <Button
-          onPress={() => {
-            navigation.navigate("BleRootStackNav");
-          }}>
-          <RowContainer>
-            <SvgContainer>
-              <Plus width={17} height={18} />
-            </SvgContainer>
-            <MyText>기기등록</MyText>
-          </RowContainer>
-          <Arrow width={7} height={12} />
         </Button>
         <Button
           onPress={() => {

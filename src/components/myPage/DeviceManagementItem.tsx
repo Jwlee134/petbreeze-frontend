@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import styled from "styled-components/native";
 import { Device } from "~/api/device";
 import { noName } from "~/constants";
@@ -11,7 +11,7 @@ const RowContainer = styled.View`
   align-items: center;
 `;
 
-const DeviceSettingListItem = ({ device }: { device: Device }) => (
+const DeviceManagementItem = ({ device }: { device: Device }) => (
   <RowContainer
     style={{
       flexGrow: 1,
@@ -25,12 +25,7 @@ const DeviceSettingListItem = ({ device }: { device: Device }) => (
         battery={device.battery}
         avatar={device.profile_image}
       />
-      <MyText
-        style={{
-          marginLeft: 26,
-          marginRight: 13,
-        }}
-        fontWeight="medium">
+      <MyText style={{ marginLeft: 26, marginRight: 13 }} fontWeight="medium">
         {device.name || noName}
       </MyText>
       <MyText color={palette.blue_7b} fontSize={14}>
@@ -40,4 +35,4 @@ const DeviceSettingListItem = ({ device }: { device: Device }) => (
   </RowContainer>
 );
 
-export default React.memo(DeviceSettingListItem);
+export default memo(DeviceManagementItem);

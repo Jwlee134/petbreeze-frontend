@@ -1,11 +1,10 @@
 import React, { ReactNode } from "react";
-import { TouchableOpacityProps } from "react-native";
+import { TouchableOpacityProps, View } from "react-native";
 import styled from "styled-components/native";
 
 import RightArrow from "~/assets/svg/arrow/arrow-right-blue.svg";
 import RightArrowGray from "~/assets/svg/arrow/arrow-right-gray.svg";
 import CheckCircle from "./CheckCircle";
-import Dissolve from "./Dissolve";
 
 interface Props extends TouchableOpacityProps {
   selected?: boolean;
@@ -34,19 +33,20 @@ const ListItem = ({
 }: Props) => (
   <Container activeOpacity={1} {...props}>
     {children}
-    <Dissolve
-      style={{
-        width: !isIconArrow ? 25 : 7,
-      }}
-      isVisible={showIcon}>
-      {!isIconArrow ? (
-        <CheckCircle selected={selected} />
-      ) : isGrayArrow ? (
-        <RightArrowGray width={7} height={12} />
-      ) : (
-        <RightArrow width={7} height={12} />
-      )}
-    </Dissolve>
+    {showIcon && (
+      <View
+        style={{
+          width: !isIconArrow ? 25 : 7,
+        }}>
+        {!isIconArrow ? (
+          <CheckCircle selected={selected} />
+        ) : isGrayArrow ? (
+          <RightArrowGray width={7} height={12} />
+        ) : (
+          <RightArrow width={7} height={12} />
+        )}
+      </View>
+    )}
   </Container>
 );
 

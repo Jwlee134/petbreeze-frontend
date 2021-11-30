@@ -10,7 +10,7 @@ import CustomHeader from "~/components/navigator/CustomHeader";
 import DeviceSetting from "~/screens/sharedStackNav/DeviceSetting";
 import MyPage from "~/screens/sharedStackNav/MyPage";
 import WalkDetailMonth from "~/screens/sharedStackNav/WalkDetailMonth";
-import DeviceSettingList from "~/screens/sharedStackNav/DeviceSettingList";
+import DeviceManagement from "~/screens/sharedStackNav/DeviceManagement";
 import NotificationSetting from "~/screens/sharedStackNav/NotificationSetting";
 import UpdateNickname from "~/screens/sharedStackNav/UpdateNickname";
 
@@ -93,8 +93,8 @@ const SharedStackNav = ({ screenName }: { screenName: string }) => {
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="DeviceSettingList"
-        component={DeviceSettingList}
+        name="DeviceManagement"
+        component={DeviceManagement}
         options={{ headerShown: false }}
       />
       <Stack.Screen
