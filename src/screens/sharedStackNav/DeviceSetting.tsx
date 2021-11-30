@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import {
   ActivityIndicator,
   TouchableOpacity,
@@ -11,7 +11,6 @@ import SafetyZone from "~/components/myPage/SafetyZone";
 import Divider from "~/components/common/Divider";
 import CustomHeader from "~/components/navigator/CustomHeader";
 import palette from "~/styles/palette";
-import WiFi from "~/components/myPage/WiFi";
 import ProfileSection from "~/components/myPage/ProfileSection";
 import Family from "~/components/myPage/Family";
 import { DeviceSettingScreenProps } from "~/types/navigator";
@@ -29,7 +28,6 @@ const DeviceSetting = ({
     params: { deviceID, avatar, name },
   },
 }: DeviceSettingScreenProps) => {
-  const [isEdit, setIsEdit] = useState(false);
   const timeout = useRef<NodeJS.Timeout>();
   const dispatch = useDispatch();
 
@@ -62,9 +60,9 @@ const DeviceSetting = ({
   // 마운트 시 스토어에 response 저장
   useEffect(() => {
     if (!settings) return;
-    const {
+    /* const {
       wifi: { result: wifi },
-    } = store.getState().deviceSetting;
+    } = store.getState().deviceSetting; */
     if (settings.Period) {
       dispatch(deviceSettingActions.setPeriod(settings.Period));
     }
@@ -75,7 +73,7 @@ const DeviceSetting = ({
         }),
       );
     }
-    if (settings.WiFi.length) {
+    /* if (settings.WiFi.length) {
       const format = wifi.map(wifi => {
         const index = settings.WiFi.findIndex(
           wifiRes => wifiRes.wifi_id === wifi.wifi_id,
@@ -86,7 +84,7 @@ const DeviceSetting = ({
         return settings.WiFi[index];
       });
       dispatch(deviceSettingActions.setWifi({ result: format }));
-    }
+    } */
   }, [settings]);
 
   const handleSubmit = async () => {
@@ -94,7 +92,7 @@ const DeviceSetting = ({
     const {
       period,
       safetyZone: { result: safetyZone },
-      wifi: { result: wifi },
+      /* wifi: { result: wifi }, */
     } = store.getState().deviceSetting;
 
     // 변경사항 없는데 put 요청 방지
@@ -110,7 +108,6 @@ const DeviceSetting = ({
         return currentArea.thumbnail === area.thumbnail;
       })
     ) {
-      setIsEdit(false);
       return;
     }
 
@@ -126,7 +123,7 @@ const DeviceSetting = ({
         body: {
           Area: areaWithoutImage,
           Period: period as number,
-          WiFi: wifi,
+          /* WiFi: wifi, */
         },
       }).unwrap();
     } catch {
@@ -145,23 +142,7 @@ const DeviceSetting = ({
       const formData = imageHandler.handleFormData(areaImages, generateKey);
       try {
         await updateSafetyZoneThumbnail({ deviceID, body: formData }).unwrap();
-      } catch {
-        return;
-      }
-    }
-
-    setIsEdit(false);
-  };
-
-  const onEditButtonPress = () => {
-    if (!isEdit) {
-      setIsEdit(true);
-      dispatch(commonActions.setAnimateSwipeable(true));
-      timeout.current = setTimeout(() => {
-        dispatch(commonActions.setAnimateSwipeable(false));
-      }, 1800);
-    } else {
-      handleSubmit();
+      } catch {}
     }
   };
 
@@ -177,13 +158,11 @@ const DeviceSetting = ({
     <>
       <CustomHeader
         RightButton={() => (
-          <TouchableOpacity onPress={onEditButtonPress}>
+          <TouchableOpacity onPress={handleSubmit}>
             {isLoading ? (
               <ActivityIndicator color={palette.blue_7b} size={16} />
             ) : (
-              <MyText color={palette.blue_7b}>
-                {!isEdit ? "편집" : "완료"}
-              </MyText>
+              <MyText color={palette.blue_7b}>완료</MyText>
             )}
           </TouchableOpacity>
         )}
@@ -201,15 +180,11 @@ const DeviceSetting = ({
         <View style={{ paddingHorizontal: 16 }}>
           <Divider />
         </View>
-        <SafetyZone isEdit={isEdit} />
+        <SafetyZone />
         <View style={{ paddingHorizontal: 16 }}>
           <Divider />
         </View>
-        <WiFi isEdit={isEdit} />
-        <View style={{ paddingHorizontal: 16 }}>
-          <Divider />
-        </View>
-        <Family isEdit={isEdit} deviceID={deviceID} />
+        <Family deviceID={deviceID} />
       </ScrollView>
     </>
   );

@@ -1,5 +1,5 @@
-import React, { useContext, useMemo } from "react";
-import styled, { css } from "styled-components/native";
+import React, { useMemo } from "react";
+import styled from "styled-components/native";
 import MyText from "../common/MyText";
 
 import Swipeable from "../common/Swipeable";
@@ -11,7 +11,6 @@ import { useDispatch } from "react-redux";
 import { DeviceSettingScreenNavigationProp } from "~/types/navigator";
 import { useAppSelector } from "~/store";
 import { deviceSettingActions } from "~/store/deviceSetting";
-import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
 import SwipeableButton from "~/components/common/SwipeableButton";
 import Animated, {
   useAnimatedStyle,
@@ -27,28 +26,25 @@ const RowContainer = styled.View`
   width: 100%;
 `;
 
-const Image = styled.Image<{ rpWidth: RpWidth }>`
-  ${({ rpWidth }) => css`
-    width: ${rpWidth(70)}px;
-    height: ${rpWidth(70)}px;
-    border-radius: ${rpWidth(70)}px;
-    margin-right: ${rpWidth(19)}px;
-  `}
+const Image = styled.Image`
+  width: 70px;
+  height: 70px;
+  border-radius: 70px;
+  margin-right: 19px;
 `;
 
-const TextContainer = styled.View<{ rpWidth: RpWidth }>`
+const TextContainer = styled.View`
   flex-shrink: 1;
-  padding-right: ${({ rpWidth }) => rpWidth(32)}px;
+  padding-right: 32px;
 `;
 
-const SafetyZone = ({ isEdit }: { isEdit: boolean }) => {
+const SafetyZone = () => {
   const navigation = useNavigation<DeviceSettingScreenNavigationProp>();
   const dispatch = useDispatch();
   const result = useAppSelector(state => state.deviceSetting.safetyZone.result);
-  const { rpWidth } = useContext(DimensionsContext);
 
-  const itemHeight = rpWidth(99);
-  const listPaddingBottom = rpWidth(35);
+  const itemHeight = 99;
+  const listPaddingBottom = 35;
 
   const height = useMemo(() => {
     return result.filter(item => item.name).length
@@ -70,8 +66,6 @@ const SafetyZone = ({ isEdit }: { isEdit: boolean }) => {
   return (
     <>
       <DeviceSettingTitle
-        isEdit={isEdit}
-        disableArrowButton
         type="safetyZone"
         disablePlusButton={result.filter(item => item.name).length > 2}
         onPlusButtonClick={() => {
@@ -111,14 +105,13 @@ const SafetyZone = ({ isEdit }: { isEdit: boolean }) => {
                     onPress={() => {
                       dispatch(deviceSettingActions.deleteSafetyZone(id));
                     }}>
-                    <Trashcan width={rpWidth(22)} height={rpWidth(24)} />
+                    <Trashcan width={22} height={24} />
                   </SwipeableButton>
                 )}
-                enableRightActions={isEdit}>
+                enableRightActions>
                 <ListItem
-                  style={{ paddingRight: rpWidth(36) }}
+                  style={{ paddingRight: 36 }}
                   onPress={() => {
-                    if (!isEdit) return;
                     dispatch(
                       deviceSettingActions.setSafetyZone({
                         draft: {
@@ -138,21 +131,17 @@ const SafetyZone = ({ isEdit }: { isEdit: boolean }) => {
                       initialRouteName: "BleWithoutHeaderStackNav",
                       initialBleWithoutHeaderStackNavRouteName: "SafetyZone",
                     });
-                  }}
-                  showIcon={isEdit}>
+                  }}>
                   <RowContainer>
-                    <Image
-                      rpWidth={rpWidth}
-                      source={thumbnail ? { uri: thumbnail } : noAvatar}
-                    />
-                    <TextContainer rpWidth={rpWidth}>
+                    <Image source={thumbnail ? { uri: thumbnail } : noAvatar} />
+                    <TextContainer>
                       <MyText
                         numberOfLines={1}
-                        fontSize={rpWidth(12)}
+                        fontSize={12}
                         color="rgba(0, 0, 0, 0.3)">
                         {address || "주소 없음"}
                       </MyText>
-                      <RowContainer style={{ marginTop: rpWidth(10) }}>
+                      <RowContainer style={{ marginTop: 10 }}>
                         <MyText
                           color="rgba(0, 0, 0, 0.7)"
                           numberOfLines={1}

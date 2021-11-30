@@ -1,9 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withTiming,
-} from "react-native-reanimated";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components/native";
 import deviceApi from "~/api/device";
 import MyText from "~/components/common/MyText";
@@ -30,13 +25,7 @@ const Li = styled.View`
   align-items: center;
 `;
 
-const Family = ({
-  isEdit,
-  deviceID,
-}: {
-  isEdit: boolean;
-  deviceID: number;
-}) => {
+const Family = ({ deviceID }: { deviceID: number }) => {
   const { data } = deviceApi.useGetDeviceMembersQuery(deviceID, {
     refetchOnMountOrArgChange: true,
   });
@@ -50,91 +39,56 @@ const Family = ({
     });
   }, []);
 
-  const [showList, setShowList] = useState(false);
-
-  useEffect(() => {
-    if (isEdit) setShowList(true);
-  }, [isEdit]);
-
-  const height = useMemo(() => {
-    return showList && data ? data.members.length * 49 : 1;
-  }, [showList, data]);
-
-  const heightValue = useSharedValue(height);
-
-  const animatedStyle = useAnimatedStyle(() => {
-    heightValue.value = height;
-    return {
-      height: withTiming(heightValue.value, {
-        duration: 200,
-      }),
-    };
-  }, [height]);
-
   return (
     <>
-      <DeviceSettingTitle
-        type="family"
-        isEdit={isEdit}
-        showList={showList}
-        disablePlusButton
-        disableArrowButton={!data?.members.length}
-        onArrowButtonClick={() => {
-          setShowList(!showList);
-        }}
-      />
-      <Animated.View style={[{ overflow: "hidden" }, animatedStyle]}>
-        {data?.members.map((member, i) => (
-          <Animated.View key={`${member.id}-${i}`}>
-            <Swipeable
-              rightThreshold={36}
-              enableRightActions
-              RenderRightActions={() =>
-                myID === member.id || myID !== data?.owner_id ? (
-                  <></>
+      <DeviceSettingTitle type="family" disablePlusButton />
+      {data?.members.map(member => (
+        <Swipeable
+          key={member.id}
+          rightThreshold={36}
+          enableRightActions
+          RenderRightActions={() =>
+            myID === member.id || myID !== data?.owner_id ? (
+              <></>
+            ) : (
+              <>
+                <SwipeableButton
+                  backgroundColor="red"
+                  onPress={() => {
+                    deleteMember({ deviceID, userID: member.id });
+                  }}>
+                  <Bye width={37} height={32} />
+                </SwipeableButton>
+                <SwipeableButton
+                  backgroundColor="blue"
+                  onPress={() => {
+                    updateOwner({ deviceID, userID: member.id });
+                  }}>
+                  <KeyWhite width={22} height={22} />
+                </SwipeableButton>
+              </>
+            )
+          }>
+          <Item>
+            <Li>
+              <MyText style={{ marginHorizontal: 12 }}>
+                {data?.owner_id === member.id ? (
+                  <KeyBlue width={19} height={19} />
                 ) : (
-                  <>
-                    <SwipeableButton
-                      backgroundColor="red"
-                      onPress={() => {
-                        deleteMember({ deviceID, userID: member.id });
-                      }}>
-                      <Bye width={37} height={32} />
-                    </SwipeableButton>
-                    <SwipeableButton
-                      backgroundColor="blue"
-                      onPress={() => {
-                        updateOwner({ deviceID, userID: member.id });
-                      }}>
-                      <KeyWhite width={22} height={22} />
-                    </SwipeableButton>
-                  </>
-                )
+                  "•"
+                )}
+              </MyText>
+            </Li>
+            <MyText
+              color={
+                data?.owner_id === member.id ? palette.blue_7b_90 : undefined
               }>
-              <Item>
-                <Li>
-                  <MyText style={{ marginHorizontal: 12 }}>
-                    {data?.owner_id === member.id ? (
-                      <KeyBlue width={19} height={19} />
-                    ) : (
-                      "•"
-                    )}
-                  </MyText>
-                </Li>
-                <MyText
-                  color={
-                    data?.owner_id === member.id
-                      ? palette.blue_7b_90
-                      : undefined
-                  }>
-                  {member.nickname}
-                  {myID === member.id && " (나)"}
-                </MyText>
-              </Item>
-            </Swipeable>
-          </Animated.View>
-        ))}
-      </Animated.View>
+              {member.nickname}
+              {myID === member.id && " (나)"}
+            </MyText>
+          </Item>
+        </Swipeable>
+      ))}
     </>
   );
 };
