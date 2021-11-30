@@ -19,7 +19,7 @@ import UpdateProfile from "~/screens/loggedInNav/UpdateProfile";
 import EmergencyMissingStackNav from "./EmergencyMissingStackNav";
 import BleRootStackNav from "./BleRootStackNav";
 import UpdateWiFi from "~/screens/loggedInNav/UpdateWiFi";
-import BatteryAlert from "~/screens/loggedInNav/BattteryAlert";
+import BatteryAlert from "~/screens/loggedInNav/BatteryAlert";
 import DeleteAccountStackNav from "./DeleteAccountStackNav";
 import WalkContextProvider from "~/context/WalkContext";
 import CodePush from "react-native-code-push";

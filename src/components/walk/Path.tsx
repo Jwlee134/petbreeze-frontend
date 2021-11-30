@@ -50,10 +50,7 @@ const Path = ({ isStopped }: { isStopped: boolean }) => {
             image={require("~/assets/image/footprint-marker.png")}
             width={41}
             height={57}
-            anchor={{
-              x: 0.5,
-              y: 0.96,
-            }}
+            anchor={{ x: 0.5, y: 0.96 }}
           />
         ) : (
           <>
@@ -63,10 +60,7 @@ const Path = ({ isStopped }: { isStopped: boolean }) => {
                 image={require("~/assets/image/walk/walk-start.png")}
                 width={22}
                 height={22}
-                anchor={{
-                  x: 0.5,
-                  y: 0.5,
-                }}
+                anchor={{ x: 0.5, y: 0.5 }}
               />
             ) : null}
             <Marker
@@ -77,10 +71,7 @@ const Path = ({ isStopped }: { isStopped: boolean }) => {
               image={require("~/assets/image/walk/walk-end.png")}
               width={22}
               height={22}
-              anchor={{
-                x: 0.5,
-                y: 0.5,
-              }}
+              anchor={{ x: 0.5, y: 0.5 }}
             />
           </>
         )}

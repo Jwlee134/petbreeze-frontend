@@ -22,9 +22,7 @@ const FirstIntro = () => {
             fontWeight="bold"
             fontSize={24}
             color="white"
-            style={{
-              marginBottom: rpHeight(53),
-            }}>
+            style={{ marginBottom: rpHeight(53) }}>
             가까이 있는 문제입니다.
           </MyText>
           <MyText fontSize={16} color="white" style={{ opacity: 0.7 }}>

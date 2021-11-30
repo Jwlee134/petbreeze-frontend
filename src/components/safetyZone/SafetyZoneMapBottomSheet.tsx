@@ -65,9 +65,17 @@ const SafetyZoneMapBottomSheet = ({
   const { bottom } = useSafeAreaInsets();
 
   const handleFinish = () => {
+    dispatch(deviceSettingActions.setSafetyZone({ isSubmitting: true }));
+  };
+
+  const onNameChange = (text: string) => {
+    dispatch(deviceSettingActions.setSafetyZone({ draft: { name: text } }));
+  };
+
+  const onValueChange = (value: string, index: number) => {
     dispatch(
       deviceSettingActions.setSafetyZone({
-        isSubmitting: true,
+        draft: { radius: parseInt(data[index], 10) },
       }),
     );
   };
@@ -94,26 +102,14 @@ const SafetyZoneMapBottomSheet = ({
             <Input
               value={name}
               placeholder="안심존 이름"
-              onChangeText={text =>
-                dispatch(
-                  deviceSettingActions.setSafetyZone({
-                    draft: { name: text },
-                  }),
-                )
-              }
+              onChangeText={onNameChange}
             />
           </InputContainer>
           <InputContainer style={{ alignItems: "center" }}>
             <ScrollPicker
               data={data}
               selectedIndex={data.findIndex(item => item === `${radius}m`)}
-              onValueChange={(value, index) =>
-                dispatch(
-                  deviceSettingActions.setSafetyZone({
-                    draft: { radius: parseInt(data[index], 10) },
-                  }),
-                )
-              }
+              onValueChange={onValueChange}
               width={88}
               height={39}
             />

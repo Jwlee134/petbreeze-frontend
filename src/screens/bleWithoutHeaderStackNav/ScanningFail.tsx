@@ -30,6 +30,21 @@ const ScanningFail = ({
   const { top } = useSafeAreaInsets();
   const dispatch = useDispatch();
 
+  const onRetryPress = () => {
+    navigation.replace("Scanning");
+    dispatch(bleActions.setStatus("scanning"));
+  };
+
+  const onAbortPress = () => {
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    } else {
+      navigation.replace("BleWithHeaderStackNav", {
+        initialRouteName: "DeviceCheck",
+      });
+    }
+  };
+
   return (
     <GradientContainer>
       <TopContainer>
@@ -62,10 +77,7 @@ const ScanningFail = ({
         </View>
         <View>
           <Button
-            onPress={() => {
-              navigation.replace("Scanning");
-              dispatch(bleActions.setStatus("scanning"));
-            }}
+            onPress={onRetryPress}
             backgroundColor="rgba(255, 255, 255, 0.3)"
             style={{
               marginBottom: 12,
@@ -73,15 +85,7 @@ const ScanningFail = ({
             다시 시도
           </Button>
           <Button
-            onPress={() => {
-              if (navigation.canGoBack()) {
-                navigation.goBack();
-              } else {
-                navigation.replace("BleWithHeaderStackNav", {
-                  initialRouteName: "DeviceCheck",
-                });
-              }
-            }}
+            onPress={onAbortPress}
             useCommonMarginBottom
             useBottomInset
             backgroundColor="transparent"

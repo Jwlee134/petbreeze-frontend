@@ -18,6 +18,8 @@ const UpdateNickname = () => {
 
   const [name, setName] = useState("");
 
+  const onNameChange = (text: string) => setName(text);
+
   const value = useDebounce(name, 500);
 
   useEffect(() => {
@@ -46,7 +48,7 @@ const UpdateNickname = () => {
           maxLength={32}
           value={name}
           textAlign="center"
-          onChangeText={text => setName(text)}
+          onChangeText={onNameChange}
         />
         <MyText
           fontSize={12}

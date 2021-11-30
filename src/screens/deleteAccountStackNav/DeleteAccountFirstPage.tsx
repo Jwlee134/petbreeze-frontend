@@ -40,6 +40,28 @@ const DeleteAccountFirstPage = ({
   const { body, text } = useAppSelector(state => state.common.deleteAccount);
   const dispatch = useDispatch();
 
+  const onReasonClick = (i: number) => {
+    if (body.includes(i)) {
+      dispatch(
+        commonActions.setDeleteAccount({ body: body.filter(num => num !== i) }),
+      );
+    } else {
+      dispatch(commonActions.setDeleteAccount({ body: [...body, i] }));
+    }
+  };
+
+  const onChangeText = (text: string) => {
+    dispatch(commonActions.setDeleteAccount({ text }));
+  };
+
+  const onPress = () => {
+    if (text) {
+      const filtered = body.filter(item => typeof item === "number");
+      dispatch(commonActions.setDeleteAccount({ body: [...filtered, text] }));
+    }
+    navigation.navigate("DeleteAccountSecondPage");
+  };
+
   return (
     <KeyboardAwareScrollContainer isSpaceBetween>
       <View>
@@ -49,21 +71,7 @@ const DeleteAccountFirstPage = ({
             style={{
               ...(i === reasons.length - 1 && { marginBottom: 13.5 }),
             }}
-            onPress={() => {
-              if (body.includes(i)) {
-                dispatch(
-                  commonActions.setDeleteAccount({
-                    body: body.filter(num => num !== i),
-                  }),
-                );
-              } else {
-                dispatch(
-                  commonActions.setDeleteAccount({
-                    body: [...body, i],
-                  }),
-                );
-              }
-            }}>
+            onPress={() => onReasonClick(i)}>
             <MyText>{reason}</MyText>
             <CheckCircle selected={body.includes(i)} />
           </Item>
@@ -71,13 +79,7 @@ const DeleteAccountFirstPage = ({
         <InputContainer>
           <Input
             value={text}
-            onChangeText={text => {
-              dispatch(
-                commonActions.setDeleteAccount({
-                  text,
-                }),
-              );
-            }}
+            onChangeText={onChangeText}
             placeholder="직접 입력"
             multiline
             scrollEnabled={false}
@@ -92,17 +94,7 @@ const DeleteAccountFirstPage = ({
         style={{ marginTop: minSpace }}
         useCommonMarginBottom
         disabled={!body.length && !text}
-        onPress={() => {
-          if (text) {
-            const filtered = body.filter(item => typeof item === "number");
-            dispatch(
-              commonActions.setDeleteAccount({
-                body: [...filtered, text],
-              }),
-            );
-          }
-          navigation.navigate("DeleteAccountSecondPage");
-        }}>
+        onPress={onPress}>
         다음
       </Button>
     </KeyboardAwareScrollContainer>

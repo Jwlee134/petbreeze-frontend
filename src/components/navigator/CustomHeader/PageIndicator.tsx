@@ -38,10 +38,7 @@ const PageIndicator = ({
   });
 
   return (
-    <PageBarBackground
-      style={{
-        backgroundColor: "rgba(0, 0, 0, 0.1)",
-      }}>
+    <PageBarBackground style={{ backgroundColor: "rgba(0, 0, 0, 0.1)" }}>
       <PageBar style={{ width: widthInterpolate }} />
     </PageBarBackground>
   );

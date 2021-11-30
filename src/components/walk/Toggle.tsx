@@ -3,9 +3,7 @@ import { useDispatch } from "react-redux";
 import styled from "styled-components/native";
 import { storageActions } from "~/store/storage";
 import palette from "~/styles/palette";
-
 import { useAppSelector } from "~/store";
-
 import Camera from "~/assets/svg/walk/camera.svg";
 import Play from "~/assets/svg/walk/play.svg";
 import Pause from "~/assets/svg/walk/pause.svg";
@@ -63,8 +61,7 @@ const Toggle = () => {
   const isWalking = useAppSelector(state => state.storage.walk.isWalking);
   const dispatch = useDispatch();
   const { open, close, modalProps } = useModal();
-  const [stopWalking] = deviceApi.useStopWalkingMutation();
-  const [loading, setLoading] = useState(false);
+  const [stopWalking, { isLoading }] = deviceApi.useStopWalkingMutation();
 
   const pause = () => {
     dispatch(
@@ -76,16 +73,62 @@ const Toggle = () => {
   };
 
   const resume = () => {
-    dispatch(
-      storageActions.setWalk({
-        isWalking: true,
-      }),
-    );
+    dispatch(storageActions.setWalk({ isWalking: true }));
     dispatch(
       storageActions.setTotalPauseDuration(
         Math.floor((Date.now() - new Date(currentPauseTime).getTime()) / 1000),
       ),
     );
+  };
+
+  const onLeftButtonPress = () => {
+    if (isWalking) pause();
+    else open();
+  };
+
+  const onCenterButtonPress = () => {
+    if (isWalking) {
+      pause();
+      open();
+    } else resume();
+  };
+
+  const onCameraPress = () => {
+    permissionCheck.camera().then(() => {
+      permissionCheck.library().then(() => {
+        ImageCropPicker.openCamera({}).then(image => {
+          CameraRoll.save(image.path, { album: "펫브리즈" }).then(() => {
+            ImageCropPicker.cleanSingle(image.path);
+          });
+        });
+      });
+    });
+  };
+
+  const onModalClose = () => {
+    close();
+    resume();
+  };
+
+  const onFinishWalking = async () => {
+    if (isLoading) return;
+    if (duration < 60) {
+      await allSettled(selectedID.map(id => stopWalking(id).unwrap()));
+      setTimeout(() => {
+        dispatch(storageActions.setWalk(null));
+      }, 200);
+      navigation.replace("BottomTabNav", {
+        initialRouteName: "WalkTab",
+      });
+    } else {
+      dispatch(
+        storageActions.setWalk({
+          isStopped: true,
+          sheetIndex: 0,
+        }),
+      );
+    }
+    close();
   };
 
   return (
@@ -95,14 +138,7 @@ const Toggle = () => {
           distance={12}
           startColor="rgba(0, 0, 0, 0.05)"
           viewStyle={{ borderRadius: 35.5 }}>
-          <SmallButton
-            onPress={() => {
-              if (isWalking) {
-                pause();
-              } else {
-                open();
-              }
-            }}>
+          <SmallButton onPress={onLeftButtonPress}>
             {isWalking ? (
               <Pause width={17} height={21} />
             ) : (
@@ -114,15 +150,7 @@ const Toggle = () => {
           distance={12}
           startColor="rgba(0, 0, 0, 0.05)"
           viewStyle={{ borderRadius: 44.5 }}>
-          <Button
-            onPress={() => {
-              if (isWalking) {
-                pause();
-                open();
-              } else {
-                resume();
-              }
-            }}>
+          <Button onPress={onCenterButtonPress}>
             {isWalking ? (
               <StopFill width={35} height={35} />
             ) : (
@@ -134,60 +162,21 @@ const Toggle = () => {
           distance={12}
           startColor="rgba(0, 0, 0, 0.05)"
           viewStyle={{ borderRadius: 35.5 }}>
-          <SmallButton
-            onPress={() => {
-              permissionCheck.camera().then(() => {
-                permissionCheck.library().then(() => {
-                  ImageCropPicker.openCamera({}).then(image => {
-                    CameraRoll.save(image.path, { album: "펫브리즈" }).then(
-                      () => {
-                        ImageCropPicker.cleanSingle(image.path);
-                      },
-                    );
-                  });
-                });
-              });
-            }}>
+          <SmallButton onPress={onCameraPress}>
             <Camera width={30} height={30} />
           </SmallButton>
         </Shadow>
       </RowContainer>
       <Modal {...modalProps({ type: "center" })}>
         <CommonCenterModal
-          close={() => {
-            close();
-            resume();
-          }}
-          rightButtonText={loading ? <ActivityIndicator /> : "종료"}
+          close={onModalClose}
+          rightButtonText={isLoading ? <ActivityIndicator /> : "종료"}
           title={
             duration < 60
               ? `1분 미만의 산책은\n기록되지 않습니다.\n산책을 종료할까요?`
               : "산책을 종료할까요?"
           }
-          onRightButtonPress={async () => {
-            if (loading) return;
-            if (duration < 60) {
-              setLoading(true);
-              await allSettled(selectedID.map(id => stopWalking(id).unwrap()));
-              setLoading(false);
-              setTimeout(() => {
-                dispatch(storageActions.setWalk(null));
-              }, 200);
-
-              navigation.replace("BottomTabNav", {
-                initialRouteName: "WalkTab",
-              });
-            } else {
-              dispatch(
-                storageActions.setWalk({
-                  isStopped: true,
-                  sheetIndex: 0,
-                }),
-              );
-            }
-
-            close();
-          }}
+          onRightButtonPress={onFinishWalking}
         />
       </Modal>
     </>

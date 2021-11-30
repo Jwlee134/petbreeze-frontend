@@ -23,29 +23,25 @@ const DeviceCheck = ({
 }: {
   navigation: DeviceCheckScreenNavigationProp;
 }) => {
+  const onNext = () => navigation.navigate("ChargingCheck");
+  const onSkip = () =>
+    navigation.replace("LoggedInNav", {
+      initialRouteName: "BottomTabNav",
+    });
+
   return (
     <SafeAreaContainer>
       <TopContainer>
         <Device width={100} height={156} />
-        <MyText
-          fontSize={24}
-          style={{
-            marginTop: 56,
-            textAlign: "center",
-          }}>
+        <MyText fontSize={24} style={{ marginTop: 56, textAlign: "center" }}>
           디바이스가{"\n"}
           있으신가요?
         </MyText>
       </TopContainer>
       <BottomContainer>
         <Button
-          style={{
-            marginTop: 50,
-            marginBottom: 12,
-          }}
-          onPress={() => {
-            navigation.navigate("ChargingCheck");
-          }}
+          style={{ marginTop: 50, marginBottom: 12 }}
+          onPress={onNext}
           delay={400}>
           네, 있습니다.
         </Button>
@@ -53,11 +49,7 @@ const DeviceCheck = ({
           backgroundColor="transparent"
           fontColor="rgba(0, 0, 0, 0.5)"
           useCommonMarginBottom
-          onPress={() => {
-            navigation.replace("LoggedInNav", {
-              initialRouteName: "BottomTabNav",
-            });
-          }}>
+          onPress={onSkip}>
           건너뛰기
         </Button>
       </BottomContainer>

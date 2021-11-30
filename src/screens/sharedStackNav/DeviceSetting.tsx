@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   TouchableOpacity,
@@ -6,24 +6,22 @@ import {
   ScrollView,
 } from "react-native";
 import MyText from "~/components/common/MyText";
-
 import Period from "~/components/myPage/deviceSetting/Period";
 import SafetyZone from "~/components/myPage/deviceSetting/SafetyZone";
-import { DeviceSettingScreenProps } from "~/types/navigator";
 import Divider from "~/components/common/Divider";
 import CustomHeader from "~/components/navigator/CustomHeader";
 import palette from "~/styles/palette";
 import WiFi from "~/components/myPage/deviceSetting/WiFi";
 import ProfileSection from "~/components/myPage/deviceSetting/ProfileSection";
-import { store } from "~/store";
-import { DimensionsContext } from "~/context/DimensionsContext";
-import deviceApi, { AreaResponse } from "~/api/device";
-import { useDispatch } from "react-redux";
-import { deviceSettingActions } from "~/store/deviceSetting";
 import Family from "~/components/myPage/deviceSetting/Family";
-import imageHandler from "~/utils/imageHandler";
-import { serverImageUri } from "~/constants";
+import { DeviceSettingScreenProps } from "~/types/navigator";
 import { commonActions } from "~/store/common";
+import { useDispatch } from "react-redux";
+import deviceApi, { AreaResponse } from "~/api/device";
+import { deviceSettingActions } from "~/store/deviceSetting";
+import { store } from "~/store";
+import { serverImageUri } from "~/constants";
+import imageHandler from "~/utils/imageHandler";
 
 const DeviceSetting = ({
   navigation,
@@ -31,8 +29,10 @@ const DeviceSetting = ({
     params: { deviceID, avatar, name },
   },
 }: DeviceSettingScreenProps) => {
-  const { rpWidth } = useContext(DimensionsContext);
   const [isEdit, setIsEdit] = useState(false);
+  const timeout = useRef<NodeJS.Timeout>();
+  const dispatch = useDispatch();
+
   const { data: settings } = deviceApi.useGetDeviceSettingQuery(deviceID, {
     refetchOnMountOrArgChange: true,
   });
@@ -40,11 +40,10 @@ const DeviceSetting = ({
     deviceApi.useUpdateDeviceSettingMutation();
   const [updateSafetyZoneThumbnail, { isLoading: updatingThumbnail }] =
     deviceApi.useUpdateSafetyZoneThumbnailMutation();
-  const dispatch = useDispatch();
-  const timeout = useRef<NodeJS.Timeout>();
 
   const isLoading = updatingDeviceSetting || updatingThumbnail;
 
+  // 스토어에는 id 0, 1, 2 전부 있는데 response에는 내용이 있는 id만 오므로 포맷
   const formatResponse = (res: AreaResponse[]) => {
     const {
       safetyZone: { result: safetyZone },
@@ -60,6 +59,7 @@ const DeviceSetting = ({
     });
   };
 
+  // 마운트 시 스토어에 response 저장
   useEffect(() => {
     if (!settings) return;
     const {
@@ -88,14 +88,6 @@ const DeviceSetting = ({
       dispatch(deviceSettingActions.setWifi({ result: format }));
     }
   }, [settings]);
-
-  useEffect(() => {
-    return () => {
-      dispatch(deviceSettingActions.resetResults());
-      if (timeout.current) clearTimeout(timeout.current);
-      dispatch(commonActions.setAnimateSwipeable(false));
-    };
-  }, []);
 
   const handleSubmit = async () => {
     if (isLoading || !settings) return;
@@ -161,24 +153,33 @@ const DeviceSetting = ({
     setIsEdit(false);
   };
 
+  const onEditButtonPress = () => {
+    if (!isEdit) {
+      setIsEdit(true);
+      dispatch(commonActions.setAnimateSwipeable(true));
+      timeout.current = setTimeout(() => {
+        dispatch(commonActions.setAnimateSwipeable(false));
+      }, 1800);
+    } else {
+      handleSubmit();
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      dispatch(deviceSettingActions.resetResults());
+      if (timeout.current) clearTimeout(timeout.current);
+      dispatch(commonActions.setAnimateSwipeable(false));
+    };
+  }, []);
+
   return (
     <>
       <CustomHeader
         RightButton={() => (
-          <TouchableOpacity
-            onPress={() => {
-              if (!isEdit) {
-                setIsEdit(true);
-                dispatch(commonActions.setAnimateSwipeable(true));
-                timeout.current = setTimeout(() => {
-                  dispatch(commonActions.setAnimateSwipeable(false));
-                }, 1800);
-              } else {
-                handleSubmit();
-              }
-            }}>
+          <TouchableOpacity onPress={onEditButtonPress}>
             {isLoading ? (
-              <ActivityIndicator color={palette.blue_7b} size={rpWidth(16)} />
+              <ActivityIndicator color={palette.blue_7b} size={16} />
             ) : (
               <MyText color={palette.blue_7b}>
                 {!isEdit ? "편집" : "완료"}
@@ -192,20 +193,20 @@ const DeviceSetting = ({
       <ScrollView
         contentContainerStyle={{
           flexGrow: 1,
-          paddingBottom: rpWidth(35),
+          paddingBottom: 35,
         }}>
         <ProfileSection deviceID={deviceID} avatar={avatar} name={name} />
         <Divider isHairline={false} />
         <Period deviceID={deviceID} />
-        <View style={{ paddingHorizontal: rpWidth(16) }}>
+        <View style={{ paddingHorizontal: 16 }}>
           <Divider />
         </View>
         <SafetyZone isEdit={isEdit} />
-        <View style={{ paddingHorizontal: rpWidth(16) }}>
+        <View style={{ paddingHorizontal: 16 }}>
           <Divider />
         </View>
         <WiFi isEdit={isEdit} />
-        <View style={{ paddingHorizontal: rpWidth(16) }}>
+        <View style={{ paddingHorizontal: 16 }}>
           <Divider />
         </View>
         <Family isEdit={isEdit} deviceID={deviceID} />

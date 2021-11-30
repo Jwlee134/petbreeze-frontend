@@ -35,6 +35,12 @@ const PreSafetyZone = ({
     secondDuration: 300,
   });
 
+  const onNext = () => {
+    navigation.navigate("BleWithoutHeaderStackNav", {
+      initialRouteName: "SafetyZone",
+    });
+  };
+
   return (
     <SafeAreaContainer>
       <TopContainer style={{ opacity: value1 }}>
@@ -58,14 +64,7 @@ const PreSafetyZone = ({
             마이페이지에서 3개까지 설정할 수 있습니다.
           </ParagraphWithCheckCircle>
         </DescriptionContainer>
-        <Button
-          delay={1300}
-          useCommonMarginBottom
-          onPress={() => {
-            navigation.navigate("BleWithoutHeaderStackNav", {
-              initialRouteName: "SafetyZone",
-            });
-          }}>
+        <Button delay={1300} useCommonMarginBottom onPress={onNext}>
           다음
         </Button>
       </BottomContainer>

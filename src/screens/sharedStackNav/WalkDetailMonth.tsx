@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components/native";
 import MyText from "~/components/common/MyText";
-import { WalkDetailMonthScreenProps } from "~/types/navigator";
 import palette from "~/styles/palette";
 import Divider from "~/components/common/Divider";
 import { CalendarList, LocaleConfig } from "react-native-calendars";
 import { days, months, noAvatar, noName } from "~/constants";
 import { formatWalkDistance, formatWalkTime, isAndroid } from "~/utils";
-import deviceApi from "~/api/device";
 import {
   ScrollView,
   StyleSheet,
@@ -16,6 +14,9 @@ import {
 } from "react-native";
 import Dissolve from "~/components/common/Dissolve";
 import Button from "~/components/common/Button";
+import { WalkDetailMonthScreenProps } from "~/types/navigator";
+import deviceApi from "~/api/device";
+import { DateData } from "react-native-calendars/src/types";
 
 const TopContainer = styled.View`
   align-items: center;
@@ -60,11 +61,14 @@ const WalkDetailMonth = ({
     params: { deviceID, avatarUrl, name },
   },
 }: WalkDetailMonthScreenProps) => {
+  const { width } = useWindowDimensions();
+
   const [date, setDate] = useState({
     year: new Date().getFullYear(),
     month: new Date().getMonth() + 1,
   });
   const [dateObj, setDateObj] = useState<DateObj>({});
+
   const { data } = deviceApi.useGetMonthlyWalkRecordQuery(
     {
       deviceID,
@@ -75,7 +79,6 @@ const WalkDetailMonth = ({
       refetchOnMountOrArgChange: true,
     },
   );
-  const { width } = useWindowDimensions();
 
   useEffect(() => {
     if (!data) return;
@@ -133,6 +136,34 @@ const WalkDetailMonth = ({
     setDateObj(obj);
   }, [data]);
 
+  const onMonthChange = (months: DateData[]) => {
+    setDate({ year: months[0].year, month: months[0].month });
+  };
+
+  const onDayPress = (day: DateData) => {
+    if (Object.keys(dateObj).some(date => date === day.dateString)) {
+      navigation.navigate("WalkDetailDay", {
+        deviceID,
+        avatarUrl,
+        date: new Date(day.dateString).toISOString(),
+      });
+    }
+  };
+
+  const onStartWalking = () => {
+    navigation.reset({
+      index: 0,
+      routes: [
+        {
+          name: "WalkTopTabNav",
+          params: {
+            initialStartWalkingParams: { preSelectedID: deviceID },
+          },
+        },
+      ],
+    });
+  };
+
   const isNoWalkRecordVisible =
     data !== undefined &&
     !data.day_count.length &&
@@ -151,18 +182,8 @@ const WalkDetailMonth = ({
       <View style={{ flexGrow: 1, paddingBottom: 30 }}>
         <CalendarList
           calendarWidth={width}
-          onVisibleMonthsChange={months => {
-            setDate({ year: months[0].year, month: months[0].month });
-          }}
-          onDayPress={day => {
-            if (Object.keys(dateObj).some(date => date === day.dateString)) {
-              navigation.navigate("WalkDetailDay", {
-                deviceID,
-                avatarUrl,
-                date: new Date(day.dateString).toISOString(),
-              });
-            }
-          }}
+          onVisibleMonthsChange={onMonthChange}
+          onDayPress={onDayPress}
           monthFormat="M월"
           pagingEnabled
           horizontal
@@ -229,21 +250,7 @@ const WalkDetailMonth = ({
         <Dissolve
           style={{ position: "absolute", alignSelf: "center", bottom: 84 }}
           isVisible={isNoWalkRecordVisible}>
-          <Button
-            onPress={() => {
-              navigation.reset({
-                index: 0,
-                routes: [
-                  {
-                    name: "WalkTopTabNav",
-                    params: {
-                      initialStartWalkingParams: { preSelectedID: deviceID },
-                    },
-                  },
-                ],
-              });
-            }}
-            style={{ width: 126 }}>
+          <Button onPress={onStartWalking} style={{ width: 126 }}>
             산책 시작
           </Button>
         </Dissolve>

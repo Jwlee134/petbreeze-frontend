@@ -8,14 +8,14 @@ import Trashcan from "~/assets/svg/trashcan/trashcan-red.svg";
 import Timer from "~/assets/svg/walk/timer.svg";
 import Path from "~/assets/svg/walk/path.svg";
 import Divider from "~/components/common/Divider";
-import deviceApi from "~/api/device";
 import { formatWalkDistance, formatWalkTime } from "~/utils";
 import { noAvatar, noName } from "~/constants";
 import Modal from "react-native-modal";
-import useModal from "~/hooks/useModal";
 import IosStyleBottomModal from "~/components/modal/IosStyleBottomModal";
-import { useDispatch } from "react-redux";
 import CustomHeader from "~/components/navigator/CustomHeader";
+import deviceApi from "~/api/device";
+import { useDispatch } from "react-redux";
+import useModal from "~/hooks/useModal";
 
 const Container = styled.View``;
 
@@ -65,8 +65,10 @@ const WalkDetailDay = ({
     params: { deviceID, date, avatarUrl },
   },
 }: WalkDetailDayScreenProps) => {
-  const dispatch = useDispatch();
   const { width } = useWindowDimensions();
+  const { open, close, modalProps } = useModal();
+  const dispatch = useDispatch();
+
   const { data } = deviceApi.useGetDailyWalkRecordQuery(
     {
       deviceID,
@@ -77,7 +79,6 @@ const WalkDetailDay = ({
     { refetchOnMountOrArgChange: true },
   );
   const [deleteWalk] = deviceApi.useDeleteWalkRecordMutation();
-  const { open, close, modalProps } = useModal();
   const [walkID, setWalkID] = useState(0);
 
   const formatPeriod = (from: string, duration: number) => {
@@ -93,14 +94,19 @@ const WalkDetailDay = ({
       .padStart(2, "0")}`;
   };
 
+  useEffect(() => {
+    dispatch(deviceApi.util.invalidateTags([{ type: "Walk", id: "MONTHLY" }]));
+  }, []);
+
   const deleteRecord = () => {
     close();
     deleteWalk({ deviceID, walkID, date });
   };
 
-  useEffect(() => {
-    dispatch(deviceApi.util.invalidateTags([{ type: "Walk", id: "MONTHLY" }]));
-  }, []);
+  const openModal = (id: number) => {
+    setWalkID(id);
+    open();
+  };
 
   return (
     <>
@@ -131,8 +137,7 @@ const WalkDetailDay = ({
                 </RowContainer>
                 <Delete
                   onPress={() => {
-                    setWalkID(item.id);
-                    open();
+                    openModal(item.id);
                   }}>
                   <Trashcan width={22} height={23} />
                 </Delete>

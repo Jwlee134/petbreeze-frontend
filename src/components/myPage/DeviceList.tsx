@@ -24,6 +24,16 @@ const DeviceList = ({ deviceList }: { deviceList: Device[] | undefined }) => {
   const navigation = useNavigation<MyPageScreenNavigationProp>();
   const { width } = useWindowDimensions();
 
+  const onDevicePress = (device: Device) => {
+    navigation.navigate("DeviceSetting", {
+      deviceID: device.id,
+      avatar: device.profile_image,
+      name: device.name,
+    });
+  };
+
+  const onRegister = () => navigation.navigate("BleRootStackNav");
+
   return (
     <View>
       {deviceList?.length ? (
@@ -47,13 +57,7 @@ const DeviceList = ({ deviceList }: { deviceList: Device[] | undefined }) => {
                 ...(i === 0 && { marginLeft: 0 }),
                 ...(i === deviceList?.length - 1 && { marginRight: 0 }),
               }}
-              onPress={() => {
-                navigation.navigate("DeviceSetting", {
-                  deviceID: device.id,
-                  avatar: device.profile_image,
-                  name: device.name,
-                });
-              }}
+              onPress={() => onDevicePress(device)}
               key={device.id}>
               <Image
                 source={
@@ -67,11 +71,7 @@ const DeviceList = ({ deviceList }: { deviceList: Device[] | undefined }) => {
           ))}
         </ScrollView>
       ) : (
-        <Button
-          onPress={() => {
-            navigation.navigate("BleRootStackNav");
-          }}
-          style={{ alignItems: "center" }}>
+        <Button onPress={onRegister} style={{ alignItems: "center" }}>
           <Image source={noAvatar} />
           <MyText fontWeight="light" color="rgba(0, 0, 0, 0.3)">
             디바이스를 등록해주세요.

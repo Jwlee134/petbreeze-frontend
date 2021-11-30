@@ -58,6 +58,34 @@ const EmergencyMissingFirstPage = ({
     new Date(lostMonth, lostDate, lostMinute, lostHour),
   );
 
+  const onPhoneNumberChange = (text: string) => {
+    dispatch(
+      formActions.setState({ phoneNumber: text.replace(/[^0-9]/g, "") }),
+    );
+  };
+
+  const onTagChange = (hasTag: boolean) => {
+    dispatch(formActions.setState({ hasTag }));
+  };
+
+  const onPlaceChange = (text: string) => {
+    dispatch(formActions.setState({ lostPlace: text }));
+  };
+
+  const onDateConfirm = () => {
+    dispatch(
+      formActions.setState({
+        lostMonth: date.getMonth() + 1,
+        lostDate: date.getDate(),
+        lostHour: date.getHours(),
+        lostMinute: date.getMinutes(),
+      }),
+    );
+    close();
+  };
+
+  const onNext = () => navigation.navigate("EmergencyMissingSecondPage");
+
   return (
     <>
       <KeyboardAwareScrollContainer isSpaceBetween>
@@ -77,26 +105,20 @@ const EmergencyMissingFirstPage = ({
               /(^02.{0}|^01.{1}|[0-9]{3})([0-9]+)([0-9]{4})/,
               "$1-$2-$3",
             )}
-            onChangeText={text =>
-              dispatch(
-                formActions.setState({
-                  phoneNumber: text.replace(/[^0-9]/g, ""),
-                }),
-              )
-            }
+            onChangeText={onPhoneNumberChange}
             keyboardType="number-pad"
           />
           <InputTitle>인식표 유무</InputTitle>
           <RowContainer>
             <SelectableButton
               selected={hasTag}
-              onPress={() => dispatch(formActions.setState({ hasTag: true }))}
+              onPress={() => onTagChange(true)}
               style={{ marginRight: 20 }}>
               유
             </SelectableButton>
             <SelectableButton
               selected={!hasTag}
-              onPress={() => dispatch(formActions.setState({ hasTag: false }))}>
+              onPress={() => onTagChange(false)}>
               무
             </SelectableButton>
           </RowContainer>
@@ -113,38 +135,20 @@ const EmergencyMissingFirstPage = ({
             maxLength={50}
             value={lostPlace}
             containerStyle={{ marginBottom: 50 }}
-            onChangeText={text =>
-              dispatch(
-                formActions.setState({
-                  lostPlace: text,
-                }),
-              )
-            }
+            onChangeText={onPlaceChange}
           />
         </PaddingContainer>
         <Button
           useCommonMarginBottom
           disabled={!phoneNumber || !lostMonth || !lostDate || !lostPlace}
-          onPress={() => {
-            navigation.navigate("EmergencyMissingSecondPage");
-          }}>
+          onPress={onNext}>
           다음
         </Button>
       </KeyboardAwareScrollContainer>
       <Modal {...modalProps({ type: "center" })}>
         <CommonCenterModal
           rightButtonText="확인"
-          onRightButtonPress={() => {
-            dispatch(
-              formActions.setState({
-                lostMonth: date.getMonth() + 1,
-                lostDate: date.getDate(),
-                lostHour: date.getHours(),
-                lostMinute: date.getMinutes(),
-              }),
-            );
-            close();
-          }}
+          onRightButtonPress={onDateConfirm}
           close={close}
           style={{ width: "auto" }}>
           <DatePicker

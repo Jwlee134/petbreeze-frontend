@@ -2,18 +2,18 @@ import React, { useContext } from "react";
 import Path from "~/components/walk/Path";
 import { useAppSelector } from "~/store";
 import WalkBottomSheet from "~/components/walk/WalkBottomSheet";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { StyleSheet } from "react-native";
 import MapButtons from "~/components/walk/MapButtons";
-import { customHeaderHeight } from "~/styles/constants";
 import WalkMapHeader from "~/components/walk/WalkMapHeader";
-import { WalkContext } from "~/context/WalkContext";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
+import { WalkContext } from "~/context/WalkContext";
 import { isIos } from "~/utils";
+import { customHeaderHeight } from "~/styles/constants";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const WalkMap = () => {
   const isStopped = useAppSelector(state => state.storage.walk.isStopped);

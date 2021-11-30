@@ -9,16 +9,15 @@ import MyText from "~/components/common/MyText";
 import { useAppSelector } from "~/store";
 import Plus from "~/assets/svg/plus/plus-blue.svg";
 import { TouchableOpacity, useWindowDimensions, View } from "react-native";
-import { EmergencyMissingSecondPageScreenNavigationProp } from "~/types/navigator";
 import imageHandler from "~/utils/imageHandler";
-import deviceApi from "~/api/device";
 import Modal from "react-native-modal";
 import useModal from "~/hooks/useModal";
 import IosStyleBottomModal from "~/components/modal/IosStyleBottomModal";
 import Divider from "~/components/common/Divider";
 import palette from "~/styles/palette";
 import { formActions } from "~/store/form";
-import permissionCheck from "~/utils/permissionCheck";
+import deviceApi from "~/api/device";
+import { EmergencyMissingSecondPageScreenNavigationProp } from "~/types/navigator";
 
 const PaddingContainer = styled.View`
   padding: 0 42px;
@@ -56,6 +55,20 @@ const EmergencyMissingSecondPage = ({
   deviceID: number;
   isModify: boolean | undefined;
 }) => {
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const { open, close, modalProps } = useModal();
+
+  const [register, { isLoading: loadingRegister }] =
+    deviceApi.usePostEmergencyMissingMutation();
+  const [updateAvatar, { isLoading: loadingAvatar }] =
+    deviceApi.useUpdateEmergencyMissingThumbnailMutation();
+  const [update, { isLoading: loadingUpdate }] =
+    deviceApi.useUpdateEmergencyMissingMutation();
+  const dispatch = useDispatch();
+
+  const isLoading = loadingRegister || loadingAvatar || loadingUpdate;
+  const { width } = useWindowDimensions();
+
   const {
     message,
     photos,
@@ -68,19 +81,8 @@ const EmergencyMissingSecondPage = ({
     hasTag,
     emergencyKey,
   } = useAppSelector(state => state.form);
-  const dispatch = useDispatch();
-  const { width } = useWindowDimensions();
-  const [register] = deviceApi.usePostEmergencyMissingMutation();
-  const [updateAvatar] = deviceApi.useUpdateEmergencyMissingThumbnailMutation();
-  const [update] = deviceApi.useUpdateEmergencyMissingMutation();
-  const [loading, setLoading] = useState(false);
-  const { open, close, modalProps } = useModal();
-  const [selectedIndex, setSelectedIndex] = useState(0);
 
   const handleSubmit = async () => {
-    if (loading) return;
-    setLoading(true);
-
     const body = {
       message,
       missing_location: lostPlace,
@@ -129,6 +131,26 @@ const EmergencyMissingSecondPage = ({
     });
   };
 
+  const onMessageChange = (text: string) => {
+    dispatch(formActions.setState({ message: text }));
+  };
+
+  const onPhotoClick = (index: number) => {
+    setSelectedIndex(index);
+    open();
+  };
+
+  const onPhotoChange = () => {
+    imageHandler.openThreeTwoRatioCropper(photos, selectedIndex, close);
+  };
+
+  const onPhotoDelete = () => {
+    const copy = [...photos];
+    copy.splice(selectedIndex, 1);
+    dispatch(formActions.setState({ photos: copy }));
+    close();
+  };
+
   return (
     <>
       <KeyboardAwareScrollContainer isSpaceBetween>
@@ -138,13 +160,7 @@ const EmergencyMissingSecondPage = ({
             <Input
               maxLength={512}
               value={message}
-              onChangeText={text =>
-                dispatch(
-                  formActions.setState({
-                    message: text,
-                  }),
-                )
-              }
+              onChangeText={onMessageChange}
               containerStyle={{ marginBottom: 40 }}
             />
           </PaddingContainer>
@@ -154,8 +170,7 @@ const EmergencyMissingSecondPage = ({
                   <TouchableOpacity
                     key={i}
                     onPress={() => {
-                      setSelectedIndex(i);
-                      open();
+                      onPhotoClick(i);
                     }}>
                     <Photo
                       source={{ uri: photo }}
@@ -175,9 +190,7 @@ const EmergencyMissingSecondPage = ({
                 <AddPhotoBox
                   style={{ height: (width - 64) * (2 / 3) }}
                   onPress={() => {
-                    permissionCheck.library().then(() => {
-                      imageHandler.openThreeTwoRatioCropper(photos);
-                    });
+                    imageHandler.openThreeTwoRatioCropper(photos);
                   }}>
                   <Plus />
                 </AddPhotoBox>
@@ -196,7 +209,7 @@ const EmergencyMissingSecondPage = ({
           </PhotoContainer>
         </View>
         <Button
-          isLoading={loading}
+          isLoading={isLoading}
           disabled={!message || !photos.length}
           useCommonMarginBottom
           onPress={handleSubmit}>
@@ -205,28 +218,11 @@ const EmergencyMissingSecondPage = ({
       </KeyboardAwareScrollContainer>
       <Modal {...modalProps({ type: "bottom" })}>
         <IosStyleBottomModal close={close}>
-          <ModalButton
-            onPress={() => {
-              imageHandler.openThreeTwoRatioCropper(
-                photos,
-                selectedIndex,
-                close,
-              );
-            }}>
+          <ModalButton onPress={onPhotoChange}>
             <MyText color={palette.blue_7b}>변경</MyText>
           </ModalButton>
           <Divider />
-          <ModalButton
-            onPress={() => {
-              const copy = [...photos];
-              copy.splice(selectedIndex, 1);
-              dispatch(
-                formActions.setState({
-                  photos: copy,
-                }),
-              );
-              close();
-            }}>
+          <ModalButton onPress={onPhotoDelete}>
             <MyText color={palette.red_f0}>삭제</MyText>
           </ModalButton>
         </IosStyleBottomModal>

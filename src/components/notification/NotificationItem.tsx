@@ -43,16 +43,33 @@ const NotificationItem = ({
   const navigation = useNavigation<NotificationScreenNavigationProp>();
   const showArrow = data.title.includes("산책을 끝냈어요");
 
+  const onPress = () => {
+    if (!showArrow) return;
+    navigation.navigate("WalkDetailDay", {
+      deviceID: device.id,
+      date: data.created_at,
+      avatarUrl: device.profile_image || "",
+    });
+  };
+
+  const renderText = () => {
+    const color = data.title.includes("안심존") ? palette.red_f0 : undefined;
+    const parts = data.title.split(new RegExp(`(${device.name})`, "gi"));
+    return parts.map((text, i) =>
+      text === device.name ? (
+        <MyText color={color} fontSize={14} fontWeight="bold" key={i}>
+          {text}
+        </MyText>
+      ) : (
+        <MyText color={color} fontSize={14} key={i}>
+          {text}
+        </MyText>
+      ),
+    );
+  };
+
   return (
-    <TouchableWithoutFeedback
-      onPress={() => {
-        if (!showArrow) return;
-        navigation.navigate("WalkDetailDay", {
-          deviceID: device.id,
-          date: data.created_at,
-          avatarUrl: device.profile_image || "",
-        });
-      }}>
+    <TouchableWithoutFeedback onPress={onPress}>
       <Container isLast={isLast}>
         <Image
           source={
@@ -61,31 +78,11 @@ const NotificationItem = ({
         />
         <TextContainer>
           <MyText>
-            {(() => {
-              const color = data.title.includes("안심존")
-                ? palette.red_f0
-                : undefined;
-              const parts = data.title.split(
-                new RegExp(`(${device.name})`, "gi"),
-              );
-              return parts.map((text, i) =>
-                text === device.name ? (
-                  <MyText color={color} fontSize={14} fontWeight="bold" key={i}>
-                    {text}
-                  </MyText>
-                ) : (
-                  <MyText color={color} fontSize={14} key={i}>
-                    {text}
-                  </MyText>
-                ),
-              );
-            })()}
+            {renderText()}
             {"    "}
             <View>
               <MyText
-                style={{
-                  marginBottom: -2,
-                }}
+                style={{ marginBottom: -2 }}
                 fontSize={12}
                 color="rgba(0, 0, 0, 0.3)">
                 {formatCreatedAt(data.created_at)}

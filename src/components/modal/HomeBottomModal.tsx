@@ -51,9 +51,7 @@ const HomeBottomModal = ({ device, close }: Props) => {
             name: device.name,
           });
         }}>
-        <MyText preventRpWidth color={palette.blue_7b}>
-          기기설정
-        </MyText>
+        <MyText color={palette.blue_7b}>기기설정</MyText>
       </Button>
       <Divider />
       {device.is_missed ? (
@@ -87,7 +85,7 @@ const HomeBottomModal = ({ device, close }: Props) => {
             trigger(device.id);
           }
         }}>
-        <MyText preventRpWidth color={palette.red_f0}>
+        <MyText color={palette.red_f0}>
           {device.is_missed ? "찾았어요" : "긴급실종"}
         </MyText>
       </Button>

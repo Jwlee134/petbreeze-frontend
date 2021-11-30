@@ -3,17 +3,17 @@ import styled from "styled-components/native";
 import GradientContainer from "~/components/common/container/GradientContainer";
 import Footprint from "~/assets/svg/footprint/footprint-app-icon-blue.svg";
 import { Animated, Linking, useWindowDimensions } from "react-native";
-import { StartScreenNavigationProp } from "~/types/navigator";
-import useAnimatedSequence from "~/hooks/useAnimatedSequence";
 import * as SecureStore from "expo-secure-store";
-import { isAndroid, isIos } from "~/utils";
-import messaging from "@react-native-firebase/messaging";
-import userApi from "~/api/user";
-import { secureItems } from "~/constants";
-import notificationHandler from "~/utils/notificationHandler";
 import MyText from "~/components/common/MyText";
-import { store } from "~/store";
+import useAnimatedSequence from "~/hooks/useAnimatedSequence";
+import { isAndroid, isIos } from "~/utils";
 import { isIphoneX } from "react-native-iphone-x-helper";
+import { secureItems } from "~/constants";
+import { StartScreenNavigationProp } from "~/types/navigator";
+import notificationHandler from "~/utils/notificationHandler";
+import userApi from "~/api/user";
+import { store } from "~/store";
+import messaging from "@react-native-firebase/messaging";
 
 const Container = styled.View`
   flex: 1;
@@ -26,8 +26,8 @@ const LogoContainer = styled(Animated.View)`
 `;
 
 const Start = ({ navigation }: { navigation: StartScreenNavigationProp }) => {
-  const [handleRead] = userApi.useReadNotificationsMutation();
   const { height } = useWindowDimensions();
+  const [handleRead] = userApi.useReadNotificationsMutation();
 
   const onAnimatedFinish = async () => {
     const token = await SecureStore.getItemAsync(secureItems.token);

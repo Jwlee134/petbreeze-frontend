@@ -30,6 +30,11 @@ const ThirdIntro = () => {
   const { top, bottom } = useSafeAreaInsets();
   const { isTablet, rpWidth, rpHeight } = useContext(DimensionsContext);
 
+  const onPress = () => {
+    dispatch(storageActions.setInit({ isIntroPassed: true }));
+    navigation.replace("Start");
+  };
+
   return (
     <>
       <IntroContainer rpHeight={rpHeight} topInset={top} spaceBetween>
@@ -58,14 +63,7 @@ const ThirdIntro = () => {
             borderWidth: 2,
             borderColor: palette.blue_7b_90,
           }}
-          onPress={() => {
-            dispatch(
-              storageActions.setInit({
-                isIntroPassed: true,
-              }),
-            );
-            navigation.replace("Start");
-          }}>
+          onPress={onPress}>
           시작하기
         </Button>
       </IntroContainer>

@@ -110,6 +110,14 @@ const SafetyZone = () => {
     };
   }, []);
 
+  const onNext = () => {
+    dispatch(deviceSettingActions.setSafetyZone({ step2: true }));
+  };
+
+  const onBack = () => {
+    dispatch(deviceSettingActions.setSafetyZone({ step2: false }));
+  };
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <Container>
@@ -123,16 +131,7 @@ const SafetyZone = () => {
             alignSelf: "center",
             zIndex: 0,
           }}>
-          <Button
-            onPress={() =>
-              dispatch(
-                deviceSettingActions.setSafetyZone({
-                  step2: true,
-                }),
-              )
-            }>
-            다음
-          </Button>
+          <Button onPress={onNext}>다음</Button>
         </Dissolve>
         <Dissolve
           isVisible={!step2}
@@ -151,13 +150,7 @@ const SafetyZone = () => {
         ) : (
           <>
             <BackButton
-              onPress={() =>
-                dispatch(
-                  deviceSettingActions.setSafetyZone({
-                    step2: false,
-                  }),
-                )
-              }
+              onPress={onBack}
               style={{
                 top,
               }}>

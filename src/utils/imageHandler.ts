@@ -4,6 +4,7 @@ import { store } from "~/store";
 import { formActions } from "~/store/form";
 import palette from "~/styles/palette";
 import { isIos } from ".";
+import permissionCheck from "./permissionCheck";
 
 interface WithID {
   data: string;
@@ -15,18 +16,20 @@ const hasID = (uri: string | WithID): uri is WithID =>
 
 export default {
   openCircleCropper: () =>
-    ImagePicker.openPicker({
-      mediaType: "photo",
-      width: 640,
-      height: 640,
-      cropping: true,
-      cropperCircleOverlay: true,
-      cropperActiveWidgetColor: palette.blue_7b,
-      showCropFrame: false,
-      showCropGuidelines: false,
-    }).then(image => {
-      if (!image) return;
-      store.dispatch(formActions.setState({ photos: [image.path] }));
+    permissionCheck.library().then(() => {
+      ImagePicker.openPicker({
+        mediaType: "photo",
+        width: 640,
+        height: 640,
+        cropping: true,
+        cropperCircleOverlay: true,
+        cropperActiveWidgetColor: palette.blue_7b,
+        showCropFrame: false,
+        showCropGuidelines: false,
+      }).then(image => {
+        if (!image) return;
+        store.dispatch(formActions.setState({ photos: [image.path] }));
+      });
     }),
 
   openThreeTwoRatioCropper: (
@@ -34,28 +37,30 @@ export default {
     index?: number,
     callback?: () => void,
   ) =>
-    ImagePicker.openPicker({
-      mediaType: "photo",
-      width: 1080,
-      height: 720,
-      cropping: true,
-      cropperActiveWidgetColor: palette.blue_7b,
-      showCropFrame: false,
-      showCropGuidelines: false,
-    }).then(image => {
-      if (!image) return;
-      if (index !== undefined) {
-        const copy = [...photos];
-        copy[index] = image.path;
-        store.dispatch(formActions.setState({ photos: copy }));
-      } else {
-        store.dispatch(
-          formActions.setState({ photos: [...photos, image.path] }),
-        );
-      }
-      if (callback) {
-        callback();
-      }
+    permissionCheck.library().then(() => {
+      ImagePicker.openPicker({
+        mediaType: "photo",
+        width: 1080,
+        height: 720,
+        cropping: true,
+        cropperActiveWidgetColor: palette.blue_7b,
+        showCropFrame: false,
+        showCropGuidelines: false,
+      }).then(image => {
+        if (!image) return;
+        if (index !== undefined) {
+          const copy = [...photos];
+          copy[index] = image.path;
+          store.dispatch(formActions.setState({ photos: copy }));
+        } else {
+          store.dispatch(
+            formActions.setState({ photos: [...photos, image.path] }),
+          );
+        }
+        if (callback) {
+          callback();
+        }
+      });
     }),
 
   handleFormData: (

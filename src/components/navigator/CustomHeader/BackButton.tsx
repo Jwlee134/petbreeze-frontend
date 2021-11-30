@@ -18,24 +18,27 @@ const BackButton = ({
   disableBackButton?: boolean;
   onBackButtonPress?: () => void;
   navigation: any;
-}) => (
-  <Dissolve
-    style={{
-      position: "absolute",
-      left: 5,
-      width: 32,
-      height: "100%",
-    }}
-    isVisible={!disableBackButton}>
-    <Button
-      onPress={() => {
-        if (onBackButtonPress) {
-          onBackButtonPress();
-        } else if (navigation) navigation.goBack();
-      }}>
-      <Arrow width={13} height={21} />
-    </Button>
-  </Dissolve>
-);
+}) => {
+  const onPress = () => {
+    if (onBackButtonPress) {
+      onBackButtonPress();
+    } else if (navigation) navigation.goBack();
+  };
+
+  return (
+    <Dissolve
+      style={{
+        position: "absolute",
+        left: 5,
+        width: 32,
+        height: "100%",
+      }}
+      isVisible={!disableBackButton}>
+      <Button onPress={onPress}>
+        <Arrow width={13} height={21} />
+      </Button>
+    </Dissolve>
+  );
+};
 
 export default BackButton;

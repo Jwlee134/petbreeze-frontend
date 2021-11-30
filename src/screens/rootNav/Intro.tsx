@@ -1,22 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Animated, useWindowDimensions } from "react-native";
+import { Animated, FlatList, useWindowDimensions, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useDispatch } from "react-redux";
 import styled from "styled-components/native";
-import MyText from "~/components/common/MyText";
 import FirstIntro from "~/components/intro/FirstIntro";
 import PageIndicatorCircle from "~/components/intro/PageIndicatorCircle";
 import SecondIntro from "~/components/intro/SecondIntro";
 import ThirdIntro from "~/components/intro/ThirdIntro";
-import usePagingFlatList from "~/hooks/usePagingFlatList";
-import { storageActions } from "~/store/storage";
-import { IntroScreenNavigationProp } from "~/types/navigator";
-
-const SkipButton = styled.TouchableOpacity`
-  position: absolute;
-  right: 0;
-  z-index: 1;
-`;
 
 const PageIndicator = styled.View`
   width: 100%;
@@ -29,19 +18,11 @@ const PageIndicator = styled.View`
 
 const data = [<FirstIntro />, <SecondIntro />, <ThirdIntro />];
 
-const Intro = ({ navigation }: { navigation: IntroScreenNavigationProp }) => {
-  const { PagingFlatList } = usePagingFlatList();
-  const { top, bottom } = useSafeAreaInsets();
-  const dispatch = useDispatch();
-  const { width } = useWindowDimensions();
+const Intro = () => {
+  const { bottom } = useSafeAreaInsets();
 
   const [currentPage, setCurrentPage] = useState(1);
   const value = useRef(new Animated.Value(0)).current;
-
-  const color = value.interpolate({
-    inputRange: [0, 1],
-    outputRange: ["white", "rgba(0, 0, 0, 0.5)"],
-  });
 
   useEffect(() => {
     Animated.timing(value, {
@@ -51,27 +32,28 @@ const Intro = ({ navigation }: { navigation: IntroScreenNavigationProp }) => {
     }).start();
   }, [currentPage]);
 
+  const flatListRef = useRef<FlatList>(null);
+  const { width } = useWindowDimensions();
+
   return (
     <>
-      <SkipButton
-        style={{
-          marginTop: 18 + top,
-          marginRight: 20,
-          marginLeft: "auto",
-        }}
-        onPress={() => {
-          dispatch(
-            storageActions.setInit({
-              isIntroPassed: true,
-            }),
-          );
-          navigation.replace("Start");
-        }}>
-        <MyText fontWeight="medium" fontSize={14} style={{ color }}>
-          건너뛰기
-        </MyText>
-      </SkipButton>
-      <PagingFlatList
+      <FlatList
+        ref={flatListRef}
+        data={data}
+        renderItem={({ item }) => <View style={{ width }}>{item}</View>}
+        keyExtractor={(item, index) => `key-${index}`}
+        horizontal
+        pagingEnabled
+        initialNumToRender={1}
+        windowSize={3} // 현재 화면 포함 앞 뒤로 렌더링할 화면 개수
+        showsHorizontalScrollIndicator={false}
+        bounces={false}
+        keyboardShouldPersistTaps="always"
+        getItemLayout={(data, index) => ({
+          length: width,
+          offset: width * index,
+          index,
+        })}
         onScroll={e =>
           setCurrentPage(
             Math.round((e.nativeEvent.contentOffset.x + width) / width),
@@ -79,7 +61,6 @@ const Intro = ({ navigation }: { navigation: IntroScreenNavigationProp }) => {
         }
         scrollEventThrottle={16}
         scrollEnabled
-        data={data}
       />
       <PageIndicator
         style={{

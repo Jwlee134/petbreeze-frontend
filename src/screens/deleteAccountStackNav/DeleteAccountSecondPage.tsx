@@ -34,6 +34,12 @@ const DeleteAccountSecondPage = ({
     userApi.useDeleteAccountMutation();
   const dispatch = useDispatch();
 
+  const onPress = () => {
+    if (isLoading) return;
+    const parsed = JSON.stringify(body).replace(/[[[\]"]/g, "");
+    deleteAccount(parsed);
+  };
+
   useEffect(() => {
     if (isSuccess) {
       dispatch(commonActions.setDeleteAccount(null));
@@ -78,11 +84,7 @@ const DeleteAccountSecondPage = ({
           isLoading={isLoading}
           useBottomInset
           useCommonMarginBottom
-          onPress={() => {
-            if (isLoading) return;
-            const parsed = JSON.stringify(body).replace(/[[[\]"]/g, "");
-            deleteAccount(parsed);
-          }}>
+          onPress={onPress}>
           확인 및 탈퇴
         </Button>
       </View>

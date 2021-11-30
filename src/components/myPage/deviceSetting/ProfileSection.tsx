@@ -38,28 +38,27 @@ const ProfileSection = ({
   });
   const dispatch = useDispatch();
 
+  const onPress = () => {
+    if (!data) return;
+    dispatch(
+      formActions.setState({
+        photos: [data.profile_image],
+        name: data.name,
+        species: data.species,
+        ...(data.birthdate && {
+          birthYear: parseInt(data.birthdate.split("-")[0], 10),
+          birthMonth: parseInt(data.birthdate?.split("-")[1], 10),
+          birthDay: parseInt(data.birthdate?.split("-")[2], 10),
+        }),
+        weight: data.weight?.toString() || "",
+      }),
+    );
+    navigation.navigate("UpdateProfile", { deviceID });
+  };
+
   return (
     <Container>
-      <TouchableOpacity
-        onPress={() => {
-          if (!data) return;
-          dispatch(
-            formActions.setState({
-              photos: [data.profile_image],
-              name: data.name,
-              species: data.species,
-              ...(data.birthdate && {
-                birthYear: parseInt(data.birthdate.split("-")[0], 10),
-                birthMonth: parseInt(data.birthdate?.split("-")[1], 10),
-                birthDay: parseInt(data.birthdate?.split("-")[2], 10),
-              }),
-              weight: data.weight?.toString() || "",
-            }),
-          );
-          navigation.navigate("UpdateProfile", {
-            deviceID,
-          });
-        }}>
+      <TouchableOpacity onPress={onPress}>
         <Image
           source={
             data?.profile_image

@@ -47,7 +47,6 @@ const Notification = () => {
   }, [appState]);
 
   if (!data || !deviceList) return null;
-
   if (!deviceList.length || !data.length) return <Empty />;
 
   const newNotif = data.filter(notif => notif.is_new);

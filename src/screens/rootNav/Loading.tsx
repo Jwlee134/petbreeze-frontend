@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
-import LoadingComponent from "~/components/common/Loading";
-import { LoadingScreenProps } from "~/types/navigator";
 import { isIos } from "~/utils";
 import messaging from "@react-native-firebase/messaging";
 import * as SecureStore from "expo-secure-store";
 import { useAppSelector } from "~/store";
 import userApi from "~/api/user";
 import { secureItems } from "~/constants";
+import LoadingComponent from "~/components/common/Loading";
+import { LoadingScreenProps } from "~/types/navigator";
 
 const Loading = ({
   navigation,

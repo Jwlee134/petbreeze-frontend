@@ -10,16 +10,15 @@ import {
 import styled from "styled-components/native";
 import GradientContainer from "~/components/common/container/GradientContainer";
 import Footprint from "~/assets/svg/footprint/footprint-app-icon-blue.svg";
-import useAnimatedSequence from "~/hooks/useAnimatedSequence";
 import MyText from "~/components/common/MyText";
 import Input from "~/components/common/Input";
 import { isIos } from "~/utils";
-
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import SocialLogin from "~/components/auth/SocialLogin";
 import Policies from "~/components/auth/Policies";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { isIphoneX } from "react-native-iphone-x-helper";
+import useAnimatedSequence from "~/hooks/useAnimatedSequence";
 
 const TopContainer = styled.View`
   flex: 1;
@@ -50,8 +49,14 @@ const TextContainer = styled(Animated.View)`
 `;
 
 const Auth = () => {
-  const { height } = useWindowDimensions();
   const { bottom } = useSafeAreaInsets();
+  const timeout = useRef<NodeJS.Timeout | null>(null);
+  const [name, setName] = useState("");
+  const [showBtn, setShowBtn] = useState(false);
+  const value = useRef(new Animated.Value(0)).current;
+  const { height } = useWindowDimensions();
+  const ref = useRef<TextInput>(null);
+
   const [slideTop, opacity] = useAnimatedSequence({
     numOfValues: 2,
     delayAfterMount: 200,
@@ -69,12 +74,6 @@ const Auth = () => {
     inputRange: [0, 1],
     outputRange: [1, 0.6],
   });
-
-  const ref = useRef<TextInput>(null);
-  const timeout = useRef<NodeJS.Timeout | null>(null);
-  const [name, setName] = useState("");
-  const [showBtn, setShowBtn] = useState(false);
-  const value = useRef(new Animated.Value(0)).current;
 
   const translateYInput = value.interpolate({
     inputRange: [0, 1],
@@ -103,6 +102,22 @@ const Auth = () => {
     };
   }, [ref.current, showBtn]);
 
+  const onOutsideClick = () => {
+    if (timeout.current) {
+      clearTimeout(timeout.current);
+      timeout.current = null;
+    }
+    Keyboard.dismiss();
+  };
+
+  const onNameChange = (text: string) => setName(text);
+
+  const onInputPress = () => {
+    if (showBtn) {
+      setShowBtn(false);
+    }
+  };
+
   const handleSubmit = () => {
     if (!name) return;
     Keyboard.dismiss();
@@ -111,14 +126,7 @@ const Auth = () => {
 
   return (
     <GradientContainer>
-      <TouchableWithoutFeedback
-        onPress={() => {
-          if (timeout.current) {
-            clearTimeout(timeout.current);
-            timeout.current = null;
-          }
-          Keyboard.dismiss();
-        }}>
+      <TouchableWithoutFeedback onPress={onOutsideClick}>
         <KeyboardAvoidingView
           style={{ flex: 1 }}
           behavior={isIos ? "padding" : undefined}>
@@ -155,20 +163,14 @@ const Auth = () => {
                 paddingHorizontal: 50,
                 transform: [{ translateY: translateYInput }],
               }}>
-              <TouchableOpacity
-                activeOpacity={1}
-                onPress={() => {
-                  if (showBtn) {
-                    setShowBtn(false);
-                  }
-                }}>
+              <TouchableOpacity activeOpacity={1} onPress={onInputPress}>
                 <Input
                   ref={ref}
                   maxLength={32}
                   isWhiteBorder
                   value={name}
                   editable={!showBtn}
-                  onChangeText={text => setName(text)}
+                  onChangeText={onNameChange}
                   textAlign="center"
                   onSubmitEditing={handleSubmit}
                 />

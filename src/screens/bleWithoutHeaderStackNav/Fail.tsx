@@ -25,6 +25,40 @@ const Fail = ({ navigation }: { navigation: FailScreenNavigationProp }) => {
   const status = useAppSelector(state => state.ble.status);
   const dispatch = useDispatch();
 
+  const onRetryPress = () => {
+    if (status === "downloadingFail") {
+      navigation.replace("FirmwareProgress");
+      dispatch(bleActions.setStatus("downloadingFirmware"));
+    }
+    if (
+      status === "installingFail" ||
+      status === "notificationFail" ||
+      status === "devEUIFail"
+    ) {
+      navigation.replace("Scanning");
+      dispatch(bleActions.setStatus("scanning"));
+    }
+    if (status === "wifiFail") {
+      navigation.goBack();
+    }
+  };
+
+  const onCancelPress = () => {
+    if (status === "wifiFail") {
+      navigation.replace("BleWithHeaderStackNav", {
+        initialRouteName: "PreSafetyZone",
+      });
+      return;
+    }
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    } else {
+      navigation.replace("BleWithHeaderStackNav", {
+        initialRouteName: "DeviceCheck",
+      });
+    }
+  };
+
   return (
     <>
       <TopContainer>
@@ -46,44 +80,14 @@ const Fail = ({ navigation }: { navigation: FailScreenNavigationProp }) => {
         </MyText>
         <View>
           <Button
-            onPress={() => {
-              if (status === "downloadingFail") {
-                navigation.replace("FirmwareProgress");
-                dispatch(bleActions.setStatus("downloadingFirmware"));
-              }
-              if (
-                status === "installingFail" ||
-                status === "notificationFail" ||
-                status === "devEUIFail"
-              ) {
-                navigation.replace("Scanning");
-                dispatch(bleActions.setStatus("scanning"));
-              }
-              if (status === "wifiFail") {
-                navigation.goBack();
-              }
-            }}
+            onPress={onRetryPress}
             style={{
               marginBottom: 12,
             }}>
             다시 시도
           </Button>
           <Button
-            onPress={() => {
-              if (status === "wifiFail") {
-                navigation.replace("BleWithHeaderStackNav", {
-                  initialRouteName: "PreSafetyZone",
-                });
-                return;
-              }
-              if (navigation.canGoBack()) {
-                navigation.goBack();
-              } else {
-                navigation.replace("BleWithHeaderStackNav", {
-                  initialRouteName: "DeviceCheck",
-                });
-              }
-            }}
+            onPress={onCancelPress}
             useCommonMarginBottom
             useBottomInset
             backgroundColor="transparent"

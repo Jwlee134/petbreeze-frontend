@@ -29,6 +29,15 @@ const PreWiFiForm = ({
 }) => {
   const { open, close, modalProps } = useModal();
 
+  const onNext = () => navigation.navigate("WiFiForm");
+
+  const onSkip = () => {
+    close();
+    setTimeout(() => {
+      navigation.navigate("PreSafetyZone");
+    }, centerModalOutTiming);
+  };
+
   return (
     <>
       <TopContainer>
@@ -47,13 +56,7 @@ const PreWiFiForm = ({
           </ParagraphWithCheckCircle>
         </View>
         <View>
-          <Button
-            onPress={() => {
-              navigation.navigate("WiFiForm");
-            }}
-            style={{
-              marginBottom: 12,
-            }}>
+          <Button onPress={onNext} style={{ marginBottom: 12 }}>
             다음
           </Button>
           <Button
@@ -69,12 +72,7 @@ const PreWiFiForm = ({
       <Modal {...modalProps({ type: "center" })}>
         <CommonCenterModal
           close={close}
-          onRightButtonPress={() => {
-            close();
-            setTimeout(() => {
-              navigation.navigate("PreSafetyZone");
-            }, centerModalOutTiming);
-          }}
+          onRightButtonPress={onSkip}
           title="잠깐!"
           description={`와이파이 미등록 시,\n배터리 소모가 크게 증가할 수 있습니다.`}
           rightButtonText="건너뛰기"

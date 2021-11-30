@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components/native";
-import userApi from "~/api/user";
 import Switch from "~/components/common/Switch";
-import * as SecureStore from "expo-secure-store";
 import MyText from "~/components/common/MyText";
-
 import Shield from "~/assets/svg/myPage/shield.svg";
 import Battery from "~/assets/svg/myPage/battery.svg";
 import Pencil from "~/assets/svg/myPage/pencil-noti.svg";
+import userApi from "~/api/user";
+import * as SecureStore from "expo-secure-store";
 
 const Container = styled.View`
   padding-top: 35px;
@@ -44,6 +43,39 @@ const NotificationSetting = () => {
     });
   }, []);
 
+  const onAreaToggle = () => {
+    if (!data) return;
+    update({
+      firebaseToken: token,
+      body: {
+        ...data,
+        exit_notification: !data?.exit_notification,
+      },
+    });
+  };
+
+  const onBatteryToggle = () => {
+    if (!data) return;
+    update({
+      firebaseToken: token,
+      body: {
+        ...data,
+        low_battery_notification: !data?.low_battery_notification,
+      },
+    });
+  };
+
+  const onWalkToggle = () => {
+    if (!data) return;
+    update({
+      firebaseToken: token,
+      body: {
+        ...data,
+        walk_notification: !data?.walk_notification,
+      },
+    });
+  };
+
   return (
     <Container>
       <Item>
@@ -55,16 +87,7 @@ const NotificationSetting = () => {
         </RowContainer>
         <Switch
           isOn={data?.exit_notification || false}
-          onToggle={() => {
-            if (!data) return;
-            update({
-              firebaseToken: token,
-              body: {
-                ...data,
-                exit_notification: !data?.exit_notification,
-              },
-            });
-          }}
+          onToggle={onAreaToggle}
         />
       </Item>
       <Item>
@@ -76,16 +99,7 @@ const NotificationSetting = () => {
         </RowContainer>
         <Switch
           isOn={data?.low_battery_notification || false}
-          onToggle={() => {
-            if (!data) return;
-            update({
-              firebaseToken: token,
-              body: {
-                ...data,
-                low_battery_notification: !data?.low_battery_notification,
-              },
-            });
-          }}
+          onToggle={onBatteryToggle}
         />
       </Item>
       <Item isLast>
@@ -97,16 +111,7 @@ const NotificationSetting = () => {
         </RowContainer>
         <Switch
           isOn={data?.walk_notification || false}
-          onToggle={() => {
-            if (!data) return;
-            update({
-              firebaseToken: token,
-              body: {
-                ...data,
-                walk_notification: !data?.walk_notification,
-              },
-            });
-          }}
+          onToggle={onWalkToggle}
         />
       </Item>
     </Container>

@@ -25,36 +25,31 @@ const SearchResultItem = ({
 }) => {
   const dispatch = useDispatch();
 
+  const onPress = () => {
+    Keyboard.dismiss();
+    dispatch(
+      deviceSettingActions.setSafetyZone({
+        draft: { address: item.address },
+      }),
+    );
+    dispatch(storageActions.setSafetyZoneSearchHistory(item));
+    setTimeout(() => {
+      dispatch(
+        deviceSettingActions.setSafetyZone({
+          isSearchMode: false,
+          animateCamera: true,
+          draft: {
+            coord: { latitude: item.latitude, longitude: item.longitude },
+          },
+        }),
+      );
+    }, 200);
+  };
+
   return (
     <>
-      <Button
-        onPress={() => {
-          Keyboard.dismiss();
-          dispatch(
-            deviceSettingActions.setSafetyZone({
-              draft: { address: item.address },
-            }),
-          );
-          dispatch(storageActions.setSafetyZoneSearchHistory(item));
-          setTimeout(() => {
-            dispatch(
-              deviceSettingActions.setSafetyZone({
-                isSearchMode: false,
-                animateCamera: true,
-                draft: {
-                  coord: { latitude: item.latitude, longitude: item.longitude },
-                },
-              }),
-            );
-          }, 200);
-        }}>
-        <Search
-          style={{
-            marginHorizontal: 13,
-          }}
-          width={18}
-          height={18}
-        />
+      <Button onPress={onPress}>
+        <Search style={{ marginHorizontal: 13 }} width={18} height={18} />
         <MyText>{item.address}</MyText>
       </Button>
       <Divider />

@@ -47,7 +47,6 @@ const IosStyleBottomModal = ({
           <>
             <NameContainer>
               <MyText
-                preventRpWidth
                 fontSize={14}
                 fontWeight="medium"
                 color="rgba(0, 0, 0, 0.3)">

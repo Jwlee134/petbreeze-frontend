@@ -53,21 +53,15 @@ const MapButtons = () => {
               circleWidth={70}
               lineWidth={5}
               battery={item.battery}
-              style={{
-                marginLeft: 11,
-              }}
+              style={{ marginLeft: 11 }}
             />
           )}
           inverted
           showsHorizontalScrollIndicator={false}
           horizontal
           bounces={false}
-          style={{
-            height: 102,
-          }}
-          contentContainerStyle={{
-            alignItems: "center",
-          }}
+          style={{ height: 102 }}
+          contentContainerStyle={{ alignItems: "center" }}
         />
       </Dissolve>
       <Dissolve

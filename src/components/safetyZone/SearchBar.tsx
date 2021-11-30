@@ -49,6 +49,27 @@ const SearchBar = () => {
   const dispatch = useDispatch();
   const { width } = useWindowDimensions();
 
+  const onArrowPress = () => {
+    if (isSearchMode) {
+      dispatch(deviceSettingActions.setSafetyZone({ isSearchMode: false }));
+      Keyboard.dismiss();
+    } else {
+      navigation.goBack();
+    }
+  };
+
+  const onChangeText = (text: string) => {
+    dispatch(deviceSettingActions.setSafetyZone({ draft: { address: text } }));
+  };
+
+  const onFocus = () => {
+    dispatch(deviceSettingActions.setSafetyZone({ isSearchMode: true }));
+  };
+
+  const onSearchButtonPress = () => {
+    dispatch(deviceSettingActions.setSafetyZone({ isSearchMode: true }));
+  };
+
   return (
     <>
       {isSearchMode && <SearchResult />}
@@ -61,64 +82,21 @@ const SearchBar = () => {
           alignSelf: "center",
           zIndex: 3,
         }}>
-        <Container
-          style={{
-            width: width - 32,
-            height: 45,
-          }}>
-          <Button
-            onPress={() => {
-              if (isSearchMode) {
-                dispatch(
-                  deviceSettingActions.setSafetyZone({
-                    isSearchMode: false,
-                  }),
-                );
-                Keyboard.dismiss();
-              } else {
-                navigation.goBack();
-              }
-            }}>
+        <Container style={{ width: width - 32, height: 45 }}>
+          <Button onPress={onArrowPress}>
             <Arrow width={9} height={15} />
           </Button>
           <Input
             value={address}
             numberOfLines={1}
-            onChangeText={text =>
-              dispatch(
-                deviceSettingActions.setSafetyZone({
-                  draft: { address: text },
-                }),
-              )
-            }
-            onFocus={() =>
-              dispatch(
-                deviceSettingActions.setSafetyZone({
-                  isSearchMode: true,
-                }),
-              )
-            }
+            onChangeText={onChangeText}
+            onFocus={onFocus}
             placeholder="주소 검색"
             placeholderTextColor="rgba(0, 0, 0, 0.5)"
-            style={{
-              includeFontPadding: false,
-            }}
+            style={{ includeFontPadding: false }}
           />
-          <TouchableOpacity
-            onPress={() => {
-              dispatch(
-                deviceSettingActions.setSafetyZone({
-                  isSearchMode: true,
-                }),
-              );
-            }}>
-            <Search
-              style={{
-                marginHorizontal: 18,
-              }}
-              width={18}
-              height={18}
-            />
+          <TouchableOpacity onPress={onSearchButtonPress}>
+            <Search style={{ marginHorizontal: 18 }} width={18} height={18} />
           </TouchableOpacity>
         </Container>
       </Shadow>

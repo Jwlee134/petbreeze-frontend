@@ -170,12 +170,7 @@ const SafetyZoneMap = ({ mapPadding, style }: Props) => {
           onCameraChange={({ latitude, longitude }) => {
             dispatch(
               deviceSettingActions.setSafetyZone({
-                draft: {
-                  coord: {
-                    latitude,
-                    longitude,
-                  },
-                },
+                draft: { coord: { latitude, longitude } },
               }),
             );
           }}

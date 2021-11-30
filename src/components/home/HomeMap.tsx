@@ -118,14 +118,24 @@ const HomeMap = () => {
     });
   }, [mapRef.current]);
 
+  const onMapClick = () => dispatch(commonActions.setHome({ address: "" }));
+
+  const onMarkerClick = async () => {
+    const address = await getAddressByCoord(
+      deviceCoord.latitude,
+      deviceCoord.longitude,
+    );
+    if (address) {
+      dispatch(commonActions.setHome({ address }));
+    }
+  };
+
   return (
     <>
       <Map
         ref={mapRef}
         mapPadding={{ top: isAndroid ? top : 0 }}
-        onMapClick={() => {
-          dispatch(commonActions.setHome({ address: "" }));
-        }}>
+        onMapClick={onMapClick}>
         {coords.latitude ? (
           <Marker
             coordinate={coords}
@@ -141,15 +151,7 @@ const HomeMap = () => {
               latitude: deviceCoord.latitude,
               longitude: deviceCoord.longitude,
             }}
-            onClick={async () => {
-              const address = await getAddressByCoord(
-                deviceCoord.latitude,
-                deviceCoord.longitude,
-              );
-              if (address) {
-                dispatch(commonActions.setHome({ address }));
-              }
-            }}
+            onClick={onMarkerClick}
             image={
               deviceList[
                 deviceList.findIndex(device => device.id === pressedID)
@@ -159,10 +161,7 @@ const HomeMap = () => {
             }
             width={41}
             height={57}
-            anchor={{
-              x: 0.5,
-              y: 0.96,
-            }}
+            anchor={{ x: 0.5, y: 0.96 }}
           />
         ) : null}
       </Map>

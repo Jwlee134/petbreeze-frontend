@@ -44,6 +44,20 @@ const MyPage = ({ navigation }: { navigation: MyPageScreenNavigationProp }) => {
   const { open, close, modalProps } = useModal();
   const { width } = useWindowDimensions();
 
+  const onLogout = async () => {
+    await Promise.all(
+      Object.values(secureItems).map(item => SecureStore.deleteItemAsync(item)),
+    );
+    resetAll();
+    close();
+    setTimeout(() => {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "Start" }],
+      });
+    }, centerModalOutTiming);
+  };
+
   return (
     <>
       <ScrollView>
@@ -124,21 +138,7 @@ const MyPage = ({ navigation }: { navigation: MyPageScreenNavigationProp }) => {
         <CommonCenterModal
           close={close}
           rightButtonText="로그아웃"
-          onRightButtonPress={async () => {
-            await Promise.all(
-              Object.values(secureItems).map(item =>
-                SecureStore.deleteItemAsync(item),
-              ),
-            );
-            resetAll();
-            close();
-            setTimeout(() => {
-              navigation.reset({
-                index: 0,
-                routes: [{ name: "Start" }],
-              });
-            }, centerModalOutTiming);
-          }}
+          onRightButtonPress={onLogout}
           title="로그아웃 하시나요?"
         />
       </Modal>

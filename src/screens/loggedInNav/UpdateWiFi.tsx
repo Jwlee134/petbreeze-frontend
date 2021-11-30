@@ -15,7 +15,9 @@ const UpdateWiFi = ({
 }: {
   navigation: UpdateWiFiScreenNavigationProp;
 }) => {
-  const { ssid, pw } = useAppSelector(state => state.deviceSetting.wifi.draft);
+  const { ssid, password } = useAppSelector(
+    state => state.deviceSetting.wifi.draft,
+  );
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -50,12 +52,12 @@ const UpdateWiFi = ({
         />
         <InputTitle>암호</InputTitle>
         <Input
-          value={pw}
+          value={password}
           maxLength={63}
           onChangeText={text =>
             dispatch(
               deviceSettingActions.setWifi({
-                draft: { pw: text },
+                draft: { password: text },
               }),
             )
           }
@@ -66,12 +68,12 @@ const UpdateWiFi = ({
           dispatch(
             deviceSettingActions.updateWifiResult({
               ssid,
-              pw,
+              password,
             }),
           );
           navigation.goBack();
         }}
-        disabled={!ssid || (!!pw && pw.length < 8)}
+        disabled={!ssid || (!!password && password.length < 8)}
         useCommonMarginBottom>
         확인
       </Button>

@@ -36,6 +36,10 @@ const SearchResult = () => {
     }
   }, [value]);
 
+  const onClean = () => {
+    dispatch(storageActions.setSafetyZoneSearchHistory(null));
+  };
+
   return (
     <KeyboardAwareScrollView
       keyboardShouldPersistTaps="handled"
@@ -44,10 +48,7 @@ const SearchResult = () => {
         backgroundColor: "white",
         zIndex: 2,
       }}
-      contentContainerStyle={{
-        paddingTop: top + 71,
-        paddingHorizontal: 17,
-      }}>
+      contentContainerStyle={{ paddingTop: top + 71, paddingHorizontal: 17 }}>
       {data.length ? (
         data.map((item, i) => <SearchResultItem item={item} key={i} />)
       ) : !address ? (
@@ -57,9 +58,7 @@ const SearchResult = () => {
           ))}
           {history.length ? (
             <MyText
-              onPress={() =>
-                dispatch(storageActions.setSafetyZoneSearchHistory(null))
-              }
+              onPress={onClean}
               style={{ marginVertical: 25, textAlign: "center" }}
               fontSize={14}
               color="rgba(0, 0, 0, 0.5)">

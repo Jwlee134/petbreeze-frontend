@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components/native";
-import CodePush, { DownloadProgress } from "react-native-code-push";
-import { useDispatch } from "react-redux";
-import { storageActions } from "~/store/storage";
 import AnimatedPoints from "~/components/common/AnimatedPoints";
 import FootPrint from "~/assets/svg/footprint/footprint-outline-white.svg";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import GradientContainer from "~/components/common/container/GradientContainer";
-import { FirmwareUpdateScreenNavigationProp } from "~/types/navigator";
-import { delay } from "~/utils";
 import useAnimatedSequence from "~/hooks/useAnimatedSequence";
+import { useDispatch } from "react-redux";
+import { FirmwareUpdateScreenNavigationProp } from "~/types/navigator";
+import CodePush, { DownloadProgress } from "react-native-code-push";
+import { delay } from "~/utils";
+import { storageActions } from "~/store/storage";
 
 const HalfContainer = styled.View`
   flex: 1;
@@ -20,10 +20,7 @@ const FirmwareUpdate = ({
 }: {
   navigation: FirmwareUpdateScreenNavigationProp;
 }) => {
-  const [progress, setProgress] = useState(0);
   const dispatch = useDispatch();
-  const [text, setText] = useState("업데이트 확인 중");
-
   const [point1, point2, point3] = useAnimatedSequence({
     numOfValues: 3,
     loop: true,
@@ -37,6 +34,8 @@ const FirmwareUpdate = ({
     resetDuration: 400,
     delayAfterReset: 800,
   });
+  const [progress, setProgress] = useState(0);
+  const [text, setText] = useState("업데이트 확인 중");
 
   const handleStatus = async (status: CodePush.SyncStatus) => {
     switch (status) {
