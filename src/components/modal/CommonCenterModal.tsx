@@ -1,18 +1,17 @@
-import React, { ReactNode } from "react";
-import { StyleProp, View, ViewStyle } from "react-native";
+import React from "react";
+import { View } from "react-native";
 import styled from "styled-components/native";
 import palette from "~/styles/palette";
 import Divider from "../common/Divider";
-import MyText from "../common/MyText";
+import MyText, { FontWeight } from "../common/MyText";
 
 interface Props {
   title?: string;
+  titleFontWeight?: FontWeight;
   description?: string;
   onRightButtonPress: () => void;
   rightButtonText: string | JSX.Element;
   close: () => void;
-  children?: ReactNode;
-  style?: StyleProp<ViewStyle>;
 }
 
 const Container = styled.View`
@@ -32,27 +31,30 @@ const Button = styled.TouchableOpacity`
 
 const CommonCenterModal = ({
   title,
+  titleFontWeight,
   description,
   onRightButtonPress,
   rightButtonText,
   close,
-  children,
-  style,
 }: Props) => (
-  <Container style={style}>
+  <Container>
     {title ? (
       <MyText
-        style={{ marginVertical: 27, textAlign: "center" }}
-        fontWeight="medium">
+        style={{
+          ...(!description ? { marginVertical: 27 } : { marginTop: 27 }),
+          textAlign: "center",
+        }}
+        fontWeight={titleFontWeight}>
         {title}
       </MyText>
     ) : null}
     {description ? (
-      <MyText style={{ textAlign: "center", marginBottom: 27 }} fontSize={12}>
+      <MyText
+        style={{ textAlign: "center", marginTop: 19, marginBottom: 27 }}
+        fontSize={12}>
         {description}
       </MyText>
     ) : null}
-    {children || null}
     <Divider />
     <View style={{ flexDirection: "row" }}>
       <Button onPress={close}>

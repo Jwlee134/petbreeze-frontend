@@ -113,6 +113,7 @@ const WiFiForm = ({
           close={close}
           onRightButtonPress={onSkip}
           title="잠깐!"
+          titleFontWeight="medium"
           description={`와이파이 미등록 시,\n배터리 소모가 크게 증가할 수 있습니다.`}
           rightButtonText="건너뛰기"
         />
