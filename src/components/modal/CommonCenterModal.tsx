@@ -1,5 +1,5 @@
-import React from "react";
-import { View } from "react-native";
+import React, { ReactNode } from "react";
+import { StyleProp, View, ViewStyle } from "react-native";
 import styled from "styled-components/native";
 import palette from "~/styles/palette";
 import Divider from "../common/Divider";
@@ -12,6 +12,8 @@ interface Props {
   onRightButtonPress: () => void;
   rightButtonText: string | JSX.Element;
   close: () => void;
+  children?: ReactNode;
+  containerStyle?: StyleProp<ViewStyle>;
 }
 
 const Container = styled.View`
@@ -36,8 +38,10 @@ const CommonCenterModal = ({
   onRightButtonPress,
   rightButtonText,
   close,
+  children,
+  containerStyle,
 }: Props) => (
-  <Container>
+  <Container style={containerStyle}>
     {title ? (
       <MyText
         style={{
@@ -55,6 +59,7 @@ const CommonCenterModal = ({
         {description}
       </MyText>
     ) : null}
+    {children || null}
     <Divider />
     <View style={{ flexDirection: "row" }}>
       <Button onPress={close}>
