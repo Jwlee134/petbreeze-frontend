@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useDispatch } from "react-redux";
 import styled from "styled-components/native";
 import Button from "~/components/common/Button";
@@ -11,11 +11,9 @@ import { noAvatar } from "~/constants";
 import { useAppSelector } from "~/store";
 import palette from "~/styles/palette";
 import { EmergencyMissingFirstPageScreenNavigationProp } from "~/types/navigator";
-import Modal from "react-native-modal";
 import useModal from "~/hooks/useModal";
-import CommonCenterModal from "~/components/modal/CommonCenterModal";
-import DatePicker from "react-native-date-picker";
 import { formActions } from "~/store/form";
+import DateModal from "~/components/modal/DateModal";
 
 const Avatar = styled.Image`
   width: 108px;
@@ -54,9 +52,6 @@ const EmergencyMissingFirstPage = ({
   } = useAppSelector(state => state.form);
   const dispatch = useDispatch();
   const { open, close, modalProps } = useModal();
-  const [date, setDate] = useState(
-    new Date(lostMonth, lostDate, lostMinute, lostHour),
-  );
 
   const onPhoneNumberChange = (text: string) => {
     dispatch(
@@ -70,18 +65,6 @@ const EmergencyMissingFirstPage = ({
 
   const onPlaceChange = (text: string) => {
     dispatch(formActions.setState({ lostPlace: text }));
-  };
-
-  const onDateConfirm = () => {
-    dispatch(
-      formActions.setState({
-        lostMonth: date.getMonth() + 1,
-        lostDate: date.getDate(),
-        lostHour: date.getHours(),
-        lostMinute: date.getMinutes(),
-      }),
-    );
-    close();
   };
 
   const onNext = () => navigation.navigate("EmergencyMissingSecondPage");
@@ -145,19 +128,7 @@ const EmergencyMissingFirstPage = ({
           다음
         </Button>
       </KeyboardAwareScrollContainer>
-      <Modal {...modalProps({ type: "center" })}>
-        <CommonCenterModal
-          rightButtonText="확인"
-          onRightButtonPress={onDateConfirm}
-          close={close}
-          style={{ width: "auto" }}>
-          <DatePicker
-            maximumDate={new Date()}
-            date={date}
-            onDateChange={setDate}
-          />
-        </CommonCenterModal>
-      </Modal>
+      <DateModal close={close} modalProps={modalProps} isEmergency />
     </>
   );
 };

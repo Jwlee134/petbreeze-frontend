@@ -15,26 +15,56 @@ interface Props {
   }: Partial<ModalProps> & {
     type: "bottom" | "center";
   }) => Partial<ModalProps>;
+  isEmergency?: boolean;
 }
 
-const DateModal = ({ close, modalProps }: Props) => {
+const DateModal = ({ close, modalProps, isEmergency = false }: Props) => {
   const { width } = useWindowDimensions();
-  const { birthYear, birthMonth, birthDay } = useAppSelector(
-    state => state.form,
-  );
-  const [date, setDate] = useState(
-    birthYear ? new Date(`${birthYear}-${birthMonth}-${birthDay}`) : new Date(),
-  );
+  const {
+    birthYear,
+    birthMonth,
+    birthDay,
+    lostMonth,
+    lostDate,
+    lostHour,
+    lostMinute,
+  } = useAppSelector(state => state.form);
+
+  const initialDate = isEmergency
+    ? lostMonth
+      ? new Date(
+          new Date().getFullYear(),
+          lostMonth + 1,
+          lostDate,
+          lostHour,
+          lostMinute,
+        )
+      : new Date()
+    : birthYear
+    ? new Date(birthYear, birthMonth + 1, birthDay)
+    : new Date();
+  const [date, setDate] = useState(initialDate);
   const dispatch = useDispatch();
 
   const onConfirm = () => {
-    dispatch(
-      formActions.setState({
-        birthYear: date.getFullYear(),
-        birthMonth: date.getMonth() + 1,
-        birthDay: date.getDate(),
-      }),
-    );
+    if (isEmergency) {
+      dispatch(
+        formActions.setState({
+          lostMonth: date.getMonth() + 1,
+          lostDate: date.getDate(),
+          lostHour: date.getHours(),
+          lostMinute: date.getMinutes(),
+        }),
+      );
+    } else {
+      dispatch(
+        formActions.setState({
+          birthYear: date.getFullYear(),
+          birthMonth: date.getMonth() + 1,
+          birthDay: date.getDate(),
+        }),
+      );
+    }
     close();
   };
 
@@ -44,12 +74,12 @@ const DateModal = ({ close, modalProps }: Props) => {
         rightButtonText="확인"
         onRightButtonPress={onConfirm}
         close={close}
-        containerStyle={{ maxWidth: width - 34, width: 320 }}>
+        containerStyle={{ width: width - 34, maxWidth: 360 }}>
         <DatePicker
           date={date}
-          style={{ width: 320 }}
+          style={{ width: 360 }}
           onDateChange={setDate}
-          mode="date"
+          mode={isEmergency ? "datetime" : "date"}
           maximumDate={new Date()}
         />
       </CommonCenterModal>
