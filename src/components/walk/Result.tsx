@@ -1,6 +1,5 @@
-import React, { useContext, useState } from "react";
-import styled, { css } from "styled-components/native";
-import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
+import React, { useContext } from "react";
+import styled from "styled-components/native";
 import { useAppSelector } from "~/store";
 import AnimatedCircularProgress from "../common/AnimatedCircularProgress";
 import Button from "../common/Button";
@@ -12,38 +11,37 @@ import { View } from "react-native";
 import { WalkContext } from "~/context/WalkContext";
 import { useNavigation } from "@react-navigation/native";
 import { WalkMapScreenNavigationProp } from "~/types/navigator";
-import { formatWalkDistance } from "~/utils";
+import { formatWalkDistance, isEndWithConsonant } from "~/utils";
 import deviceApi from "~/api/device";
 import imageHandler from "~/utils/imageHandler";
 import allSettled from "promise.allsettled";
 import { storageActions } from "~/store/storage";
 import { useDispatch } from "react-redux";
+import Toast from "react-native-toast-message";
 
 const Container = styled.View`
   align-items: center;
 `;
 
-const Avatar = styled.View<{ rpWidth: RpWidth }>`
-  padding: ${({ rpWidth }) => `${rpWidth(18)}px 0`};
+const Avatar = styled.View`
+  padding: 18px 0;
   flex-direction: row;
 `;
 
-const Overlay = styled.View<{ rpWidth: RpWidth }>`
+const Overlay = styled.View`
   position: absolute;
   background-color: ${palette.blue_7b_10};
   justify-content: center;
   align-items: center;
-  ${({ rpWidth }) => css`
-    width: ${rpWidth(70)}px;
-    height: ${rpWidth(70)}px;
-    border-radius: ${rpWidth(35)}px;
-  `}
+  width: 70px;
+  height: 70px;
+  border-radius: 35px;
 `;
 
-const SvgContainer = styled.View<{ rpWidth: RpWidth }>`
+const SvgContainer = styled.View`
   flex-direction: row;
   justify-content: space-evenly;
-  padding-bottom: ${({ rpWidth }) => rpWidth(30)}px;
+  padding-bottom: 30px;
 `;
 
 const RowContainer = styled.View`
@@ -54,14 +52,16 @@ const RowContainer = styled.View`
 `;
 
 const Result = () => {
-  const { rpWidth } = useContext(DimensionsContext);
   const { viewShotRef, deviceList } = useContext(WalkContext);
   const navigation = useNavigation<WalkMapScreenNavigationProp>();
-  const [postWalk] = deviceApi.usePostWalkMutation();
-  const [postWalkThumbnail] = deviceApi.usePatchWalkThumbnailMutation();
-  const [stopWalking] = deviceApi.useStopWalkingMutation();
-  const [loading, setLoading] = useState(false);
+  const [postWalk, { isLoading: loading1 }] = deviceApi.usePostWalkMutation();
+  const [postWalkThumbnail, { isLoading: loading2 }] =
+    deviceApi.usePatchWalkThumbnailMutation();
+  const [stopWalking, { isLoading: loading3 }] =
+    deviceApi.useStopWalkingMutation();
   const dispatch = useDispatch();
+
+  const isLoading = loading1 || loading2 || loading3;
 
   const { startTime, duration, meter, coords, selectedDeviceId } =
     useAppSelector(state => state.storage.walk);
@@ -71,12 +71,35 @@ const Result = () => {
   const sec = Math.floor(duration) % 60;
 
   const handleFinish = async () => {
-    if (loading) return;
-    setLoading(true);
+    if (isLoading) return;
     const uri = await viewShotRef.current?.capture();
-
     const results = await allSettled(
-      selectedDeviceId.map(id =>
+      selectedDeviceId.map(id => stopWalking(id).unwrap()),
+    );
+
+    const fulfilledIds = selectedDeviceId.filter(
+      (id, i) => results[i].status === "fulfilled",
+    );
+    const rejectedIds = selectedDeviceId.filter(
+      (id, i) => results[i].status === "rejected",
+    );
+
+    if (rejectedIds.length) {
+      const rejectedNames = rejectedIds
+        .map(
+          id =>
+            deviceList[deviceList.findIndex(device => device.id === id)].name,
+        )
+        .join(", ");
+      Toast.show({
+        type: "error",
+        text1: `${rejectedNames}${
+          isEndWithConsonant(rejectedNames) ? "은" : "는"
+        } 산책중이 아닙니다.`,
+      });
+    }
+    const fulfilledResults = await allSettled(
+      fulfilledIds.map(id =>
         postWalk({
           deviceID: id,
           body: {
@@ -95,9 +118,9 @@ const Result = () => {
     if (uri) {
       const formData = imageHandler.handleFormData(uri, "path_image");
       await allSettled(
-        selectedDeviceId
+        fulfilledIds
           .map((id, i) => {
-            if (results[i].status === "rejected") return null;
+            if (fulfilledResults[i].status === "rejected") return null;
             return postWalkThumbnail({
               body: formData,
               deviceID: id,
@@ -107,15 +130,6 @@ const Result = () => {
           .filter(item => item !== null),
       );
     }
-
-    await allSettled(
-      selectedDeviceId
-        .map((id, i) => {
-          if (results[i].status === "rejected") return null;
-          return stopWalking(id);
-        })
-        .filter(item => item !== null),
-    );
 
     dispatch(deviceApi.util.invalidateTags([{ type: "Device", id: "LIST" }]));
     setTimeout(() => {
@@ -137,7 +151,7 @@ const Result = () => {
           }월 ${format.getDate()}일의 산책`;
         })()}
       </MyText>
-      <Avatar rpWidth={rpWidth}>
+      <Avatar>
         {deviceList.map((device, i) =>
           i < 3 ? (
             <View key={i}>
@@ -147,8 +161,7 @@ const Result = () => {
                 lineWidth={2.5}
                 battery={100}
                 style={{
-                  marginRight:
-                    i === deviceList.length - 1 || i === 2 ? 0 : rpWidth(21),
+                  marginRight: i === deviceList.length - 1 || i === 2 ? 0 : 21,
                   ...(i === 2 &&
                     deviceList.length > 3 && {
                       opacity: 0.1,
@@ -156,7 +169,7 @@ const Result = () => {
                 }}
               />
               {i === 2 && deviceList.length > 3 && (
-                <Overlay rpWidth={rpWidth}>
+                <Overlay>
                   <MyText
                     color={palette.blue_7b_90}
                     fontWeight="medium"
@@ -169,30 +182,22 @@ const Result = () => {
           ) : null,
         )}
       </Avatar>
-      <SvgContainer rpWidth={rpWidth}>
+      <SvgContainer>
         <RowContainer>
-          <Timer
-            width={rpWidth(22)}
-            height={rpWidth(27)}
-            style={{ marginRight: rpWidth(17) }}
-          />
+          <Timer width={22} height={27} style={{ marginRight: 17 }} />
           <MyText fontSize={18} color="rgba(0, 0, 0, 0.5)">
             {hour < 10 ? `${hour}` : hour} : {min < 10 ? `0${min}` : min} :{" "}
             {sec < 10 ? `0${sec}` : sec}
           </MyText>
         </RowContainer>
         <RowContainer>
-          <Path
-            width={rpWidth(21)}
-            height={rpWidth(22)}
-            style={{ marginRight: rpWidth(17) }}
-          />
+          <Path width={21} height={22} style={{ marginRight: 17 }} />
           <MyText fontSize={18} color="rgba(0, 0, 0, 0.5)">
             {formatWalkDistance(meter)}
           </MyText>
         </RowContainer>
       </SvgContainer>
-      <Button isLoading={loading} onPress={handleFinish}>
+      <Button isLoading={isLoading} onPress={handleFinish}>
         산책 종료
       </Button>
     </Container>

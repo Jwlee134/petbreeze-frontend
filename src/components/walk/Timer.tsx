@@ -1,16 +1,12 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useAppSelector } from "~/store";
 import TimerSVG from "~/assets/svg/walk/timer.svg";
 import MyText from "../common/MyText";
 import styled from "styled-components/native";
 import { useDispatch } from "react-redux";
 import { storageActions } from "~/store/storage";
-import { useNavigation } from "@react-navigation/native";
-import { WalkMapScreenNavigationProp } from "~/types/navigator";
 import deviceApi from "~/api/device";
-import { WalkContext } from "~/context/WalkContext";
 import allSettled from "promise.allsettled";
-import backgroundTracking from "~/utils/backgroundTracking";
 
 const RowContainer = styled.View`
   flex-direction: row;
@@ -24,7 +20,6 @@ const Timer = () => {
   const selectedIDs = useAppSelector(
     state => state.storage.walk.selectedDeviceId,
   );
-  const navigation = useNavigation<WalkMapScreenNavigationProp>();
   const isWalking = useAppSelector(state => state.storage.walk.isWalking);
   const startTime = useAppSelector(state => state.storage.walk.startTime);
   const currentPauseTime = useAppSelector(
@@ -35,7 +30,6 @@ const Timer = () => {
   );
   const dispatch = useDispatch();
   const timeout = useRef<NodeJS.Timeout>();
-  const { deviceList } = useContext(WalkContext);
 
   const getDuration = () => {
     if (!isWalking && currentPauseTime) {
@@ -91,38 +85,7 @@ const Timer = () => {
 
   useEffect(() => {
     if (duration === 60) {
-      (async () => {
-        const results = await allSettled(
-          selectedIDs.map(id => sendNotification(id).unwrap()),
-        );
-        const rejectedIDs = selectedIDs
-          .filter((id, i) => results[i].status === "rejected")
-          .map(
-            id =>
-              deviceList[deviceList.findIndex(device => device.id === id)].id,
-          );
-
-        if (rejectedIDs.length) {
-          const fulfilledIDs = selectedIDs.filter(
-            id => !rejectedIDs.includes(id),
-          );
-          if (!fulfilledIDs.length) {
-            await backgroundTracking.stop();
-            setTimeout(() => {
-              dispatch(storageActions.setWalk(null));
-            }, 200);
-            navigation.replace("BottomTabNav", {
-              initialRouteName: "WalkTab",
-            });
-          } else {
-            dispatch(
-              storageActions.setWalk({
-                selectedDeviceId: fulfilledIDs,
-              }),
-            );
-          }
-        }
-      })();
+      allSettled(selectedIDs.map(id => sendNotification(id)));
     }
   }, [duration]);
 

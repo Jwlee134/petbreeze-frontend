@@ -32,13 +32,18 @@ const StartWalking = ({
   const isFocused = useIsFocused();
   const dispatch = useDispatch();
 
-  const [startWalking, { isLoading }] = deviceApi.useStartWalkingMutation();
-  const [stopWalking] = deviceApi.useStopWalkingMutation();
+  const [startWalking, { isLoading: loading1 }] =
+    deviceApi.useStartWalkingMutation();
+  const [stopWalking, { isLoading: loading2 }] =
+    deviceApi.useStopWalkingMutation();
+
+  const isLoading = loading1 || loading2;
 
   const [selectedIDs, setSelectedIDs] = useState<number[]>([]);
   const [selectedByParams, setSelectedByParams] = useState(false);
 
   const handleStart = async () => {
+    if (isLoading) return;
     try {
       await permissionCheck.locationAlways();
       const results = await allSettled(
@@ -62,11 +67,8 @@ const StartWalking = ({
         });
         await allSettled(
           selectedIDs
-            .map((id, i) => {
-              if (results[i].status === "rejected") return null;
-              return stopWalking(id);
-            })
-            .filter(item => item !== null),
+            .filter((id, i) => results[i].status !== "rejected")
+            .map(id => stopWalking(id)),
         );
       } else {
         dispatch(
