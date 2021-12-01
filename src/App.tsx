@@ -9,7 +9,7 @@ import { Provider } from "react-redux";
 import { Settings } from "react-native-fbsdk-next";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
-import { lightTheme } from "./styles/theme";
+import theme from "./styles/theme";
 import { persister, store } from "./store";
 import RootNav from "./navigator/RootNav";
 import DimensionsContextProvider from "./context/DimensionsContext";
@@ -20,7 +20,7 @@ const App = () => (
   <Provider store={store}>
     <PersistGate persistor={persister}>
       <DimensionsContextProvider>
-        <NavigationContainer theme={lightTheme}>
+        <NavigationContainer theme={theme}>
           <SafeAreaProvider>
             <RootNav />
           </SafeAreaProvider>

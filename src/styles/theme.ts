@@ -1,6 +1,6 @@
 import { DefaultTheme } from "@react-navigation/native";
 
-export const lightTheme = {
+export default {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
