@@ -76,7 +76,7 @@ const EmergencyMissingFirstPage = ({
           <Avatar source={avatar ? { uri: avatar } : noAvatar} />
           <MyText
             style={{ textAlign: "center", marginBottom: 30 }}
-            color={palette.blue_7b_90}
+            color={palette.blue_86}
             fontSize={18}
             fontWeight="medium">
             {name}

@@ -17,7 +17,7 @@ const CheckCircle = ({ selected }: { selected: boolean }) => {
 
   const backgroundColor = value.interpolate({
     inputRange: [0, 1],
-    outputRange: ["rgba(0, 0, 0, 0.1)", palette.blue_7b_90],
+    outputRange: ["rgba(0, 0, 0, 0.1)", palette.blue_86],
   });
 
   useEffect(() => {

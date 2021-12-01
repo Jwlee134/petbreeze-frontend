@@ -1,6 +1,7 @@
 import React, { ReactNode } from "react";
 import { Animated, TextProps, TextStyle } from "react-native";
 import styled from "styled-components/native";
+import palette from "~/styles/palette";
 
 export type FontWeight = "light" | "medium" | "bold";
 
@@ -43,7 +44,7 @@ const MyText = ({
     fontWeight={fontWeight}
     style={{
       includeFontPadding: false,
-      color: color || "rgba(0, 0, 0, 0.8)",
+      color: color || palette.black_2e,
       flexShrink: 1,
       fontSize: fontSize || 16,
       ...(style as object),

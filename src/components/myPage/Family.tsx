@@ -81,7 +81,7 @@ const Family = ({ deviceID }: { deviceID: number }) => {
             </Li>
             <MyText
               color={
-                data?.owner_id === member.id ? palette.blue_7b_90 : undefined
+                data?.owner_id === member.id ? palette.blue_86 : undefined
               }>
               {member.nickname}
               {myID === member.id && " (나)"}

@@ -171,7 +171,7 @@ const Result = () => {
               {i === 2 && deviceList.length > 3 && (
                 <Overlay>
                   <MyText
-                    color={palette.blue_7b_90}
+                    color={palette.blue_86}
                     fontWeight="medium"
                     fontSize={18}>
                     +{deviceList.length - 3}

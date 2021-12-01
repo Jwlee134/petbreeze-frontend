@@ -10,7 +10,7 @@ const PageBarBackground = styled.View`
 
 const PageBar = styled(Animated.View)`
   height: 100%;
-  background-color: ${palette.blue_7b_90};
+  background-color: ${palette.blue_86};
 `;
 
 const PageIndicator = ({

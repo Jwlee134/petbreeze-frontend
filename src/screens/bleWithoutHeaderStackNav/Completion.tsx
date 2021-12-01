@@ -81,7 +81,7 @@ const Completion = ({
             height={21}
             style={{ marginTop: 3, marginRight: 3 }}
           />
-          <MyText fontWeight="medium" fontSize={20} color={palette.blue_7b_90}>
+          <MyText fontWeight="medium" fontSize={20} color={palette.blue_86}>
             {name || noName}
           </MyText>
         </RowContainer>

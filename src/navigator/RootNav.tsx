@@ -38,7 +38,7 @@ const RootNav = () => {
         <BaseToast
           {...rest}
           style={{
-            borderLeftColor: palette.blue_7b_90,
+            borderLeftColor: palette.blue_86,
             borderLeftWidth: 7,
             height: "auto",
             marginTop: top,

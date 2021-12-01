@@ -37,7 +37,7 @@ const BarBackground = styled.View`
 
 const Bar = styled(Reanimated.View)`
   height: 100%;
-  background-color: ${palette.blue_7b_90};
+  background-color: ${palette.blue_86};
   border-radius: 100px;
 `;
 

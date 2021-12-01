@@ -39,10 +39,10 @@ const ThirdIntro = () => {
     <>
       <IntroContainer rpHeight={rpHeight} topInset={top} spaceBetween>
         <View style={{ marginLeft: rpWidth(32) }}>
-          <MyText fontWeight="light" fontSize={24} color={palette.blue_7b_80}>
+          <MyText fontWeight="light" fontSize={24} color={palette.blue_86}>
             펫브리즈와 함께
           </MyText>
-          <MyText fontWeight="bold" fontSize={24} color={palette.blue_7b_80}>
+          <MyText fontWeight="bold" fontSize={24} color={palette.blue_86}>
             확실하게 안전을 챙기세요!
           </MyText>
         </View>
@@ -61,7 +61,7 @@ const ThirdIntro = () => {
           style={{
             marginBottom: rpHeight(94) + bottom,
             borderWidth: 2,
-            borderColor: palette.blue_7b_90,
+            borderColor: palette.blue_86,
           }}
           onPress={onPress}>
           시작하기

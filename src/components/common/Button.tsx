@@ -67,7 +67,7 @@ const Button = ({
 
   const backgroundColorInterpolate = value.interpolate({
     inputRange: [0, 1],
-    outputRange: ["rgba(0, 0, 0, 0.05)", backgroundColor || palette.blue_7b_90],
+    outputRange: ["rgba(0, 0, 0, 0.05)", backgroundColor || palette.blue_86],
   });
 
   useEffect(() => {

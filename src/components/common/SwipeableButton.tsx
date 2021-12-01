@@ -17,7 +17,7 @@ const SwipeableButton = ({ children, backgroundColor, onPress }: Props) => (
       justifyContent: "center",
       alignItems: "center",
       backgroundColor:
-        backgroundColor === "red" ? palette.red_f0 : palette.blue_7b_90,
+        backgroundColor === "red" ? palette.red_f0 : palette.blue_86,
     }}>
     {children}
   </RectButton>

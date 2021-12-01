@@ -45,7 +45,7 @@ const Switch = ({ isOn, onToggle }: Props) => {
     const backgroundColor = interpolateColor(
       color.value,
       [0, 1],
-      ["rgba(120, 120, 128, 0.16)", palette.blue_7b_80],
+      ["rgba(120, 120, 128, 0.16)", palette.blue_86],
     );
     return {
       backgroundColor: withTiming(backgroundColor, {

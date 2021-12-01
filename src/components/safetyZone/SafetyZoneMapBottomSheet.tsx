@@ -87,8 +87,8 @@ const SafetyZoneMapBottomSheet = ({
       keyboardVerticalOffset={-85 - bottom}>
       <Container style={[{ height }, style]}>
         <Shadow
-          distance={20}
-          startColor="rgba(0, 0, 0, 0.15)"
+          distance={15}
+          startColor="rgba(0, 0, 0, 0.05)"
           sides={["top"]}
           radius={15}
           corners={["topLeft", "topRight"]}
