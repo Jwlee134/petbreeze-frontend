@@ -2,10 +2,9 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface HomeState {
   address: string;
-  deviceCoord: {
-    latitude: number;
-    longitude: number;
-  };
+  deviceCoord: { latitude: number; longitude: number; time: string };
+  areaRadius: number;
+  showDeviceLocation: boolean;
   isDeviceMoved: boolean;
   isPressed: boolean;
   pressedID: number;
@@ -26,10 +25,9 @@ interface State {
 const initialState: State = {
   home: {
     address: "",
-    deviceCoord: {
-      latitude: 0,
-      longitude: 0,
-    },
+    deviceCoord: { latitude: 0, longitude: 0, time: "" },
+    areaRadius: 0,
+    showDeviceLocation: false,
     isDeviceMoved: true,
     isPressed: false,
     pressedID: 0,
@@ -46,8 +44,12 @@ const common = createSlice({
   name: "common",
   initialState,
   reducers: {
-    setHome: (state, { payload }: PayloadAction<Partial<HomeState>>) => {
-      state.home = { ...state.home, ...payload };
+    setHome: (state, { payload }: PayloadAction<Partial<HomeState> | null>) => {
+      if (payload) {
+        state.home = { ...state.home, ...payload };
+      } else {
+        state.home = initialState.home;
+      }
     },
     setDeleteAccount: (
       state,

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import NaverMapView, { Marker } from "react-native-nmap";
+import NaverMapView, { Circle, Marker } from "react-native-nmap";
 import Geolocation from "react-native-geolocation-service";
 import { delta } from "~/constants";
 import useAppState from "~/hooks/useAppState";
@@ -8,14 +8,16 @@ import Map from "../common/Map";
 import { store, useAppSelector } from "~/store";
 import { useDispatch } from "react-redux";
 import { commonActions } from "~/store/common";
-import { getAddressByCoord } from "~/api/place";
-import MyLocationButton from "./MyLocationButton";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { isAndroid } from "~/utils";
 import useDevice from "~/hooks/useDevice";
 import { storageActions } from "~/store/storage";
 import permissionCheck from "~/utils/permissionCheck";
 import Toast from "react-native-toast-message";
+import MapButton from "../common/MapButton";
+import AddressBlock from "./AddressBlock";
+import palette from "~/styles/palette";
+import LiveModeButton from "../common/LiveModeButton";
 
 const HomeMap = () => {
   const mapRef = useRef<NaverMapView>(null);
@@ -31,6 +33,10 @@ const HomeMap = () => {
   const isDeviceMoved = useAppSelector(
     state => state.common.home.isDeviceMoved,
   );
+  const showDeviceLocation = useAppSelector(
+    state => state.common.home.showDeviceLocation,
+  );
+  const areaRadius = useAppSelector(state => state.common.home.areaRadius);
 
   const [isMyLocationMoved, setIsMyLocationMoved] = useState(true);
   const [coords, setCoords] = useState({ latitude: 0, longitude: 0 });
@@ -77,8 +83,9 @@ const HomeMap = () => {
   }, [coords]);
 
   useEffect(() => {
-    if (!isDeviceMoved && deviceCoord.latitude) animateToRegion("device");
-  }, [deviceCoord]);
+    if (!isDeviceMoved && deviceCoord.latitude && showDeviceLocation)
+      animateToRegion("device");
+  }, [deviceCoord, showDeviceLocation]);
 
   // home tab unmount
   useEffect(() => {
@@ -94,14 +101,8 @@ const HomeMap = () => {
             longitude: deviceCoord.longitude,
           }),
         );
-        dispatch(
-          commonActions.setHome({
-            deviceCoord: { latitude: 0, longitude: 0 },
-            pressedID: 0,
-          }),
-        );
       }
-      dispatch(commonActions.setHome({ isPressed: false }));
+      dispatch(commonActions.setHome(null));
       setCoords({ latitude: 0, longitude: 0 });
     }
   }, [isFocused, appState, trackingId.current]);
@@ -118,23 +119,21 @@ const HomeMap = () => {
     });
   }, [mapRef.current]);
 
-  const onMapClick = () => dispatch(commonActions.setHome({ address: "" }));
-
-  const onMarkerClick = async () => {
-    const address = await getAddressByCoord(
-      deviceCoord.latitude,
-      deviceCoord.longitude,
-    );
-    if (address) {
-      dispatch(commonActions.setHome({ address }));
-    }
+  const onMapClick = () => {
+    dispatch(commonActions.setHome(null));
   };
 
   return (
     <>
       <Map
         ref={mapRef}
-        mapPadding={{ top: isAndroid ? top : 0 }}
+        mapPadding={{
+          top: showDeviceLocation
+            ? (isAndroid ? top : 0) + 56
+            : isAndroid
+            ? top
+            : 0,
+        }}
         onMapClick={onMapClick}>
         {coords.latitude ? (
           <Marker
@@ -145,13 +144,15 @@ const HomeMap = () => {
             anchor={{ x: 0.5, y: 0.5 }}
           />
         ) : null}
-        {deviceCoord.latitude && deviceList && pressedID ? (
+        {deviceCoord.latitude &&
+        deviceList &&
+        pressedID &&
+        showDeviceLocation ? (
           <Marker
             coordinate={{
               latitude: deviceCoord.latitude,
               longitude: deviceCoord.longitude,
             }}
-            onClick={onMarkerClick}
             image={
               deviceList[
                 deviceList.findIndex(device => device.id === pressedID)
@@ -164,8 +165,26 @@ const HomeMap = () => {
             anchor={{ x: 0.5, y: 0.96 }}
           />
         ) : null}
+        {deviceCoord.latitude && areaRadius && showDeviceLocation ? (
+          <Circle
+            coordinate={{
+              latitude: deviceCoord.latitude,
+              longitude: deviceCoord.longitude,
+            }}
+            radius={areaRadius}
+            color={palette.blue_6e_20}
+            outlineColor={palette.blue_6e_50}
+            outlineWidth={1}
+          />
+        ) : null}
       </Map>
-      <MyLocationButton handleMyLocation={handleMyLocation} />
+      <AddressBlock />
+      <LiveModeButton />
+      <MapButton
+        onPress={handleMyLocation}
+        style={{ position: "absolute", right: 16, top: top + 140 }}
+        icon="myLocation"
+      />
     </>
   );
 };

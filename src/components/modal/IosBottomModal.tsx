@@ -31,7 +31,7 @@ const NameContainer = styled.View`
   align-items: center;
 `;
 
-const IosStyleBottomModal = ({
+const IosBottomModal = ({
   children,
   close,
   title,
@@ -65,9 +65,10 @@ const IosStyleBottomModal = ({
           width: width - 18,
           marginTop: 9,
           borderRadius: 12,
-          height: 56,
+          height: 50,
         }}
         backgroundColor="white"
+        fontWeight="medium"
         fontColor={palette.blue_7b}>
         {closeButtonText}
       </Button>
@@ -75,4 +76,4 @@ const IosStyleBottomModal = ({
   );
 };
 
-export default IosStyleBottomModal;
+export default IosBottomModal;

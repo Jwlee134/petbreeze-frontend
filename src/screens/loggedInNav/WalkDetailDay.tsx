@@ -11,11 +11,12 @@ import Divider from "~/components/common/Divider";
 import { formatWalkDistance, formatWalkTime } from "~/utils";
 import { noAvatar, noName } from "~/constants";
 import Modal from "react-native-modal";
-import IosStyleBottomModal from "~/components/modal/IosStyleBottomModal";
+import IosBottomModal from "~/components/modal/IosBottomModal";
 import CustomHeader from "~/components/navigator/CustomHeader";
 import deviceApi from "~/api/device";
 import { useDispatch } from "react-redux";
 import useModal from "~/hooks/useModal";
+import IosBottomModalButton from "~/components/modal/IosBottomModalButton";
 
 const Container = styled.View``;
 
@@ -49,12 +50,6 @@ const Map = styled.Image`
 const Delete = styled.TouchableOpacity`
   width: 30px;
   height: 30px;
-  justify-content: center;
-  align-items: center;
-`;
-
-const ModalDeleteButton = styled.TouchableOpacity`
-  height: 55px;
   justify-content: center;
   align-items: center;
 `;
@@ -167,13 +162,11 @@ const WalkDetailDay = ({
         )}
       />
       <Modal {...modalProps({ type: "bottom" })}>
-        <IosStyleBottomModal
-          close={close}
-          title="이 산책 기록을 삭제하시겠습니까?">
-          <ModalDeleteButton onPress={deleteRecord}>
+        <IosBottomModal close={close} title="이 산책 기록을 삭제하시겠습니까?">
+          <IosBottomModalButton isLast onPress={deleteRecord}>
             <MyText color={palette.red_f0}>삭제</MyText>
-          </ModalDeleteButton>
-        </IosStyleBottomModal>
+          </IosBottomModalButton>
+        </IosBottomModal>
       </Modal>
     </>
   );

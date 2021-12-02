@@ -556,6 +556,8 @@ PODS:
     - React-perflogger (= 0.64.2)
   - RNCAsyncStorage (1.15.7):
     - React-Core
+  - RNCClipboard (1.9.0):
+    - React-Core
   - RNFBApp (12.7.3):
     - Firebase/CoreOnly (= 8.6.0)
     - React-Core
@@ -699,6 +701,7 @@ DEPENDENCIES:
   - React-runtimeexecutor (from `../node_modules/react-native/ReactCommon/runtimeexecutor`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
+  - "RNCClipboard (from `../node_modules/@react-native-clipboard/clipboard`)"
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
   - "RNFBMessaging (from `../node_modules/@react-native-firebase/messaging`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
@@ -866,6 +869,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   RNCAsyncStorage:
     :path: "../node_modules/@react-native-async-storage/async-storage"
+  RNCClipboard:
+    :path: "../node_modules/@react-native-clipboard/clipboard"
   RNFBApp:
     :path: "../node_modules/@react-native-firebase/app"
   RNFBMessaging:
@@ -982,6 +987,7 @@ SPEC CHECKSUMS:
   React-runtimeexecutor: a9904c6d0218fb9f8b19d6dd88607225927668f9
   ReactCommon: 149906e01aa51142707a10665185db879898e966
   RNCAsyncStorage: 7102fe8985f889579a3ae148d957bbb3f308122b
+  RNCClipboard: 99fc8ad669a376b756fbc8098ae2fd05c0ed0668
   RNFBApp: 348de8df1e2e281c05bd6cf69ff99cc85c74da63
   RNFBMessaging: 3fc0aa060e9af42e76b80a20632ea3b29fcf09f7
   RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211

@@ -20,7 +20,7 @@ interface PressableProps {
 
 const Pressable = styled.Pressable<PressableProps>`
   position: absolute;
-  bottom: 40px;
+  bottom: 34px;
   ${({ index, length }) => {
     switch (length) {
       case 1:
@@ -68,7 +68,7 @@ const HomeAvatar = ({
       <AnimatedCircularProgress
         avatar={device.profile_image}
         circleWidth={length > 2 ? 70 : 90}
-        lineWidth={length > 2 ? 5 : 7}
+        lineWidth={length > 2 ? 2.5 : 3.5}
         battery={device.battery}
         highlightOnEmergency={device.is_missed}
       />

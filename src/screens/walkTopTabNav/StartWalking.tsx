@@ -51,7 +51,12 @@ const StartWalking = ({
       );
       // 거절된 시작 요청이 있으면 거절된 디바이스의 id 토스트로 출력 및 성공한 디바이스
       // 의 산책 종료 요청, 아니면 바로 산책 시작
-      if (results.some(result => result.status === "rejected")) {
+      if (
+        results.some(
+          result =>
+            result.status === "rejected" && result.reason.status === 400,
+        )
+      ) {
         const rejectedNames = selectedIDs
           .filter((id, i) => results[i].status === "rejected")
           .map(

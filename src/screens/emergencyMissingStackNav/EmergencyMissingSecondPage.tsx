@@ -12,12 +12,13 @@ import { TouchableOpacity, useWindowDimensions, View } from "react-native";
 import imageHandler from "~/utils/imageHandler";
 import Modal from "react-native-modal";
 import useModal from "~/hooks/useModal";
-import IosStyleBottomModal from "~/components/modal/IosStyleBottomModal";
+import IosBottomModal from "~/components/modal/IosBottomModal";
 import Divider from "~/components/common/Divider";
 import palette from "~/styles/palette";
 import { formActions } from "~/store/form";
 import deviceApi from "~/api/device";
 import { EmergencyMissingSecondPageScreenNavigationProp } from "~/types/navigator";
+import IosBottomModalButton from "~/components/modal/IosBottomModalButton";
 
 const PaddingContainer = styled.View`
   padding: 0 42px;
@@ -38,12 +39,6 @@ const AddPhotoBox = styled.TouchableOpacity`
 
 const Photo = styled.Image`
   width: 100%;
-`;
-
-const ModalButton = styled.TouchableOpacity`
-  height: 50px;
-  justify-content: center;
-  align-items: center;
 `;
 
 const EmergencyMissingSecondPage = ({
@@ -217,15 +212,15 @@ const EmergencyMissingSecondPage = ({
         </Button>
       </KeyboardAwareScrollContainer>
       <Modal {...modalProps({ type: "bottom" })}>
-        <IosStyleBottomModal close={close}>
-          <ModalButton onPress={onPhotoChange}>
+        <IosBottomModal close={close}>
+          <IosBottomModalButton onPress={onPhotoChange}>
             <MyText color={palette.blue_7b}>변경</MyText>
-          </ModalButton>
+          </IosBottomModalButton>
           <Divider />
-          <ModalButton onPress={onPhotoDelete}>
+          <IosBottomModalButton isLast onPress={onPhotoDelete}>
             <MyText color={palette.red_f0}>삭제</MyText>
-          </ModalButton>
-        </IosStyleBottomModal>
+          </IosBottomModalButton>
+        </IosBottomModal>
       </Modal>
     </>
   );

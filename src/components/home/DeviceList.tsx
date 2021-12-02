@@ -8,57 +8,52 @@ import React, {
 } from "react";
 import { store, useAppSelector } from "~/store";
 import { Animated } from "react-native";
-import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
+import { DimensionsContext } from "~/context/DimensionsContext";
 import HomeAvatar from "./HomeAvatar";
 import Modal from "react-native-modal";
 import useModal from "~/hooks/useModal";
-import IosStyleBottomModal from "../modal/IosStyleBottomModal";
+import IosBottomModal from "../modal/IosBottomModal";
 import HomeBottomModal from "../modal/HomeBottomModal";
-import styled from "styled-components/native";
-import MyText from "../common/MyText";
-import palette from "~/styles/palette";
 import useDevice from "~/hooks/useDevice";
-import { noName } from "~/constants";
 import { useDispatch } from "react-redux";
 import deviceApi from "~/api/device";
 import { useIsFocused } from "@react-navigation/native";
 import { commonActions } from "~/store/common";
 import useAppState from "~/hooks/useAppState";
-
-const Address = styled(Animated.View)<{ rpWidth: RpWidth }>`
-  height: ${({ rpWidth }) => rpWidth(41)}px;
-  background-color: ${palette.blue_7b_80};
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  left: 0;
-  justify-content: center;
-  align-items: center;
-`;
+import { getDistanceBetween2Points } from "~/utils";
+import { getAddressByCoord } from "~/api/place";
 
 const DeviceList = () => {
   const deviceList = useDevice();
   const isPressed = useAppSelector(state => state.common.home.isPressed);
   const pressedID = useAppSelector(state => state.common.home.pressedID);
-  const address = useAppSelector(state => state.common.home.address);
+  const showDeviceLocation = useAppSelector(
+    state => state.common.home.showDeviceLocation,
+  );
+  const areaRadius = useAppSelector(state => state.common.home.areaRadius);
   const value = useRef(new Animated.Value(0)).current;
   const dispatch = useDispatch();
-  const [getDeviceCoord, { data: coord, isFetching: isCoordFetching }] =
-    deviceApi.useLazyGetDeviceCoordQuery();
+  const [
+    getDeviceCoord,
+    { data: coord, isFetching: isCoordFetching, isLoading: loading1 },
+  ] = deviceApi.useLazyGetDeviceCoordQuery();
   const [
     getDeviceSetting,
-    { data: deviceSetting, isFetching: isDeviceSettingFetching, originalArgs },
+    {
+      data: deviceSetting,
+      isFetching: isDeviceSettingFetching,
+      originalArgs,
+      isLoading: loading2,
+    },
   ] = deviceApi.useLazyGetDeviceSettingQuery();
   const timeout = useRef<NodeJS.Timeout | null>(null);
   const isFocused = useIsFocused();
   const appState = useAppState();
-
   const [interval, setInterval] = useState(0);
   const [longPressedID, setLongPressedID] = useState(0);
-
-  const { rpWidth, width, isTablet } = useContext(DimensionsContext);
-
+  const { width, isTablet } = useContext(DimensionsContext);
   const { open, close, modalProps } = useModal();
+  const isLoading = loading1 || loading2;
 
   const device = useMemo(
     () =>
@@ -69,6 +64,13 @@ const DeviceList = () => {
         : null,
     [longPressedID, deviceList],
   );
+
+  const clearTimer = () => {
+    if (timeout.current) {
+      clearTimeout(timeout.current);
+      timeout.current = null;
+    }
+  };
 
   // 이미 캐시된 데이터 있는 상태에서 한번 더 클릭하여 같은 데이터 들어오면 effect 실행 안되는 문제로
   // isFetching 인자 추가하여 같은 데이터라도 매번 실행
@@ -82,59 +84,92 @@ const DeviceList = () => {
     ) {
       return;
     }
-
     const period =
       deviceSetting.Period === 1 ? 3000 : deviceSetting.Period * 1000;
-
-    // 다른 디바이스 클릭하여 주기 받아왔는데 주기가 이전과 다르다면 또는 최초 클릭
-    if (period !== interval && pressedID !== originalArgs) {
-      dispatch(
-        commonActions.setHome({
-          pressedID: originalArgs,
-          isDeviceMoved: false,
-          deviceCoord: { latitude: 0, longitude: 0 },
-        }),
-      );
-      setInterval(period);
-      getDeviceCoord(originalArgs);
-      return;
-    }
-    // 같은 디바이스 클릭하여 주기 받아왔는데 주기가 이전과 다르다면
-    if (period !== interval && pressedID === originalArgs) {
-      setInterval(period);
-      getDeviceCoord(originalArgs);
-      return;
-    }
-    // 다른 디바이스 클릭하여 주기 받아왔는데 주기가 같으면
-    if (period === interval && pressedID !== originalArgs) {
-      dispatch(
-        commonActions.setHome({
-          pressedID: originalArgs,
-          isDeviceMoved: false,
-          deviceCoord: { latitude: 0, longitude: 0 },
-        }),
-      );
-      getDeviceCoord(originalArgs);
-      return;
-    }
-    // 같은 디바이스 클릭하여 주기 받아왔는데 주기가 같으면
-    if (period === interval && pressedID === originalArgs) {
-      const { latitude, longitude } = store.getState().common.home.deviceCoord;
-      dispatch(
-        commonActions.setHome({
-          isDeviceMoved: false,
-          deviceCoord: { latitude, longitude },
-        }),
-      );
-    }
+    dispatch(
+      commonActions.setHome({
+        pressedID: originalArgs,
+        isDeviceMoved: false,
+        deviceCoord: { latitude: 0, longitude: 0, time: "" },
+      }),
+    );
+    setInterval(period);
+    getDeviceCoord(originalArgs);
   }, [deviceSetting, isDeviceSettingFetching]);
+
+  const fetchAddressAndShowLocation = (latitude: number, longitude: number) => {
+    getAddressByCoord(latitude, longitude)
+      .then(addr => {
+        dispatch(
+          commonActions.setHome({
+            address: addr || "주소 없음",
+            showDeviceLocation: true,
+            ...(areaRadius && { areaRadius: 0 }),
+          }),
+        );
+      })
+      .catch(() => {
+        dispatch(
+          commonActions.setHome({
+            address: "주소 없음",
+            showDeviceLocation: true,
+            ...(areaRadius && { areaRadius: 0 }),
+          }),
+        );
+      });
+  };
+
+  const display = (latitude: number, longitude: number, time: string) => {
+    if (!deviceSetting) return;
+    const areas = deviceSetting.Area.filter(area => area.name !== null);
+    if (areas.length) {
+      // 안심존이 있을 때
+      const currentAreaIndex = areas.findIndex(area => {
+        const areaCoord = area.coordinate.coordinates;
+        return (
+          getDistanceBetween2Points(
+            latitude,
+            longitude,
+            areaCoord[1],
+            areaCoord[0],
+          ) < area.radius
+        );
+      });
+      if (currentAreaIndex === -1) {
+        // 현재 위치가 안심존 밖
+        fetchAddressAndShowLocation(latitude, longitude);
+      } else {
+        // 현재 위치가 안심존 내
+        const currentArea = areas[currentAreaIndex];
+        const coord = currentArea.coordinate.coordinates;
+        dispatch(
+          commonActions.setHome({
+            address: currentArea.name as string,
+            areaRadius: 50,
+            deviceCoord: {
+              latitude: coord[1],
+              longitude: coord[0],
+              time,
+            },
+            showDeviceLocation: true,
+          }),
+        );
+      }
+    } else {
+      // 안심존이 없을 때
+      fetchAddressAndShowLocation(latitude, longitude);
+    }
+  };
 
   useEffect(() => {
     if (isCoordFetching || !interval) return;
     if (coord?.coordinate?.coordinates) {
       const latitude = coord.coordinate.coordinates[1];
       const longitude = coord.coordinate.coordinates[0];
-
+      const time = coord.date_time;
+      if (!latitude && !longitude) {
+        return;
+      }
       const prevCoord = store.getState().common.home.deviceCoord;
       if (
         prevCoord.latitude !== latitude &&
@@ -142,65 +177,61 @@ const DeviceList = () => {
       ) {
         dispatch(
           commonActions.setHome({
-            deviceCoord: { latitude, longitude },
+            deviceCoord: { latitude, longitude, time: coord.date_time },
           }),
         );
+        display(latitude, longitude, time);
       }
-
       timeout.current = setTimeout(() => {
         getDeviceCoord(pressedID);
       }, interval);
-    } else {
-      dispatch(
-        commonActions.setHome({
-          deviceCoord: { latitude: 0, longitude: 0 },
-        }),
-      );
     }
-
     return () => {
-      if (timeout.current) {
-        clearTimeout(timeout.current);
-        timeout.current = null;
-      }
+      clearTimer();
     };
   }, [coord, isCoordFetching]);
 
-  const onAvatarPress = useCallback((id: number) => {
-    dispatch(commonActions.setHome({ isPressed: true }));
-    getDeviceSetting(id);
-  }, []);
+  const onAvatarPress = useCallback(
+    (id: number) => {
+      if (isLoading) return;
+      dispatch(commonActions.setHome({ isPressed: true }));
+      getDeviceSetting(id);
+    },
+    [deviceList, isLoading],
+  );
 
-  const onAvatarLongPress = useCallback((id: number) => {
-    setLongPressedID(id);
-    open();
-  }, []);
+  const onAvatarLongPress = useCallback(
+    (id: number) => {
+      setLongPressedID(id);
+      open();
+    },
+    [deviceList],
+  );
 
   useEffect(() => {
-    if (!timeout.current) return;
+    if (!showDeviceLocation) {
+      clearTimer();
+    }
+  }, [showDeviceLocation]);
+
+  useEffect(() => {
     if (!isFocused || appState === "background") {
-      clearTimeout(timeout.current);
-      timeout.current = null;
+      clearTimer();
     }
   }, [isFocused, appState, timeout.current]);
 
   const translateYAvatar = value.interpolate({
     inputRange: [0, 1],
-    outputRange: [0, -rpWidth(41)],
-  });
-
-  const translateY = value.interpolate({
-    inputRange: [0, 1],
-    outputRange: [rpWidth(41), 0],
+    outputRange: [0, 200],
   });
 
   useEffect(() => {
     Animated.timing(value, {
-      toValue: address ? 1 : 0,
+      toValue: showDeviceLocation ? 1 : 0,
       useNativeDriver: true,
       duration: 200,
     }).start();
-  }, [address]);
+  }, [showDeviceLocation]);
 
   if (!deviceList || !deviceList.length) return null;
 
@@ -215,9 +246,7 @@ const DeviceList = () => {
             length={deviceList.length}
             onAvatarPress={onAvatarPress}
             onAvatarLongPress={onAvatarLongPress}
-            style={{
-              transform: [{ translateY: translateYAvatar }],
-            }}
+            style={{ transform: [{ translateY: translateYAvatar }] }}
           />
         ))
       ) : (
@@ -227,15 +256,15 @@ const DeviceList = () => {
           style={{
             position: "absolute",
             bottom: 0,
-            marginBottom: rpWidth(30),
-            height: rpWidth(95),
+            marginBottom: 30,
+            height: 95,
             transform: [{ translateY: translateYAvatar }],
           }}
           contentContainerStyle={{
             minWidth: isTablet ? 0 : width,
             ...(isTablet &&
               deviceList.length < 6 && {
-                paddingLeft: rpWidth(10),
+                paddingLeft: 10,
               }),
             paddingHorizontal: !isTablet
               ? width * 0.15
@@ -258,18 +287,13 @@ const DeviceList = () => {
       )}
       <Modal {...modalProps({ type: "bottom" })}>
         {device ? (
-          <IosStyleBottomModal title={device.name || noName} close={close}>
+          <IosBottomModal close={close}>
             <HomeBottomModal close={close} device={device} />
-          </IosStyleBottomModal>
+          </IosBottomModal>
         ) : (
           <></>
         )}
       </Modal>
-      <Address rpWidth={rpWidth} style={{ transform: [{ translateY }] }}>
-        <MyText fontWeight="medium" fontSize={14} color="white">
-          {address}
-        </MyText>
-      </Address>
     </>
   );
 };
