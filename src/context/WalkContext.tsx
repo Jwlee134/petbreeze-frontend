@@ -1,18 +1,14 @@
-import React, {
-  createContext,
-  ReactNode,
-  useCallback,
-  useContext,
-  useRef,
-} from "react";
+import React, { createContext, ReactNode, useCallback, useRef } from "react";
 import { StyleSheet } from "react-native";
 import NaverMapView, { NaverMapViewProps } from "react-native-nmap";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import ViewShotComp from "react-native-view-shot";
+import { useDispatch } from "react-redux";
 import { Device } from "~/api/device";
 import NaverMap from "~/components/common/Map";
 import useDevice from "~/hooks/useDevice";
 import { useAppSelector } from "~/store";
-import { DimensionsContext } from "./DimensionsContext";
+import { storageActions } from "~/store/storage";
 
 interface MapProps extends NaverMapViewProps {
   children: ReactNode;
@@ -25,6 +21,9 @@ interface Context {
   ViewShot: ({ children }: { children: ReactNode }) => JSX.Element;
   deviceList: Device[];
   stoppedSnapIndex: number;
+  headerHeight: number;
+  pause: () => void;
+  resume: () => void;
 }
 
 const initialContext: Context = {
@@ -34,24 +33,37 @@ const initialContext: Context = {
   ViewShot: () => <></>,
   deviceList: [],
   stoppedSnapIndex: 0,
+  headerHeight: 0,
+  pause: () => {},
+  resume: () => {},
 };
 
 export const WalkContext = createContext(initialContext);
 
 const WalkContextProvider = ({ children }: { children: ReactNode }) => {
-  const { rpWidth } = useContext(DimensionsContext);
   const selectedIds = useAppSelector(
     state => state.storage.walk.selectedDeviceId,
+  );
+  const currentPauseTime = useAppSelector(
+    state => state.storage.walk.currentPauseTime,
   );
   const deviceList = useDevice();
   const mapRef = useRef<NaverMapView>(null);
   const viewShotRef = useRef<ViewShotComp>(null);
+  const { top, bottom } = useSafeAreaInsets();
+  const dispatch = useDispatch();
 
-  const stoppedSnapIndex = rpWidth(316);
+  const stoppedSnapIndex = 179 + bottom;
+  const headerHeight = top + 52;
 
   const ViewShot = useCallback(
     ({ children }: { children: ReactNode }) => (
-      <ViewShotComp ref={viewShotRef} style={StyleSheet.absoluteFill as object}>
+      <ViewShotComp
+        ref={viewShotRef}
+        style={{
+          ...(StyleSheet.absoluteFill as object),
+          marginTop: headerHeight,
+        }}>
         {children}
       </ViewShotComp>
     ),
@@ -67,6 +79,24 @@ const WalkContextProvider = ({ children }: { children: ReactNode }) => {
     [],
   );
 
+  const pause = useCallback(() => {
+    dispatch(
+      storageActions.setWalk({
+        isWalking: false,
+        currentPauseTime: new Date().toISOString(),
+      }),
+    );
+  }, []);
+
+  const resume = useCallback(() => {
+    dispatch(storageActions.setWalk({ isWalking: true }));
+    dispatch(
+      storageActions.setTotalPauseDuration(
+        Math.floor((Date.now() - new Date(currentPauseTime).getTime()) / 1000),
+      ),
+    );
+  }, [currentPauseTime]);
+
   return (
     <WalkContext.Provider
       value={{
@@ -79,6 +109,9 @@ const WalkContextProvider = ({ children }: { children: ReactNode }) => {
             selectedIds.some(id => device.id === id),
           ) || [],
         stoppedSnapIndex,
+        headerHeight,
+        pause,
+        resume,
       }}>
       {children}
     </WalkContext.Provider>

@@ -89,7 +89,7 @@ const EmergencyMissingStackNav = ({
   return (
     <>
       <CustomHeader
-        navigation={navigation}
+        title="실종신고"
         currentPage={currentRouteName === "EmergencyMissingSecondPage" ? 2 : 1}
         onBackButtonPress={() => {
           if (currentRouteName === "EmergencyMissingSecondPage") {
@@ -98,9 +98,8 @@ const EmergencyMissingStackNav = ({
             navigation.goBack();
           }
         }}
-        totalPage={2}>
-        긴급실종
-      </CustomHeader>
+        totalPage={2}
+      />
       <Stack.Navigator
         screenOptions={{
           headerShown: false,

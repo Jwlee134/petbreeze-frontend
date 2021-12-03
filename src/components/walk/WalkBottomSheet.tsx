@@ -99,20 +99,15 @@ const WalkBottomSheet = ({ snapPoints }: { snapPoints: number[] }) => {
       onChange={index =>
         dispatch(storageActions.setWalk({ sheetIndex: index }))
       }
-      enableOverDrag={!isStopped}
       snapPoints={snapPoints}
       index={sheetIndex}>
-      {!isStopped ? (
-        <>
-          <RowContainer>
-            <Timer />
-            <Distance />
-          </RowContainer>
-          <Toggle />
-        </>
-      ) : (
-        <Result />
-      )}
+      <>
+        <RowContainer>
+          <Timer />
+          <Distance />
+        </RowContainer>
+        {!isStopped ? <Toggle /> : <Result />}
+      </>
     </BottomSheet>
   );
 };

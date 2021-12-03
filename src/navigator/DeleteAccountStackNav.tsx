@@ -40,16 +40,15 @@ const DeleteAccountStackNav = ({
   return (
     <>
       <CustomHeader
-        navigation={navigation}
+        title="탈퇴하기"
         onBackButtonPress={() => {
           if (currentRouteName === "DeleteAccountSecondPage") {
             navigation.replace("DeleteAccountFirstPage");
           } else {
             navigation.goBack();
           }
-        }}>
-        탈퇴하기
-      </CustomHeader>
+        }}
+      />
       <TouchableWithoutFeedback
         style={StyleSheet.absoluteFill}
         onPress={Keyboard.dismiss}>

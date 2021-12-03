@@ -7,12 +7,14 @@ import { useDispatch } from "react-redux";
 import { storageActions } from "~/store/storage";
 import deviceApi from "~/api/device";
 import allSettled from "promise.allsettled";
+import palette from "~/styles/palette";
 
 const RowContainer = styled.View`
   flex-direction: row;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: center;
   width: 50%;
+  padding-right: 22.5px;
 `;
 
 const Timer = () => {
@@ -75,26 +77,23 @@ const Timer = () => {
       runTimer();
     } else {
       clearTimer();
-      dispatch(
-        storageActions.setWalk({
-          duration,
-        }),
-      );
+      dispatch(storageActions.setWalk({ duration }));
     }
   }, [isWalking, duration]);
 
   useEffect(() => {
     if (duration === 60) {
+      dispatch(storageActions.setWalk({ duration }));
       allSettled(selectedIDs.map(id => sendNotification(id)));
     }
   }, [duration]);
 
   return (
     <RowContainer>
-      <TimerSVG width={22} height={27} style={{ marginRight: 17 }} />
-      <MyText fontSize={18} color="rgba(0, 0, 0, 0.5)">
-        {hour} : {min.toString().padStart(2, "0")} :{" "}
-        {sec.toString().padStart(2, "0")}
+      <TimerSVG style={{ marginRight: 17 }} />
+      <MyText fontSize={24} color={palette.blue_7b}>
+        {hour > 0 ? `${hour} : ` : ""}
+        {min.toString().padStart(2, "0")} : {sec.toString().padStart(2, "0")}
       </MyText>
     </RowContainer>
   );

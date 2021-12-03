@@ -1,18 +1,33 @@
-import React, { useContext, useState } from "react";
-import { FlatList } from "react-native";
+import React, { useContext } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { WalkContext } from "~/context/WalkContext";
 import { store, useAppSelector } from "~/store";
-import { customHeaderHeight, mapButtonSize } from "~/styles/constants";
-import AnimatedCircularProgress from "../common/AnimatedCircularProgress";
+import {
+  centerModalOutTiming,
+  liveModeButtonStyle,
+  myLocationButtonStyle,
+} from "~/styles/constants";
 import Dissolve from "../common/Dissolve";
+import LiveModeButton from "../common/LiveModeButton";
 import MapButton from "../common/MapButton";
+import deviceApi from "~/api/device";
+import allSettled from "promise.allsettled";
+import { useNavigation } from "@react-navigation/native";
+import { WalkMapScreenNavigationProp } from "~/types/navigator";
+import { useDispatch } from "react-redux";
+import { storageActions } from "~/store/storage";
+import { delay } from "~/utils";
 
 const MapButtons = () => {
   const { top } = useSafeAreaInsets();
   const isStopped = useAppSelector(state => state.storage.walk.isStopped);
-  const [showDevice, setShowDevice] = useState(false);
-  const { mapRef, deviceList } = useContext(WalkContext);
+  const { mapRef, resume, pause, deviceList } = useContext(WalkContext);
+  const selectedID = useAppSelector(
+    state => state.storage.walk.selectedDeviceId,
+  );
+  const dispatch = useDispatch();
+  const navigation = useNavigation<WalkMapScreenNavigationProp>();
+  const [stopWalking, { isLoading }] = deviceApi.useStopWalkingMutation();
 
   const animateToMyLocation = () => {
     const { coords } = store.getState().storage.walk;
@@ -23,54 +38,30 @@ const MapButtons = () => {
     });
   };
 
+  const quitWalk = async (close: () => void) => {
+    if (isLoading) return;
+    await allSettled(selectedID.map(id => stopWalking(id).unwrap()));
+    close();
+    await delay(centerModalOutTiming);
+    navigation.replace("BottomTabNav", {
+      initialRouteName: "HomeTab",
+    });
+    await delay(200);
+    dispatch(storageActions.setWalk(null));
+  };
+
   return (
     <>
-      <Dissolve
-        style={{
-          position: "absolute",
-          top: top + customHeaderHeight + 26,
-          right: 16,
-        }}
-        isVisible={!isStopped}>
-        <MapButton
-          icon="footprint"
-          onPress={() => setShowDevice(prev => !prev)}
+      <Dissolve style={liveModeButtonStyle(top)} isVisible={!isStopped}>
+        <LiveModeButton
+          deviceList={deviceList}
+          resume={resume}
+          pause={pause}
+          quitWalk={quitWalk}
+          isStoppingWalk={isLoading}
         />
       </Dissolve>
-      <Dissolve
-        isVisible={showDevice}
-        style={{
-          position: "absolute",
-          top: top + customHeaderHeight,
-          right: mapButtonSize + 32,
-        }}>
-        <FlatList
-          data={deviceList}
-          keyExtractor={item => `${item.id}`}
-          renderItem={({ item }) => (
-            <AnimatedCircularProgress
-              avatar={item.profile_image}
-              circleWidth={70}
-              lineWidth={5}
-              battery={item.battery}
-              style={{ marginLeft: 11 }}
-            />
-          )}
-          inverted
-          showsHorizontalScrollIndicator={false}
-          horizontal
-          bounces={false}
-          style={{ height: 102 }}
-          contentContainerStyle={{ alignItems: "center" }}
-        />
-      </Dissolve>
-      <Dissolve
-        isVisible={!isStopped}
-        style={{
-          position: "absolute",
-          top: top + customHeaderHeight + 86,
-          right: 16,
-        }}>
+      <Dissolve isVisible={!isStopped} style={myLocationButtonStyle(top)}>
         <MapButton icon="myLocation" onPress={animateToMyLocation} />
       </Dissolve>
     </>

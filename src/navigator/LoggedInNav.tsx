@@ -175,7 +175,9 @@ const LoggedInNav = ({
         name="UpdateProfile"
         component={UpdateProfile}
         options={{
-          header: props => <CustomHeader {...props}>프로필 수정</CustomHeader>,
+          header: ({ navigation }) => (
+            <CustomHeader navigation={navigation} title="프로필 수정" />
+          ),
         }}
       />
       <Stack.Screen

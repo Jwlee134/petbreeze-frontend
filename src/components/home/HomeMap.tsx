@@ -18,6 +18,7 @@ import MapButton from "../common/MapButton";
 import AddressBlock from "./AddressBlock";
 import palette from "~/styles/palette";
 import LiveModeButton from "../common/LiveModeButton";
+import { liveModeButtonStyle, myLocationButtonStyle } from "~/styles/constants";
 
 const HomeMap = () => {
   const mapRef = useRef<NaverMapView>(null);
@@ -179,10 +180,13 @@ const HomeMap = () => {
         ) : null}
       </Map>
       <AddressBlock />
-      <LiveModeButton />
+      <LiveModeButton
+        deviceList={deviceList || []}
+        style={liveModeButtonStyle(top)}
+      />
       <MapButton
         onPress={handleMyLocation}
-        style={{ position: "absolute", right: 16, top: top + 140 }}
+        style={myLocationButtonStyle(top)}
         icon="myLocation"
       />
     </>

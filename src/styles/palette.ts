@@ -3,7 +3,7 @@ export default {
   blue_85: "#8526FF",
   blue_7b: "#7B13FF",
   blue_e5: "#E5D0FF",
-  blue_7b_10: "#7B13FF1A",
+  blue_7b_50: "#7B13FF80",
   blue_6e_50: "#6E41E280",
   blue_6e_20: "#6E41E233",
   red_f0: "#F00043",

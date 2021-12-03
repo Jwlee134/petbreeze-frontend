@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { ScrollView, TouchableOpacity } from "react-native";
+import { ScrollView } from "react-native";
 import MyText from "~/components/common/MyText";
 import CustomHeader from "~/components/navigator/CustomHeader";
 import palette from "~/styles/palette";
@@ -54,14 +54,13 @@ const DeviceManagement = ({
   return (
     <>
       <CustomHeader
-        RightButton={() => (
-          <TouchableOpacity onPress={onEditButtonPress}>
-            <MyText color={palette.blue_7b}>{!isEdit ? "편집" : "완료"}</MyText>
-          </TouchableOpacity>
-        )}
-        navigation={navigation}>
-        기기관리
-      </CustomHeader>
+        RightButtonText={
+          <MyText color={palette.blue_7b}>{!isEdit ? "편집" : "완료"}</MyText>
+        }
+        onRightButtonPress={onEditButtonPress}
+        navigation={navigation}
+        title="기기관리"
+      />
       <ScrollView
         contentContainerStyle={{
           paddingVertical: 25,
@@ -103,7 +102,10 @@ const DeviceManagement = ({
           close={close}
           title="삭제하시나요?"
           rightButtonText="삭제"
-          onRightButtonPress={() => deleteDevice(id)}
+          onRightButtonPress={() => {
+            deleteDevice(id);
+            close();
+          }}
         />
       </Modal>
     </>

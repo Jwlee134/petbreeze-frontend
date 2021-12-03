@@ -1,8 +1,8 @@
 import React, { ForwardedRef, forwardRef, ReactNode } from "react";
 import Sheet, { BottomSheetProps } from "@gorhom/bottom-sheet";
 import styled from "styled-components/native";
-import { bottomSheetHandleHeight } from "~/styles/constants";
 import { Shadow } from "react-native-shadow-2";
+import { bottomSheetHandleHeight } from "~/styles/constants";
 
 const HandleContainer = styled.View`
   height: ${bottomSheetHandleHeight}px;

@@ -4,21 +4,19 @@ import palette from "~/styles/palette";
 import MyText from "../../common/MyText";
 
 const Container = styled.View`
+  width: 76px;
   height: 100%;
   justify-content: center;
   align-items: center;
-  position: absolute;
-  right: 13.5px;
   flex-direction: row;
 `;
 
-const PageCount = ({
-  currentPage,
-  totalPage,
-}: {
+interface Props {
   currentPage: number;
   totalPage: number;
-}) => (
+}
+
+const PageCount = ({ currentPage, totalPage }: Props) => (
   <Container>
     <MyText fontSize={14} fontWeight="medium" color={palette.blue_7b}>
       {currentPage}{" "}

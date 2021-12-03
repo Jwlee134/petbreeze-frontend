@@ -39,9 +39,6 @@ const BleWithHeaderStackNav = ({
   return (
     <>
       <CustomHeader
-        disableBackButton={
-          routeName === "DeviceCheck" || routeName === "PreWiFiForm"
-        }
         currentPage={
           routeName?.includes("WiFi")
             ? 1
@@ -54,7 +51,6 @@ const BleWithHeaderStackNav = ({
             : undefined
         }
         totalPage={4}
-        navigation={navigation}
         onBackButtonPress={() => {
           if (routeName === "WiFiForm") navigation.replace("PreWiFiForm");
           else if (routeName === "RegisterProfileSecond")

@@ -1,9 +1,13 @@
 import React, { memo, useState } from "react";
-import { ActivityIndicator, ScrollView, View } from "react-native";
+import {
+  ActivityIndicator,
+  ScrollView,
+  StyleProp,
+  View,
+  ViewStyle,
+} from "react-native";
 import Modal from "react-native-modal";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import deviceApi, { Device } from "~/api/device";
-import useDevice from "~/hooks/useDevice";
 import useModal from "~/hooks/useModal";
 import { centerModalOutTiming } from "~/styles/constants";
 import palette from "~/styles/palette";
@@ -16,19 +20,37 @@ import allSettled from "promise.allsettled";
 import { isEndWithConsonant } from "~/utils";
 import Toast from "react-native-toast-message";
 
-const LiveModeButton = () => {
-  const { top } = useSafeAreaInsets();
+interface Props {
+  style?: StyleProp<ViewStyle>;
+  resume?: () => void;
+  pause?: () => void;
+  deviceList: Device[];
+  quitWalk?: (close: () => void) => Promise<void>;
+  isStoppingWalk?: boolean;
+}
+
+const LiveModeButton = ({
+  style,
+  resume,
+  pause,
+  deviceList,
+  quitWalk,
+  isStoppingWalk,
+}: Props) => {
   const { open, close, modalProps } = useModal();
   const [selectedIDs, setSelectedIDs] = useState<number[]>([]);
   const [isSelected, setIsSelected] = useState(false);
-  const deviceList = useDevice();
-  const [update, { isLoading }] = deviceApi.useUpdateDeviceSettingMutation();
+  const [update, { isLoading: isUpdatingSetting }] =
+    deviceApi.useUpdateDeviceSettingMutation();
+
+  const isLoading = isUpdatingSetting || isStoppingWalk;
 
   const onRightButtonPress = async () => {
     if (!isSelected) {
+      if (!selectedIDs.length) return;
       setIsSelected(true);
     } else {
-      if (!deviceList) return;
+      if (!deviceList || isLoading) return;
       const results = await allSettled(
         selectedIDs.map(id => update({ deviceID: id, body: { Period: 1 } })),
       );
@@ -52,8 +74,13 @@ const LiveModeButton = () => {
             isEndWithConsonant(rejectedNames) ? "을" : "를"
           } 라이브 모드로 변경할 수 없습니다.`,
         });
+      } else {
+        if (quitWalk) {
+          quitWalk(close);
+        } else {
+          close();
+        }
       }
-      close();
     }
   };
 
@@ -75,6 +102,7 @@ const LiveModeButton = () => {
   const resetAndClose = () => {
     close();
     setTimeout(() => {
+      if (resume) resume();
       setSelectedIDs([]);
       setIsSelected(false);
     }, centerModalOutTiming);
@@ -83,8 +111,11 @@ const LiveModeButton = () => {
   return (
     <>
       <MapButton
-        onPress={open}
-        style={{ position: "absolute", right: 16, top: top + 74 }}
+        onPress={() => {
+          open();
+          if (pause) pause();
+        }}
+        style={style}
         icon="live"
       />
       <Modal

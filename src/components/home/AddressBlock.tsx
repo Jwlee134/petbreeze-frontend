@@ -39,9 +39,10 @@ const SpaceBetweenContainer = styled.View`
 `;
 
 const Button = styled.TouchableOpacity`
-  padding: 0 33px;
-  height: 54px;
+  width: 76px;
+  height: 52px;
   justify-content: center;
+  align-items: center;
 `;
 
 const AddressBlock = () => {
@@ -58,7 +59,7 @@ const AddressBlock = () => {
 
   const value = useRef(new Animated.Value(0)).current;
 
-  const translateYAddress = value.interpolate({
+  const translateY = value.interpolate({
     inputRange: [0, 1],
     outputRange: [-200, 0],
   });
@@ -71,12 +72,21 @@ const AddressBlock = () => {
     }).start();
   }, [showDeviceLocation]);
 
+  const onClipPress = () => {
+    if (areaRadius) return;
+    Clipboard.setString(address);
+    Toast.show({
+      type: "notification",
+      text1: "클립보드에 복사되었습니다.",
+    });
+  };
+
   return (
     <Container
       style={{
         width,
-        height: top + 56,
-        transform: [{ translateY: translateYAddress }],
+        height: top + 52,
+        transform: [{ translateY }],
       }}>
       {deviceList && pressedID && address && deviceCoord.time ? (
         <Wrapper>
@@ -97,15 +107,7 @@ const AddressBlock = () => {
                 {new Date(deviceCoord.time).getMinutes()}
               </MyText>
             </View>
-            <Button
-              onPress={() => {
-                if (areaRadius) return;
-                Clipboard.setString(address);
-                Toast.show({
-                  type: "notification",
-                  text1: "클립보드에 복사되었습니다.",
-                });
-              }}>
+            <Button onPress={onClipPress}>
               {!areaRadius ? <Clip /> : null}
             </Button>
           </SpaceBetweenContainer>

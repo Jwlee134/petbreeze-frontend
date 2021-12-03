@@ -3,47 +3,67 @@ import React, { ReactNode } from "react";
 import styled from "styled-components/native";
 import MyText from "../../common/MyText";
 
-import { Animated, StyleProp, ViewStyle } from "react-native";
+import { StyleProp, ViewStyle } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import BackButton from "./BackButton";
 import PageIndicator from "./PageIndicator";
 import PageCount from "./PageCount";
-import { customHeaderHeight } from "~/styles/constants";
 
 interface Props extends Partial<StackHeaderProps> {
   children?: ReactNode;
-  disableBackButton?: boolean;
-  onBackButtonPress?: () => void;
   currentPage?: number;
   totalPage?: number;
-  RightButton?: () => JSX.Element;
-  style?: StyleProp<ViewStyle>;
+  height?: number;
+  title?: string;
   navigation?: any;
+  onBackButtonPress?: () => void;
+  RightButtonText?: JSX.Element;
+  onRightButtonPress?: () => void;
+  containerStyle?: StyleProp<ViewStyle>;
+  wrapperStyle?: StyleProp<ViewStyle>;
+  leftDivStyle?: StyleProp<ViewStyle>;
+  centerDivStyle?: StyleProp<ViewStyle>;
+  rightDivStyle?: StyleProp<ViewStyle>;
+  childrenPosition?: "left" | "center" | "right";
 }
 
-const Container = styled(Animated.View)`
-  justify-content: center;
-  align-items: center;
-  flex-direction: row;
+const Container = styled.View`
+  justify-content: flex-end;
   background-color: white;
 `;
 
-const RightButtonContainer = styled.View`
-  position: absolute;
-  right: 13.5px;
-  justify-content: center;
+const Wrapper = styled.View`
+  flex-direction: row;
+  align-items: center;
+`;
+
+const Rightbutton = styled.TouchableOpacity`
+  width: 76px;
   height: 100%;
+  justify-content: center;
+  align-items: center;
+`;
+
+const Div = styled.View`
+  width: 33.3%;
 `;
 
 const CustomHeader = ({
-  children,
-  navigation,
-  onBackButtonPress,
-  disableBackButton = false,
   currentPage = 0,
   totalPage = 0,
-  RightButton,
-  style,
+  height = 48,
+  title,
+  navigation,
+  onBackButtonPress,
+  RightButtonText,
+  onRightButtonPress,
+  children,
+  containerStyle,
+  wrapperStyle,
+  leftDivStyle,
+  centerDivStyle,
+  rightDivStyle,
+  childrenPosition,
 }: Props) => {
   const { top } = useSafeAreaInsets();
   const showPage = currentPage !== 0 && totalPage !== 0;
@@ -51,31 +71,38 @@ const CustomHeader = ({
   return (
     <>
       <Container
-        style={{
-          marginTop: navigation ? top : 0,
-          height: customHeaderHeight,
-          ...(style as object),
-        }}>
-        <>
-          <BackButton
-            onBackButtonPress={onBackButtonPress}
-            disableBackButton={disableBackButton}
-            navigation={navigation}
-          />
-          {children ? (
-            <MyText fontWeight="medium" fontSize={18}>
-              {children}
-            </MyText>
-          ) : null}
-          {showPage ? (
-            <PageCount currentPage={currentPage} totalPage={totalPage} />
-          ) : null}
-          {RightButton ? (
-            <RightButtonContainer>
-              <RightButton />
-            </RightButtonContainer>
-          ) : null}
-        </>
+        style={{ height: height + top, ...(containerStyle as object) }}>
+        <Wrapper style={{ height, ...(wrapperStyle as object) }}>
+          <Div
+            style={{ alignItems: "flex-start", ...(leftDivStyle as object) }}>
+            {(navigation || onBackButtonPress) && (
+              <BackButton
+                onBackButtonPress={onBackButtonPress}
+                navigation={navigation}
+              />
+            )}
+            {(childrenPosition === "left" && children) || null}
+          </Div>
+          <Div style={{ alignItems: "center", ...(centerDivStyle as object) }}>
+            {title && (
+              <MyText fontWeight="medium" fontSize={18}>
+                {title}
+              </MyText>
+            )}
+            {(childrenPosition === "center" && children) || null}
+          </Div>
+          <Div style={{ alignItems: "flex-end", ...(rightDivStyle as object) }}>
+            {showPage && (
+              <PageCount currentPage={currentPage} totalPage={totalPage} />
+            )}
+            {RightButtonText && (
+              <Rightbutton onPress={onRightButtonPress}>
+                {RightButtonText}
+              </Rightbutton>
+            )}
+            {(childrenPosition === "right" && children) || null}
+          </Div>
+        </Wrapper>
       </Container>
       {showPage ? (
         <PageIndicator currentPage={currentPage} totalPage={totalPage} />

@@ -4,12 +4,14 @@ import { useAppSelector } from "~/store";
 import MyText from "../common/MyText";
 import Path from "~/assets/svg/walk/path.svg";
 import { formatWalkDistance } from "~/utils";
+import palette from "~/styles/palette";
 
 const RowContainer = styled.View`
   flex-direction: row;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   width: 50%;
+  padding-left: 22.5px;
 `;
 
 const Distance = () => {
@@ -17,8 +19,8 @@ const Distance = () => {
 
   return (
     <RowContainer>
-      <Path width={21} height={22} style={{ marginRight: 17 }} />
-      <MyText fontSize={18} color="rgba(0, 0, 0, 0.5)">
+      <Path style={{ marginRight: 17 }} />
+      <MyText fontSize={24} color={palette.blue_7b}>
         {formatWalkDistance(meter)}
       </MyText>
     </RowContainer>

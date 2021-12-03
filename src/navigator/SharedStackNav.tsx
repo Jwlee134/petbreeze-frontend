@@ -29,9 +29,7 @@ const SharedStackNav = ({ screenName }: { screenName: string }) => {
         <Stack.Screen
           name="Home"
           component={Home}
-          options={{
-            headerShown: false,
-          }}
+          options={{ headerShown: false }}
         />
       )}
       {screenName === "Walk" && (
@@ -39,11 +37,7 @@ const SharedStackNav = ({ screenName }: { screenName: string }) => {
           name="WalkTopTabNav"
           component={WalkTopTabNav}
           options={{
-            header: props => (
-              <CustomHeader disableBackButton {...props}>
-                산책
-              </CustomHeader>
-            ),
+            header: () => <CustomHeader title="산책" />,
           }}
         />
       )}
@@ -52,11 +46,7 @@ const SharedStackNav = ({ screenName }: { screenName: string }) => {
           name="Notification"
           component={Notification}
           options={{
-            header: props => (
-              <CustomHeader disableBackButton {...props}>
-                알림
-              </CustomHeader>
-            ),
+            header: () => <CustomHeader title="알림" />,
           }}
         />
       )}
@@ -65,11 +55,7 @@ const SharedStackNav = ({ screenName }: { screenName: string }) => {
           name="MyPage"
           component={MyPage}
           options={{
-            header: props => (
-              <CustomHeader disableBackButton {...props}>
-                마이페이지
-              </CustomHeader>
-            ),
+            header: () => <CustomHeader title="마이페이지" />,
           }}
         />
       )}
@@ -77,14 +63,18 @@ const SharedStackNav = ({ screenName }: { screenName: string }) => {
         name="WalkDetailMonth"
         component={WalkDetailMonth}
         options={{
-          header: props => <CustomHeader {...props}>산책기록</CustomHeader>,
+          header: ({ navigation }) => (
+            <CustomHeader navigation={navigation} title="산책 기록" />
+          ),
         }}
       />
       <Stack.Screen
         name="NotificationSetting"
         component={NotificationSetting}
         options={{
-          header: props => <CustomHeader {...props}>알림설정</CustomHeader>,
+          header: ({ navigation }) => (
+            <CustomHeader navigation={navigation} title="알림 설정" />
+          ),
         }}
       />
       <Stack.Screen
@@ -101,7 +91,9 @@ const SharedStackNav = ({ screenName }: { screenName: string }) => {
         name="UpdateNickname"
         component={UpdateNickname}
         options={{
-          header: props => <CustomHeader {...props}>이름변경</CustomHeader>,
+          header: ({ navigation }) => (
+            <CustomHeader navigation={navigation} title="이름변경" />
+          ),
         }}
       />
     </Stack.Navigator>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useDispatch } from "react-redux";
 import styled from "styled-components/native";
 import { storageActions } from "~/store/storage";
@@ -21,12 +21,13 @@ import deviceApi from "~/api/device";
 import allSettled from "promise.allsettled";
 import { ActivityIndicator } from "react-native";
 import permissionCheck from "~/utils/permissionCheck";
+import { WalkContext } from "~/context/WalkContext";
 
 const RowContainer = styled.View`
   flex-direction: row;
   align-items: flex-end;
   justify-content: space-evenly;
-  margin-top: 30px;
+  margin-top: 40px;
 `;
 
 const SmallButton = styled.TouchableOpacity`
@@ -51,9 +52,7 @@ const Button = styled.TouchableOpacity`
 
 const Toggle = () => {
   const navigation = useNavigation<WalkMapScreenNavigationProp>();
-  const currentPauseTime = useAppSelector(
-    state => state.storage.walk.currentPauseTime,
-  );
+
   const selectedID = useAppSelector(
     state => state.storage.walk.selectedDeviceId,
   );
@@ -62,34 +61,33 @@ const Toggle = () => {
   const dispatch = useDispatch();
   const { open, close, modalProps } = useModal();
   const [stopWalking, { isLoading }] = deviceApi.useStopWalkingMutation();
+  const { resume, pause } = useContext(WalkContext);
 
-  const pause = () => {
-    dispatch(
-      storageActions.setWalk({
-        isWalking: false,
-        currentPauseTime: new Date().toISOString(),
-      }),
-    );
-  };
-
-  const resume = () => {
-    dispatch(storageActions.setWalk({ isWalking: true }));
-    dispatch(
-      storageActions.setTotalPauseDuration(
-        Math.floor((Date.now() - new Date(currentPauseTime).getTime()) / 1000),
-      ),
-    );
+  const stop = () => {
+    if (duration < 60) {
+      open();
+    } else {
+      dispatch(
+        storageActions.setWalk({
+          isStopped: true,
+          sheetIndex: 0,
+        }),
+      );
+    }
   };
 
   const onLeftButtonPress = () => {
-    if (isWalking) pause();
-    else open();
+    if (isWalking) {
+      pause();
+    } else {
+      stop();
+    }
   };
 
   const onCenterButtonPress = () => {
     if (isWalking) {
       pause();
-      open();
+      stop();
     } else resume();
   };
 
@@ -112,22 +110,13 @@ const Toggle = () => {
 
   const onFinishWalking = async () => {
     if (isLoading) return;
-    if (duration < 60) {
-      await allSettled(selectedID.map(id => stopWalking(id).unwrap()));
-      setTimeout(() => {
-        dispatch(storageActions.setWalk(null));
-      }, 200);
-      navigation.replace("BottomTabNav", {
-        initialRouteName: "WalkTab",
-      });
-    } else {
-      dispatch(
-        storageActions.setWalk({
-          isStopped: true,
-          sheetIndex: 0,
-        }),
-      );
-    }
+    await allSettled(selectedID.map(id => stopWalking(id).unwrap()));
+    setTimeout(() => {
+      dispatch(storageActions.setWalk(null));
+    }, 200);
+    navigation.replace("BottomTabNav", {
+      initialRouteName: "WalkTab",
+    });
     close();
   };
 
@@ -171,11 +160,7 @@ const Toggle = () => {
         <CommonCenterModal
           close={onModalClose}
           rightButtonText={isLoading ? <ActivityIndicator /> : "종료"}
-          title={
-            duration < 60
-              ? `1분 미만의 산책은\n기록되지 않습니다.\n산책을 종료할까요?`
-              : "산책을 종료할까요?"
-          }
+          title={`1분 미만의 산책은\n기록되지 않습니다.\n산책을 종료할까요?`}
           onRightButtonPress={onFinishWalking}
         />
       </Modal>

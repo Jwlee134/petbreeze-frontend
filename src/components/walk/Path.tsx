@@ -57,7 +57,7 @@ const Path = ({ isStopped }: { isStopped: boolean }) => {
             {coords.length > 1 ? (
               <Marker
                 coordinate={{ latitude: coords[0][1], longitude: coords[0][0] }}
-                image={require("~/assets/image/walk/walk-start.png")}
+                image={require("~/assets/image/walk-end.png")}
                 width={22}
                 height={22}
                 anchor={{ x: 0.5, y: 0.5 }}
@@ -68,7 +68,7 @@ const Path = ({ isStopped }: { isStopped: boolean }) => {
                 latitude: coords[coords.length - 1][1],
                 longitude: coords[coords.length - 1][0],
               }}
-              image={require("~/assets/image/walk/walk-end.png")}
+              image={require("~/assets/image/walk-end.png")}
               width={22}
               height={22}
               anchor={{ x: 0.5, y: 0.5 }}

@@ -105,9 +105,12 @@ const WalkDetailDay = ({
 
   return (
     <>
-      <CustomHeader navigation={navigation}>
-        {`${new Date(date).getMonth() + 1}월 ${new Date(date).getDate()}일`}
-      </CustomHeader>
+      <CustomHeader
+        navigation={navigation}
+        title={`${new Date(date).getMonth() + 1}월 ${new Date(
+          date,
+        ).getDate()}일`}
+      />
       <FlatList
         data={data}
         renderItem={({ item, index }) => (
