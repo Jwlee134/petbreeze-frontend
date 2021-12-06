@@ -4,6 +4,8 @@ import styled from "styled-components/native";
 import palette from "~/styles/palette";
 import Divider from "../common/Divider";
 import MyText, { FontWeight } from "../common/MyText";
+import Modal, { ModalProps } from "react-native-modal";
+import { ModalPosition } from "~/hooks/useModal";
 
 interface Props {
   title?: string;
@@ -14,6 +16,13 @@ interface Props {
   close: () => void;
   children?: ReactNode;
   containerStyle?: StyleProp<ViewStyle>;
+  modalProps: ({
+    type,
+    ...props
+  }: Partial<ModalProps> & {
+    type: ModalPosition;
+  }) => Partial<ModalProps>;
+  extraProps?: Partial<ModalProps>;
 }
 
 const Container = styled.View`
@@ -40,43 +49,47 @@ const CommonCenterModal = ({
   close,
   children,
   containerStyle,
+  modalProps,
+  extraProps,
 }: Props) => (
-  <Container style={containerStyle}>
-    {title ? (
-      <MyText
-        style={{
-          ...(!description ? { marginVertical: 27 } : { marginTop: 27 }),
-          textAlign: "center",
-        }}
-        fontWeight={titleFontWeight}>
-        {title}
-      </MyText>
-    ) : null}
-    {description ? (
-      <MyText
-        style={{ textAlign: "center", marginTop: 19, marginBottom: 27 }}
-        fontSize={12}>
-        {description}
-      </MyText>
-    ) : null}
-    {children || null}
-    <Divider />
-    <View style={{ flexDirection: "row" }}>
-      <Button onPress={close}>
-        <MyText color="rgba(0, 0, 0, 0.3)">취소</MyText>
-      </Button>
-      <Divider isVertical />
-      <Button onPress={onRightButtonPress}>
-        {typeof rightButtonText === "string" ? (
-          <MyText fontWeight="medium" color={palette.blue_7b}>
-            {rightButtonText}
-          </MyText>
-        ) : (
-          rightButtonText
-        )}
-      </Button>
-    </View>
-  </Container>
+  <Modal {...modalProps({ type: ModalPosition.Center, ...extraProps })}>
+    <Container style={containerStyle}>
+      {title ? (
+        <MyText
+          style={{
+            ...(!description ? { marginVertical: 27 } : { marginTop: 27 }),
+            textAlign: "center",
+          }}
+          fontWeight={titleFontWeight}>
+          {title}
+        </MyText>
+      ) : null}
+      {description ? (
+        <MyText
+          style={{ textAlign: "center", marginTop: 19, marginBottom: 27 }}
+          fontSize={12}>
+          {description}
+        </MyText>
+      ) : null}
+      {children || null}
+      <Divider />
+      <View style={{ flexDirection: "row" }}>
+        <Button onPress={close}>
+          <MyText color="rgba(0, 0, 0, 0.3)">취소</MyText>
+        </Button>
+        <Divider isVertical />
+        <Button onPress={onRightButtonPress}>
+          {typeof rightButtonText === "string" ? (
+            <MyText fontWeight="medium" color={palette.blue_7b}>
+              {rightButtonText}
+            </MyText>
+          ) : (
+            rightButtonText
+          )}
+        </Button>
+      </View>
+    </Container>
+  </Modal>
 );
 
 export default CommonCenterModal;

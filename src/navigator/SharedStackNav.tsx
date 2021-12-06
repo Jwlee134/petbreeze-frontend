@@ -36,27 +36,21 @@ const SharedStackNav = ({ screenName }: { screenName: string }) => {
         <Stack.Screen
           name="WalkTopTabNav"
           component={WalkTopTabNav}
-          options={{
-            header: () => <CustomHeader title="산책" />,
-          }}
+          options={{ header: () => <CustomHeader title="산책" /> }}
         />
       )}
       {screenName === "Notification" && (
         <Stack.Screen
           name="Notification"
           component={Notification}
-          options={{
-            header: () => <CustomHeader title="알림" />,
-          }}
+          options={{ header: () => <CustomHeader title="알림" /> }}
         />
       )}
       {screenName === "MyPage" && (
         <Stack.Screen
           name="MyPage"
           component={MyPage}
-          options={{
-            header: () => <CustomHeader title="마이페이지" />,
-          }}
+          options={{ header: () => <CustomHeader title="마이페이지" /> }}
         />
       )}
       <Stack.Screen
@@ -90,11 +84,7 @@ const SharedStackNav = ({ screenName }: { screenName: string }) => {
       <Stack.Screen
         name="UpdateNickname"
         component={UpdateNickname}
-        options={{
-          header: ({ navigation }) => (
-            <CustomHeader navigation={navigation} title="이름변경" />
-          ),
-        }}
+        options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );

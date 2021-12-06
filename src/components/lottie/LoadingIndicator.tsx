@@ -1,13 +1,13 @@
 import React from "react";
 import LottieView from "lottie-react-native";
 
-const Loading = () => (
+const LoadingIndicator = ({ size }: { size: number }) => (
   <LottieView
     source={require("~/assets/lottie/loading.json")}
     autoPlay
     loop
-    style={{ width: 80, height: 80 }}
+    style={{ width: size, height: size }}
   />
 );
 
-export default Loading;
+export default LoadingIndicator;

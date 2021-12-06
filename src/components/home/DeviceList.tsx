@@ -11,7 +11,7 @@ import { Animated } from "react-native";
 import { DimensionsContext } from "~/context/DimensionsContext";
 import HomeAvatar from "./HomeAvatar";
 import Modal from "react-native-modal";
-import useModal from "~/hooks/useModal";
+import useModal, { ModalPosition } from "~/hooks/useModal";
 import IosBottomModal from "../modal/IosBottomModal";
 import HomeBottomModal from "../modal/HomeBottomModal";
 import useDevice from "~/hooks/useDevice";
@@ -285,7 +285,7 @@ const DeviceList = () => {
           ))}
         </Animated.ScrollView>
       )}
-      <Modal {...modalProps({ type: "bottom" })}>
+      <Modal {...modalProps({ type: ModalPosition.Bottom })}>
         {device ? (
           <IosBottomModal close={close}>
             <HomeBottomModal close={close} device={device} />

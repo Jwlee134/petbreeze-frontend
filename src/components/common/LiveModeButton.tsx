@@ -6,7 +6,6 @@ import {
   View,
   ViewStyle,
 } from "react-native";
-import Modal from "react-native-modal";
 import deviceApi, { Device } from "~/api/device";
 import useModal from "~/hooks/useModal";
 import { centerModalOutTiming } from "~/styles/constants";
@@ -118,63 +117,60 @@ const LiveModeButton = ({
         style={style}
         icon="live"
       />
-      <Modal
-        {...modalProps({
-          type: "center",
-          onBackdropPress: resetAndClose,
+      <CommonCenterModal
+        modalProps={modalProps}
+        extraProps={{
           onBackButtonPress: resetAndClose,
-        })}>
-        <CommonCenterModal
-          title={isSelected ? "잠깐!" : undefined}
-          titleFontWeight={isSelected ? "medium" : undefined}
-          description={
-            isSelected
-              ? `실시간 모드에서는\n배터리가 빠르게 소모될 수 있습니다.`
-              : undefined
-          }
-          rightButtonText={isLoading ? <ActivityIndicator /> : "확인"}
-          onRightButtonPress={onRightButtonPress}
-          close={resetAndClose}>
-          {!isSelected ? (
-            <>
-              <MyText
-                fontWeight="medium"
-                style={{ marginTop: 25, marginBottom: 18 }}>
-                디바이스를 선택해주세요.
-              </MyText>
-              <ScrollView style={{ width: "100%", maxHeight: 236 }}>
-                {deviceList?.map(device => (
-                  <ListItem
-                    key={device.id}
-                    onPress={() => onListItemPress(device)}
-                    style={{ width: "100%", height: 67 }}
-                    isIconArrow={false}
-                    selected={selectedIDs.includes(device.id)}>
-                    <View
-                      style={{ flexDirection: "row", alignItems: "center" }}>
-                      <AnimatedCircularProgress
-                        avatar={device.profile_image}
-                        circleWidth={54}
-                        lineWidth={2}
-                        battery={device.battery}
-                      />
-                      <MyText
-                        style={{ marginHorizontal: 13.5 }}
-                        fontWeight="medium">
-                        {device.name}
-                      </MyText>
-                      <MyText color={palette.blue_7b} fontSize={12}>
-                        {device.battery || 0}%
-                      </MyText>
-                    </View>
-                  </ListItem>
-                ))}
-              </ScrollView>
-              <View style={{ height: 18 }} />
-            </>
-          ) : null}
-        </CommonCenterModal>
-      </Modal>
+          onBackdropPress: resetAndClose,
+        }}
+        title={isSelected ? "잠깐!" : undefined}
+        titleFontWeight={isSelected ? "medium" : undefined}
+        description={
+          isSelected
+            ? `실시간 모드에서는\n배터리가 빠르게 소모될 수 있습니다.`
+            : undefined
+        }
+        rightButtonText={isLoading ? <ActivityIndicator /> : "확인"}
+        onRightButtonPress={onRightButtonPress}
+        close={resetAndClose}>
+        {!isSelected ? (
+          <>
+            <MyText
+              fontWeight="medium"
+              style={{ marginTop: 25, marginBottom: 18 }}>
+              디바이스를 선택해주세요.
+            </MyText>
+            <ScrollView style={{ width: "100%", maxHeight: 236 }}>
+              {deviceList?.map(device => (
+                <ListItem
+                  key={device.id}
+                  onPress={() => onListItemPress(device)}
+                  style={{ width: "100%", height: 67 }}
+                  isIconArrow={false}
+                  selected={selectedIDs.includes(device.id)}>
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <AnimatedCircularProgress
+                      avatar={device.profile_image}
+                      circleWidth={54}
+                      lineWidth={2}
+                      battery={device.battery}
+                    />
+                    <MyText
+                      style={{ marginHorizontal: 13.5 }}
+                      fontWeight="medium">
+                      {device.name}
+                    </MyText>
+                    <MyText color={palette.blue_7b} fontSize={12}>
+                      {device.battery || 0}%
+                    </MyText>
+                  </View>
+                </ListItem>
+              ))}
+            </ScrollView>
+            <View style={{ height: 18 }} />
+          </>
+        ) : null}
+      </CommonCenterModal>
     </>
   );
 };

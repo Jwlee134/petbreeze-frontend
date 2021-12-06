@@ -12,7 +12,7 @@ const SwipeableButton = ({ children, backgroundColor, onPress }: Props) => (
   <RectButton
     onPress={onPress}
     style={{
-      width: 72,
+      width: 78,
       height: "100%",
       justifyContent: "center",
       alignItems: "center",

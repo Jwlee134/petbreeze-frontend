@@ -5,12 +5,10 @@ import styled from "styled-components/native";
 
 import Setting from "~/assets/svg/myPage/setting.svg";
 import Bell from "~/assets/svg/myPage/bell.svg";
-import Arrow from "~/assets/svg/arrow/arrow-right-gray.svg";
 import Tag from "~/assets/svg/myPage/name-tag.svg";
 import { MyPageScreenNavigationProp } from "~/types/navigator";
 import DeviceList from "~/components/myPage/DeviceList";
 import useModal from "~/hooks/useModal";
-import Modal from "react-native-modal";
 import CommonCenterModal from "~/components/modal/CommonCenterModal";
 import Divider from "~/components/common/Divider";
 import * as SecureStore from "expo-secure-store";
@@ -61,13 +59,7 @@ const MyPage = ({ navigation }: { navigation: MyPageScreenNavigationProp }) => {
     <>
       <ScrollView>
         <DeviceList deviceList={deviceList} />
-        <Divider isHairline={false} />
-        <MyText
-          style={{ paddingLeft: 32, paddingTop: 29, paddingBottom: 11 }}
-          color="rgba(0, 0, 0, 0.3)"
-          fontSize={14}>
-          계정관리
-        </MyText>
+        <Divider isHairline={false} style={{ marginVertical: 10 }} />
         <Button
           disabled={!deviceList?.length}
           onPress={() => {
@@ -79,11 +71,6 @@ const MyPage = ({ navigation }: { navigation: MyPageScreenNavigationProp }) => {
             </SvgContainer>
             <MyText>기기관리</MyText>
           </RowContainer>
-          <Arrow
-            width={7}
-            height={12}
-            style={{ opacity: !deviceList?.length ? 0.5 : 1 }}
-          />
         </Button>
         <Button
           onPress={() => {
@@ -95,7 +82,6 @@ const MyPage = ({ navigation }: { navigation: MyPageScreenNavigationProp }) => {
             </SvgContainer>
             <MyText>알림설정</MyText>
           </RowContainer>
-          <Arrow width={7} height={12} />
         </Button>
         <Button
           onPress={() => {
@@ -107,28 +93,26 @@ const MyPage = ({ navigation }: { navigation: MyPageScreenNavigationProp }) => {
             </SvgContainer>
             <MyText>이름변경</MyText>
           </RowContainer>
-          <Arrow width={7} height={12} />
         </Button>
         <Divider
-          style={{ width: width - 34, alignSelf: "center", marginVertical: 17 }}
+          style={{ width: width - 34, alignSelf: "center", marginVertical: 10 }}
         />
-        <Button onPress={open} style={{ paddingLeft: 32 }}>
+        <Button onPress={open} style={{ height: 42, paddingLeft: 32 }}>
           <MyText fontWeight="medium">로그아웃</MyText>
         </Button>
         <Button
-          style={{ paddingLeft: 32, marginBottom: 17 }}
+          style={{ height: 42, paddingLeft: 32, marginBottom: 10 }}
           onPress={() => navigation.navigate("DeleteAccountStackNav")}>
           <MyText color="rgba(0, 0, 0, 0.3)">탈퇴하기</MyText>
         </Button>
       </ScrollView>
-      <Modal {...modalProps({ type: "center" })}>
-        <CommonCenterModal
-          close={close}
-          rightButtonText="로그아웃"
-          onRightButtonPress={onLogout}
-          title="로그아웃 하시나요?"
-        />
-      </Modal>
+      <CommonCenterModal
+        close={close}
+        modalProps={modalProps}
+        rightButtonText="로그아웃"
+        onRightButtonPress={onLogout}
+        title="로그아웃 하시나요?"
+      />
     </>
   );
 };

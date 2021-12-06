@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 import styled from "styled-components/native";
 import MyText from "../common/MyText";
 import Location from "~/assets/svg/myPage/location.svg";
@@ -6,7 +6,6 @@ import ScrollPicker from "../common/ScrollPicker";
 import { useDispatch } from "react-redux";
 import { useAppSelector } from "~/store";
 import { deviceSettingActions } from "~/store/deviceSetting";
-import deviceApi from "~/api/device";
 
 const RowContainer = styled.View`
   flex-direction: row;
@@ -19,41 +18,27 @@ const SvgContainer = styled.View`
 `;
 
 const Container = styled(RowContainer)`
-  height: 79px;
+  height: 64px;
   padding: 0 16px;
   justify-content: space-between;
 `;
 
-const Period = ({ deviceID }: { deviceID: number }) => {
+const PeriodSection = () => {
   const period = useAppSelector(state => state.deviceSetting.period);
   const dispatch = useDispatch();
 
-  const { data } = deviceApi.endpoints.getDeviceList.useQueryState();
-
-  const periodArr = useMemo(() => {
-    if (
-      data &&
-      data[data.findIndex(device => device.id === deviceID)]?.is_missed
-    ) {
-      return [
-        { text: "실시간", value: 1 },
-        { text: "5분", value: 300 },
-        { text: "10분", value: 600 },
-        { text: "30분", value: 1800 },
-      ];
-    }
-    return [
-      { text: "5분", value: 300 },
-      { text: "10분", value: 600 },
-      { text: "30분", value: 1800 },
-    ];
-  }, [data]);
+  const periodArr = [
+    { text: "실시간", value: 1 },
+    { text: "5분", value: 300 },
+    { text: "10분", value: 600 },
+    { text: "30분", value: 1800 },
+  ];
 
   return (
     <Container>
       <RowContainer>
         <SvgContainer>
-          <Location width={16} height={20} />
+          <Location />
         </SvgContainer>
         <MyText>위치정보 수신 주기</MyText>
       </RowContainer>
@@ -73,4 +58,4 @@ const Period = ({ deviceID }: { deviceID: number }) => {
   );
 };
 
-export default Period;
+export default PeriodSection;

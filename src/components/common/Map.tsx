@@ -1,17 +1,25 @@
 import React, { ForwardedRef, forwardRef, ReactNode } from "react";
-import { StyleSheet } from "react-native";
+import { StyleProp, StyleSheet, ViewStyle } from "react-native";
 import NaverMapView, { NaverMapViewProps } from "react-native-nmap";
 
 export interface Props extends NaverMapViewProps {
   children?: ReactNode;
+  style?: StyleProp<ViewStyle>;
+  isPositionAbsolute?: boolean;
 }
 
 const Map = forwardRef(
-  ({ children, ...props }: Props, ref: ForwardedRef<NaverMapView>) => {
+  (
+    { children, style, isPositionAbsolute = true, ...props }: Props,
+    ref: ForwardedRef<NaverMapView>,
+  ) => {
     return (
       <NaverMapView
         ref={ref}
-        style={StyleSheet.absoluteFill}
+        style={{
+          ...(isPositionAbsolute && (StyleSheet.absoluteFill as object)),
+          ...(style as object),
+        }}
         zoomControl={false}
         tiltGesturesEnabled={false}
         useTextureView

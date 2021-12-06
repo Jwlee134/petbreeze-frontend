@@ -7,7 +7,6 @@ import MyText from "~/components/common/MyText";
 import ParagraphWithCheckCircle from "~/components/ble/ParagraphWithCheckCircle";
 import useModal from "~/hooks/useModal";
 import { PreWiFiFormScreenNavigationProp } from "~/types/navigator";
-import Modal from "react-native-modal";
 import CommonCenterModal from "~/components/modal/CommonCenterModal";
 import { centerModalOutTiming } from "~/styles/constants";
 
@@ -69,15 +68,14 @@ const PreWiFiForm = ({
           </Button>
         </View>
       </BottomContainer>
-      <Modal {...modalProps({ type: "center" })}>
-        <CommonCenterModal
-          close={close}
-          onRightButtonPress={onSkip}
-          title="잠깐!"
-          description={`와이파이 미등록 시,\n배터리 소모가 크게 증가할 수 있습니다.`}
-          rightButtonText="건너뛰기"
-        />
-      </Modal>
+      <CommonCenterModal
+        close={close}
+        modalProps={modalProps}
+        onRightButtonPress={onSkip}
+        title="잠깐!"
+        description={`와이파이 미등록 시,\n배터리 소모가 크게 증가할 수 있습니다.`}
+        rightButtonText="건너뛰기"
+      />
     </>
   );
 };

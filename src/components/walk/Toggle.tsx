@@ -4,7 +4,7 @@ import styled from "styled-components/native";
 import { storageActions } from "~/store/storage";
 import palette from "~/styles/palette";
 import { useAppSelector } from "~/store";
-import Camera from "~/assets/svg/walk/camera.svg";
+import Camera from "~/assets/svg/camera/camera-light-gray.svg";
 import Play from "~/assets/svg/walk/play.svg";
 import Pause from "~/assets/svg/walk/pause.svg";
 import Stop from "~/assets/svg/walk/stop.svg";

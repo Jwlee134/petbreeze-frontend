@@ -14,6 +14,7 @@ const Weight = () => {
       <InputTitle>체중</InputTitle>
       <Input
         value={weight}
+        maxLength={2}
         onChangeText={text => {
           dispatch(formActions.setState({ weight: text }));
         }}

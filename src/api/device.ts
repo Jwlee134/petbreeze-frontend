@@ -1,6 +1,10 @@
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query/react";
 import api, { providesList } from ".";
 
+export type DeepPartial<T> = {
+  [P in keyof T]?: DeepPartial<T[P]>;
+};
+
 export interface Device {
   id: number;
   name: string;
@@ -10,6 +14,11 @@ export interface Device {
   firmware_version: string;
   is_missed: boolean;
   last_walk: string;
+}
+
+interface InvitationCode {
+  code: string;
+  expire_datetime: string;
 }
 
 interface EmergencyMissingForm {
@@ -62,31 +71,28 @@ export interface DeviceProfile extends DeviceProfileBody {
   profile_image: string;
 }
 
-export interface AreaBody {
-  safety_area_id: number;
-  name: string | null;
-  address: string | null;
-  coordinate: {
-    type: "Point";
-    coordinates: number[];
-  };
-  radius: number;
-}
-
-export interface AreaResponse extends AreaBody {
-  thumbnail: string;
-}
-
 export interface WiFiResponse {
   wifi_id: number;
   ssid: string | null;
   password: string | null;
 }
 
+export interface AreaResponse {
+  safety_area_id: number;
+  name: string | null;
+  address: string | null;
+  thumbnail: string | null;
+  coordinate: {
+    type: "Point";
+    coordinates: number[];
+  };
+  radius: number;
+  WiFi: WiFiResponse[];
+}
+
 interface DeviceSetting<A> {
   Period: number;
   Area: A[];
-  WiFi: WiFiResponse[];
 }
 
 interface DailyWalkRecord {
@@ -166,6 +172,13 @@ const deviceApi = api.injectEndpoints({
         }
         return [];
       },
+    }),
+
+    getInvitationCode: builder.query<InvitationCode, number>({
+      query: deviceID => ({
+        url: `/device/${deviceID}/invitation-code/`,
+        method: "GET",
+      }),
     }),
 
     getEmergencyMissing: builder.query<EmergencyMissing, number>({
@@ -506,13 +519,31 @@ const deviceApi = api.injectEndpoints({
 
     updateDeviceSetting: builder.mutation<
       void,
-      { deviceID: number; body: Partial<DeviceSetting<AreaBody>> }
+      {
+        deviceID: number;
+        body: Partial<DeviceSetting<Omit<AreaResponse, "thumbnail">>>;
+      }
     >({
       query: ({ deviceID, body }) => ({
         url: `/device/${deviceID}/setting/`,
         method: "PUT",
         body,
       }),
+      onQueryStarted: async (
+        { deviceID, body },
+        { dispatch, queryFulfilled },
+      ) => {
+        const putResult = dispatch(
+          deviceApi.util.updateQueryData(
+            "getDeviceSetting",
+            deviceID,
+            draft => {
+              if (body.Period) draft.Period = body.Period;
+            },
+          ),
+        );
+        queryFulfilled.catch(putResult.undo);
+      },
       invalidatesTags: (result, error, { deviceID }) => {
         if (shouldInvalidateDeviceList(error)) {
           return [{ type: "Device", id: deviceID }];
@@ -550,7 +581,11 @@ const deviceApi = api.injectEndpoints({
         method: "GET",
         responseHandler: async (res: Response) => {
           const data: DailyWalkRecord[] = await res.json();
-          return data.reverse();
+          return data.sort(
+            (a, b) =>
+              new Date(b.start_date_time).getTime() -
+              new Date(a.start_date_time).getTime(),
+          );
         },
       }),
       providesTags: result => providesList(result, "Walk"),

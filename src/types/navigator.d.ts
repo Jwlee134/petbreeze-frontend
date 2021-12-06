@@ -81,6 +81,7 @@ export type LoggedInNavParamList = {
       }
     | undefined;
   WalkMap: undefined;
+  UpdateArea: undefined;
   UpdateProfile: {
     deviceID: number;
   };
@@ -110,6 +111,10 @@ export type PermissionsScreenNavigationProp = CompositeNavigationProp<
 >;
 export type WalkMapScreenNavigationProp = CompositeNavigationProp<
   StackNavigationProp<LoggedInNavParamList, "WalkMap">,
+  StackNavigationProp<RootNavParamList>
+>;
+export type UpdateAreaScreenNavigationProp = CompositeNavigationProp<
+  StackNavigationProp<LoggedInNavParamList, "UpdateArea">,
   StackNavigationProp<RootNavParamList>
 >;
 export type UpdateWiFiScreenNavigationProp = CompositeNavigationProp<
@@ -473,6 +478,16 @@ export type WalkDetailMonthScreenProps = CompositeScreenProps<
 >;
 export type DeviceManagementScreenNavigationProp = CompositeNavigationProp<
   StackNavigationProp<SharedStackNavParamList, "DeviceManagement">,
+  CompositeNavigationProp<
+    BottomTabNavigationProp<BottomTabParamList>,
+    CompositeNavigationProp<
+      StackNavigationProp<LoggedInNavParamList>,
+      StackNavigationProp<RootNavParamList>
+    >
+  >
+>;
+export type UpdateNicknameScreenNavigationProp = CompositeNavigationProp<
+  StackNavigationProp<SharedStackNavParamList, "UpdateNickname">,
   CompositeNavigationProp<
     BottomTabNavigationProp<BottomTabParamList>,
     CompositeNavigationProp<

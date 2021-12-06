@@ -34,12 +34,10 @@ const SafetyZoneMap = ({ mapPadding, style }: Props) => {
   const [updateAreaThumbnail] =
     deviceApi.useUpdateSafetyZoneThumbnailMutation();
   const deviceID = useAppSelector(state => state.ble.deviceID);
-  const {
-    step2,
-    draft: { coord, radius },
-    animateCamera,
-    isSubmitting,
-  } = useAppSelector(state => state.deviceSetting.safetyZone);
+  const coord = useAppSelector(state => state.deviceSetting.draft.area.coord);
+  const radius = useAppSelector(state => state.deviceSetting.draft.area.radius);
+  const { step2, animateCamera, isSubmitting, fromDeviceSetting } =
+    useAppSelector(state => state.deviceSetting.area);
   const status = useAppSelector(state => state.ble.status);
   const dispatch = useDispatch();
   const [address, setAddress] = useState("");
@@ -51,11 +49,7 @@ const SafetyZoneMap = ({ mapPadding, style }: Props) => {
   useEffect(() => {
     if (animateCamera && coord.latitude && coord.longitude) {
       mapRef.current?.animateToCoordinate(coord);
-      dispatch(
-        deviceSettingActions.setSafetyZone({
-          animateCamera: false,
-        }),
-      );
+      dispatch(deviceSettingActions.setArea({ animateCamera: false }));
     }
   }, [coord]);
 
@@ -79,10 +73,7 @@ const SafetyZoneMap = ({ mapPadding, style }: Props) => {
     const submit = async () => {
       const uri = await viewShotRef.current?.capture();
       if (uri) setThumbnail(uri);
-      const {
-        draft: { name },
-        fromDeviceSetting,
-      } = store.getState().deviceSetting.safetyZone;
+      const { name } = store.getState().deviceSetting.draft.area;
 
       let address = "";
       const data = await getAddressByCoord(coord.latitude, coord.longitude);
@@ -93,34 +84,14 @@ const SafetyZoneMap = ({ mapPadding, style }: Props) => {
       }
       setAddress(address);
 
-      if (fromDeviceSetting) {
-        dispatch(
-          deviceSettingActions.updateSafetyZoneResult({
-            name,
-            address,
-            thumbnail: uri || "",
-            coord: {
-              latitude: parseFloat(coord.latitude.toFixed(4)),
-              longitude: parseFloat(coord.longitude.toFixed(4)),
-            },
-            radius,
-          }),
-        );
-        navigation.goBack();
-      } else {
-        dispatch(bleActions.setStatus("sendingSafetyZone"));
-      }
+      dispatch(bleActions.setStatus("sendingSafetyZone"));
     };
     submit();
   }, [isSubmitting, viewShotRef.current]);
 
   useEffect(() => {
     if (status !== "safetyZoneDone") return;
-    const {
-      safetyZone: {
-        draft: { name },
-      },
-    } = store.getState().deviceSetting;
+    const { name } = store.getState().deviceSetting.draft.area;
     const sendData = async () => {
       await updateDeviceSetting({
         deviceID,
@@ -169,8 +140,8 @@ const SafetyZoneMap = ({ mapPadding, style }: Props) => {
           ref={mapRef}
           onCameraChange={({ latitude, longitude }) => {
             dispatch(
-              deviceSettingActions.setSafetyZone({
-                draft: { coord: { latitude, longitude } },
+              deviceSettingActions.setAreaDraft({
+                coord: { latitude, longitude },
               }),
             );
           }}

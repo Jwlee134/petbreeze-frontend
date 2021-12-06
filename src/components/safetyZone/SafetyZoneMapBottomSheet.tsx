@@ -55,27 +55,27 @@ const SafetyZoneMapBottomSheet = ({
     }[];
   };
 }) => {
-  const {
-    step2,
-    draft: { name, radius },
-    isSubmitting,
-    fromDeviceSetting,
-  } = useAppSelector(state => state.deviceSetting.safetyZone);
+  const { step2, isSubmitting, fromDeviceSetting } = useAppSelector(
+    state => state.deviceSetting.area,
+  );
+  const { name, radius } = useAppSelector(
+    state => state.deviceSetting.draft.area,
+  );
   const dispatch = useDispatch();
   const { bottom } = useSafeAreaInsets();
 
   const handleFinish = () => {
-    dispatch(deviceSettingActions.setSafetyZone({ isSubmitting: true }));
+    dispatch(deviceSettingActions.setArea({ isSubmitting: true }));
   };
 
   const onNameChange = (text: string) => {
-    dispatch(deviceSettingActions.setSafetyZone({ draft: { name: text } }));
+    dispatch(deviceSettingActions.setAreaDraft({ name: text }));
   };
 
   const onValueChange = (value: string, index: number) => {
     dispatch(
-      deviceSettingActions.setSafetyZone({
-        draft: { radius: parseInt(data[index], 10) },
+      deviceSettingActions.setAreaDraft({
+        radius: parseInt(data[index], 10),
       }),
     );
   };
@@ -103,6 +103,7 @@ const SafetyZoneMapBottomSheet = ({
               value={name}
               placeholder="안심존 이름"
               onChangeText={onNameChange}
+              textAlign="center"
             />
           </InputContainer>
           <InputContainer style={{ alignItems: "center" }}>

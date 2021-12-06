@@ -4,7 +4,7 @@ import styled from "styled-components/native";
 import MyText from "~/components/common/MyText";
 import palette from "~/styles/palette";
 import { WalkDetailDayScreenProps } from "~/types/navigator";
-import Trashcan from "~/assets/svg/trashcan/trashcan-red.svg";
+import Minus from "~/assets/svg/minus/minus-white.svg";
 import Timer from "~/assets/svg/walk/timer.svg";
 import Path from "~/assets/svg/walk/path.svg";
 import Divider from "~/components/common/Divider";
@@ -15,7 +15,7 @@ import IosBottomModal from "~/components/modal/IosBottomModal";
 import CustomHeader from "~/components/navigator/CustomHeader";
 import deviceApi from "~/api/device";
 import { useDispatch } from "react-redux";
-import useModal from "~/hooks/useModal";
+import useModal, { ModalPosition } from "~/hooks/useModal";
 import IosBottomModalButton from "~/components/modal/IosBottomModalButton";
 
 const Container = styled.View``;
@@ -137,7 +137,7 @@ const WalkDetailDay = ({
                   onPress={() => {
                     openModal(item.id);
                   }}>
-                  <Trashcan width={22} height={23} />
+                  <Minus />
                 </Delete>
               </RowContainer>
               <MapContainer style={{ height: width * 0.66 }}>
@@ -164,7 +164,7 @@ const WalkDetailDay = ({
           </Fragment>
         )}
       />
-      <Modal {...modalProps({ type: "bottom" })}>
+      <Modal {...modalProps({ type: ModalPosition.Bottom })}>
         <IosBottomModal close={close} title="이 산책 기록을 삭제하시겠습니까?">
           <IosBottomModalButton isLast onPress={deleteRecord}>
             <MyText color={palette.red_f0}>삭제</MyText>

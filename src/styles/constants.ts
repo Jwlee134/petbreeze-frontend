@@ -5,9 +5,10 @@ export const bottomSheetHandleHeight = 36;
 export const centerModalOutTiming = 200;
 export const bottomModalOutTiming = 400;
 
-export const mapButtonSize = 48;
-
 export const minSpace = 50;
+
+export const mapButtonSize = 48;
+export const textLoadingIndicatorSize = 36;
 
 // 홈 맵, 산책 맵 공통
 export const liveModeButtonStyle = (top: number): StyleProp<ViewStyle> => ({

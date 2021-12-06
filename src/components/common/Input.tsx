@@ -1,17 +1,16 @@
-import React, {
-  ForwardedRef,
-  forwardRef,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { ForwardedRef, forwardRef, useState } from "react";
 import {
-  Animated,
   StyleProp,
   TextInput,
   TextInputProps,
+  TextStyle,
   ViewStyle,
 } from "react-native";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 import styled, { css } from "styled-components/native";
 import palette from "~/styles/palette";
 import MyText from "./MyText";
@@ -22,7 +21,7 @@ interface Props extends TextInputProps {
   containerStyle?: StyleProp<ViewStyle>;
   isWhiteBorder?: boolean;
   hasBorder?: boolean;
-  style?: StyleProp<ViewStyle>;
+  style?: StyleProp<TextStyle>;
 }
 
 interface ContainerProps {
@@ -52,10 +51,12 @@ const TextInputComponent = styled.TextInput`
   font-family: "NotoSansKR-Regular";
 `;
 
-const BorderContainer = styled.View`
+const BorderContainer = styled.View<{ isWhiteBorder: boolean }>`
   width: 100%;
   height: 1px;
   align-items: center;
+  background-color: ${({ isWhiteBorder }) =>
+    isWhiteBorder ? "rgba(255, 255, 255, 0.3)" : "rgba(0, 0, 0, 0.3)"};
 `;
 
 const Border = styled(Animated.View)`
@@ -68,28 +69,21 @@ const Input = forwardRef(
       solidPlaceholderTitle,
       alignLeftSolidPlaceholderWhenFocus = false,
       containerStyle,
-      isWhiteBorder,
+      isWhiteBorder = false,
       hasBorder = true,
       style,
       ...props
     }: Props,
     ref: ForwardedRef<TextInput>,
   ) => {
+    const [borderWidth, setBorderWidth] = useState(0);
     const [isFocused, setIsFocused] = useState(!!props.value || false);
-    const value = useRef(new Animated.Value(isFocused ? 1 : 0)).current;
+    const value = useSharedValue(isFocused ? 1 : 0);
 
-    const borderWidth = value.interpolate({
-      inputRange: [0, 1],
-      outputRange: ["0%", "100%"],
-    });
-
-    useEffect(() => {
-      Animated.timing(value, {
-        toValue: isFocused ? 1 : 0,
-        useNativeDriver: false,
-        duration: 200,
-      }).start();
-    }, [isFocused]);
+    const width = useAnimatedStyle(() => {
+      value.value = isFocused ? borderWidth : 0;
+      return { width: withTiming(value.value, { duration: 200 }) };
+    }, [isFocused, borderWidth]);
 
     const handleFocus = () => setIsFocused(true);
     const handleBlur = () => {
@@ -139,16 +133,17 @@ const Input = forwardRef(
         </InputContainer>
         {hasBorder ? (
           <BorderContainer
-            style={{
-              backgroundColor: isWhiteBorder
-                ? "rgba(255, 255, 255, 0.3)"
-                : "rgba(0, 0, 0, 0.3)",
-            }}>
+            isWhiteBorder={isWhiteBorder}
+            onLayout={({
+              nativeEvent: {
+                layout: { width },
+              },
+            }) => setBorderWidth(width)}>
             <Border
-              style={{
-                width: borderWidth,
-                backgroundColor: isWhiteBorder ? "white" : palette.blue_7b,
-              }}
+              style={[
+                width,
+                { backgroundColor: isWhiteBorder ? "white" : palette.blue_7b },
+              ]}
             />
           </BorderContainer>
         ) : null}

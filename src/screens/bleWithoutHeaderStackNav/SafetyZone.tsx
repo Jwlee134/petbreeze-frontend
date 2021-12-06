@@ -40,7 +40,7 @@ const BackButton = styled.TouchableOpacity`
 const SafetyZone = () => {
   const { top, bottom } = useSafeAreaInsets();
 
-  const step2 = useAppSelector(state => state.deviceSetting.safetyZone.step2);
+  const step2 = useAppSelector(state => state.deviceSetting.area.step2);
   const dispatch = useDispatch();
 
   const handleMyLocation = async () => {
@@ -48,14 +48,10 @@ const SafetyZone = () => {
       await permissionCheck.location();
       Geolocation.getCurrentPosition(
         ({ coords: { latitude, longitude } }) => {
+          dispatch(deviceSettingActions.setArea({ animateCamera: true }));
           dispatch(
-            deviceSettingActions.setSafetyZone({
-              animateCamera: true,
-            }),
-          );
-          dispatch(
-            deviceSettingActions.setSafetyZone({
-              draft: { coord: { latitude, longitude } },
+            deviceSettingActions.setAreaDraft({
+              coord: { latitude, longitude },
             }),
           );
         },
@@ -102,7 +98,7 @@ const SafetyZone = () => {
   useEffect(() => {
     return () => {
       dispatch(
-        deviceSettingActions.setSafetyZone({
+        deviceSettingActions.setArea({
           isSubmitting: false,
           step2: false,
         }),
@@ -111,11 +107,11 @@ const SafetyZone = () => {
   }, []);
 
   const onNext = () => {
-    dispatch(deviceSettingActions.setSafetyZone({ step2: true }));
+    dispatch(deviceSettingActions.setArea({ step2: true }));
   };
 
   const onBack = () => {
-    dispatch(deviceSettingActions.setSafetyZone({ step2: false }));
+    dispatch(deviceSettingActions.setArea({ step2: false }));
   };
 
   return (

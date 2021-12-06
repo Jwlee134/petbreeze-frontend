@@ -1,14 +1,18 @@
-import { useContext, useState } from "react";
-import { Dimensions, Keyboard } from "react-native";
+import { useState } from "react";
+import { Dimensions, Keyboard, useWindowDimensions } from "react-native";
 import { ModalProps } from "react-native-modal";
-import { DimensionsContext } from "~/context/DimensionsContext";
 import { bottomModalOutTiming, centerModalOutTiming } from "~/styles/constants";
+
+export enum ModalPosition {
+  Bottom,
+  Center,
+}
 
 const { height } = Dimensions.get("screen");
 
 const useModal = () => {
   const [isModalVisible, setModalVisible] = useState(false);
-  const { rpWidth, width } = useContext(DimensionsContext);
+  const { width } = useWindowDimensions();
 
   const open = () => {
     Keyboard.dismiss();
@@ -23,7 +27,7 @@ const useModal = () => {
     type,
     ...props
   }: Partial<ModalProps> & {
-    type: "bottom" | "center";
+    type: ModalPosition;
   }): Partial<ModalProps> => ({
     isVisible: isModalVisible,
     backdropTransitionOutTiming: 0,
@@ -31,11 +35,15 @@ const useModal = () => {
     onBackButtonPress: close,
     backdropOpacity: 0.5,
     animationInTiming:
-      type === "bottom" ? bottomModalOutTiming : centerModalOutTiming,
+      type === ModalPosition.Bottom
+        ? bottomModalOutTiming
+        : centerModalOutTiming,
     animationOutTiming:
-      type === "bottom" ? bottomModalOutTiming : centerModalOutTiming,
-    animationIn: type === "bottom" ? "slideInUp" : "fadeIn",
-    animationOut: type === "bottom" ? "slideOutDown" : "fadeOut",
+      type === ModalPosition.Bottom
+        ? bottomModalOutTiming
+        : centerModalOutTiming,
+    animationIn: type === ModalPosition.Bottom ? "slideInUp" : "fadeIn",
+    animationOut: type === ModalPosition.Bottom ? "slideOutDown" : "fadeOut",
     deviceWidth: width,
     deviceHeight: height,
     statusBarTranslucent: true,
@@ -43,9 +51,9 @@ const useModal = () => {
     hideModalContentWhileAnimating: true,
     style: {
       margin: 0,
-      ...(type === "bottom"
+      ...(type === ModalPosition.Bottom
         ? { justifyContent: "flex-end" }
-        : { alignItems: "center", marginHorizontal: rpWidth(16) }),
+        : { alignItems: "center", marginHorizontal: 16 }),
     },
     ...props,
   });

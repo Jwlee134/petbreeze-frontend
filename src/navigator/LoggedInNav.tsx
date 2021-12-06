@@ -29,6 +29,7 @@ import Toast from "react-native-toast-message";
 import UserRequestSuccess from "~/screens/loggedInNav/UserRequestSuccess";
 import notificationHandler from "~/utils/notificationHandler";
 import WalkDetailDay from "~/screens/loggedInNav/WalkDetailDay";
+import UpdateArea from "~/screens/loggedInNav/UpdateArea";
 
 const Stack = createStackNavigator<LoggedInNavParamList>();
 
@@ -174,11 +175,12 @@ const LoggedInNav = ({
       <Stack.Screen
         name="UpdateProfile"
         component={UpdateProfile}
-        options={{
-          header: ({ navigation }) => (
-            <CustomHeader navigation={navigation} title="프로필 수정" />
-          ),
-        }}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="UpdateArea"
+        component={UpdateArea}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="BatteryAlert"

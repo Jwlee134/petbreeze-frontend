@@ -15,7 +15,7 @@ interface Props extends TouchableOpacityProps {
 }
 
 const Container = styled.TouchableOpacity`
-  height: 99px;
+  height: 108px;
   padding: 0 32px;
   background-color: white;
   flex-direction: row;

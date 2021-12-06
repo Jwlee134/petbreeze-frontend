@@ -1,87 +1,74 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AreaResponse, WiFiResponse } from "~/api/device";
 
-interface SafetyZoneDraft {
+interface AreaDraft {
   name: string;
   address: string;
   thumbnail: string;
-  coord: {
-    latitude: number;
-    longitude: number;
-  };
+  coord: { latitude: number; longitude: number };
   radius: number;
 }
 
-interface SafetyZone<T> {
+type WiFiDraft = Omit<WiFiResponse, "wifi_id">;
+
+interface Area {
   step2: boolean;
   animateCamera: boolean;
   isSearchMode: boolean;
   isSubmitting: boolean;
   fromDeviceSetting: boolean;
-  currentId: number;
-  result: AreaResponse[];
-  draft: T;
-}
-
-interface WifiDraft {
-  ssid: string;
-  password: string;
-}
-
-interface Wifi<T> {
-  currentId: number;
-  result: WiFiResponse[];
-  draft: T;
+  currentID: number;
 }
 
 interface State {
-  period: number | null;
-  safetyZone: SafetyZone<SafetyZoneDraft>;
-  wifi: Wifi<WifiDraft>;
+  area: Area;
+  result: {
+    Period: number;
+    Area: AreaResponse[];
+  };
+  draft: {
+    area: AreaDraft;
+    wifi: WiFiDraft;
+  };
 }
 
 const initialState: State = {
-  period: null,
-  safetyZone: {
+  area: {
     step2: false,
     animateCamera: false,
     isSearchMode: false,
     isSubmitting: false,
     fromDeviceSetting: false,
-    currentId: 0,
-    result: Array.from({ length: 3 }, (v, i) => ({
+    currentID: 0,
+  },
+  result: {
+    Period: 0,
+    Area: Array.from({ length: 3 }, (v, i) => ({
       safety_area_id: i,
       name: null,
       address: null,
-      thumbnail: "",
+      thumbnail: null,
       coordinate: {
         type: "Point",
         coordinates: [0, 0],
       },
       radius: 0,
+      WiFi: Array.from({ length: 3 }, (v, i) => ({
+        wifi_id: i,
+        ssid: null,
+        password: null,
+      })),
     })),
-    draft: {
+  },
+  draft: {
+    area: {
       name: "",
       address: "",
       thumbnail: "",
-      coord: {
-        latitude: 0,
-        longitude: 0,
-      },
-      radius: 10,
+      coord: { latitude: 0, longitude: 0 },
+      radius: 0,
     },
-  },
-  wifi: {
-    currentId: 0,
-    result: Array.from({ length: 5 }, (v, i) => ({
-      wifi_id: i,
-      ssid: null,
-      password: null,
-    })),
-    draft: {
-      ssid: "",
-      password: "",
-    },
+    wifi: { ssid: "", password: "" },
   },
 };
 
@@ -90,112 +77,47 @@ const deviceSetting = createSlice({
   initialState,
   reducers: {
     setPeriod: (state, { payload }: PayloadAction<number>) => {
-      state.period = payload;
+      state.result.Period = payload;
     },
 
-    setSafetyZone: (
-      state,
-      {
-        payload,
-      }: PayloadAction<Partial<SafetyZone<Partial<SafetyZoneDraft>>> | null>,
-    ) => {
+    setArea: (state, { payload }: PayloadAction<Partial<Area>>) => {
       if (payload) {
-        state.safetyZone = {
-          ...state.safetyZone,
-          ...payload,
-          draft: { ...state.safetyZone.draft, ...payload?.draft },
-        };
+        state.area = { ...state.area, ...payload };
       } else {
-        state.safetyZone = {
-          ...initialState.safetyZone,
-          result: state.safetyZone.result,
-        };
+        state.area = initialState.area;
       }
     },
-    updateSafetyZoneResult: (
-      state,
-      { payload }: PayloadAction<SafetyZoneDraft>,
-    ) => {
-      const { currentId } = state.safetyZone;
-      const {
-        name,
-        address,
-        coord: { latitude, longitude },
-        thumbnail,
-        radius,
-      } = payload;
-      state.safetyZone.result = state.safetyZone.result.map(data => {
-        if (data.safety_area_id === currentId) {
-          return {
-            safety_area_id: currentId,
-            name,
-            address,
-            thumbnail,
-            coordinate: {
-              type: "Point",
-              coordinates: [longitude, latitude],
-            },
-            radius,
-          };
-        }
-        return data;
-      });
-    },
-    deleteSafetyZone: (state, { payload }: PayloadAction<number>) => {
-      state.safetyZone.result = state.safetyZone.result.map(area => {
-        if (area.safety_area_id === payload) {
-          return {
-            ...area,
-            name: null,
-            address: null,
-            coordinate: {
-              type: "Point",
-              coordinates: [0, 0],
-            },
-            radius: 0,
-          };
-        }
-        return area;
-      });
+
+    setAreaResult: (state, { payload }: PayloadAction<AreaResponse[]>) => {
+      state.result.Area = payload;
     },
 
-    setWifi: (
-      state,
-      { payload }: PayloadAction<Partial<Wifi<Partial<WifiDraft>>> | null>,
-    ) => {
+    updateAreaResult: (state, { payload }: PayloadAction<AreaResponse>) => {},
+
+    updateWiFiResult: (state, { payload }) => {},
+
+    deleteAreaResult: (state, { payload }: PayloadAction<number>) => {
+      const targetIndex = state.result.Area.findIndex(
+        area => area.safety_area_id === payload,
+      );
+      state.result.Area[targetIndex] = initialState.result.Area[targetIndex];
+    },
+
+    deleteWiFiResult: (state, { payload }) => {},
+
+    setAreaDraft: (state, { payload }: PayloadAction<Partial<AreaDraft>>) => {
       if (payload) {
-        state.wifi = {
-          ...state.wifi,
-          ...payload,
-          draft: { ...state.wifi.draft, ...payload?.draft },
-        };
+        state.draft.area = { ...state.draft.area, ...payload };
       } else {
-        state.wifi = { ...initialState.wifi, result: state.wifi.result };
+        state.draft.area = initialState.draft.area;
       }
     },
-    updateWifiResult: (state, { payload }: PayloadAction<WifiDraft>) => {
-      const { currentId } = state.wifi;
-      state.wifi.result = state.wifi.result.map(data => {
-        if (data.wifi_id === currentId) {
-          return { wifi_id: currentId, ...payload };
-        }
-        return data;
-      });
-    },
-    deleteWiFi: (state, { payload }: PayloadAction<number>) => {
-      state.wifi.result = state.wifi.result.map(wifi => {
-        if (wifi.wifi_id === payload) {
-          return { ...wifi, ssid: null, password: null };
-        }
-        return wifi;
-      });
-    },
-
-    reset: () => initialState,
-    resetResults: state => {
-      state.period = initialState.period;
-      state.safetyZone.result = initialState.safetyZone.result;
-      state.wifi.result = initialState.wifi.result;
+    setWiFiDraft: (state, { payload }: PayloadAction<Partial<WiFiDraft>>) => {
+      if (payload) {
+        state.draft.wifi = { ...state.draft.wifi, ...payload };
+      } else {
+        state.draft.wifi = initialState.draft.wifi;
+      }
     },
   },
 });
