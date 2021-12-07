@@ -1,16 +1,20 @@
 import React from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import styled from "styled-components/native";
-
+import styled, { css } from "styled-components/native";
 import Arrow from "~/assets/svg/arrow/arrow-left-blue.svg";
 import { Keyboard, TouchableOpacity, useWindowDimensions } from "react-native";
-import SearchResult from "./SearchResult";
+import SearchResult from "./AreaSearchResult";
 import { useDispatch } from "react-redux";
 import { useAppSelector } from "~/store";
 import { deviceSettingActions } from "~/store/deviceSetting";
-import { useNavigation } from "@react-navigation/native";
 import Search from "~/assets/svg/search.svg";
 import { Shadow } from "react-native-shadow-2";
+import { AreaScreenNavigationProp } from "~/types/navigator";
+
+interface InputProps {
+  isUpdateArea?: boolean;
+  isSearchMode: boolean;
+}
 
 const Container = styled.View`
   border-radius: 100px;
@@ -26,66 +30,81 @@ const Button = styled.TouchableOpacity`
   justify-content: center;
 `;
 
-const Input = styled.TextInput`
+const Input = styled.TextInput<InputProps>`
   flex-grow: 1;
   flex-shrink: 1;
   height: 100%;
   margin: 0;
   padding: 0;
-  font-size: 16px;
   font-family: "NotoSansKR-Medium";
-  color: black;
+  ${({ isUpdateArea, isSearchMode }) =>
+    isUpdateArea
+      ? css`
+          font-size: 14px;
+          color: rgba(0, 0, 0, 0.5);
+          padding-left: ${isSearchMode ? 0 : 22}px;
+        `
+      : css`
+          font-size: 16px;
+          color: black;
+        `}
 `;
 
-const SearchBar = () => {
-  const navigation = useNavigation();
+interface Props {
+  navigation?: AreaScreenNavigationProp;
+  isUpdateArea?: boolean;
+}
+
+const AreaSearchBar = ({ navigation, isUpdateArea }: Props) => {
   const { top } = useSafeAreaInsets();
   const isSearchMode = useAppSelector(
-    state => state.deviceSetting.safetyZone.isSearchMode,
+    state => state.deviceSetting.area.isSearchMode,
   );
   const address = useAppSelector(
-    state => state.deviceSetting.safetyZone.draft.address,
+    state => state.deviceSetting.draft.area.address,
   );
   const dispatch = useDispatch();
   const { width } = useWindowDimensions();
 
   const onArrowPress = () => {
     if (isSearchMode) {
-      dispatch(deviceSettingActions.setSafetyZone({ isSearchMode: false }));
+      dispatch(deviceSettingActions.setArea({ isSearchMode: false }));
       Keyboard.dismiss();
     } else {
-      navigation.goBack();
+      if (navigation) navigation.goBack();
     }
   };
 
   const onChangeText = (text: string) => {
-    dispatch(deviceSettingActions.setSafetyZone({ draft: { address: text } }));
+    dispatch(deviceSettingActions.setAreaDraft({ address: text }));
   };
 
   const onFocus = () => {
-    dispatch(deviceSettingActions.setSafetyZone({ isSearchMode: true }));
+    dispatch(deviceSettingActions.setArea({ isSearchMode: true }));
   };
 
   const onSearchButtonPress = () => {
-    dispatch(deviceSettingActions.setSafetyZone({ isSearchMode: true }));
+    dispatch(deviceSettingActions.setArea({ isSearchMode: true }));
   };
 
   return (
     <>
-      {isSearchMode && <SearchResult />}
+      {isSearchMode && <SearchResult isUpdateArea={isUpdateArea} />}
       <Shadow
         startColor="rgba(0, 0, 0, 0.05)"
         viewStyle={{ borderRadius: 100 }}
         containerViewStyle={{
           position: "absolute",
-          top: 9 + top,
+          top: isUpdateArea ? 23 : 9 + top,
           alignSelf: "center",
           zIndex: 3,
         }}>
         <Container style={{ width: width - 32, height: 45 }}>
-          <Button onPress={onArrowPress}>
-            <Arrow width={9} height={15} />
-          </Button>
+          {isUpdateArea && !isSearchMode ? null : (
+            <Button onPress={onArrowPress}>
+              <Arrow />
+            </Button>
+          )}
           <Input
             value={address}
             numberOfLines={1}
@@ -93,10 +112,12 @@ const SearchBar = () => {
             onFocus={onFocus}
             placeholder="주소 검색"
             placeholderTextColor="rgba(0, 0, 0, 0.5)"
+            isUpdateArea={isUpdateArea}
+            isSearchMode={isSearchMode}
             style={{ includeFontPadding: false }}
           />
           <TouchableOpacity onPress={onSearchButtonPress}>
-            <Search style={{ marginHorizontal: 18 }} width={18} height={18} />
+            <Search style={{ marginHorizontal: 27 }} />
           </TouchableOpacity>
         </Container>
       </Shadow>
@@ -104,4 +125,4 @@ const SearchBar = () => {
   );
 };
 
-export default SearchBar;
+export default AreaSearchBar;

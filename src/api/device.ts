@@ -5,6 +5,11 @@ export type DeepPartial<T> = {
   [P in keyof T]?: DeepPartial<T[P]>;
 };
 
+export enum GeoJsonType {
+  Point,
+  LineString,
+}
+
 export interface Device {
   id: number;
   name: string;
@@ -44,7 +49,7 @@ interface EmergencyMissing extends EmergencyMissingForm {
 interface DeviceCoord {
   date_time: string;
   coordinate: {
-    type: "Point";
+    type: GeoJsonType.Point;
     coordinates: number[];
   };
 }
@@ -83,7 +88,7 @@ export interface AreaResponse {
   address: string | null;
   thumbnail: string | null;
   coordinate: {
-    type: "Point";
+    type: GeoJsonType.Point;
     coordinates: number[];
   };
   radius: number;
@@ -118,7 +123,7 @@ interface WalkBody {
   time: number;
   distance: number;
   path: {
-    type: "LineString";
+    type: GeoJsonType.LineString;
     coordinates: number[][];
   };
 }

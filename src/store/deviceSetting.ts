@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { AreaResponse, WiFiResponse } from "~/api/device";
+import { AreaResponse, GeoJsonType, WiFiResponse } from "~/api/device";
 
 interface AreaDraft {
   name: string;
@@ -49,7 +49,7 @@ const initialState: State = {
       address: null,
       thumbnail: null,
       coordinate: {
-        type: "Point",
+        type: GeoJsonType.Point,
         coordinates: [0, 0],
       },
       radius: 0,
@@ -80,7 +80,7 @@ const deviceSetting = createSlice({
       state.result.Period = payload;
     },
 
-    setArea: (state, { payload }: PayloadAction<Partial<Area>>) => {
+    setArea: (state, { payload }: PayloadAction<Partial<Area> | null>) => {
       if (payload) {
         state.area = { ...state.area, ...payload };
       } else {
@@ -92,9 +92,34 @@ const deviceSetting = createSlice({
       state.result.Area = payload;
     },
 
-    updateAreaResult: (state, { payload }: PayloadAction<AreaResponse>) => {},
+    updateAreaResult: (state, { payload }: PayloadAction<string>) => {
+      const { name, address, coord, radius } = state.draft.area;
+      const { currentID } = state.area;
+      const targetArea =
+        state.result.Area[
+          state.result.Area.findIndex(area => area.safety_area_id === currentID)
+        ];
+      targetArea.name = name;
+      targetArea.address = address;
+      targetArea.coordinate.coordinates = [coord.longitude, coord.latitude];
+      targetArea.radius = radius;
+      targetArea.thumbnail = payload;
+    },
 
-    updateWiFiResult: (state, { payload }) => {},
+    updateWiFiResult: (state, { payload }: PayloadAction<number>) => {
+      const { ssid, password } = state.draft.wifi;
+      const { currentID } = state.area;
+      const targetArea =
+        state.result.Area[
+          state.result.Area.findIndex(area => area.safety_area_id === currentID)
+        ];
+      const targetWiFi =
+        targetArea.WiFi[
+          targetArea.WiFi.findIndex(wifi => wifi.wifi_id === payload)
+        ];
+      targetWiFi.ssid = ssid;
+      targetWiFi.password = password;
+    },
 
     deleteAreaResult: (state, { payload }: PayloadAction<number>) => {
       const targetIndex = state.result.Area.findIndex(
@@ -103,16 +128,33 @@ const deviceSetting = createSlice({
       state.result.Area[targetIndex] = initialState.result.Area[targetIndex];
     },
 
-    deleteWiFiResult: (state, { payload }) => {},
+    deleteWiFiResult: (state, { payload }: PayloadAction<number>) => {
+      const { currentID } = state.area;
+      const targetArea =
+        state.result.Area[
+          state.result.Area.findIndex(area => area.safety_area_id === currentID)
+        ];
+      const targetWiFiIndex = targetArea.WiFi.findIndex(
+        wifi => wifi.wifi_id === payload,
+      );
+      targetArea.WiFi[targetWiFiIndex].ssid = null;
+      targetArea.WiFi[targetWiFiIndex].password = null;
+    },
 
-    setAreaDraft: (state, { payload }: PayloadAction<Partial<AreaDraft>>) => {
+    setAreaDraft: (
+      state,
+      { payload }: PayloadAction<Partial<AreaDraft> | null>,
+    ) => {
       if (payload) {
         state.draft.area = { ...state.draft.area, ...payload };
       } else {
         state.draft.area = initialState.draft.area;
       }
     },
-    setWiFiDraft: (state, { payload }: PayloadAction<Partial<WiFiDraft>>) => {
+    setWiFiDraft: (
+      state,
+      { payload }: PayloadAction<Partial<WiFiDraft> | null>,
+    ) => {
       if (payload) {
         state.draft.wifi = { ...state.draft.wifi, ...payload };
       } else {

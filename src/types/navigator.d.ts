@@ -92,7 +92,7 @@ export type LoggedInNavParamList = {
     isModify?: boolean;
   };
   DeleteAccountStackNav: undefined;
-  UpdateWiFi: undefined;
+  UpdateWiFi: { id: number };
   BatteryAlert: BatteryAlertParams;
   UserRequestSuccess: { text: string; key?: string };
   WalkDetailDay: WalkDetailDayParams;
@@ -117,12 +117,12 @@ export type UpdateAreaScreenNavigationProp = CompositeNavigationProp<
   StackNavigationProp<LoggedInNavParamList, "UpdateArea">,
   StackNavigationProp<RootNavParamList>
 >;
-export type UpdateWiFiScreenNavigationProp = CompositeNavigationProp<
-  StackNavigationProp<LoggedInNavParamList, "UpdateWiFi">,
-  StackNavigationProp<RootNavParamList>
->;
 export type UpdateProfileScreenProps = CompositeScreenProps<
   StackScreenProps<LoggedInNavParamList, "UpdateProfile">,
+  StackScreenProps<RootNavParamList>
+>;
+export type UpdateWiFiScreenProps = CompositeScreenProps<
+  StackScreenProps<LoggedInNavParamList, "UpdateWiFi">,
   StackScreenProps<RootNavParamList>
 >;
 export type BatteryAlertScreenProps = CompositeScreenProps<
@@ -234,7 +234,7 @@ export type BleWithHeaderStackNavParamList = {
   ChargingCheck: undefined;
   PreWiFiForm: undefined;
   WiFiForm: undefined;
-  PreSafetyZone: undefined;
+  PreArea: undefined;
   RegisterProfileFirst: undefined;
   RegisterProfileSecond: undefined;
 };
@@ -278,8 +278,8 @@ export type WiFiFormScreenNavigationProp = CompositeNavigationProp<
     >
   >
 >;
-export type PreSafetyZoneScreenNavigationProp = CompositeNavigationProp<
-  StackNavigationProp<BleWithHeaderStackNavParamList, "PreSafetyZone">,
+export type PreAreaScreenNavigationProp = CompositeNavigationProp<
+  StackNavigationProp<BleWithHeaderStackNavParamList, "PreArea">,
   CompositeNavigationProp<
     StackNavigationProp<BleRootStackNavParamList>,
     CompositeNavigationProp<
@@ -318,7 +318,7 @@ export type BleWithoutHeaderStackNavParamList = {
   Fail: undefined;
   FirmwareProgress: undefined;
   Success: undefined;
-  SafetyZone: undefined;
+  Area: undefined;
   Completion: undefined;
 };
 export type BleLoadingScreenScreenProps = CompositeScreenProps<
@@ -381,8 +381,8 @@ export type FirmwareProgressScreenNavigationProp = CompositeNavigationProp<
     >
   >
 >;
-export type SafetyZoneScreenNavigationProp = CompositeNavigationProp<
-  StackNavigationProp<BleWithoutHeaderStackNavParamList, "SafetyZone">,
+export type AreaScreenNavigationProp = CompositeNavigationProp<
+  StackNavigationProp<BleWithoutHeaderStackNavParamList, "Area">,
   CompositeNavigationProp<
     StackNavigationProp<BleRootStackNavParamList>,
     CompositeNavigationProp<

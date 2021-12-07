@@ -8,14 +8,14 @@ import { store, useAppSelector } from "~/store";
 
 import ViewShot from "react-native-view-shot";
 import { useNavigation } from "@react-navigation/native";
-import { SafetyZoneScreenNavigationProp } from "~/types/navigator";
+import { AreaScreenNavigationProp } from "~/types/navigator";
 import { deviceSettingActions } from "~/store/deviceSetting";
 import { bleActions } from "~/store/ble";
 import Map from "../common/Map";
 import palette from "~/styles/palette";
 import { getAddressByCoord } from "~/api/place";
 import Animated from "react-native-reanimated";
-import deviceApi from "~/api/device";
+import deviceApi, { GeoJsonType } from "~/api/device";
 import imageHandler from "~/utils/imageHandler";
 
 interface Props {
@@ -28,16 +28,17 @@ interface Props {
   };
 }
 
-const SafetyZoneMap = ({ mapPadding, style }: Props) => {
-  const navigation = useNavigation<SafetyZoneScreenNavigationProp>();
+const BleAreaMap = ({ mapPadding, style }: Props) => {
+  const navigation = useNavigation<AreaScreenNavigationProp>();
   const [updateDeviceSetting] = deviceApi.useUpdateDeviceSettingMutation();
   const [updateAreaThumbnail] =
     deviceApi.useUpdateSafetyZoneThumbnailMutation();
   const deviceID = useAppSelector(state => state.ble.deviceID);
   const coord = useAppSelector(state => state.deviceSetting.draft.area.coord);
   const radius = useAppSelector(state => state.deviceSetting.draft.area.radius);
-  const { step2, animateCamera, isSubmitting, fromDeviceSetting } =
-    useAppSelector(state => state.deviceSetting.area);
+  const { step2, animateCamera, isSubmitting } = useAppSelector(
+    state => state.deviceSetting.area,
+  );
   const status = useAppSelector(state => state.ble.status);
   const dispatch = useDispatch();
   const [address, setAddress] = useState("");
@@ -84,13 +85,13 @@ const SafetyZoneMap = ({ mapPadding, style }: Props) => {
       }
       setAddress(address);
 
-      dispatch(bleActions.setStatus("sendingSafetyZone"));
+      dispatch(bleActions.setStatus("areaDone"));
     };
     submit();
   }, [isSubmitting, viewShotRef.current]);
 
   useEffect(() => {
-    if (status !== "safetyZoneDone") return;
+    if (status !== "areaDone") return;
     const { name } = store.getState().deviceSetting.draft.area;
     const sendData = async () => {
       await updateDeviceSetting({
@@ -102,7 +103,7 @@ const SafetyZoneMap = ({ mapPadding, style }: Props) => {
               name,
               address,
               coordinate: {
-                type: "Point",
+                type: GeoJsonType.Point,
                 coordinates: [
                   parseFloat(coord.longitude.toFixed(4)),
                   parseFloat(coord.latitude.toFixed(4)),
@@ -167,4 +168,4 @@ const SafetyZoneMap = ({ mapPadding, style }: Props) => {
   );
 };
 
-export default SafetyZoneMap;
+export default BleAreaMap;

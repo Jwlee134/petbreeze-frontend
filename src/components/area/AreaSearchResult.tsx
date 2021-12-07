@@ -5,15 +5,15 @@ import { getAddress } from "~/api/place";
 import useDebounce from "~/hooks/useDebounce";
 import { useDispatch } from "react-redux";
 import { useAppSelector } from "~/store";
-import SearchResultItem from "./SearchResultItem";
+import SearchResultItem from "./AreaSearchResultItem";
 import MyText from "~/components/common/MyText";
 import { storageActions } from "~/store/storage";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
-const SearchResult = () => {
+const AreaSearchResult = ({ isUpdateArea }: { isUpdateArea?: boolean }) => {
   const { top } = useSafeAreaInsets();
   const address = useAppSelector(
-    state => state.deviceSetting.safetyZone.draft.address,
+    state => state.deviceSetting.draft.area.address,
   );
   const history = useAppSelector(
     state => state.storage.history.safetyZoneSearch,
@@ -48,7 +48,11 @@ const SearchResult = () => {
         backgroundColor: "white",
         zIndex: 2,
       }}
-      contentContainerStyle={{ paddingTop: top + 71, paddingHorizontal: 17 }}>
+      contentContainerStyle={{
+        paddingTop: isUpdateArea ? 85 : top + 71,
+        paddingHorizontal: 17,
+        ...(isUpdateArea && { flexGrow: 1 }),
+      }}>
       {data.length ? (
         data.map((item, i) => <SearchResultItem item={item} key={i} />)
       ) : !address ? (
@@ -71,4 +75,4 @@ const SearchResult = () => {
   );
 };
 
-export default SearchResult;
+export default AreaSearchResult;

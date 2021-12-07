@@ -5,7 +5,7 @@ import styled from "styled-components/native";
 import Shield from "~/assets/svg/safetyZone/footprint-shield.svg";
 import MyText from "~/components/common/MyText";
 import SafeAreaContainer from "~/components/common/container/SafeAreaContainer";
-import { PreSafetyZoneScreenNavigationProp } from "~/types/navigator";
+import { PreAreaScreenNavigationProp } from "~/types/navigator";
 import { Animated } from "react-native";
 import useAnimatedSequence from "~/hooks/useAnimatedSequence";
 import ParagraphWithCheckCircle from "~/components/ble/ParagraphWithCheckCircle";
@@ -25,10 +25,10 @@ const BottomContainer = styled.View`
   justify-content: space-between;
 `;
 
-const PreSafetyZone = ({
+const PreArea = ({
   navigation,
 }: {
-  navigation: PreSafetyZoneScreenNavigationProp;
+  navigation: PreAreaScreenNavigationProp;
 }) => {
   const [value1, value2] = useAnimatedSequence({
     numOfValues: 2,
@@ -37,7 +37,7 @@ const PreSafetyZone = ({
 
   const onNext = () => {
     navigation.navigate("BleWithoutHeaderStackNav", {
-      initialRouteName: "SafetyZone",
+      initialRouteName: "Area",
     });
   };
 
@@ -72,4 +72,4 @@ const PreSafetyZone = ({
   );
 };
 
-export default PreSafetyZone;
+export default PreArea;

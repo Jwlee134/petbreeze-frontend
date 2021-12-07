@@ -10,11 +10,10 @@ import {
   BleRootStackNavParamList,
   BleRootStackNavRouteProp,
 } from "~/types/navigator";
-import { useAppSelector } from "~/store";
 import { useDispatch } from "react-redux";
-import { deviceSettingActions } from "~/store/deviceSetting";
 import { bleActions } from "~/store/ble";
 import { formActions } from "~/store/form";
+import { deviceSettingActions } from "~/store/deviceSetting";
 
 const forFade = ({ current }: StackCardInterpolationProps) => ({
   cardStyle: {
@@ -35,20 +34,15 @@ const BleRootStackNav = ({
 }: {
   route: BleRootStackNavRouteProp;
 }) => {
-  const fromDeviceSetting = useAppSelector(
-    state => state.deviceSetting.safetyZone.fromDeviceSetting,
-  );
   const dispatch = useDispatch();
   useBleMaganer();
 
   useEffect(() => {
     return () => {
-      if (!fromDeviceSetting) {
-        dispatch(bleActions.reset());
-        dispatch(formActions.setState(null));
-        dispatch(deviceSettingActions.setWifi(null));
-      }
-      dispatch(deviceSettingActions.setSafetyZone(null));
+      dispatch(bleActions.reset());
+      dispatch(formActions.setState(null));
+      dispatch(deviceSettingActions.setArea(null));
+      dispatch(deviceSettingActions.setAreaDraft(null));
     };
   }, []);
 

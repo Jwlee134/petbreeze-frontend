@@ -1,19 +1,18 @@
 import React, { useEffect } from "react";
-import { Keyboard, TouchableWithoutFeedback } from "react-native";
+import { Keyboard, StyleSheet, TouchableWithoutFeedback } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import styled from "styled-components/native";
 import Button from "~/components/common/Button";
-import FakeMarker from "~/components/safetyZone/FakeMarker";
-import SafetyZoneMap from "~/components/safetyZone/SafetyZoneMap";
+import AreaMarker from "~/components/area/AreaMarker";
+import BleAreaMap from "~/components/area/BleAreaMap";
 import Arrow from "~/assets/svg/arrow/arrow-left-blue.svg";
 import { useAppSelector } from "~/store";
 import { useDispatch } from "react-redux";
 import Geolocation from "react-native-geolocation-service";
 import MapButton from "~/components/common/MapButton";
-import SafetyZoneMapBottomSheet from "~/components/safetyZone/SafetyZoneMapBottomSheet";
-import SearchBar from "~/components/safetyZone/SearchBar";
+import AreaSearchBar from "~/components/area/AreaSearchBar";
 import { deviceSettingActions } from "~/store/deviceSetting";
-import {
+import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withTiming,
@@ -21,6 +20,8 @@ import {
 import Dissolve from "~/components/common/Dissolve";
 import Toast from "react-native-toast-message";
 import permissionCheck from "~/utils/permissionCheck";
+import AreaBottomSheet from "~/components/area/AreaBottomSheet";
+import { AreaScreenNavigationProp } from "~/types/navigator";
 
 const Container = styled.View`
   flex: 1;
@@ -37,7 +38,7 @@ const BackButton = styled.TouchableOpacity`
   align-items: center;
 `;
 
-const SafetyZone = () => {
+const Area = ({ navigation }: { navigation: AreaScreenNavigationProp }) => {
   const { top, bottom } = useSafeAreaInsets();
 
   const step2 = useAppSelector(state => state.deviceSetting.area.step2);
@@ -98,10 +99,7 @@ const SafetyZone = () => {
   useEffect(() => {
     return () => {
       dispatch(
-        deviceSettingActions.setArea({
-          isSubmitting: false,
-          step2: false,
-        }),
+        deviceSettingActions.setArea({ isSubmitting: false, step2: false }),
       );
     };
   }, []);
@@ -117,8 +115,18 @@ const SafetyZone = () => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <Container>
-        <SafetyZoneMap style={mapStyle} mapPadding={mapPadding} />
-        <FakeMarker style={markerStyle} mapPadding={mapPadding} />
+        <BleAreaMap style={mapStyle} mapPadding={mapPadding} />
+        <Animated.View
+          pointerEvents="none"
+          style={[
+            {
+              ...(StyleSheet.absoluteFill as object),
+              marginTop: mapPadding.top,
+            },
+            markerStyle,
+          ]}>
+          <AreaMarker />
+        </Animated.View>
         <Dissolve
           isVisible={!step2}
           style={{
@@ -141,7 +149,7 @@ const SafetyZone = () => {
         </Dissolve>
         {!step2 ? (
           <>
-            <SearchBar />
+            <AreaSearchBar navigation={navigation} />
           </>
         ) : (
           <>
@@ -154,13 +162,10 @@ const SafetyZone = () => {
             </BackButton>
           </>
         )}
-        <SafetyZoneMapBottomSheet
-          style={bottomSheetStyle}
-          height={bottomSheetHeight}
-        />
+        <AreaBottomSheet style={bottomSheetStyle} height={bottomSheetHeight} />
       </Container>
     </TouchableWithoutFeedback>
   );
 };
 
-export default SafetyZone;
+export default Area;

@@ -5,7 +5,7 @@ import { WalkContext } from "~/context/WalkContext";
 import { useNavigation } from "@react-navigation/native";
 import { WalkMapScreenNavigationProp } from "~/types/navigator";
 import { isEndWithConsonant } from "~/utils";
-import deviceApi from "~/api/device";
+import deviceApi, { GeoJsonType } from "~/api/device";
 import imageHandler from "~/utils/imageHandler";
 import allSettled from "promise.allsettled";
 import { storageActions } from "~/store/storage";
@@ -64,7 +64,7 @@ const Result = () => {
             start_date_time: startTime,
             time: Math.floor(duration / 60),
             path: {
-              type: "LineString",
+              type: GeoJsonType.LineString,
               coordinates: coords,
             },
           },

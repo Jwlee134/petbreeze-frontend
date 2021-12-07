@@ -3,7 +3,7 @@ import {
   StackCardInterpolationProps,
 } from "@react-navigation/stack";
 import React from "react";
-import PreSafetyZone from "~/screens/bleWithHeaderStackNav/PreSafetyZone";
+import PreArea from "~/screens/bleWithHeaderStackNav/PreArea";
 import DeviceCheck from "~/screens/bleWithHeaderStackNav/DeviceCheck";
 import RegisterProfileFirst from "~/screens/bleWithHeaderStackNav/RegisterProfileFirst";
 import {
@@ -42,7 +42,7 @@ const BleWithHeaderStackNav = ({
         currentPage={
           routeName?.includes("WiFi")
             ? 1
-            : routeName === "PreSafetyZone"
+            : routeName === "PreArea"
             ? 2
             : routeName === "RegisterProfileFirst"
             ? 3
@@ -63,7 +63,7 @@ const BleWithHeaderStackNav = ({
         screenOptions={{ cardStyleInterpolator: forFade, headerShown: false }}>
         <Stack.Screen name="ChargingCheck" component={ChargingCheck} />
         <Stack.Screen name="PreWiFiForm" component={PreWiFiForm} />
-        <Stack.Screen name="PreSafetyZone" component={PreSafetyZone} />
+        <Stack.Screen name="PreArea" component={PreArea} />
         <Stack.Screen name="WiFiForm" component={WiFiForm} />
         <Stack.Screen
           name="RegisterProfileFirst"

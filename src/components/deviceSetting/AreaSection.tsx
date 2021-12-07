@@ -71,13 +71,9 @@ const AreaSection = () => {
     dispatch(
       deviceSettingActions.setArea({
         currentID: result[result.findIndex(item => !item.name)].safety_area_id,
-        fromDeviceSetting: true,
       }),
     );
-    navigation.navigate("BleRootStackNav", {
-      initialRouteName: "BleWithoutHeaderStackNav",
-      initialBleWithoutHeaderStackNavRouteName: "SafetyZone",
-    });
+    navigation.navigate("UpdateArea");
   };
 
   const onAreaPress = (data: AreaResponse) => {
@@ -99,6 +95,10 @@ const AreaSection = () => {
       }),
     );
     navigation.navigate("UpdateArea");
+    /* navigation.navigate("BleRootStackNav", {
+      initialRouteName: "BleWithoutHeaderStackNav",
+      initialBleWithoutHeaderStackNavRouteName: "Area",
+    }); */
   };
 
   return (

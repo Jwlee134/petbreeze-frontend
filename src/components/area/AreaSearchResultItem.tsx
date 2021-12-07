@@ -18,7 +18,7 @@ const Divider = styled.View`
   background-color: rgba(0, 0, 0, 0.3);
 `;
 
-const SearchResultItem = ({
+const AreaSearchResultItem = ({
   item,
 }: {
   item: { address: string; latitude: number; longitude: number };
@@ -27,20 +27,18 @@ const SearchResultItem = ({
 
   const onPress = () => {
     Keyboard.dismiss();
-    dispatch(
-      deviceSettingActions.setSafetyZone({
-        draft: { address: item.address },
-      }),
-    );
+    dispatch(deviceSettingActions.setAreaDraft({ address: item.address }));
     dispatch(storageActions.setSafetyZoneSearchHistory(item));
     setTimeout(() => {
       dispatch(
-        deviceSettingActions.setSafetyZone({
+        deviceSettingActions.setArea({
           isSearchMode: false,
           animateCamera: true,
-          draft: {
-            coord: { latitude: item.latitude, longitude: item.longitude },
-          },
+        }),
+      );
+      dispatch(
+        deviceSettingActions.setAreaDraft({
+          coord: { latitude: item.latitude, longitude: item.longitude },
         }),
       );
     }, 200);
@@ -57,4 +55,4 @@ const SearchResultItem = ({
   );
 };
 
-export default SearchResultItem;
+export default AreaSearchResultItem;

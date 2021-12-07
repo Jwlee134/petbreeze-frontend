@@ -7,7 +7,7 @@ import Fail from "~/screens/bleWithoutHeaderStackNav/Fail";
 import FirmwareProgress from "~/screens/bleWithoutHeaderStackNav/FirmwareProgress";
 import Scanning from "~/screens/bleWithoutHeaderStackNav/Scanning";
 import Success from "~/screens/bleWithoutHeaderStackNav/Success";
-import SafetyZone from "~/screens/bleWithoutHeaderStackNav/SafetyZone";
+import Area from "~/screens/bleWithoutHeaderStackNav/Area";
 import {
   BleWithoutHeaderStackNavParamList,
   BleWithoutHeaderStackNavScreenRouteProp,
@@ -41,7 +41,7 @@ const BleWithoutHeaderStackNav = ({
       <Stack.Screen name="FirmwareProgress" component={FirmwareProgress} />
       <Stack.Screen name="Fail" component={Fail} />
       <Stack.Screen name="Success" component={Success} />
-      <Stack.Screen name="SafetyZone" component={SafetyZone} />
+      <Stack.Screen name="Area" component={Area} />
       <Stack.Screen
         name="BleLoading"
         initialParams={{ loadingText }}

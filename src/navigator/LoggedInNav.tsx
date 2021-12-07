@@ -3,11 +3,8 @@ import {
   createStackNavigator,
   StackCardInterpolationProps,
 } from "@react-navigation/stack";
-
 import BottomTabNav from "./BottomTabNav";
 import WalkMap from "~/screens/loggedInNav/WalkMap";
-import CustomHeader from "~/components/navigator/CustomHeader";
-
 import messaging from "@react-native-firebase/messaging";
 import Permissions from "~/screens/loggedInNav/Permissions";
 import {
@@ -126,6 +123,7 @@ const LoggedInNav = ({
       screenOptions={{
         cardStyleInterpolator: forFade,
         detachPreviousScreen: false,
+        headerShown: false,
       }}>
       <Stack.Screen
         name="BottomTabNav"
@@ -133,70 +131,36 @@ const LoggedInNav = ({
         initialParams={{
           initialRouteName: initialBottomTabRouteName,
         }}
-        options={{ headerShown: false }}
       />
-      <Stack.Screen
-        name="Permissions"
-        component={Permissions}
-        options={{ headerShown: false }}
-      />
+      <Stack.Screen name="Permissions" component={Permissions} />
       <Stack.Screen
         name="BleRootStackNav"
         component={BleRootStackNav}
         initialParams={{
           initialBleWithHeaderStackNavRouteName,
         }}
-        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="EmergencyMissingStackNav"
         component={EmergencyMissingStackNav}
-        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="DeleteAccountStackNav"
         component={DeleteAccountStackNav}
-        options={{ headerShown: false }}
       />
-      <Stack.Screen name="WalkMap" options={{ headerShown: false }}>
+      <Stack.Screen name="WalkMap">
         {() => (
           <WalkContextProvider>
             <WalkMap />
           </WalkContextProvider>
         )}
       </Stack.Screen>
-      <Stack.Screen
-        name="UpdateWiFi"
-        component={UpdateWiFi}
-        options={{
-          header: props => <CustomHeader {...props} />,
-        }}
-      />
-      <Stack.Screen
-        name="UpdateProfile"
-        component={UpdateProfile}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="UpdateArea"
-        component={UpdateArea}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="BatteryAlert"
-        component={BatteryAlert}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="UserRequestSuccess"
-        component={UserRequestSuccess}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="WalkDetailDay"
-        component={WalkDetailDay}
-        options={{ headerShown: false }}
-      />
+      <Stack.Screen name="UpdateWiFi" component={UpdateWiFi} />
+      <Stack.Screen name="UpdateProfile" component={UpdateProfile} />
+      <Stack.Screen name="UpdateArea" component={UpdateArea} />
+      <Stack.Screen name="BatteryAlert" component={BatteryAlert} />
+      <Stack.Screen name="UserRequestSuccess" component={UserRequestSuccess} />
+      <Stack.Screen name="WalkDetailDay" component={WalkDetailDay} />
     </Stack.Navigator>
   );
 };

@@ -77,15 +77,15 @@ const useBleMaganer = () => {
     }
   };
 
-  const sendSafetyZone = useCallback(async () => {
+  const sendArea = useCallback(async () => {
     if (disconnected) {
-      dispatch(bleActions.setStatus("safetyZoneDone"));
+      dispatch(bleActions.setStatus("areaDone"));
       return;
     }
     const {
       coord: { latitude, longitude },
       radius,
-    } = store.getState().deviceSetting.safetyZone.draft;
+    } = store.getState().deviceSetting.draft.area;
     const obj: { [key: string]: number[] } = {};
     obj["Area0"] = [latitude, longitude, radius];
     console.log(obj, stringToBytes(JSON.stringify(obj)));
@@ -98,17 +98,17 @@ const useBleMaganer = () => {
         512,
       );
     } finally {
-      dispatch(bleActions.setStatus("safetyZoneDone"));
+      dispatch(bleActions.setStatus("areaDone"));
     }
   }, [status]);
 
   const sendWifi = useCallback(async () => {
     if (disconnected) return;
-    const { ssid, password } = store.getState().deviceSetting.wifi.draft;
+    const { ssid, password } = store.getState().deviceSetting.draft.wifi;
     const obj: { WiFi0: { [key: string]: string } } = {
       WiFi0: {},
     };
-    obj.WiFi0[ssid] = password;
+    obj.WiFi0[ssid as string] = password || "";
     console.log(obj, stringToBytes(JSON.stringify(obj)));
     try {
       await BleManager.write(
@@ -368,8 +368,8 @@ const useBleMaganer = () => {
     if (status === "connectingToWifi") {
       sendWifi();
     }
-    if (status === "sendingSafetyZone") {
-      sendSafetyZone();
+    if (status === "sendingArea") {
+      sendArea();
     }
   }, [status]);
 

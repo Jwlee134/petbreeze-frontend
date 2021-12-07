@@ -70,11 +70,11 @@ export const getLeftRightPointsOfCircle = (
   return [
     {
       latitude,
-      longitude: lng0 - radius / 100000,
+      longitude: lng0 - radius / (isIos ? 100000 : 200000),
     }, // left
     {
       latitude,
-      longitude: lng1 + radius / 100000,
+      longitude: lng1 + radius / (isIos ? 100000 : 200000),
     }, // right
   ];
 };
