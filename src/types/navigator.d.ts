@@ -39,11 +39,6 @@ export type RootNavParamList = {
         initialBatteryAlertParams?: BatteryAlertParams;
       }
     | undefined;
-  Loading: {
-    token: string;
-    userID?: string;
-    nickname: string;
-  };
 };
 export type FirmwareUpdateScreenNavigationProp = StackNavigationProp<
   RootNavParamList,
@@ -64,7 +59,6 @@ export type AuthScreenNavigationProp = StackNavigationProp<
 export type LoggedInNavScreenNavigationProp =
   StackNavigationProp<LoggedInNavParamList>;
 export type LoggedInNavRouteProp = RouteProp<RootNavParamList, "LoggedInNav">;
-export type LoadingScreenProps = StackScreenProps<RootNavParamList, "Loading">;
 
 export type LoggedInNavParamList = {
   Permissions: undefined;

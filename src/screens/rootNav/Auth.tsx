@@ -13,12 +13,11 @@ import Footprint from "~/assets/svg/footprint/footprint-app-icon-blue.svg";
 import MyText from "~/components/common/MyText";
 import Input from "~/components/common/Input";
 import { isIos } from "~/utils";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import SocialLogin from "~/components/auth/SocialLogin";
-import Policies from "~/components/auth/Policies";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { isIphoneX } from "react-native-iphone-x-helper";
 import useAnimatedSequence from "~/hooks/useAnimatedSequence";
+import LogoText from "~/assets/svg/logo-text.svg";
 
 const TopContainer = styled.View`
   flex: 1;
@@ -41,15 +40,7 @@ const BtnContainer = styled(Animated.View)`
   justify-content: center;
 `;
 
-const TextContainer = styled(Animated.View)`
-  align-items: center;
-  position: absolute;
-  text-align: center;
-  width: 100%;
-`;
-
 const Auth = () => {
-  const { bottom } = useSafeAreaInsets();
   const timeout = useRef<NodeJS.Timeout | null>(null);
   const [name, setName] = useState("");
   const [showBtn, setShowBtn] = useState(false);
@@ -139,9 +130,7 @@ const Auth = () => {
                 ],
               }}>
               <Footprint style={{ marginBottom: 26 }} width={60} height={83} />
-              <MyText fontSize={30} fontWeight="light" color="white">
-                PETBREEZE
-              </MyText>
+              <LogoText />
             </LogoContainer>
           </TopContainer>
           <BottomContainer
@@ -173,22 +162,18 @@ const Auth = () => {
                   onChangeText={onNameChange}
                   textAlign="center"
                   onSubmitEditing={handleSubmit}
+                  style={{
+                    fontSize: 20,
+                    fontFamily: "NotoSansKR-Medium",
+                    paddingBottom: 12,
+                  }}
                 />
               </TouchableOpacity>
             </InputContainer>
             {showBtn ? (
-              <>
-                <BtnContainer style={{ opacity: value }}>
-                  <SocialLogin name={name} />
-                </BtnContainer>
-                <TextContainer
-                  style={{
-                    bottom: 34 + bottom,
-                    opacity: value,
-                  }}>
-                  <Policies />
-                </TextContainer>
-              </>
+              <BtnContainer style={{ opacity: value }}>
+                <SocialLogin name={name} />
+              </BtnContainer>
             ) : null}
           </BottomContainer>
         </KeyboardAvoidingView>

@@ -161,6 +161,8 @@ const deviceSetting = createSlice({
         state.draft.wifi = initialState.draft.wifi;
       }
     },
+
+    reset: () => initialState,
   },
 });
 
