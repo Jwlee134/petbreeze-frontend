@@ -61,7 +61,8 @@ export type LoggedInNavScreenNavigationProp =
 export type LoggedInNavRouteProp = RouteProp<RootNavParamList, "LoggedInNav">;
 
 export type LoggedInNavParamList = {
-  Permissions: undefined;
+  Policy: undefined;
+  Permission: undefined;
   BottomTabNav:
     | {
         initialRouteName?: keyof BottomTabParamList;
@@ -99,8 +100,12 @@ export type BleRootStackNavRouteProp = RouteProp<
   LoggedInNavParamList,
   "BleRootStackNav"
 >;
-export type PermissionsScreenNavigationProp = CompositeNavigationProp<
-  StackNavigationProp<LoggedInNavParamList, "Permissions">,
+export type PolicyScreenNavigationProp = CompositeNavigationProp<
+  StackNavigationProp<LoggedInNavParamList, "Policy">,
+  StackNavigationProp<RootNavParamList>
+>;
+export type PermissionScreenNavigationProp = CompositeNavigationProp<
+  StackNavigationProp<LoggedInNavParamList, "Permission">,
   StackNavigationProp<RootNavParamList>
 >;
 export type WalkMapScreenNavigationProp = CompositeNavigationProp<

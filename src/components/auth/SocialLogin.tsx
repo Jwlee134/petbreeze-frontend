@@ -66,7 +66,7 @@ const SocialLogin = ({ name }: { name: string }) => {
       await updateNickname(name).unwrap();
       if (fbLoading) setFbLoading(false);
       if (kakaoLoading) setKakaoLoading(false);
-      navigation.replace("LoggedInNav");
+      navigation.replace("LoggedInNav", { initialRouteName: "Policy" });
     } catch (error) {
       console.log(error);
     }

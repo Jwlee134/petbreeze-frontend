@@ -6,7 +6,6 @@ import {
 import BottomTabNav from "./BottomTabNav";
 import WalkMap from "~/screens/loggedInNav/WalkMap";
 import messaging from "@react-native-firebase/messaging";
-import Permissions from "~/screens/loggedInNav/Permissions";
 import {
   LoggedInNavParamList,
   LoggedInNavRouteProp,
@@ -27,6 +26,7 @@ import UserRequestSuccess from "~/screens/loggedInNav/UserRequestSuccess";
 import notificationHandler from "~/utils/notificationHandler";
 import WalkDetailDay from "~/screens/loggedInNav/WalkDetailDay";
 import UpdateArea from "~/screens/loggedInNav/UpdateArea";
+import Policy from "~/screens/loggedInNav/Policy";
 
 const Stack = createStackNavigator<LoggedInNavParamList>();
 
@@ -125,6 +125,7 @@ const LoggedInNav = ({
         detachPreviousScreen: false,
         headerShown: false,
       }}>
+      <Stack.Screen name="Policy" component={Policy} />
       <Stack.Screen
         name="BottomTabNav"
         component={BottomTabNav}
@@ -132,7 +133,7 @@ const LoggedInNav = ({
           initialRouteName: initialBottomTabRouteName,
         }}
       />
-      <Stack.Screen name="Permissions" component={Permissions} />
+
       <Stack.Screen
         name="BleRootStackNav"
         component={BleRootStackNav}
