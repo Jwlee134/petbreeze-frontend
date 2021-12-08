@@ -1,12 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-import React, {
-  memo,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { memo, useCallback, useEffect, useRef, useState } from "react";
 import {
   Animated,
   NativeScrollEvent,
@@ -18,7 +11,6 @@ import {
 import MyText from "./MyText";
 import styled from "styled-components/native";
 import palette from "~/styles/palette";
-import { DimensionsContext } from "~/context/DimensionsContext";
 import { isIos } from "~/utils";
 import { ScrollView } from "react-native-gesture-handler";
 
@@ -45,8 +37,6 @@ const ScrollPicker = ({
   data,
   ...props
 }: ScrollPickerProps) => {
-  const { rpWidth } = useContext(DimensionsContext);
-
   const [initialized, setInitialized] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(
     props.selectedIndex && props.selectedIndex >= 0 ? props.selectedIndex : 0,
@@ -139,7 +129,7 @@ const ScrollPicker = ({
       style={{
         width,
         height,
-        borderRadius: rpWidth(28),
+        borderRadius: 28,
         ...(style as object),
       }}>
       <ScrollView

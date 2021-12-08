@@ -27,6 +27,8 @@ import notificationHandler from "~/utils/notificationHandler";
 import WalkDetailDay from "~/screens/loggedInNav/WalkDetailDay";
 import UpdateArea from "~/screens/loggedInNav/UpdateArea";
 import Policy from "~/screens/loggedInNav/Policy";
+import Permission from "~/screens/loggedInNav/Permission";
+import InvitationCodeCheck from "~/screens/loggedInNav/InvitationCodeCheck";
 
 const Stack = createStackNavigator<LoggedInNavParamList>();
 
@@ -126,6 +128,11 @@ const LoggedInNav = ({
         headerShown: false,
       }}>
       <Stack.Screen name="Policy" component={Policy} />
+      <Stack.Screen name="Permission" component={Permission} />
+      <Stack.Screen
+        name="InvitationCodeCheck"
+        component={InvitationCodeCheck}
+      />
       <Stack.Screen
         name="BottomTabNav"
         component={BottomTabNav}
@@ -133,7 +140,6 @@ const LoggedInNav = ({
           initialRouteName: initialBottomTabRouteName,
         }}
       />
-
       <Stack.Screen
         name="BleRootStackNav"
         component={BleRootStackNav}
