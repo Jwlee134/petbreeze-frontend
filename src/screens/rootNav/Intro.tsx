@@ -1,11 +1,22 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Animated, FlatList, useWindowDimensions, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useDispatch } from "react-redux";
 import styled from "styled-components/native";
+import MyText from "~/components/common/MyText";
 import FirstIntro from "~/components/intro/FirstIntro";
 import PageIndicatorCircle from "~/components/intro/PageIndicatorCircle";
 import SecondIntro from "~/components/intro/SecondIntro";
 import ThirdIntro from "~/components/intro/ThirdIntro";
+import { DimensionsContext } from "~/context/DimensionsContext";
+import { storageActions } from "~/store/storage";
+import { IntroScreenNavigationProp } from "~/types/navigator";
+
+const SkipButton = styled.TouchableOpacity`
+  position: absolute;
+  right: 0;
+  z-index: 1;
+`;
 
 const PageIndicator = styled.View`
   width: 100%;
@@ -18,15 +29,20 @@ const PageIndicator = styled.View`
 
 const data = [<FirstIntro />, <SecondIntro />, <ThirdIntro />];
 
-const Intro = () => {
-  const { bottom } = useSafeAreaInsets();
-
-  const [currentPage, setCurrentPage] = useState(1);
+const Intro = ({ navigation }: { navigation: IntroScreenNavigationProp }) => {
+  const { top, bottom } = useSafeAreaInsets();
+  const { rpHeight } = useContext(DimensionsContext);
+  const [currentPage, setCurrentPage] = useState(0);
   const value = useRef(new Animated.Value(0)).current;
+
+  const color = value.interpolate({
+    inputRange: [0, 1, 2],
+    outputRange: ["white", "rgba(0, 0, 0, 0.5)", "white"],
+  });
 
   useEffect(() => {
     Animated.timing(value, {
-      toValue: currentPage === 1 ? 0 : 1,
+      toValue: currentPage,
       useNativeDriver: false,
       duration: 200,
     }).start();
@@ -34,9 +50,28 @@ const Intro = () => {
 
   const flatListRef = useRef<FlatList>(null);
   const { width } = useWindowDimensions();
+  const dispatch = useDispatch();
 
   return (
     <>
+      <SkipButton
+        style={{
+          marginTop: 18 + top,
+          marginRight: 20,
+          marginLeft: "auto",
+        }}
+        onPress={() => {
+          dispatch(
+            storageActions.setInit({
+              isIntroPassed: true,
+            }),
+          );
+          navigation.replace("Start");
+        }}>
+        <MyText fontWeight="medium" fontSize={14} style={{ color }}>
+          건너뛰기
+        </MyText>
+      </SkipButton>
       <FlatList
         ref={flatListRef}
         data={data}
@@ -56,7 +91,7 @@ const Intro = () => {
         })}
         onScroll={e =>
           setCurrentPage(
-            Math.round((e.nativeEvent.contentOffset.x + width) / width),
+            Math.round((e.nativeEvent.contentOffset.x + width) / width) - 1,
           )
         }
         scrollEventThrottle={16}
@@ -64,11 +99,11 @@ const Intro = () => {
       />
       <PageIndicator
         style={{
-          marginBottom: 54 + bottom,
+          marginBottom: rpHeight(54) + bottom,
         }}>
+        <PageIndicatorCircle isFocused={currentPage === 0} />
         <PageIndicatorCircle isFocused={currentPage === 1} />
         <PageIndicatorCircle isFocused={currentPage === 2} />
-        <PageIndicatorCircle isFocused={currentPage === 3} />
       </PageIndicator>
     </>
   );

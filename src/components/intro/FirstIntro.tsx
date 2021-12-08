@@ -9,12 +9,12 @@ import { DimensionsContext } from "~/context/DimensionsContext";
 
 const FirstIntro = () => {
   const { top, bottom } = useSafeAreaInsets();
-  const { rpWidth, rpHeight } = useContext(DimensionsContext);
+  const { rpHeight } = useContext(DimensionsContext);
 
   return (
     <GradientContainer isBlackStatusBar>
       <IntroContainer rpHeight={rpHeight} topInset={top} spaceBetween>
-        <View style={{ paddingHorizontal: rpWidth(22) }}>
+        <View style={{ paddingHorizontal: rpHeight(22) }}>
           <MyText fontWeight="light" color="white" fontSize={24}>
             반려동물 실종,
           </MyText>
@@ -31,12 +31,12 @@ const FirstIntro = () => {
           </MyText>
         </View>
         <Dog
-          width={rpWidth(175)}
+          width={rpHeight(175)}
           height={rpHeight(256)}
           style={{
             marginBottom: rpHeight(145) + bottom,
             marginLeft: "auto",
-            marginRight: rpWidth(46),
+            marginRight: 46,
           }}
         />
       </IntroContainer>

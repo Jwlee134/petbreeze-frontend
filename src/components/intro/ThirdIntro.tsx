@@ -18,17 +18,13 @@ const ImageContainer = styled.View`
   justify-content: center;
 `;
 
-const Image = styled.Image<{ rpWidth: RpWidth; isTablet: boolean }>`
-  max-width: ${({ rpWidth, isTablet }) =>
-    isTablet ? `${rpWidth(320)}px` : "85%"};
-  width: 100%;
-`;
+const Image = styled.Image``;
 
 const ThirdIntro = () => {
   const navigation = useNavigation<IntroScreenNavigationProp>();
   const dispatch = useDispatch();
   const { top, bottom } = useSafeAreaInsets();
-  const { isTablet, rpWidth, rpHeight } = useContext(DimensionsContext);
+  const { rpHeight } = useContext(DimensionsContext);
 
   const onPress = () => {
     dispatch(storageActions.setInit({ isIntroPassed: true }));
@@ -38,7 +34,7 @@ const ThirdIntro = () => {
   return (
     <>
       <IntroContainer rpHeight={rpHeight} topInset={top} spaceBetween>
-        <View style={{ marginLeft: rpWidth(32) }}>
+        <View style={{ marginLeft: 32 }}>
           <MyText fontWeight="light" fontSize={24} color={palette.blue_86}>
             펫브리즈와 함께
           </MyText>
@@ -47,13 +43,13 @@ const ThirdIntro = () => {
           </MyText>
         </View>
         <ImageContainer>
-          <Image
+          {/* <Image
             isTablet={isTablet}
             source={require("~/assets/image/intro/phone.png")}
             rpWidth={rpWidth}
             resizeMode="contain"
             fadeDuration={0}
-          />
+          /> */}
         </ImageContainer>
         <Button
           backgroundColor="white"
