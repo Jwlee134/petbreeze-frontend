@@ -4,7 +4,6 @@ import {
 } from "@react-navigation/stack";
 import React from "react";
 import PreArea from "~/screens/bleWithHeaderStackNav/PreArea";
-import DeviceCheck from "~/screens/bleWithHeaderStackNav/DeviceCheck";
 import RegisterProfileFirst from "~/screens/bleWithHeaderStackNav/RegisterProfileFirst";
 import {
   BleWithHeaderStackNavParamList,
@@ -73,7 +72,6 @@ const BleWithHeaderStackNav = ({
           name="RegisterProfileSecond"
           component={RegisterProfileSecond}
         />
-        <Stack.Screen name="DeviceCheck" component={DeviceCheck} />
       </Stack.Navigator>
     </>
   );

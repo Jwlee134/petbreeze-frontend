@@ -63,6 +63,10 @@ export type LoggedInNavRouteProp = RouteProp<RootNavParamList, "LoggedInNav">;
 export type LoggedInNavParamList = {
   Policy: undefined;
   Permission: undefined;
+  InvitationCodeCheck: undefined;
+  InvitationCodeForm: undefined;
+  DeviceProfileCheck: undefined;
+  NewDeviceCheck: undefined;
   BottomTabNav:
     | {
         initialRouteName?: keyof BottomTabParamList;
@@ -106,6 +110,22 @@ export type PolicyScreenNavigationProp = CompositeNavigationProp<
 >;
 export type PermissionScreenNavigationProp = CompositeNavigationProp<
   StackNavigationProp<LoggedInNavParamList, "Permission">,
+  StackNavigationProp<RootNavParamList>
+>;
+export type InvitationCodeCheckScreenNavigationProp = CompositeNavigationProp<
+  StackNavigationProp<LoggedInNavParamList, "InvitationCodeCheck">,
+  StackNavigationProp<RootNavParamList>
+>;
+export type InvitationCodeFormScreenNavigationProp = CompositeNavigationProp<
+  StackNavigationProp<LoggedInNavParamList, "InvitationCodeForm">,
+  StackNavigationProp<RootNavParamList>
+>;
+export type NewDeviceCheckScreenNavigationProp = CompositeNavigationProp<
+  StackNavigationProp<LoggedInNavParamList, "NewDeviceCheck">,
+  StackNavigationProp<RootNavParamList>
+>;
+export type DeviceProfileCheckScreenNavigationProp = CompositeNavigationProp<
+  StackNavigationProp<LoggedInNavParamList, "DeviceProfileCheck">,
   StackNavigationProp<RootNavParamList>
 >;
 export type WalkMapScreenNavigationProp = CompositeNavigationProp<
@@ -229,7 +249,6 @@ export type BleWithoutHeaderStackNavScreenRouteProp = RouteProp<
 >;
 
 export type BleWithHeaderStackNavParamList = {
-  DeviceCheck: undefined;
   ChargingCheck: undefined;
   PreWiFiForm: undefined;
   WiFiForm: undefined;
@@ -237,16 +256,6 @@ export type BleWithHeaderStackNavParamList = {
   RegisterProfileFirst: undefined;
   RegisterProfileSecond: undefined;
 };
-export type DeviceCheckScreenNavigationProp = CompositeNavigationProp<
-  StackNavigationProp<BleWithHeaderStackNavParamList, "DeviceCheck">,
-  CompositeNavigationProp<
-    StackNavigationProp<BleRootStackNavParamList>,
-    CompositeNavigationProp<
-      StackNavigationProp<LoggedInNavParamList>,
-      StackNavigationProp<RootNavParamList>
-    >
-  >
->;
 export type ChargingCheckScreenNavigationProp = CompositeNavigationProp<
   StackNavigationProp<BleWithHeaderStackNavParamList, "ChargingCheck">,
   CompositeNavigationProp<

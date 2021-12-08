@@ -29,6 +29,7 @@ import UpdateArea from "~/screens/loggedInNav/UpdateArea";
 import Policy from "~/screens/loggedInNav/Policy";
 import Permission from "~/screens/loggedInNav/Permission";
 import InvitationCodeCheck from "~/screens/loggedInNav/InvitationCodeCheck";
+import NewDeviceCheck from "~/screens/loggedInNav/NewDeviceCheck";
 
 const Stack = createStackNavigator<LoggedInNavParamList>();
 
@@ -133,6 +134,7 @@ const LoggedInNav = ({
         name="InvitationCodeCheck"
         component={InvitationCodeCheck}
       />
+      <Stack.Screen name="NewDeviceCheck" component={NewDeviceCheck} />
       <Stack.Screen
         name="BottomTabNav"
         component={BottomTabNav}
