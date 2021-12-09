@@ -4,7 +4,7 @@ import { isRejectedWithValue, Middleware } from "@reduxjs/toolkit";
 import { secureItems } from "~/constants";
 import Toast from "react-native-toast-message";
 
-export const baseUrl = "http://3.36.100.60/api";
+export const baseUrl = "https://dev.petbreeze.co/api";
 
 const baseQuery = retry(
   fetchBaseQuery({
@@ -31,9 +31,24 @@ export const rtkQueryErrorLogger: Middleware = () => next => action => {
     const originalStatus = action.payload?.originalStatus;
     const status = action.payload?.status;
     const detail = action.payload?.data?.detail;
+    const code = action.payload?.data?.error_code;
 
     if (originalStatus === 500 || originalStatus === 502) {
       Toast.show({ type: "error", text1: "서버에 연결할 수 없습니다." });
+    }
+
+    if (code === "D012") {
+      Toast.show({
+        type: "error",
+        text1: "이미 등록된 디바이스입니다.",
+        text2: "초대 코드로 디바이스를 등록해 주세요.",
+      });
+    }
+    if (code === "D013") {
+      Toast.show({ type: "error", text1: "존재하지 않는 초대 코드입니다." });
+    }
+    if (code === "D014") {
+      Toast.show({ type: "error", text1: "만료된 초대 코드입니다." });
     }
 
     if (status === 400) {
@@ -45,12 +60,6 @@ export const rtkQueryErrorLogger: Middleware = () => next => action => {
       }
       if (detail.includes("member user can be owner user")) {
         Toast.show({ type: "error", text1: "디바이스의 멤버가 아닙니다." });
-      }
-      if (detail.includes("Setting changes")) {
-        Toast.show({
-          type: "error",
-          text1: "변경된 설정이 아직 반영되지 않았습니다.",
-        });
       }
     }
 

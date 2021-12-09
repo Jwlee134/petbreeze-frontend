@@ -21,6 +21,11 @@ export interface Device {
   last_walk: string;
 }
 
+interface PostDeviceBody {
+  IMEInumber?: string;
+  invitation_code?: string;
+}
+
 interface InvitationCode {
   code: string;
   expire_datetime: string;
@@ -142,13 +147,11 @@ const deviceApi = api.injectEndpoints({
       providesTags: result => providesList(result, "Device"),
     }),
 
-    postDevice: builder.mutation<{ device_id: number }, string>({
-      query: IMEInumber => ({
+    postDevice: builder.mutation<{ device_id: number }, PostDeviceBody>({
+      query: body => ({
         url: "/device/",
         method: "POST",
-        body: {
-          IMEInumber,
-        },
+        body,
       }),
       invalidatesTags: (result, error) => {
         if (!error) {
@@ -156,6 +159,13 @@ const deviceApi = api.injectEndpoints({
         }
         return [];
       },
+    }),
+
+    getProfileByInvitationCode: builder.query<DeviceProfile, string>({
+      query: code => ({
+        url: `/device/profile/?invitation_code=${code}`,
+        method: "GET",
+      }),
     }),
 
     deleteDevice: builder.mutation<void, number>({
