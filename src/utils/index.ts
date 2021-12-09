@@ -5,10 +5,10 @@ import { bleActions } from "~/store/ble";
 import { deviceSettingActions } from "~/store/deviceSetting";
 import { storageActions } from "~/store/storage";
 
-export const isEndWithConsonant = (str: string) => {
+export const formatNickname = (str: string) => {
   const finalChrCode = str.charCodeAt(str.length - 1);
   const finalConsonantCode = (finalChrCode - 44032) % 28;
-  return finalConsonantCode !== 0;
+  return finalConsonantCode === 0 ? str : `${str}이`;
 };
 
 export const resetAll = () => {

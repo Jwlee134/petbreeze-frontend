@@ -16,7 +16,7 @@ import MapButton from "./MapButton";
 import MyText from "./MyText";
 import CommonCenterModal from "../modal/CommonCenterModal";
 import allSettled from "promise.allsettled";
-import { isEndWithConsonant } from "~/utils";
+import { formatNickname } from "~/utils";
 import Toast from "react-native-toast-message";
 
 interface Props {
@@ -51,7 +51,9 @@ const LiveModeButton = ({
     } else {
       if (!deviceList || isLoading) return;
       const results = await allSettled(
-        selectedIDs.map(id => update({ deviceID: id, body: { Period: 1 } })),
+        selectedIDs.map(id =>
+          update({ deviceID: id, body: { collection_period: 1 } }),
+        ),
       );
       if (
         results.some(
@@ -69,9 +71,9 @@ const LiveModeButton = ({
         Toast.show({
           type: "error",
           text1: "최근에 다른 멤버가 설정을 변경했나요?",
-          text2: `${rejectedNames}${
-            isEndWithConsonant(rejectedNames) ? "을" : "를"
-          } 라이브 모드로 변경할 수 없습니다.`,
+          text2: `${formatNickname(
+            rejectedNames,
+          )}를 라이브 모드로 변경할 수 없습니다.`,
         });
       } else {
         if (quitWalk) {

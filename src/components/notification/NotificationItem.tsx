@@ -2,10 +2,10 @@ import React, { memo } from "react";
 import { TouchableWithoutFeedback, View } from "react-native";
 import styled from "styled-components/native";
 import palette from "~/styles/palette";
-import { formatCreatedAt } from "~/utils";
+import { formatCreatedAt, formatNickname } from "~/utils";
 import MyText from "../common/MyText";
 import Arrow from "~/assets/svg/arrow/arrow-right-b2.svg";
-import { Notification } from "~/api/user";
+import { Notification, NotificationCode } from "~/api/user";
 import { noAvatar } from "~/constants";
 import { Device } from "~/api/device";
 import { useNavigation } from "@react-navigation/native";
@@ -31,17 +31,15 @@ const TextContainer = styled.View`
   flex: 1;
 `;
 
-const NotificationItem = ({
-  data,
-  device,
-  isLast,
-}: {
+interface Props {
   data: Notification;
   device: Device;
   isLast: boolean;
-}) => {
+}
+
+const NotificationItem = ({ data, device, isLast }: Props) => {
   const navigation = useNavigation<NotificationScreenNavigationProp>();
-  const showArrow = data.title.includes("산책을 끝냈어요");
+  const showArrow = data.notification_type_code === NotificationCode.FinishWalk;
 
   const onPress = () => {
     if (!showArrow) return;
@@ -53,19 +51,67 @@ const NotificationItem = ({
   };
 
   const renderText = () => {
-    const color = data.title.includes("안심존") ? palette.red_f0 : undefined;
-    const parts = data.title.split(new RegExp(`(${device.name})`, "gi"));
-    return parts.map((text, i) =>
-      text === device.name ? (
-        <MyText color={color} fontSize={14} fontWeight="bold" key={i}>
-          {text}
-        </MyText>
-      ) : (
-        <MyText color={color} fontSize={14} key={i}>
-          {text}
-        </MyText>
-      ),
-    );
+    switch (data.notification_type_code) {
+      case NotificationCode.LowBattery:
+        return (
+          <>
+            <MyText fontSize={14} fontWeight="bold">
+              {formatNickname(device.name)}
+            </MyText>
+            <MyText fontSize={14}>
+              의 배터리가 {data.battery_level as number}% 남았어요!
+            </MyText>
+          </>
+        );
+      case NotificationCode.ExitArea:
+        return (
+          <>
+            <MyText color={palette.red_f0} fontSize={14} fontWeight="bold">
+              {formatNickname(device.name)}
+            </MyText>
+            <MyText color={palette.red_f0} fontSize={14}>
+              가 안심존을 벗어났어요!
+            </MyText>
+          </>
+        );
+      case NotificationCode.ComeBackArea:
+        return (
+          <>
+            <MyText fontSize={14} fontWeight="bold">
+              {formatNickname(device.name)}
+            </MyText>
+            <MyText fontSize={14}>가 안심존에 돌아왔어요!</MyText>
+          </>
+        );
+      case NotificationCode.StartWalk:
+        return (
+          <>
+            <MyText fontSize={14} fontWeight="bold">
+              {formatNickname(device.name)}
+            </MyText>
+            <MyText fontSize={14}>가</MyText>
+            <MyText fontSize={14} fontWeight="bold">
+              {formatNickname(data.walk_handler_nickname as string)}
+            </MyText>
+            <MyText fontSize={14}>랑 산책을 시작했어요!</MyText>
+          </>
+        );
+      case NotificationCode.FinishWalk:
+        return (
+          <>
+            <MyText fontSize={14} fontWeight="bold">
+              {formatNickname(device.name)}
+            </MyText>
+            <MyText fontSize={14}>가</MyText>
+            <MyText fontSize={14} fontWeight="bold">
+              {formatNickname(data.walk_handler_nickname as string)}
+            </MyText>
+            <MyText fontSize={14}>와의 산책을 끝냈어요!</MyText>
+          </>
+        );
+      default:
+        return null;
+    }
   };
 
   return (

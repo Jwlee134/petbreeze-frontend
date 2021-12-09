@@ -1,5 +1,13 @@
 import api, { providesList } from ".";
 
+export enum NotificationCode {
+  LowBattery,
+  ExitArea,
+  ComeBackArea,
+  StartWalk,
+  FinishWalk,
+}
+
 interface LoginRes {
   user_id: number;
   key: string;
@@ -11,11 +19,13 @@ interface LoginArgs {
 }
 
 export interface Notification {
+  id: number;
+  notification_type_code: NotificationCode;
   related_device_id: number;
   is_new: boolean;
-  title: string;
   created_at: string;
-  id: number;
+  walk_handler_nickname: string | null;
+  battery_level: number | null;
 }
 
 export interface NotificationSettings {

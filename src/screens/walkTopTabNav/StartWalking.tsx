@@ -15,7 +15,7 @@ import { useDispatch } from "react-redux";
 import allSettled from "promise.allsettled";
 import Toast from "react-native-toast-message";
 import permissionCheck from "~/utils/permissionCheck";
-import { isEndWithConsonant } from "~/utils";
+import { formatNickname } from "~/utils";
 import { storageActions } from "~/store/storage";
 
 interface Props {
@@ -66,9 +66,7 @@ const StartWalking = ({
           .join(", ");
         Toast.show({
           type: "error",
-          text1: `${rejectedNames}${
-            isEndWithConsonant(rejectedNames) ? "은" : "는"
-          } 이미 산책중입니다.`,
+          text1: `${formatNickname(rejectedNames)}는 이미 산책중입니다.`,
         });
         await allSettled(
           selectedIDs
