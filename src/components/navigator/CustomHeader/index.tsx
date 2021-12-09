@@ -8,6 +8,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import BackButton from "./BackButton";
 import PageIndicator from "./PageIndicator";
 import PageCount from "./PageCount";
+import { headerHeight } from "~/styles/constants";
 
 interface Props extends Partial<StackHeaderProps> {
   children?: ReactNode;
@@ -20,6 +21,7 @@ interface Props extends Partial<StackHeaderProps> {
   RightButtonText?: JSX.Element;
   onRightButtonPress?: () => void;
   containerStyle?: StyleProp<ViewStyle>;
+  pageIndicatorStyle?: StyleProp<ViewStyle>;
   wrapperStyle?: StyleProp<ViewStyle>;
   leftDivStyle?: StyleProp<ViewStyle>;
   centerDivStyle?: StyleProp<ViewStyle>;
@@ -51,7 +53,7 @@ const Div = styled.View`
 const CustomHeader = ({
   currentPage = 0,
   totalPage = 0,
-  height = 48,
+  height = headerHeight,
   title,
   navigation,
   onBackButtonPress,
@@ -59,6 +61,7 @@ const CustomHeader = ({
   onRightButtonPress,
   children,
   containerStyle,
+  pageIndicatorStyle,
   wrapperStyle,
   leftDivStyle,
   centerDivStyle,
@@ -105,7 +108,11 @@ const CustomHeader = ({
         </Wrapper>
       </Container>
       {showPage ? (
-        <PageIndicator currentPage={currentPage} totalPage={totalPage} />
+        <PageIndicator
+          style={pageIndicatorStyle}
+          currentPage={currentPage}
+          totalPage={totalPage}
+        />
       ) : null}
     </>
   );

@@ -25,8 +25,8 @@ interface Props extends TouchableOpacityProps {
 const SButton = styled.TouchableOpacity<{ width: number }>`
   ${({ width }) => css`
     width: ${width - 32}px;
-    height: ${50.5}px;
-    border-radius: ${25}px;
+    height: 50.5px;
+    border-radius: 25px;
   `}
   margin: 0 auto;
   overflow: hidden;
@@ -55,10 +55,12 @@ const Button = ({
 }: Props) => {
   const { bottom } = useSafeAreaInsets();
   const { width } = useWindowDimensions();
-  const [enableAfterDelay, setEnableAfterDelay] = useState(delay ?? false);
   const value = useRef(
     new Animated.Value(props.disabled || delay ? 0 : 1),
   ).current;
+  const [disableDuringDelay, setDisableDuringDelay] = useState(
+    !!delay ?? false,
+  );
 
   const color = value.interpolate({
     inputRange: [0, 1],
@@ -70,18 +72,23 @@ const Button = ({
     outputRange: ["rgba(0, 0, 0, 0.05)", backgroundColor || palette.blue_86],
   });
 
-  useEffect(() => {
-    if (enableAfterDelay) {
-      setTimeout(() => {
-        setEnableAfterDelay(false);
-      }, delay);
-    }
+  const transition = () =>
     Animated.timing(value, {
-      toValue: props.disabled || enableAfterDelay ? 0 : 1,
+      toValue: props.disabled ? 0 : 1,
       duration: 200,
       useNativeDriver: false,
-    }).start();
-  }, [props.disabled, enableAfterDelay]);
+    });
+
+  useEffect(() => {
+    if (delay) {
+      setTimeout(() => {
+        setDisableDuringDelay(false);
+      }, delay);
+      Animated.sequence([Animated.delay(delay), transition()]).start();
+    } else {
+      transition().start();
+    }
+  }, [props.disabled, delay]);
 
   return (
     <SButton
@@ -92,7 +99,7 @@ const Button = ({
         }),
         ...(style as object),
       }}
-      disabled={enableAfterDelay ? true : props.disabled}
+      disabled={disableDuringDelay || props.disabled}
       {...props}>
       <Container style={{ backgroundColor: backgroundColorInterpolate }}>
         {isLoading ? (

@@ -16,7 +16,9 @@ const Weight = () => {
         value={weight}
         maxLength={2}
         onChangeText={text => {
-          dispatch(formActions.setState({ weight: text }));
+          dispatch(
+            formActions.setState({ weight: text.replace(/[^0-9]/g, "") }),
+          );
         }}
         keyboardType="number-pad"
         solidPlaceholderTitle="kg"

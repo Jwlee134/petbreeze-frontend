@@ -28,8 +28,9 @@ import WalkDetailDay from "~/screens/loggedInNav/WalkDetailDay";
 import UpdateArea from "~/screens/loggedInNav/UpdateArea";
 import Policy from "~/screens/loggedInNav/Policy";
 import Permission from "~/screens/loggedInNav/Permission";
-import InvitationCodeCheck from "~/screens/loggedInNav/InvitationCodeCheck";
-import NewDeviceCheck from "~/screens/loggedInNav/NewDeviceCheck";
+import AddDevice from "~/screens/loggedInNav/AddDevice";
+import InvitationCodeForm from "~/screens/loggedInNav/InvitationCodeForm";
+import Welcome from "~/screens/loggedInNav/Welcome";
 
 const Stack = createStackNavigator<LoggedInNavParamList>();
 
@@ -128,13 +129,6 @@ const LoggedInNav = ({
         detachPreviousScreen: false,
         headerShown: false,
       }}>
-      <Stack.Screen name="Policy" component={Policy} />
-      <Stack.Screen name="Permission" component={Permission} />
-      <Stack.Screen
-        name="InvitationCodeCheck"
-        component={InvitationCodeCheck}
-      />
-      <Stack.Screen name="NewDeviceCheck" component={NewDeviceCheck} />
       <Stack.Screen
         name="BottomTabNav"
         component={BottomTabNav}
@@ -142,6 +136,10 @@ const LoggedInNav = ({
           initialRouteName: initialBottomTabRouteName,
         }}
       />
+      <Stack.Screen name="Policy" component={Policy} />
+      <Stack.Screen name="Permission" component={Permission} />
+      <Stack.Screen name="AddDevice" component={AddDevice} />
+      <Stack.Screen name="InvitationCodeForm" component={InvitationCodeForm} />
       <Stack.Screen
         name="BleRootStackNav"
         component={BleRootStackNav}
@@ -170,6 +168,7 @@ const LoggedInNav = ({
       <Stack.Screen name="BatteryAlert" component={BatteryAlert} />
       <Stack.Screen name="UserRequestSuccess" component={UserRequestSuccess} />
       <Stack.Screen name="WalkDetailDay" component={WalkDetailDay} />
+      <Stack.Screen name="Welcome" component={Welcome} />
     </Stack.Navigator>
   );
 };

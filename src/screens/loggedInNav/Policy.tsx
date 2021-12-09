@@ -1,22 +1,32 @@
 import React, { useContext, useState } from "react";
 import styled from "styled-components/native";
-import SafeAreaContainer from "~/components/common/container/SafeAreaContainer";
 import { PolicyScreenNavigationProp } from "~/types/navigator";
 import PolicyIcon from "~/assets/svg/policy.svg";
 import Button from "~/components/common/Button";
 import MyText from "~/components/common/MyText";
-import { Animated, Linking, useWindowDimensions, View } from "react-native";
+import { Animated, Linking } from "react-native";
 import CheckCircle from "~/components/common/CheckCircle";
 import Arrow from "~/assets/svg/arrow/arrow-right-light-gray.svg";
 import { DimensionsContext, RpHeight } from "~/context/DimensionsContext";
 import useAnimatedSequence from "~/hooks/useAnimatedSequence";
+import { useSafeAreaFrame } from "react-native-safe-area-context";
+
+const TopContainer = styled(Animated.View)`
+  flex-grow: 1;
+  justify-content: flex-end;
+`;
+
+const BottomContainer = styled.View`
+  justify-content: flex-end;
+`;
 
 const RowContainer = styled.View`
   flex-direction: row;
+  align-items: center;
 `;
 
 const ListItem = styled.TouchableOpacity<{ rpHeight: RpHeight }>`
-  height: ${({ rpHeight }) => rpHeight(54)}px;
+  height: ${({ rpHeight }) => rpHeight(49)}px;
   padding-left: 47px;
   flex-direction: row;
   justify-content: space-between;
@@ -33,7 +43,8 @@ const Divider = styled.View`
   height: 1px;
   background-color: rgba(0, 0, 0, 0.3);
   align-self: center;
-  margin: 5px 0;
+  margin-top: 5px;
+  margin-bottom: 14px;
 `;
 
 const data = [
@@ -61,15 +72,11 @@ const data = [
 ];
 
 const Policy = ({ navigation }: { navigation: PolicyScreenNavigationProp }) => {
-  const { width } = useWindowDimensions();
-  const { rpHeight } = useContext(DimensionsContext);
+  const { width, rpHeight } = useContext(DimensionsContext);
   const handleNext = () => navigation.navigate("Permission");
   const [selected, setSelected] = useState<number[]>([]);
-  const [value1, value2] = useAnimatedSequence({
-    delayAfterMount: 400,
-    delayAfterFirst: 200,
-    numOfValues: 2,
-  });
+  const [value1, value2] = useAnimatedSequence({ numOfValues: 2 });
+  const { height } = useSafeAreaFrame();
 
   const handlePress = (i: number) =>
     setSelected(prev => {
@@ -86,22 +93,20 @@ const Policy = ({ navigation }: { navigation: PolicyScreenNavigationProp }) => {
     });
 
   return (
-    <SafeAreaContainer style={{ justifyContent: "space-between" }}>
-      <Animated.View style={{ opacity: value1 }}>
+    <>
+      <TopContainer style={{ opacity: value1 }}>
         <PolicyIcon
           width={rpHeight(88)}
           height={rpHeight(99)}
-          style={{
-            alignSelf: "center",
-            marginTop: rpHeight(85),
-            marginBottom: rpHeight(30),
-          }}
+          style={{ alignSelf: "center", marginBottom: rpHeight(30) }}
         />
-        <MyText fontSize={24} style={{ textAlign: "center" }}>
+        <MyText
+          fontSize={24}
+          style={{ textAlign: "center", marginBottom: rpHeight(45) }}>
           필수약관에{"\n"}동의해주세요.
         </MyText>
-      </Animated.View>
-      <View>
+      </TopContainer>
+      <BottomContainer style={{ minHeight: height / 2 }}>
         <Animated.View style={{ opacity: value2 }}>
           <ListItem
             rpHeight={rpHeight}
@@ -126,11 +131,15 @@ const Policy = ({ navigation }: { navigation: PolicyScreenNavigationProp }) => {
               <RowContainer>
                 <CheckCircle selected={selected.includes(i)} />
                 <MyText
+                  fontSize={14}
                   color="rgba(0, 0, 0, 0.5)"
                   style={{ marginLeft: 15, marginRight: 3 }}>
                   ({item.isNecessary ? "필수" : "선택"})
                 </MyText>
-                <MyText color="rgba(0, 0, 0, 0.5)" fontWeight="light">
+                <MyText
+                  fontSize={14}
+                  color="rgba(0, 0, 0, 0.5)"
+                  fontWeight="light">
                   {item.title}
                 </MyText>
               </RowContainer>
@@ -146,13 +155,14 @@ const Policy = ({ navigation }: { navigation: PolicyScreenNavigationProp }) => {
             !selected.includes(1) ||
             !selected.includes(2)
           }
-          style={{ marginTop: rpHeight(39) }}
+          style={{ marginTop: rpHeight(45) }}
           useCommonMarginBottom
+          useBottomInset
           onPress={handleNext}>
           다음
         </Button>
-      </View>
-    </SafeAreaContainer>
+      </BottomContainer>
+    </>
   );
 };
 
