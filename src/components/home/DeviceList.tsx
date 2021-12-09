@@ -85,7 +85,9 @@ const DeviceList = () => {
       return;
     }
     const period =
-      deviceSetting.Period === 1 ? 3000 : deviceSetting.Period * 1000;
+      deviceSetting.collection_period === 1
+        ? 3000
+        : deviceSetting.collection_period * 1000;
     dispatch(
       commonActions.setHome({
         pressedID: originalArgs,
@@ -121,7 +123,7 @@ const DeviceList = () => {
 
   const display = (latitude: number, longitude: number, time: string) => {
     if (!deviceSetting) return;
-    const areas = deviceSetting.Area.filter(area => area.name !== null);
+    const areas = deviceSetting.safety_areas.filter(area => area.name !== null);
     if (areas.length) {
       // 안심존이 있을 때
       const currentAreaIndex = areas.findIndex(area => {

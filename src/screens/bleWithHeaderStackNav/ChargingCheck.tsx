@@ -1,9 +1,8 @@
-import React from "react";
+import React, { useContext } from "react";
 import styled from "styled-components/native";
 import Device from "~/assets/svg/device/device-charging.svg";
 import Button from "~/components/common/Button";
 import MyText from "~/components/common/MyText";
-import SafeAreaContainer from "~/components/common/container/SafeAreaContainer";
 import { useAppSelector } from "~/store";
 import { ChargingCheckScreenNavigationProp } from "~/types/navigator";
 import { commonActions } from "~/store/common";
@@ -12,10 +11,10 @@ import permissionCheck from "~/utils/permissionCheck";
 import { isAndroid } from "~/utils";
 import BleManager from "react-native-ble-manager";
 import { useDispatch } from "react-redux";
+import { DimensionsContext } from "~/context/DimensionsContext";
 
 const TopContainer = styled.View`
   flex: 1;
-  align-items: center;
   justify-content: flex-end;
 `;
 
@@ -29,6 +28,7 @@ const ChargingCheck = ({
 }: {
   navigation: ChargingCheckScreenNavigationProp;
 }) => {
+  const { rpHeight } = useContext(DimensionsContext);
   const isBleManagerInitialized = useAppSelector(
     state => state.common.isBleManagerInitialized,
   );
@@ -45,6 +45,8 @@ const ChargingCheck = ({
   };
 
   const handlePress = async () => {
+    navigation.replace("BleWithoutHeaderStackNav");
+    dispatch(bleActions.setStatus("scanning"));
     try {
       await permissionCheck.bluetooth();
       if (isAndroid) {
@@ -56,20 +58,26 @@ const ChargingCheck = ({
   };
 
   return (
-    <SafeAreaContainer>
+    <>
       <TopContainer>
-        <Device width={100} height={156} />
-        <MyText fontSize={24} style={{ marginTop: 56, textAlign: "center" }}>
-          충전기를{"\n"}
+        <Device
+          width={rpHeight(100)}
+          height={rpHeight(156)}
+          style={{ alignSelf: "center" }}
+        />
+        <MyText
+          fontSize={24}
+          style={{ marginTop: rpHeight(44), textAlign: "center" }}>
+          충전기에{"\n"}
           연결해주세요.
         </MyText>
       </TopContainer>
       <BottomContainer>
-        <Button useCommonMarginBottom onPress={handlePress}>
+        <Button useCommonMarginBottom useBottomInset onPress={handlePress}>
           다음
         </Button>
       </BottomContainer>
-    </SafeAreaContainer>
+    </>
   );
 };
 

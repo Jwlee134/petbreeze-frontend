@@ -35,7 +35,7 @@ const HomeBottomModal = ({ device, close }: Props) => {
   };
 
   const onEmergencyMissingPress = () => {
-    /*  if (!device.is_missed) {
+    if (!device.is_missed) {
       close();
       navigation.navigate("EmergencyMissingStackNav", {
         avatar: device.profile_image,
@@ -45,7 +45,7 @@ const HomeBottomModal = ({ device, close }: Props) => {
     } else {
       close();
       trigger(device.id);
-    } */
+    }
   };
 
   return (
@@ -62,8 +62,24 @@ const HomeBottomModal = ({ device, close }: Props) => {
       <IosBottomModalButton onPress={onDeviceSettingPress}>
         <MyText color={palette.blue_7b}>기기설정</MyText>
       </IosBottomModalButton>
+      {device.is_missed && (
+        <IosBottomModalButton
+          onPress={() => {
+            close();
+            navigation.navigate("EmergencyMissingStackNav", {
+              avatar: device.profile_image,
+              name: device.name,
+              deviceID: device.id,
+              isModify: true,
+            });
+          }}>
+          <MyText color={palette.red_f0}>긴급실종 수정</MyText>
+        </IosBottomModalButton>
+      )}
       <IosBottomModalButton isLast onPress={onEmergencyMissingPress}>
-        <MyText color={palette.red_f0}>실종신고</MyText>
+        <MyText color={palette.red_f0}>
+          {device.is_missed ? "찾았어요" : "긴급실종"}
+        </MyText>
       </IosBottomModalButton>
     </>
   );

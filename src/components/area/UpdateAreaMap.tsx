@@ -4,6 +4,7 @@ import { useWindowDimensions, View } from "react-native";
 import NaverMapView, { Circle } from "react-native-nmap";
 import ViewShot from "react-native-view-shot";
 import { useDispatch } from "react-redux";
+import { getAddressByCoord } from "~/api/place";
 import { useAppSelector } from "~/store";
 import { deviceSettingActions } from "~/store/deviceSetting";
 import palette from "~/styles/palette";
@@ -50,17 +51,25 @@ const UpdateAreaMap = () => {
 
   useEffect(() => {
     if (!isSubmitting || !viewShotRef.current || !mapRef.current) return;
-    const edgePoints = getLeftRightPointsOfCircle(
-      coord.latitude,
-      coord.longitude,
-      radius,
-    );
-    mapRef.current?.animateToTwoCoordinates(edgePoints[0], edgePoints[1]);
-    setTimeout(async () => {
+    (async () => {
+      const edgePoints = getLeftRightPointsOfCircle(
+        coord.latitude,
+        coord.longitude,
+        radius,
+      );
+      mapRef.current?.animateToTwoCoordinates(edgePoints[0], edgePoints[1]);
       const uri = await viewShotRef.current?.capture();
-      dispatch(deviceSettingActions.updateAreaResult(uri || ""));
-      navigation.goBack();
-    }, 500);
+      const data = await getAddressByCoord(coord.latitude, coord.longitude);
+      setTimeout(async () => {
+        dispatch(
+          deviceSettingActions.updateAreaResult({
+            thumbnail: uri || "",
+            address: data,
+          }),
+        );
+        navigation.goBack();
+      }, 500);
+    })();
   }, [isSubmitting, viewShotRef.current]);
 
   return (

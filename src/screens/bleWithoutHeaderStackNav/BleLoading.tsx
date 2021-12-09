@@ -10,12 +10,9 @@ const BleLoading = ({ navigation, route }: BleLoadingScreenScreenProps) => {
     if (status === "downloadingFirmware")
       navigation.replace("FirmwareProgress");
     if (status === "wifiSuccess") navigation.replace("Success");
-    if (status === "wifiFail" || status === "devEUIFail")
+    if (status.includes("Fail")) {
       navigation.replace("Fail");
-    if (status === "retrieveFail" || status === "startNotificationFail")
-      navigation.replace("ScanningFail");
-    if (status === "notificationFail") navigation.replace("Fail");
-    if (status === "relationAdded") navigation.replace("Completion");
+    }
   }, [status]);
 
   return <Loading loadingText={route.params.loadingText} />;

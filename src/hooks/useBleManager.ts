@@ -4,11 +4,11 @@ import { NativeEventEmitter, NativeModules } from "react-native";
 import BleManager, { Peripheral } from "react-native-ble-manager";
 
 import deviceApi from "~/api/device";
-import { bytesToString, stringToBytes, isAndroid, isIos } from "~/utils";
+import { bytesToString, isAndroid, isIos } from "~/utils";
 
 import * as FileSystem from "expo-file-system";
 import { decode } from "base64-arraybuffer";
-import { store, useAppSelector } from "~/store";
+import { useAppSelector } from "~/store";
 import { useDispatch } from "react-redux";
 import { bleActions } from "~/store/ble";
 
@@ -16,12 +16,6 @@ const BleManagerModule = NativeModules.BleManager;
 const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
 
 const interval = 512;
-
-const SafetyZone = {
-  UUID: "C4A28FCC-DD6E-11EB-BA80-0242AC130004",
-  CharacteristicArea: "C4A21988-DD6E-11EB-BA80-0242AC130004",
-  CharacteristicWifi: "C4A2577E-DD6E-11EB-BA80-0242AC130004",
-};
 
 const OTAControlPoint = {
   UUID: "c4a10060-dd6e-11eb-ba80-0242ac130004",
@@ -37,7 +31,6 @@ const DeviceInformation = {
 const useBleMaganer = () => {
   const status = useAppSelector(state => state.ble.status);
   const isOtaUpdate = useAppSelector(state => state.ble.isOtaUpdate);
-  const disconnected = useAppSelector(state => state.ble.disconnected);
   const dispatch = useDispatch();
 
   const [peripheral, setPeripheral] = useState<Peripheral | null>(null);
@@ -46,14 +39,12 @@ const useBleMaganer = () => {
 
   const [registerDevice, { data, error }] = deviceApi.usePostDeviceMutation();
 
-  const startNotification = async (type: "WiFi" | "OTA") => {
+  const startNotification = async () => {
     try {
       await BleManager.startNotification(
         (peripheral as Peripheral).id,
-        type === "OTA" ? OTAControlPoint.UUID : SafetyZone.UUID,
-        type === "OTA"
-          ? OTAControlPoint.CharacteristicNotif
-          : SafetyZone.CharacteristicWifi,
+        OTAControlPoint.UUID,
+        OTAControlPoint.CharacteristicNotif,
       );
       console.log("Succeded to start notification: ", peripheral?.id);
     } catch (error) {
@@ -62,69 +53,18 @@ const useBleMaganer = () => {
     }
   };
 
-  const stopNotification = async (type: "WiFi" | "OTA") => {
+  const stopNotification = async () => {
     try {
       await BleManager.stopNotification(
         (peripheral as Peripheral).id,
-        type === "OTA" ? OTAControlPoint.UUID : SafetyZone.UUID,
-        type === "OTA"
-          ? OTAControlPoint.CharacteristicNotif
-          : SafetyZone.CharacteristicWifi,
+        OTAControlPoint.UUID,
+        OTAControlPoint.CharacteristicNotif,
       );
       console.log("Succeeded to stop notification");
     } catch (error) {
       console.warn("Failed to stop notification: ", error);
     }
   };
-
-  const sendArea = useCallback(async () => {
-    if (disconnected) {
-      dispatch(bleActions.setStatus("areaDone"));
-      return;
-    }
-    const {
-      coord: { latitude, longitude },
-      radius,
-    } = store.getState().deviceSetting.draft.area;
-    const obj: { [key: string]: number[] } = {};
-    obj["Area0"] = [latitude, longitude, radius];
-    console.log(obj, stringToBytes(JSON.stringify(obj)));
-    try {
-      await BleManager.write(
-        (peripheral as Peripheral).id,
-        SafetyZone.UUID,
-        SafetyZone.CharacteristicArea,
-        stringToBytes(JSON.stringify(obj)),
-        512,
-      );
-    } finally {
-      dispatch(bleActions.setStatus("areaDone"));
-    }
-  }, [status]);
-
-  const sendWifi = useCallback(async () => {
-    if (disconnected) return;
-    const { ssid, password } = store.getState().deviceSetting.draft.wifi;
-    const obj: { WiFi0: { [key: string]: string } } = {
-      WiFi0: {},
-    };
-    obj.WiFi0[ssid as string] = password || "";
-    console.log(obj, stringToBytes(JSON.stringify(obj)));
-    try {
-      await BleManager.write(
-        (peripheral as Peripheral).id,
-        SafetyZone.UUID,
-        SafetyZone.CharacteristicWifi,
-        stringToBytes(JSON.stringify(obj)),
-        512,
-      );
-      setTimeout(() => {
-        startNotification("WiFi");
-      }, 500);
-    } catch (error) {
-      dispatch(bleActions.setStatus("wifiFail"));
-    }
-  }, [status]);
 
   const installFirmware = useCallback(async () => {
     if (!firmware) return;
@@ -209,7 +149,7 @@ const useBleMaganer = () => {
   useEffect(() => {
     if (data) {
       dispatch(bleActions.setDeviceID(data.device_id));
-      startNotification("OTA");
+      startNotification();
     }
     if (error && "status" in error && error.status === 400) {
       dispatch(bleActions.setStatus("devEUIFail"));
@@ -224,7 +164,7 @@ const useBleMaganer = () => {
         DeviceInformation.CharacteristicA,
       );
       console.log("Succeded to read devEUI: ", bytesToString(devEUI));
-      registerDevice(bytesToString(devEUI));
+      registerDevice({ SIM_serial_number: bytesToString(devEUI) });
     } catch (error) {
       console.warn("Failed to read devEUI", error);
       dispatch(bleActions.setStatus("retrieveFail"));
@@ -260,7 +200,6 @@ const useBleMaganer = () => {
       timeout.current = null;
       setPeripheral(peripheral);
       console.log("Connected to: ", peripheral.id);
-      dispatch(bleActions.setDisconnected(false));
       dispatch(bleActions.setStatus("connected"));
     } catch (error) {
       console.warn("Failed to connect: ", error);
@@ -300,42 +239,12 @@ const useBleMaganer = () => {
     characteristic,
   }: any) => {
     console.log("Notification has been arrived: ", value, characteristic);
-    if (
-      characteristic.toLowerCase() ===
-      SafetyZone.CharacteristicWifi.toLowerCase()
-    ) {
-      console.log("wifi notification: ", value);
-      if (value[0] === 79) {
-        dispatch(bleActions.setStatus("wifiSuccess"));
-      } else {
-        dispatch(bleActions.setStatus("wifiFail"));
-      }
+    if (value[0] === 79) {
+      dispatch(bleActions.setStatus("downloadingFirmware"));
     } else {
-      if (value[0] === 79) {
-        dispatch(bleActions.setStatus("downloadingFirmware"));
-      } else {
-        dispatch(bleActions.setStatus("notificationFail"));
-      }
+      dispatch(bleActions.setStatus("notificationFail"));
     }
   };
-
-  useEffect(() => {
-    const disconnect = bleManagerEmitter.addListener(
-      "BleManagerDisconnectPeripheral",
-      ({ peripheral: disconnectedPeripheral }) => {
-        if (disconnectedPeripheral === peripheral?.id) {
-          dispatch(bleActions.setDisconnected(true));
-        }
-      },
-    );
-    return () => {
-      disconnect.remove();
-    };
-  }, [peripheral]);
-
-  useEffect(() => {
-    console.log("isDisconnected: ", disconnected);
-  }, [disconnected]);
 
   useEffect(() => {
     console.log(status);
@@ -349,7 +258,7 @@ const useBleMaganer = () => {
     }
     if (status === "retrieveSuccess") {
       if (isOtaUpdate) {
-        startNotification("OTA");
+        startNotification();
       } else {
         handleReadDevEUI();
       }
@@ -362,14 +271,8 @@ const useBleMaganer = () => {
     }
     if (status === "otaUpdateSuccess") {
       setTimeout(() => {
-        stopNotification("OTA");
+        stopNotification();
       }, 500);
-    }
-    if (status === "connectingToWifi") {
-      sendWifi();
-    }
-    if (status === "sendingArea") {
-      sendArea();
     }
   }, [status]);
 

@@ -1,13 +1,13 @@
 import React, { useEffect } from "react";
 import styled from "styled-components/native";
 import GradientContainer from "~/components/common/container/GradientContainer";
-import AnimatedPoints from "~/components/common/AnimatedPoints";
 import Footprint from "~/assets/svg/footprint/footprint-blue.svg";
-import { Animated } from "react-native";
+import { Animated, View } from "react-native";
 import useAnimatedSequence from "~/hooks/useAnimatedSequence";
 import { ScanningScreenNavigationProp } from "~/types/navigator";
 import { useAppSelector } from "~/store";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import MyText from "~/components/common/MyText";
 
 const TopContainer = styled.View`
   flex: 1;
@@ -44,7 +44,6 @@ const FootPrintInner = styled.View`
   width: 98px;
   height: 98px;
   border-radius: 49px;
-  margin-bottom: -20px;
   background-color: white;
   justify-content: center;
   align-items: center;
@@ -68,29 +67,26 @@ const Scanning = ({
 
   useEffect(() => {
     if (status === "scanningFail" || status === "connectingFail")
-      navigation.replace("ScanningFail");
+      navigation.replace("Fail");
     if (status === "connected") navigation.replace("Success");
   }, [status]);
 
   return (
     <GradientContainer>
       <TopContainer>
-        <AnimatedPoints
-          fontWeight="medium"
-          fontSize={24}
-          value2={value1}
-          value3={value2}
-          color="white"
-          text="디바이스 검색중"
-          style={{
-            marginTop: top + 99,
-          }}
-        />
-        <FootPrintInner>
+        <View />
+        <FootPrintInner style={{ marginTop: top }}>
           <Footprint width={58} height={56} />
           <FootPrintBorder style={{ opacity: value2 }} />
           <FootPrintOuter style={{ opacity: value1 }} />
         </FootPrintInner>
+        <MyText
+          color="white"
+          fontSize={24}
+          fontWeight="medium"
+          style={{ textAlign: "center" }}>
+          디바이스 검색중
+        </MyText>
       </TopContainer>
       <BottomContainer />
     </GradientContainer>

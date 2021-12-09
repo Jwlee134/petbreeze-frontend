@@ -12,7 +12,6 @@ import StopFill from "~/assets/svg/walk/stop-fill.svg";
 import ImageCropPicker from "react-native-image-crop-picker";
 import CameraRoll from "@react-native-community/cameraroll";
 import useModal from "~/hooks/useModal";
-import Modal from "react-native-modal";
 import CommonCenterModal from "../modal/CommonCenterModal";
 import { useNavigation } from "@react-navigation/native";
 import { WalkMapScreenNavigationProp } from "~/types/navigator";
@@ -156,14 +155,13 @@ const Toggle = () => {
           </SmallButton>
         </Shadow>
       </RowContainer>
-      <Modal {...modalProps({ type: "center" })}>
-        <CommonCenterModal
-          close={onModalClose}
-          rightButtonText={isLoading ? <ActivityIndicator /> : "종료"}
-          title={`1분 미만의 산책은\n기록되지 않습니다.\n산책을 종료할까요?`}
-          onRightButtonPress={onFinishWalking}
-        />
-      </Modal>
+      <CommonCenterModal
+        modalProps={modalProps}
+        close={onModalClose}
+        rightButtonText={isLoading ? <ActivityIndicator /> : "종료"}
+        title={`1분 미만의 산책은\n기록되지 않습니다.\n산책을 종료할까요?`}
+        onRightButtonPress={onFinishWalking}
+      />
     </>
   );
 };

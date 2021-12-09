@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Keyboard, StyleSheet, TouchableWithoutFeedback } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import styled from "styled-components/native";
@@ -95,14 +95,6 @@ const Area = ({ navigation }: { navigation: AreaScreenNavigationProp }) => {
       ],
     };
   }, [step2]);
-
-  useEffect(() => {
-    return () => {
-      dispatch(
-        deviceSettingActions.setArea({ isSubmitting: false, step2: false }),
-      );
-    };
-  }, []);
 
   const onNext = () => {
     dispatch(deviceSettingActions.setArea({ step2: true }));

@@ -1,19 +1,17 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import styled from "styled-components/native";
 import { useAppSelector } from "~/store";
-import AnimatedPoints from "~/components/common/AnimatedPoints";
-import useAnimatedSequence from "~/hooks/useAnimatedSequence";
-import { Animated } from "react-native";
-import palette from "~/styles/palette";
-import Footprint from "~/assets/svg/footprint/footprint-app-icon-white.svg";
+import Footprint from "~/assets/svg/footprint/footprint-app-icon-blue.svg";
 import { FirmwareProgressScreenNavigationProp } from "~/types/navigator";
-import Reanimated, {
+import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
-
-const barWidth = 268;
+import MyText from "~/components/common/MyText";
+import GradientContainer from "~/components/common/container/GradientContainer";
+import { DimensionsContext } from "~/context/DimensionsContext";
+import { View } from "react-native";
 
 const TopContainer = styled.View`
   flex: 1;
@@ -27,18 +25,14 @@ const BottomContainer = styled.View`
 `;
 
 const BarBackground = styled.View`
-  width: ${barWidth}px;
-  height: 12px;
-  margin-bottom: 42px;
-  border-radius: 100px;
-  background-color: rgba(0, 0, 0, 0.05);
+  height: 7px;
+  background-color: white;
   overflow: hidden;
 `;
 
-const Bar = styled(Reanimated.View)`
+const Bar = styled(Animated.View)`
   height: 100%;
-  background-color: ${palette.blue_86};
-  border-radius: 100px;
+  background-color: #d7adff;
 `;
 
 const FirmwareProgress = ({
@@ -46,40 +40,25 @@ const FirmwareProgress = ({
 }: {
   navigation: FirmwareProgressScreenNavigationProp;
 }) => {
+  const { width, rpHeight } = useContext(DimensionsContext);
   const { status, progress } = useAppSelector(state => state.ble);
-  const [value1] = useAnimatedSequence({
-    numOfValues: 1,
-    loop: true,
-    firstDuration: 400,
-    delayAfterMount: 600,
-    resetDuration: 400,
-    delayAfterFirst: 800,
-    delayAfterReset: 800,
-  });
-  const [point1, point2, point3] = useAnimatedSequence({
-    numOfValues: 3,
-    loop: true,
-    delayAfterMount: 600,
-    firstDuration: 400,
-    delayAfterFirst: 800,
-    secondDuration: 400,
-    delayAfterSecond: 800,
-    thirdDuration: 400,
-    delayAfterThird: 800,
-    resetDuration: 400,
-    delayAfterReset: 800,
-  });
   const percentage = useSharedValue(progress);
+  const translateX = useSharedValue(progress);
+
+  const barWidth = width - 64;
 
   const animatedStyles = useAnimatedStyle(() => {
     percentage.value = barWidth * (progress / 100);
     return { width: withTiming(percentage.value, { duration: 400 }) };
   }, [progress]);
-
-  const translateY = value1.interpolate({
-    inputRange: [0, 1],
-    outputRange: [-46, -23],
-  });
+  const markerAnimatedStyles = useAnimatedStyle(() => {
+    translateX.value = barWidth * (progress / 100);
+    return {
+      transform: [
+        { translateX: withTiming(translateX.value, { duration: 400 }) },
+      ],
+    };
+  }, [progress]);
 
   useEffect(() => {
     if (status === "downloadingFail" || status === "installingFail")
@@ -88,31 +67,22 @@ const FirmwareProgress = ({
   }, [status]);
 
   return (
-    <>
+    <GradientContainer>
       <TopContainer>
-        <Animated.View
-          style={{
-            opacity: value1,
-            transform: [{ translateY }],
-          }}>
-          <Footprint width={60} height={83} />
-        </Animated.View>
-        <BarBackground>
+        <View style={{ width: barWidth + 35 }}>
+          <Animated.View style={[markerAnimatedStyles]}>
+            <Footprint width={35} height={48} style={{ marginBottom: 15 }} />
+          </Animated.View>
+        </View>
+        <BarBackground style={{ width: barWidth, marginBottom: rpHeight(90) }}>
           <Bar style={[animatedStyles]} />
         </BarBackground>
+        <MyText fontWeight="medium" fontSize={24} color="white">
+          {status.includes("download") ? "펌웨어 다운로드중" : "펌웨어 설치중"}
+        </MyText>
       </TopContainer>
-      <BottomContainer>
-        <AnimatedPoints
-          value1={point1}
-          value2={point2}
-          value3={point3}
-          text={
-            status.includes("download") ? "펌웨어 다운로드중" : "펌웨어 설치중"
-          }
-          fontSize={24}
-        />
-      </BottomContainer>
-    </>
+      <BottomContainer />
+    </GradientContainer>
   );
 };
 

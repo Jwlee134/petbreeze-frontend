@@ -1,22 +1,19 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import { Keyboard, StyleSheet } from "react-native";
 import NaverMapView, { Circle } from "react-native-nmap";
 import { getLeftRightPointsOfCircle } from "~/utils";
 
 import { useDispatch } from "react-redux";
-import { store, useAppSelector } from "~/store";
+import { useAppSelector } from "~/store";
 
 import ViewShot from "react-native-view-shot";
 import { useNavigation } from "@react-navigation/native";
 import { AreaScreenNavigationProp } from "~/types/navigator";
 import { deviceSettingActions } from "~/store/deviceSetting";
-import { bleActions } from "~/store/ble";
 import Map from "../common/Map";
 import palette from "~/styles/palette";
 import { getAddressByCoord } from "~/api/place";
 import Animated from "react-native-reanimated";
-import deviceApi, { GeoJsonType } from "~/api/device";
-import imageHandler from "~/utils/imageHandler";
 
 interface Props {
   mapPadding: {
@@ -30,19 +27,12 @@ interface Props {
 
 const BleAreaMap = ({ mapPadding, style }: Props) => {
   const navigation = useNavigation<AreaScreenNavigationProp>();
-  const [updateDeviceSetting] = deviceApi.useUpdateDeviceSettingMutation();
-  const [updateAreaThumbnail] =
-    deviceApi.useUpdateSafetyZoneThumbnailMutation();
-  const deviceID = useAppSelector(state => state.ble.deviceID);
   const coord = useAppSelector(state => state.deviceSetting.draft.area.coord);
   const radius = useAppSelector(state => state.deviceSetting.draft.area.radius);
   const { step2, animateCamera, isSubmitting } = useAppSelector(
     state => state.deviceSetting.area,
   );
-  const status = useAppSelector(state => state.ble.status);
   const dispatch = useDispatch();
-  const [address, setAddress] = useState("");
-  const [thumbnail, setThumbnail] = useState("");
 
   const mapRef = useRef<NaverMapView>(null);
   const viewShotRef = useRef<ViewShot>(null);
@@ -67,65 +57,28 @@ const BleAreaMap = ({ mapPadding, style }: Props) => {
   useEffect(() => {
     if (!mapRef.current || !radius || !coordsArr) return;
     mapRef.current.animateToTwoCoordinates(coordsArr[0], coordsArr[1]);
-  }, [mapRef, radius, step2]);
+  }, [mapRef.current, radius, step2]);
 
   useEffect(() => {
     if (!isSubmitting || !viewShotRef.current) return;
     const submit = async () => {
       const uri = await viewShotRef.current?.capture();
-      if (uri) setThumbnail(uri);
-      const { name } = store.getState().deviceSetting.draft.area;
-
-      let address = "";
       const data = await getAddressByCoord(coord.latitude, coord.longitude);
-      if (data) {
-        address = data;
-      } else {
-        address = "주소 없음";
-      }
-      setAddress(address);
-
-      dispatch(bleActions.setStatus("areaDone"));
+      dispatch(
+        deviceSettingActions.updateAreaResult({
+          thumbnail: uri || "",
+          address: data,
+        }),
+      );
+      setTimeout(() => {
+        dispatch(deviceSettingActions.setArea({ isSubmitting: false }));
+      }, 200);
+      navigation.push("BleWithHeaderStackNav", {
+        initialRouteName: "PreWiFiForm",
+      });
     };
     submit();
   }, [isSubmitting, viewShotRef.current]);
-
-  useEffect(() => {
-    if (status !== "areaDone") return;
-    const { name } = store.getState().deviceSetting.draft.area;
-    const sendData = async () => {
-      await updateDeviceSetting({
-        deviceID,
-        body: {
-          Area: [
-            {
-              safety_area_id: 0,
-              name,
-              address,
-              coordinate: {
-                type: GeoJsonType.Point,
-                coordinates: [
-                  parseFloat(coord.longitude.toFixed(4)),
-                  parseFloat(coord.latitude.toFixed(4)),
-                ],
-              },
-              radius,
-            },
-          ],
-        },
-      }).unwrap();
-      const body = imageHandler.handleFormData(
-        thumbnail,
-        "safety_area_0_thumbnail",
-      );
-      await updateAreaThumbnail({ deviceID, body }).unwrap();
-
-      navigation.replace("BleWithHeaderStackNav", {
-        initialRouteName: "RegisterProfileFirst",
-      });
-    };
-    sendData();
-  }, [status]);
 
   return (
     <Animated.View

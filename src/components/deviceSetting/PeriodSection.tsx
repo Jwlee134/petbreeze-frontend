@@ -24,7 +24,9 @@ const Container = styled(RowContainer)`
 `;
 
 const PeriodSection = () => {
-  const period = useAppSelector(state => state.deviceSetting.period);
+  const period = useAppSelector(
+    state => state.deviceSetting.result.collection_period,
+  );
   const dispatch = useDispatch();
 
   const periodArr = [

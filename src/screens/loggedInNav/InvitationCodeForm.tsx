@@ -35,11 +35,7 @@ const InputContainer = styled.View`
   justify-content: center;
 `;
 
-const inputProps: TextInputProps = {
-  textAlign: "center",
-  keyboardType: "number-pad",
-  maxLength: 1,
-};
+const inputProps: TextInputProps = { textAlign: "center", maxLength: 1 };
 const inputStyle: StyleProp<ViewStyle> = { width: 41, marginRight: 10 };
 const textStyle: StyleProp<TextStyle> = { fontSize: 24, paddingBottom: 5 };
 
@@ -83,7 +79,7 @@ const InvitationCodeForm = ({
   const fiveRef = useRef<TextInput>(null);
   const sixRef = useRef<TextInput>(null);
 
-  const formatText = (text: string) => text.replace(/[^0-9]/g, "");
+  const formatText = (text: string) => text.replace(/[^0-9a-zA-Z]/g, "");
 
   useEffect(() => {
     if (!data) return;

@@ -1,28 +1,37 @@
 import React from "react";
+import { View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useDispatch } from "react-redux";
 import styled from "styled-components/native";
 import Button from "~/components/common/Button";
+import GradientContainer from "~/components/common/container/GradientContainer";
 import MyText from "~/components/common/MyText";
-import { useAppSelector } from "~/store";
-import { FailScreenNavigationProp } from "~/types/navigator";
-import Exclamation from "~/assets/svg/exclamation/exclamation-mark-gray.svg";
-import { View } from "react-native";
 import { bleActions } from "~/store/ble";
+import { FailScreenNavigationProp } from "~/types/navigator";
+import Exclamation from "~/assets/svg/exclamation/exclamation-mark-white.svg";
+import ParagraphWithCheckCircle from "~/components/common/ParagraphWithCheckCircle";
+import { useAppSelector } from "~/store";
 
 const TopContainer = styled.View`
   flex: 1;
-  justify-content: flex-end;
   align-items: center;
+  justify-content: flex-end;
 `;
 
 const BottomContainer = styled.View`
   flex: 1;
   justify-content: space-between;
-  align-items: center;
 `;
+
+const scanningFailText = [
+  "디바이스에 파란불이 들어오나요?",
+  "디바이스가 가까이에 있나요?",
+  "디바이스의 블루투스가 켜져있나요?",
+];
 
 const Fail = ({ navigation }: { navigation: FailScreenNavigationProp }) => {
   const status = useAppSelector(state => state.ble.status);
+  const { top } = useSafeAreaInsets();
   const dispatch = useDispatch();
 
   const onRetryPress = () => {
@@ -33,7 +42,8 @@ const Fail = ({ navigation }: { navigation: FailScreenNavigationProp }) => {
     if (
       status === "installingFail" ||
       status === "notificationFail" ||
-      status === "devEUIFail"
+      status === "devEUIFail" ||
+      status === "scanningFail"
     ) {
       navigation.replace("Scanning");
       dispatch(bleActions.setStatus("scanning"));
@@ -43,60 +53,78 @@ const Fail = ({ navigation }: { navigation: FailScreenNavigationProp }) => {
     }
   };
 
-  const onCancelPress = () => {
+  const onAbortPress = () => {
     if (status === "wifiFail") {
       navigation.replace("BleWithHeaderStackNav", {
-        initialRouteName: "PreSafetyZone",
+        initialRouteName: "RegisterProfileFirst",
       });
-      return;
-    }
-    if (navigation.canGoBack()) {
-      navigation.goBack();
     } else {
-      navigation.replace("BleWithHeaderStackNav", {
-        initialRouteName: "DeviceCheck",
-      });
+      navigation.goBack();
     }
   };
 
   return (
-    <>
+    <GradientContainer>
       <TopContainer>
-        <Exclamation width={12} height={58} style={{ marginBottom: 112 }} />
+        <Exclamation
+          style={{
+            ...(status === "scanningFail"
+              ? { marginTop: top }
+              : { marginBottom: 79 }),
+          }}
+        />
+        {status === "scanningFail" ? (
+          <MyText
+            fontWeight="medium"
+            fontSize={24}
+            color="white"
+            style={{ textAlign: "center", marginTop: 45, marginBottom: 67 }}>
+            연결 실패{"\n"}확인해주세요.
+          </MyText>
+        ) : (
+          <MyText fontWeight="medium" fontSize={24} color="white">
+            {status.includes("download")
+              ? "다운로드 실패"
+              : status.includes("install")
+              ? "펌웨어 설치 실패"
+              : status.includes("notification")
+              ? "디바이스를 재부팅하고\n다시 시도해 주세요."
+              : status.includes("wifi")
+              ? "WiFi 연결 실패"
+              : status === "devEUIFail"
+              ? "이미 등록된 디바이스"
+              : ""}
+          </MyText>
+        )}
       </TopContainer>
       <BottomContainer>
-        <MyText style={{ textAlign: "center" }} fontSize={24}>
-          {status.includes("download")
-            ? "다운로드에 실패했어요."
-            : status.includes("install")
-            ? "펌웨어 설치에 실패했어요."
-            : status === "notificationFail"
-            ? "디바이스를 재부팅하고\n다시 시도해 주세요."
-            : status === "wifiFail"
-            ? "WiFi 연결에 실패했어요."
-            : status === "devEUIFail"
-            ? "이미 등록된 디바이스입니다."
-            : ""}
-        </MyText>
+        <View>
+          {status === "scanningFail"
+            ? scanningFailText.map((text, i) => (
+                <ParagraphWithCheckCircle key={i} isWhiteBackground={false}>
+                  {text}
+                </ParagraphWithCheckCircle>
+              ))
+            : null}
+        </View>
         <View>
           <Button
             onPress={onRetryPress}
-            style={{
-              marginBottom: 12,
-            }}>
+            backgroundColor="rgba(255, 255, 255, 0.3)"
+            style={{ marginBottom: 12 }}>
             다시 시도
           </Button>
           <Button
-            onPress={onCancelPress}
+            onPress={onAbortPress}
             useCommonMarginBottom
             useBottomInset
             backgroundColor="transparent"
-            fontColor="rgba(0, 0, 0, 0.5)">
+            fontColor="rgba(255, 255, 255, 0.5)">
             {status === "wifiFail" ? "건너뛰기" : "중단"}
           </Button>
         </View>
       </BottomContainer>
-    </>
+    </GradientContainer>
   );
 };
 

@@ -6,8 +6,8 @@ export type DeepPartial<T> = {
 };
 
 export enum GeoJsonType {
-  Point,
-  LineString,
+  Point = "Point",
+  LineString = "LineString",
 }
 
 export interface Device {
@@ -22,7 +22,7 @@ export interface Device {
 }
 
 interface PostDeviceBody {
-  IMEInumber?: string;
+  SIM_serial_number?: string;
   invitation_code?: string;
 }
 
@@ -82,27 +82,27 @@ export interface DeviceProfile extends DeviceProfileBody {
 }
 
 export interface WiFiResponse {
-  wifi_id: number;
-  ssid: string | null;
-  password: string | null;
+  wifi_number: number;
+  ssid: string;
+  password: string;
 }
 
 export interface AreaResponse {
-  safety_area_id: number;
-  name: string | null;
-  address: string | null;
-  thumbnail: string | null;
+  safety_area_number: number;
+  name: string;
+  address: string;
+  thumbnail: string;
   coordinate: {
     type: GeoJsonType.Point;
     coordinates: number[];
   };
   radius: number;
-  WiFi: WiFiResponse[];
+  wifis: WiFiResponse[];
 }
 
 interface DeviceSetting<A> {
-  Period: number;
-  Area: A[];
+  collection_period: number;
+  safety_areas: A[];
 }
 
 interface DailyWalkRecord {
@@ -553,7 +553,8 @@ const deviceApi = api.injectEndpoints({
             "getDeviceSetting",
             deviceID,
             draft => {
-              if (body.Period) draft.Period = body.Period;
+              if (body.collection_period)
+                draft.collection_period = body.collection_period;
             },
           ),
         );

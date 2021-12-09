@@ -21,7 +21,7 @@ export const getAddress = async (
 export const getAddressByCoord = async (
   lat: number,
   lng: number,
-): Promise<string | null> => {
+): Promise<string> => {
   const { data } = await axios({
     url: `https://dapi.kakao.com/v2/local/geo/coord2address.json?x=${lng}&y=${lat}`,
     method: "get",
@@ -30,5 +30,5 @@ export const getAddressByCoord = async (
     },
   });
   const name = data.documents[0]?.address?.address_name;
-  return name || null;
+  return name || "주소 없음";
 };

@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components/native";
-import AnimatedPoints from "~/components/common/AnimatedPoints";
 import FootPrint from "~/assets/svg/footprint/footprint-outline-white.svg";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import GradientContainer from "~/components/common/container/GradientContainer";
-import useAnimatedSequence from "~/hooks/useAnimatedSequence";
 import { useDispatch } from "react-redux";
 import { FirmwareUpdateScreenNavigationProp } from "~/types/navigator";
 import CodePush, { DownloadProgress } from "react-native-code-push";
 import { delay } from "~/utils";
 import { storageActions } from "~/store/storage";
+import MyText from "~/components/common/MyText";
 
 const HalfContainer = styled.View`
   flex: 1;
@@ -21,19 +20,6 @@ const FirmwareUpdate = ({
   navigation: FirmwareUpdateScreenNavigationProp;
 }) => {
   const dispatch = useDispatch();
-  const [point1, point2, point3] = useAnimatedSequence({
-    numOfValues: 3,
-    loop: true,
-    delayAfterMount: 600,
-    firstDuration: 400,
-    delayAfterFirst: 800,
-    secondDuration: 400,
-    delayAfterSecond: 800,
-    thirdDuration: 400,
-    delayAfterThird: 800,
-    resetDuration: 400,
-    delayAfterReset: 800,
-  });
   const [progress, setProgress] = useState(0);
   const [text, setText] = useState("업데이트 확인 중");
 
@@ -96,14 +82,9 @@ const FirmwareUpdate = ({
         </AnimatedCircularProgress>
       </HalfContainer>
       <HalfContainer>
-        <AnimatedPoints
-          value1={point1}
-          value2={point2}
-          value3={point3}
-          text={text}
-          fontSize={24}
-          color="white"
-        />
+        <MyText fontSize={24} color="white">
+          {text}
+        </MyText>
       </HalfContainer>
     </GradientContainer>
   );

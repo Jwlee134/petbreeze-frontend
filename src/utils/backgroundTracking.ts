@@ -6,7 +6,7 @@ import { getDistanceBetween2Points } from ".";
 
 const options = {
   taskName: "walk",
-  taskTitle: "어디개",
+  taskTitle: "펫브리즈",
   taskDesc: "산책 중입니다.",
   taskIcon: {
     name: "ic_launcher",

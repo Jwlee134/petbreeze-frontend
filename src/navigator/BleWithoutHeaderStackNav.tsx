@@ -12,9 +12,7 @@ import {
   BleWithoutHeaderStackNavParamList,
   BleWithoutHeaderStackNavScreenRouteProp,
 } from "~/types/navigator";
-import ScanningFail from "~/screens/bleWithoutHeaderStackNav/ScanningFail";
 import BleLoading from "~/screens/bleWithoutHeaderStackNav/BleLoading";
-import Completion from "~/screens/bleWithoutHeaderStackNav/Completion";
 
 const forFade = ({ current }: StackCardInterpolationProps) => ({
   cardStyle: {
@@ -37,9 +35,8 @@ const BleWithoutHeaderStackNav = ({
         headerShown: false,
       }}>
       <Stack.Screen name="Scanning" component={Scanning} />
-      <Stack.Screen name="ScanningFail" component={ScanningFail} />
-      <Stack.Screen name="FirmwareProgress" component={FirmwareProgress} />
       <Stack.Screen name="Fail" component={Fail} />
+      <Stack.Screen name="FirmwareProgress" component={FirmwareProgress} />
       <Stack.Screen name="Success" component={Success} />
       <Stack.Screen name="Area" component={Area} />
       <Stack.Screen
@@ -47,7 +44,6 @@ const BleWithoutHeaderStackNav = ({
         initialParams={{ loadingText }}
         component={BleLoading}
       />
-      <Stack.Screen name="Completion" component={Completion} />
     </Stack.Navigator>
   );
 };

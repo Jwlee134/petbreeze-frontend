@@ -50,6 +50,12 @@ export const rtkQueryErrorLogger: Middleware = () => next => action => {
     if (code === "D014") {
       Toast.show({ type: "error", text1: "만료된 초대 코드입니다." });
     }
+    if (code === "permission_denied") {
+      Toast.show({ type: "error", text1: "디바이스의 멤버가 아닙니다." });
+    }
+    if (code === "D003") {
+      Toast.show({ type: "error", text1: "디바이스가 존재하지 않습니다." });
+    }
 
     if (status === 400) {
       if (detail.includes("already in emergency")) {

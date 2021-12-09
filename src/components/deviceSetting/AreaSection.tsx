@@ -45,7 +45,9 @@ const AreaSection = () => {
   const { open, close, modalProps } = useModal();
   const navigation = useNavigation<DeviceSettingScreenNavigationProp>();
   const dispatch = useDispatch();
-  const result = useAppSelector(state => state.deviceSetting.result.Area);
+  const result = useAppSelector(
+    state => state.deviceSetting.result.safety_areas,
+  );
 
   const itemHeight = 99;
   const listPaddingBottom = 11;
@@ -70,7 +72,8 @@ const AreaSection = () => {
   const onPlusButtonPress = () => {
     dispatch(
       deviceSettingActions.setArea({
-        currentID: result[result.findIndex(item => !item.name)].safety_area_id,
+        currentID:
+          result[result.findIndex(item => !item.name)].safety_area_number,
       }),
     );
     navigation.navigate("UpdateArea");
@@ -80,7 +83,7 @@ const AreaSection = () => {
     dispatch(
       deviceSettingActions.setArea({
         fromDeviceSetting: true,
-        currentID: data.safety_area_id,
+        currentID: data.safety_area_number,
       }),
     );
     dispatch(
@@ -112,13 +115,13 @@ const AreaSection = () => {
         {result.map((data, i) =>
           data.name ? (
             <Swipeable
-              key={data.safety_area_id}
+              key={data.safety_area_number}
               animate={i === 0}
               RenderRightActions={() => (
                 <SwipeableButton
                   backgroundColor="red"
                   onPress={() => {
-                    setClickedID(data.safety_area_id);
+                    setClickedID(data.safety_area_number);
                     open();
                   }}>
                   <Minus />

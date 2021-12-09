@@ -43,6 +43,7 @@ const BleRootStackNav = ({
       dispatch(formActions.setState(null));
       dispatch(deviceSettingActions.setArea(null));
       dispatch(deviceSettingActions.setAreaDraft(null));
+      dispatch(deviceSettingActions.setWiFiDraft(null));
     };
   }, []);
 

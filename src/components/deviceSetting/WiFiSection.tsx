@@ -16,9 +16,9 @@ import { UpdateAreaScreenNavigationProp } from "~/types/navigator";
 const WiFiSection = () => {
   const navigation = useNavigation<UpdateAreaScreenNavigationProp>();
   const currentID = useAppSelector(state => state.deviceSetting.area.currentID);
-  const result = useAppSelector(state => state.deviceSetting.result.Area).find(
-    area => area.safety_area_id === currentID,
-  )?.WiFi;
+  const result = useAppSelector(
+    state => state.deviceSetting.result.safety_areas,
+  ).find(area => area.safety_area_number === currentID)?.wifis;
   const dispatch = useDispatch();
 
   const onPlusPress = () => {
@@ -28,9 +28,9 @@ const WiFiSection = () => {
     });
   };
 
-  const onWiFiPress = ({ wifi_id, ssid, password }: WiFiResponse) => {
+  const onWiFiPress = ({ wifi_number, ssid, password }: WiFiResponse) => {
     dispatch(deviceSettingActions.setWiFiDraft({ ssid, password }));
-    navigation.navigate("UpdateWiFi", { id: wifi_id });
+    navigation.navigate("UpdateWiFi", { id: wifi_number });
   };
 
   const onMinusPress = (id: number) => {
@@ -48,11 +48,11 @@ const WiFiSection = () => {
       {result.map(data =>
         data.ssid ? (
           <Swipeable
-            key={data.wifi_id}
+            key={data.wifi_number}
             RenderRightActions={() => (
               <SwipeableButton
                 backgroundColor="red"
-                onPress={() => onMinusPress(data.wifi_id)}>
+                onPress={() => onMinusPress(data.wifi_number)}>
                 <Minus />
               </SwipeableButton>
             )}

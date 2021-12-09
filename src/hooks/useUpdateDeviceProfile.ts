@@ -4,7 +4,7 @@ import { serverImageUri } from "~/constants";
 import { useAppSelector } from "~/store";
 import imageHandler from "~/utils/imageHandler";
 
-const useUpdateProfileReq = (deviceID: number) => {
+const useUpdateDeviceProfile = (deviceID: number) => {
   const {
     name,
     birthYear,
@@ -46,12 +46,10 @@ const useUpdateProfileReq = (deviceID: number) => {
           birthdate: `${birthYear}-${birthMonth}-${birthDay}`,
         },
       }).unwrap();
-    } catch {
-      return;
-    }
+    } catch {}
   };
 
   return { updateProfileReq, isLoading };
 };
 
-export default useUpdateProfileReq;
+export default useUpdateDeviceProfile;

@@ -77,7 +77,7 @@ const AreaBottomSheet = ({ height, style }: Props) => {
           disabled={!name || !radius}
           isLoading={isSubmitting}
           onPress={handleFinish}>
-          다음
+          확인
         </Button>
       </Container>
     </KeyboardAvoidingView>

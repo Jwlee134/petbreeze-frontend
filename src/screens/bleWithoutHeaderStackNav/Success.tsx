@@ -1,89 +1,66 @@
 import React, { useEffect } from "react";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import styled from "styled-components/native";
+import Button from "~/components/common/Button";
 import MyText from "~/components/common/MyText";
-import SuccessLottie from "~/components/lottie/Success";
+import SuccessLottieWithText from "~/components/common/SuccessLottieWithText";
 import { useAppSelector } from "~/store";
 import { SuccessScreenNavigationProp } from "~/types/navigator";
-
-const TopContainer = styled.View`
-  flex: 1;
-  align-items: center;
-  justify-content: space-between;
-`;
-
-const BottomContainer = styled.View`
-  flex: 1;
-`;
 
 const Success = ({
   navigation,
 }: {
   navigation: SuccessScreenNavigationProp;
 }) => {
-  const { top } = useSafeAreaInsets();
-  const { status, isOtaUpdate } = useAppSelector(state => state.ble);
+  const { status } = useAppSelector(state => state.ble);
 
   useEffect(() => {
     if (status === "connected") {
       setTimeout(() => {
         navigation.replace("BleLoading", {
-          loadingText: "Loading",
+          loadingText: "로딩중",
         });
       }, 1700);
-    }
-    if (status === "otaUpdateSuccess") {
-      if (isOtaUpdate) {
-        /*  */
-      } else {
-        setTimeout(() => {
-          navigation.replace("BleWithHeaderStackNav", {
-            initialRouteName: "PreWiFiForm",
-          });
-        }, 1700);
-      }
     }
     if (status === "wifiSuccess") {
       setTimeout(() => {
         navigation.replace("BleWithHeaderStackNav", {
-          initialRouteName: "PreSafetyZone",
+          initialRouteName: "RegisterProfileFirst",
         });
       }, 1700);
     }
   }, [status]);
 
-  if (status === "connected") {
-    return (
-      <>
-        <TopContainer>
-          <MyText
-            fontWeight="medium"
-            fontSize={24}
-            style={{
-              marginTop: top + 99,
-            }}>
-            연결에 성공했어요.
-          </MyText>
-          <SuccessLottie style={{ marginBottom: -43 }} />
-        </TopContainer>
-        <BottomContainer />
-      </>
-    );
-  }
+  const handleNext = () =>
+    navigation.replace("BleWithHeaderStackNav", {
+      initialRouteName: "PreArea",
+    });
 
   return (
-    <>
-      <TopContainer style={{ justifyContent: "flex-end" }}>
-        <SuccessLottie style={{ marginBottom: 37 }} />
-      </TopContainer>
-      <BottomContainer>
-        <MyText style={{ textAlign: "center" }} fontSize={24}>
-          {status === "wifiSuccess"
-            ? "WiFi 연결이\n완료되었습니다."
-            : "펌웨어 업데이트가\n완료되었습니다."}
-        </MyText>
-      </BottomContainer>
-    </>
+    <SuccessLottieWithText
+      isOtaUpdateSuccess
+      text={
+        status === "connected"
+          ? "연결에 성공했어요!"
+          : status === "otaUpdateSuccess"
+          ? "펌웨어 설치에 성공했어요!"
+          : "WiFi 연결이 완료되었어요!"
+      }
+      Buttons={
+        status === "otaUpdateSuccess" ? (
+          <>
+            <MyText
+              style={{ marginTop: 51, textAlign: "center" }}
+              color="rgba(0, 0, 0, 0.7)"
+              fontSize={14}
+              fontWeight="light">
+              버튼을 짧게 눌러 디바이스를 재부팅해주세요.
+            </MyText>
+            <Button useCommonMarginBottom useBottomInset onPress={handleNext}>
+              다음
+            </Button>
+          </>
+        ) : undefined
+      }
+    />
   );
 };
 

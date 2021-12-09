@@ -6,7 +6,6 @@ export type BleStatus =
   | "connected"
   | "downloadingFirmware"
   | "installingFirmware"
-  | "relationAdded"
   | "otaUpdateSuccess"
   | "scanningFail"
   | "connectingFail"
@@ -19,9 +18,7 @@ export type BleStatus =
   | "notificationFail"
   | "connectingToWifi"
   | "wifiSuccess"
-  | "wifiFail"
-  | "sendingArea"
-  | "areaDone";
+  | "wifiFail";
 
 interface State {
   status: BleStatus;

@@ -10,7 +10,7 @@ import Weight from "~/components/profileForm/Weight";
 import Sex from "~/components/profileForm/Sex";
 import imageHandler from "~/utils/imageHandler";
 import { UpdateProfileScreenProps } from "~/types/navigator";
-import useUpdateProfileReq from "~/hooks/useUpdateProfileReq";
+import useUpdateDeviceProfile from "~/hooks/useUpdateDeviceProfile";
 import { useDispatch } from "react-redux";
 import { formActions } from "~/store/form";
 import CustomHeader from "~/components/navigator/CustomHeader";
@@ -59,7 +59,7 @@ const UpdateProfile = ({
 }: UpdateProfileScreenProps) => {
   const { name, birthYear, birthMonth, birthDay, species, photos, weight } =
     useAppSelector(state => state.form);
-  const { updateProfileReq, isLoading } = useUpdateProfileReq(deviceID);
+  const { updateProfileReq, isLoading } = useUpdateDeviceProfile(deviceID);
   const dispatch = useDispatch();
 
   const handleSubmit = () => {

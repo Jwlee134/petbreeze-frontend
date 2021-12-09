@@ -2,9 +2,11 @@ import {
   createStackNavigator,
   StackCardInterpolationProps,
 } from "@react-navigation/stack";
-import React from "react";
+import React, { useRef } from "react";
 import PreArea from "~/screens/bleWithHeaderStackNav/PreArea";
-import RegisterProfileFirst from "~/screens/bleWithHeaderStackNav/RegisterProfileFirst";
+import RegisterProfileFirst, {
+  RegisterProfileFirstGoBack,
+} from "~/screens/bleWithHeaderStackNav/RegisterProfileFirst";
 import {
   BleWithHeaderStackNavParamList,
   BleWithHeaderStackNavScreenNavigationProp,
@@ -13,9 +15,15 @@ import {
 import ChargingCheck from "~/screens/bleWithHeaderStackNav/ChargingCheck";
 import CustomHeader from "~/components/navigator/CustomHeader";
 import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
-import RegisterProfileSecond from "~/screens/bleWithHeaderStackNav/RegisterProfileSecond";
+import RegisterProfileSecond, {
+  RegisterProfileSecondGoBack,
+} from "~/screens/bleWithHeaderStackNav/RegisterProfileSecond";
 import PreWiFiForm from "~/screens/bleWithHeaderStackNav/PreWiFiForm";
-import WiFiForm from "~/screens/bleWithHeaderStackNav/WiFiForm";
+import WiFiForm, {
+  WiFiFormGoBack,
+} from "~/screens/bleWithHeaderStackNav/WiFiForm";
+import { headerHeight } from "~/styles/constants";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const Stack = createStackNavigator<BleWithHeaderStackNavParamList>();
 
@@ -32,16 +40,26 @@ const BleWithHeaderStackNav = ({
   navigation: BleWithHeaderStackNavScreenNavigationProp;
   route: BleWithHeaderStackNavScreenRouteProp;
 }) => {
+  const { top } = useSafeAreaInsets();
   const routeName =
     getFocusedRouteNameFromRoute(route) || route.params?.initialRouteName;
+  const wifiFormRef = useRef<WiFiFormGoBack>(null);
+  const registerProfileFirstRef = useRef<RegisterProfileFirstGoBack>(null);
+  const registerProfileSecondRef = useRef<RegisterProfileSecondGoBack>(null);
 
   return (
     <>
       <CustomHeader
+        containerStyle={{ position: "absolute", zIndex: 1 }}
+        pageIndicatorStyle={{
+          position: "absolute",
+          zIndex: 1,
+          top: headerHeight + top,
+        }}
         currentPage={
-          routeName?.includes("WiFi")
+          routeName === "PreArea"
             ? 1
-            : routeName === "PreArea"
+            : routeName?.includes("WiFi")
             ? 2
             : routeName === "RegisterProfileFirst"
             ? 3
@@ -51,27 +69,44 @@ const BleWithHeaderStackNav = ({
         }
         totalPage={4}
         onBackButtonPress={() => {
-          if (routeName === "WiFiForm") navigation.replace("PreWiFiForm");
-          else if (routeName === "RegisterProfileSecond")
-            navigation.replace("RegisterProfileFirst");
-          else navigation.goBack();
+          if (routeName === "WiFiForm") {
+            wifiFormRef.current?.goBack();
+          } else if (routeName === "RegisterProfileSecond") {
+            registerProfileSecondRef.current?.goBack();
+          } else if (routeName === "RegisterProfileFirst") {
+            registerProfileFirstRef.current?.goBack();
+          } else {
+            navigation.goBack();
+          }
         }}
       />
       <Stack.Navigator
         initialRouteName={route.params?.initialRouteName}
         screenOptions={{ cardStyleInterpolator: forFade, headerShown: false }}>
         <Stack.Screen name="ChargingCheck" component={ChargingCheck} />
-        <Stack.Screen name="PreWiFiForm" component={PreWiFiForm} />
         <Stack.Screen name="PreArea" component={PreArea} />
-        <Stack.Screen name="WiFiForm" component={WiFiForm} />
-        <Stack.Screen
-          name="RegisterProfileFirst"
-          component={RegisterProfileFirst}
-        />
-        <Stack.Screen
-          name="RegisterProfileSecond"
-          component={RegisterProfileSecond}
-        />
+        <Stack.Screen name="PreWiFiForm" component={PreWiFiForm} />
+        <Stack.Screen name="WiFiForm">
+          {({ navigation }) => (
+            <WiFiForm navigation={navigation} ref={wifiFormRef} />
+          )}
+        </Stack.Screen>
+        <Stack.Screen name="RegisterProfileFirst">
+          {({ navigation }) => (
+            <RegisterProfileFirst
+              navigation={navigation}
+              ref={registerProfileFirstRef}
+            />
+          )}
+        </Stack.Screen>
+        <Stack.Screen name="RegisterProfileSecond">
+          {({ navigation }) => (
+            <RegisterProfileSecond
+              navigation={navigation}
+              ref={registerProfileSecondRef}
+            />
+          )}
+        </Stack.Screen>
       </Stack.Navigator>
     </>
   );

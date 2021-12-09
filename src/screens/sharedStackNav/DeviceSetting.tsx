@@ -11,13 +11,12 @@ import FamilySection from "~/components/deviceSetting/FamilySection";
 import { DeviceSettingScreenProps } from "~/types/navigator";
 import { commonActions } from "~/store/common";
 import { useDispatch } from "react-redux";
-import deviceApi, { AreaResponse, GeoJsonType } from "~/api/device";
+import deviceApi, { AreaResponse } from "~/api/device";
 import { deviceSettingActions } from "~/store/deviceSetting";
 import { store } from "~/store";
-import { serverImageUri } from "~/constants";
-import imageHandler from "~/utils/imageHandler";
 import LoadingIndicator from "~/components/lottie/LoadingIndicator";
 import { textLoadingIndicatorSize } from "~/styles/constants";
+import useUpdateDeviceSetting from "~/hooks/useUpdateDeviceSetting";
 
 const DeviceSetting = ({
   navigation,
@@ -28,189 +27,49 @@ const DeviceSetting = ({
   const timeout = useRef<NodeJS.Timeout>();
   const dispatch = useDispatch();
 
-  /*   const { data: settings } = deviceApi.useGetDeviceSettingQuery(deviceID, {
+  const { data: settings } = deviceApi.useGetDeviceSettingQuery(deviceID, {
     refetchOnMountOrArgChange: true,
-  }); */
-  const [updateSetting, { isLoading: updatingDeviceSetting }] =
-    deviceApi.useUpdateDeviceSettingMutation();
-  const [updateSafetyZoneThumbnail, { isLoading: updatingThumbnail }] =
-    deviceApi.useUpdateSafetyZoneThumbnailMutation();
-
-  const isLoading = updatingDeviceSetting || updatingThumbnail;
-
-  const settings = {
-    Period: 1,
-    Area: [
-      {
-        safety_area_id: 0,
-        name: "동휘집",
-        address: "서울특별시 월곡로 XX",
-        coordinate: {
-          type: GeoJsonType.Point,
-          coordinates: [126.9528, 37.4793],
-        },
-        radius: 30,
-        thumbnail:
-          "https://wheredog-dev-storage.s3.amazonaws.com/posts/20211126/7?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVDFXVHJZFQTJWVLS%2F20211206%2Fap-northeast-2%2Fs3%2Faws4_request&X-Amz-Date=20211206T121713Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Signature=99e211768471a6e2d030303e827c042fe16b203262d6aa2619359a1113480b7e",
-        WiFi: [
-          {
-            wifi_id: 0,
-            ssid: "blah",
-            password: "blahblah",
-          },
-          {
-            wifi_id: 1,
-            ssid: "blah",
-            password: "blahblah",
-          },
-          {
-            wifi_id: 2,
-            ssid: null,
-            password: null,
-          },
-        ],
-      },
-      {
-        safety_area_id: 1,
-        name: "재원집",
-        address: "서울특별시 관악로 XX",
-        coordinate: {
-          type: GeoJsonType.Point,
-          coordinates: [126.9528, 37.4793],
-        },
-        radius: 50,
-        thumbnail:
-          "https://wheredog-dev-storage.s3.amazonaws.com/posts/20211126/7?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVDFXVHJZFQTJWVLS%2F20211206%2Fap-northeast-2%2Fs3%2Faws4_request&X-Amz-Date=20211206T121713Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Signature=99e211768471a6e2d030303e827c042fe16b203262d6aa2619359a1113480b7e",
-        WiFi: [
-          {
-            wifi_id: 0,
-            ssid: "blah",
-            password: "blahblah",
-          },
-          {
-            wifi_id: 1,
-            ssid: "blah",
-            password: "blahblah",
-          },
-          {
-            wifi_id: 2,
-            ssid: null,
-            password: null,
-          },
-        ],
-      },
-      {
-        safety_area_id: 2,
-        name: null,
-        address: null,
-        coordinate: {
-          type: GeoJsonType.Point,
-          coordinates: [0, 0],
-        },
-        radius: 0,
-        thumbnail: null,
-        WiFi: [
-          {
-            wifi_id: 0,
-            ssid: null,
-            password: null,
-          },
-          {
-            wifi_id: 1,
-            ssid: null,
-            password: null,
-          },
-          {
-            wifi_id: 2,
-            ssid: null,
-            password: null,
-          },
-        ],
-      },
-    ],
-  };
+  });
+  const { sendRequest, isLoading } = useUpdateDeviceSetting(deviceID);
 
   // 마운트 시 스토어에 response 저장
   useEffect(() => {
     if (!settings) return;
-    dispatch(deviceSettingActions.setAreaResult(settings.Area));
-    dispatch(deviceSettingActions.setPeriod(settings.Period));
+    dispatch(deviceSettingActions.setAreaResult(settings.safety_areas));
+    dispatch(deviceSettingActions.setPeriod(settings.collection_period));
   }, [settings]);
 
-  const isAreaChanged = (Area: AreaResponse[]) =>
-    Area.some(area => {
+  const isAreaChanged = (safety_areas: AreaResponse[]) =>
+    safety_areas.some(area => {
       if (!settings) return false;
       const originalTarget =
-        settings.Area[
-          settings.Area.findIndex(
-            target => target.safety_area_id === area.safety_area_id,
+        settings.safety_areas[
+          settings.safety_areas.findIndex(
+            target => target.safety_area_number === area.safety_area_number,
           )
         ];
       const isAreaChanged = originalTarget.thumbnail !== area.thumbnail;
       return isAreaChanged;
     });
 
-  const isSettingsChanged = (Period: number, Area: AreaResponse[]) => {
+  const isSettingsChanged = (
+    collection_period: number,
+    safety_areas: AreaResponse[],
+  ) => {
     if (!settings) return false;
-    return Period !== settings.Period || isAreaChanged(Area);
-  };
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const excludeThumbnail = ({ thumbnail, ...rest }: AreaResponse) => rest;
-
-  const formatCoord = (area: Omit<AreaResponse, "thumbnail">) => ({
-    ...area,
-    coordinate: {
-      type: GeoJsonType.Point as GeoJsonType.Point,
-      coordinates: [
-        parseFloat(area.coordinate.coordinates[0].toFixed(4)),
-        parseFloat(area.coordinate.coordinates[1].toFixed(4)),
-      ],
-    },
-  });
-
-  const formatArea = (Area: AreaResponse[]) =>
-    Area.map(area => formatCoord(excludeThumbnail(area)));
-
-  const thumbnails = (Area: AreaResponse[]) =>
-    Area.filter(
-      area =>
-        area.thumbnail !== null && !area.thumbnail.includes(serverImageUri),
-    ).map(area => ({ id: area.safety_area_id, data: area.thumbnail }));
-
-  const sendSettingRequest = async (Area: AreaResponse[], Period: number) => {
-    try {
-      await updateSetting({
-        deviceID,
-        body: { Area: formatArea(Area), Period },
-      }).unwrap();
-    } catch {
-      return;
-    }
-    if (thumbnails(Area).length) {
-      const generateKey = (i: number) => `safety_area_${i}_thumbnail`;
-      const formData = imageHandler.handleFormData(
-        thumbnails(Area) as {
-          id: number;
-          data: string;
-        }[],
-        generateKey,
-      );
-      try {
-        await updateSafetyZoneThumbnail({ deviceID, body: formData }).unwrap();
-      } catch {}
-    }
+    return (
+      collection_period !== settings.collection_period ||
+      isAreaChanged(safety_areas)
+    );
   };
 
   const handleSubmit = async () => {
     if (isLoading || !settings) return;
     const {
-      result: { Period, Area },
+      result: { collection_period, safety_areas },
     } = store.getState().deviceSetting;
-    // 변경사항 없는데 put 요청 방지
-    if (isSettingsChanged(Period, Area)) {
-      return console.log("setting changed");
-      await sendSettingRequest(Area, Period);
+    if (isSettingsChanged(collection_period, safety_areas)) {
+      await sendRequest(safety_areas, collection_period);
     }
   };
 
