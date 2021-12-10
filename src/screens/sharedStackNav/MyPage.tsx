@@ -2,7 +2,6 @@ import React from "react";
 import { ScrollView, useWindowDimensions } from "react-native";
 import MyText from "~/components/common/MyText";
 import styled from "styled-components/native";
-
 import Setting from "~/assets/svg/myPage/setting.svg";
 import Bell from "~/assets/svg/myPage/bell.svg";
 import Tag from "~/assets/svg/myPage/name-tag.svg";
@@ -16,6 +15,7 @@ import { centerModalOutTiming } from "~/styles/constants";
 import { resetAll } from "~/utils";
 import { secureItems } from "~/constants";
 import useDevice from "~/hooks/useDevice";
+import userApi from "~/api/user";
 
 const Button = styled.TouchableOpacity<{ isLast?: boolean }>`
   flex-direction: row;
@@ -40,19 +40,28 @@ const MyPage = ({ navigation }: { navigation: MyPageScreenNavigationProp }) => {
   const deviceList = useDevice();
   const { open, close, modalProps } = useModal();
   const { width } = useWindowDimensions();
+  const [logout] = userApi.useLogoutMutation();
 
   const onLogout = async () => {
-    await Promise.all(
-      Object.values(secureItems).map(item => SecureStore.deleteItemAsync(item)),
-    );
-    resetAll();
-    close();
-    setTimeout(() => {
-      navigation.reset({
-        index: 0,
-        routes: [{ name: "Start" }],
-      });
-    }, centerModalOutTiming);
+    try {
+      const fbToken = await SecureStore.getItemAsync(secureItems.firebaseToken);
+      await logout(fbToken as string).unwrap();
+      await Promise.all(
+        Object.values(secureItems).map(item =>
+          SecureStore.deleteItemAsync(item),
+        ),
+      );
+      resetAll();
+      setTimeout(() => {
+        navigation.reset({
+          index: 0,
+          routes: [{ name: "Start" }],
+        });
+      }, centerModalOutTiming);
+      close();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
