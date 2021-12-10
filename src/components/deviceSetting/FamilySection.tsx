@@ -14,6 +14,7 @@ import CommonCenterModal from "../modal/CommonCenterModal";
 import useModal from "~/hooks/useModal";
 import Toast from "react-native-toast-message";
 import Clipboard from "@react-native-clipboard/clipboard";
+import { ToastType } from "~/styles/toast";
 
 const Item = styled.View`
   height: 49px;
@@ -51,9 +52,9 @@ const FamilySection = ({ deviceID }: { deviceID: number }) => {
     if (!codeData) return;
     Clipboard.setString(codeData.code);
     Toast.show({
-      type: "notification",
+      type: ToastType.Notification,
       text1: "초대 코드가 클립보드에 복사되었습니다.",
-      text2: "현재 시간으로부터 24시간 후 만료됩니다.",
+      text2: "24시간 후 만료됩니다.",
     });
   }, [codeData]);
 
@@ -71,6 +72,7 @@ const FamilySection = ({ deviceID }: { deviceID: number }) => {
           addMember(deviceID);
         }}
         isLoading={isLoading}
+        disablePlusButton={myID !== data?.owner_id}
       />
       <Item>
         <MyText color={palette.blue_7b}>{owner?.nickname}</MyText>
@@ -86,14 +88,20 @@ const FamilySection = ({ deviceID }: { deviceID: number }) => {
             rightThreshold={36}
             enableRightActions
             RenderRightActions={() => (
-              <SwipeableButton
-                backgroundColor="red"
-                onPress={() => {
-                  setClickedID(member.id);
-                  open();
-                }}>
-                <Minus />
-              </SwipeableButton>
+              <>
+                {myID !== data.owner_id ? (
+                  <></>
+                ) : (
+                  <SwipeableButton
+                    backgroundColor="red"
+                    onPress={() => {
+                      setClickedID(member.id);
+                      open();
+                    }}>
+                    <Minus />
+                  </SwipeableButton>
+                )}
+              </>
             )}>
             <Item>
               <MyText
