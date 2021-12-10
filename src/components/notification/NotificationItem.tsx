@@ -89,7 +89,7 @@ const NotificationItem = ({ data, device, isLast }: Props) => {
             <MyText fontSize={14} fontWeight="bold">
               {formatNickname(device.name)}
             </MyText>
-            <MyText fontSize={14}>가</MyText>
+            <MyText fontSize={14}>가 </MyText>
             <MyText fontSize={14} fontWeight="bold">
               {formatNickname(data.walk_handler_nickname as string)}
             </MyText>
@@ -102,7 +102,7 @@ const NotificationItem = ({ data, device, isLast }: Props) => {
             <MyText fontSize={14} fontWeight="bold">
               {formatNickname(device.name)}
             </MyText>
-            <MyText fontSize={14}>가</MyText>
+            <MyText fontSize={14}>가 </MyText>
             <MyText fontSize={14} fontWeight="bold">
               {formatNickname(data.walk_handler_nickname as string)}
             </MyText>
