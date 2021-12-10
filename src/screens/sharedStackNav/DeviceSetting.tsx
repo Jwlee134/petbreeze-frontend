@@ -17,6 +17,8 @@ import { store } from "~/store";
 import LoadingIndicator from "~/components/lottie/LoadingIndicator";
 import { textLoadingIndicatorSize } from "~/styles/constants";
 import useUpdateDeviceSetting from "~/hooks/useUpdateDeviceSetting";
+import Toast from "react-native-toast-message";
+import { ToastType } from "~/styles/toast";
 
 const DeviceSetting = ({
   navigation,
@@ -35,6 +37,13 @@ const DeviceSetting = ({
   // 마운트 시 스토어에 response 저장
   useEffect(() => {
     if (!settings) return;
+    if (!settings.setting_confirmation) {
+      Toast.show({
+        type: ToastType.Notification,
+        text1: "최근에 설정을 변경하셨나요?",
+        text2: "변경된 설정이 기기에 적용되고 있어요.",
+      });
+    }
     dispatch(deviceSettingActions.setAreaResult(settings.safety_areas));
     dispatch(deviceSettingActions.setPeriod(settings.collection_period));
   }, [settings]);
@@ -77,6 +86,7 @@ const DeviceSetting = ({
     return () => {
       if (timeout.current) clearTimeout(timeout.current);
       dispatch(commonActions.setAnimateSwipeable(false));
+      dispatch(deviceSettingActions.reset());
     };
   }, []);
 

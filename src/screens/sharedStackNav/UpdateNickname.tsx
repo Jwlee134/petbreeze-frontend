@@ -8,6 +8,7 @@ import MyText from "~/components/common/MyText";
 import LoadingIndicator from "~/components/lottie/LoadingIndicator";
 import CustomHeader from "~/components/navigator/CustomHeader";
 import { textLoadingIndicatorSize } from "~/styles/constants";
+import palette from "~/styles/palette";
 import { UpdateNicknameScreenNavigationProp } from "~/types/navigator";
 
 const Container = styled.View`
@@ -45,7 +46,7 @@ const UpdateNickname = ({
           isLoading ? (
             <LoadingIndicator size={textLoadingIndicatorSize} />
           ) : (
-            <MyText>완료</MyText>
+            <MyText color={palette.blue_7b}>완료</MyText>
           )
         }
         onRightButtonPress={handleSubmit}

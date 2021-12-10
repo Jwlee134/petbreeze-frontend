@@ -18,6 +18,7 @@ import CommonCenterModal from "../modal/CommonCenterModal";
 import allSettled from "promise.allsettled";
 import { formatNickname } from "~/utils";
 import Toast from "react-native-toast-message";
+import { ToastType } from "~/styles/toast";
 
 interface Props {
   style?: StyleProp<ViewStyle>;
@@ -40,7 +41,7 @@ const LiveModeButton = ({
   const [selectedIDs, setSelectedIDs] = useState<number[]>([]);
   const [isSelected, setIsSelected] = useState(false);
   const [update, { isLoading: isUpdatingSetting }] =
-    deviceApi.useUpdateDeviceSettingMutation();
+    deviceApi.useUpdateCollectionPeriodMutation();
 
   const isLoading = isUpdatingSetting || isStoppingWalk;
 
@@ -51,9 +52,7 @@ const LiveModeButton = ({
     } else {
       if (!deviceList || isLoading) return;
       const results = await allSettled(
-        selectedIDs.map(id =>
-          update({ deviceID: id, body: { collection_period: 1 } }),
-        ),
+        selectedIDs.map(id => update({ deviceID: id, period: 1 })),
       );
       if (
         results.some(
@@ -69,7 +68,7 @@ const LiveModeButton = ({
           )
           .join(", ");
         Toast.show({
-          type: "error",
+          type: ToastType.Error,
           text1: "최근에 다른 멤버가 설정을 변경했나요?",
           text2: `${formatNickname(
             rejectedNames,
@@ -160,7 +159,9 @@ const LiveModeButton = ({
                     <MyText
                       style={{ marginHorizontal: 13.5 }}
                       fontWeight="medium">
-                      {device.name}
+                      {device.name.length > 4
+                        ? `${device.name.slice(0, 3)}...`
+                        : device.name}
                     </MyText>
                     <MyText color={palette.blue_7b} fontSize={12}>
                       {device.battery || 0}%

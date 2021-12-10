@@ -10,8 +10,10 @@ import { deviceSettingActions } from "~/store/deviceSetting";
 import palette from "~/styles/palette";
 import { UpdateAreaScreenNavigationProp } from "~/types/navigator";
 import { getLeftRightPointsOfCircle } from "~/utils";
+import permissionCheck from "~/utils/permissionCheck";
 import Map from "../common/Map";
 import AreaMarker from "./AreaMarker";
+import Geolocation from "react-native-geolocation-service";
 
 const UpdateAreaMap = () => {
   const navigation = useNavigation<UpdateAreaScreenNavigationProp>();
@@ -44,9 +46,25 @@ const UpdateAreaMap = () => {
   );
 
   useEffect(() => {
-    if (!mapRef.current || !radius || !coord.latitude || !coord.longitude)
-      return;
-    mapRef.current.animateToTwoCoordinates(edgePoints[0], edgePoints[1]);
+    if (!mapRef.current) return;
+    if (!coord.latitude && !coord.longitude) {
+      permissionCheck.location().then(() => {
+        Geolocation.getCurrentPosition(
+          ({ coords: { latitude, longitude } }) => {
+            dispatch(deviceSettingActions.setArea({ animateCamera: true }));
+            dispatch(
+              deviceSettingActions.setAreaDraft({
+                coord: { latitude, longitude },
+              }),
+            );
+          },
+          () => {},
+          { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
+        );
+      });
+    } else {
+      mapRef.current.animateToTwoCoordinates(edgePoints[0], edgePoints[1]);
+    }
   }, [mapRef.current, radius]);
 
   useEffect(() => {

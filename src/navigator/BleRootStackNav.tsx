@@ -1,7 +1,3 @@
-import {
-  createStackNavigator,
-  StackCardInterpolationProps,
-} from "@react-navigation/stack";
 import React, { useEffect } from "react";
 import useBleMaganer from "~/hooks/useBleManager";
 import BleWithoutHeaderStackNav from "./BleWithoutHeaderStackNav";
@@ -14,14 +10,9 @@ import { useDispatch } from "react-redux";
 import { bleActions } from "~/store/ble";
 import { formActions } from "~/store/form";
 import { deviceSettingActions } from "~/store/deviceSetting";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-const forFade = ({ current }: StackCardInterpolationProps) => ({
-  cardStyle: {
-    opacity: current.progress,
-  },
-});
-
-const Stack = createStackNavigator<BleRootStackNavParamList>();
+const Stack = createNativeStackNavigator<BleRootStackNavParamList>();
 
 const BleRootStackNav = ({
   route: {
@@ -50,10 +41,7 @@ const BleRootStackNav = ({
   return (
     <Stack.Navigator
       initialRouteName={initialRouteName}
-      screenOptions={{
-        cardStyleInterpolator: forFade,
-        headerShown: false,
-      }}>
+      screenOptions={{ headerShown: false, animation: "fade" }}>
       <Stack.Screen
         name="BleWithHeaderStackNav"
         initialParams={{

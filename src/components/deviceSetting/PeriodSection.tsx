@@ -44,7 +44,7 @@ const PeriodSection = () => {
         </SvgContainer>
         <MyText>위치정보 수신 주기</MyText>
       </RowContainer>
-      {period !== null && (
+      {!!period && (
         <ScrollPicker
           data={periodArr.map(period => period.text)}
           selectedIndex={periodArr.findIndex(item => item.value === period)}

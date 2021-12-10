@@ -1,7 +1,3 @@
-import {
-  createStackNavigator,
-  StackCardInterpolationProps,
-} from "@react-navigation/stack";
 import React, { useRef } from "react";
 import PreArea from "~/screens/bleWithHeaderStackNav/PreArea";
 import RegisterProfileFirst, {
@@ -24,14 +20,9 @@ import WiFiForm, {
 } from "~/screens/bleWithHeaderStackNav/WiFiForm";
 import { headerHeight } from "~/styles/constants";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-const Stack = createStackNavigator<BleWithHeaderStackNavParamList>();
-
-const forFade = ({ current }: StackCardInterpolationProps) => ({
-  cardStyle: {
-    opacity: current.progress,
-  },
-});
+const Stack = createNativeStackNavigator<BleWithHeaderStackNavParamList>();
 
 const BleWithHeaderStackNav = ({
   navigation,
@@ -82,7 +73,7 @@ const BleWithHeaderStackNav = ({
       />
       <Stack.Navigator
         initialRouteName={route.params?.initialRouteName}
-        screenOptions={{ cardStyleInterpolator: forFade, headerShown: false }}>
+        screenOptions={{ headerShown: false, animation: "fade" }}>
         <Stack.Screen name="ChargingCheck" component={ChargingCheck} />
         <Stack.Screen name="PreArea" component={PreArea} />
         <Stack.Screen name="PreWiFiForm" component={PreWiFiForm} />

@@ -1,5 +1,7 @@
+import { PatchCollection } from "@reduxjs/toolkit/dist/query/core/buildThunks";
 import deviceApi, { AreaResponse, GeoJsonType } from "~/api/device";
 import { serverImageUri } from "~/constants";
+import { store } from "~/store";
 import imageHandler from "~/utils/imageHandler";
 
 const useUpdateDeviceSetting = (deviceID: number) => {
@@ -39,12 +41,20 @@ const useUpdateDeviceSetting = (deviceID: number) => {
     safety_areas: AreaResponse[],
     collection_period = 300,
   ) => {
+    let putResult: PatchCollection | null = null;
     try {
+      putResult = store.dispatch(
+        deviceApi.util.updateQueryData("getDeviceSetting", deviceID, draft => {
+          draft.collection_period = collection_period;
+          draft.safety_areas = safety_areas;
+        }),
+      );
       await updateSetting({
         deviceID,
         body: { safety_areas: formatArea(safety_areas), collection_period },
       }).unwrap();
     } catch {
+      putResult?.undo();
       return;
     }
     if (thumbnails(safety_areas).length) {

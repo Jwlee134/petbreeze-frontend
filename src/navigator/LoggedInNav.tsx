@@ -1,8 +1,4 @@
 import React, { useEffect } from "react";
-import {
-  createStackNavigator,
-  StackCardInterpolationProps,
-} from "@react-navigation/stack";
 import BottomTabNav from "./BottomTabNav";
 import WalkMap from "~/screens/loggedInNav/WalkMap";
 import messaging from "@react-native-firebase/messaging";
@@ -31,14 +27,9 @@ import Permission from "~/screens/loggedInNav/Permission";
 import AddDevice from "~/screens/loggedInNav/AddDevice";
 import InvitationCodeForm from "~/screens/loggedInNav/InvitationCodeForm";
 import Welcome from "~/screens/loggedInNav/Welcome";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-const Stack = createStackNavigator<LoggedInNavParamList>();
-
-const forFade = ({ current }: StackCardInterpolationProps) => ({
-  cardStyle: {
-    opacity: current.progress,
-  },
-});
+const Stack = createNativeStackNavigator<LoggedInNavParamList>();
 
 const LoggedInNav = ({
   navigation,
@@ -124,11 +115,7 @@ const LoggedInNav = ({
   return (
     <Stack.Navigator
       initialRouteName={initialRouteName}
-      screenOptions={{
-        cardStyleInterpolator: forFade,
-        detachPreviousScreen: false,
-        headerShown: false,
-      }}>
+      screenOptions={{ headerShown: false, animation: "fade" }}>
       <Stack.Screen
         name="BottomTabNav"
         component={BottomTabNav}

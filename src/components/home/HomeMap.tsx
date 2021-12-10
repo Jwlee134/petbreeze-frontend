@@ -19,6 +19,7 @@ import AddressBlock from "./AddressBlock";
 import palette from "~/styles/palette";
 import LiveModeButton from "../common/LiveModeButton";
 import { liveModeButtonStyle, myLocationButtonStyle } from "~/styles/constants";
+import { ToastType } from "~/styles/toast";
 
 const HomeMap = () => {
   const mapRef = useRef<NaverMapView>(null);
@@ -68,7 +69,10 @@ const HomeMap = () => {
             setCoords(coords);
           },
           () => {
-            Toast.show({ type: "error", text1: "위치를 불러올 수 없습니다." });
+            Toast.show({
+              type: ToastType.Error,
+              text1: "위치를 불러올 수 없습니다.",
+            });
           },
           {
             enableHighAccuracy: true,

@@ -98,10 +98,6 @@ const AreaSection = () => {
       }),
     );
     navigation.navigate("UpdateArea");
-    /* navigation.navigate("BleRootStackNav", {
-      initialRouteName: "BleWithoutHeaderStackNav",
-      initialBleWithoutHeaderStackNavRouteName: "Area",
-    }); */
   };
 
   return (

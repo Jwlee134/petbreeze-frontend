@@ -1,8 +1,4 @@
 import React from "react";
-import {
-  createStackNavigator,
-  StackCardInterpolationProps,
-} from "@react-navigation/stack";
 import Notification from "~/screens/sharedStackNav/Notification";
 import Home from "~/screens/sharedStackNav/Home";
 import WalkTopTabNav from "./WalkTopTabNav";
@@ -13,18 +9,13 @@ import WalkDetailMonth from "~/screens/sharedStackNav/WalkDetailMonth";
 import DeviceManagement from "~/screens/sharedStackNav/DeviceManagement";
 import NotificationSetting from "~/screens/sharedStackNav/NotificationSetting";
 import UpdateNickname from "~/screens/sharedStackNav/UpdateNickname";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-const Stack = createStackNavigator();
-
-const forFade = ({ current }: StackCardInterpolationProps) => ({
-  cardStyle: {
-    opacity: current.progress,
-  },
-});
+const Stack = createNativeStackNavigator();
 
 const SharedStackNav = ({ screenName }: { screenName: string }) => {
   return (
-    <Stack.Navigator screenOptions={{ cardStyleInterpolator: forFade }}>
+    <Stack.Navigator screenOptions={{ animation: "fade" }}>
       {screenName === "Home" && (
         <Stack.Screen
           name="Home"

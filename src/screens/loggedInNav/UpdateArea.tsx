@@ -12,10 +12,12 @@ import AreaInputs from "~/components/area/AreaInputs";
 import AreaSearchBar from "~/components/area/AreaSearchBar";
 import { useDispatch } from "react-redux";
 import { deviceSettingActions } from "~/store/deviceSetting";
-import { useAppSelector } from "~/store";
+import { store, useAppSelector } from "~/store";
 import LoadingIndicator from "~/components/lottie/LoadingIndicator";
 import { textLoadingIndicatorSize } from "~/styles/constants";
 import { isAndroid } from "~/utils";
+import Toast from "react-native-toast-message";
+import { ToastType } from "~/styles/toast";
 
 const UpdateArea = ({
   navigation,
@@ -31,6 +33,14 @@ const UpdateArea = ({
   const dispatch = useDispatch();
 
   const onRightButtonPress = () => {
+    const { name } = store.getState().deviceSetting.draft.area;
+    if (!name) {
+      Toast.show({
+        type: ToastType.Error,
+        text1: "안심존 이름은 필수 항목입니다.",
+      });
+      return;
+    }
     dispatch(deviceSettingActions.setArea({ isSubmitting: true }));
   };
 

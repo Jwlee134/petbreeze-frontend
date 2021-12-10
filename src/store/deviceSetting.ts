@@ -66,7 +66,7 @@ const initialState: State = {
       address: "",
       thumbnail: "",
       coord: { latitude: 0, longitude: 0 },
-      radius: 10,
+      radius: 50,
     },
     wifi: { ssid: "", password: "" },
   },

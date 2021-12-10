@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import deviceApi, { Device } from "~/api/device";
 import Button from "~/components/common/Button";
 import { ScrollView, View } from "react-native";
@@ -17,6 +17,8 @@ import Toast from "react-native-toast-message";
 import permissionCheck from "~/utils/permissionCheck";
 import { formatNickname } from "~/utils";
 import { storageActions } from "~/store/storage";
+import { DimensionsContext } from "~/context/DimensionsContext";
+import { ToastType } from "~/styles/toast";
 
 interface Props {
   navigation: StartWalkingScreenNavigationProp;
@@ -29,6 +31,7 @@ const StartWalking = ({
   route: { params: { preSelectedID } = {} },
   deviceList,
 }: Props) => {
+  const { rpHeight } = useContext(DimensionsContext);
   const isFocused = useIsFocused();
   const dispatch = useDispatch();
 
@@ -65,7 +68,7 @@ const StartWalking = ({
           )
           .join(", ");
         Toast.show({
-          type: "error",
+          type: ToastType.Error,
           text1: `${formatNickname(rejectedNames)}는 이미 산책중입니다.`,
         });
         await allSettled(
@@ -132,42 +135,40 @@ const StartWalking = ({
       </Button>
     </ScrollView>
   ) : (
-    <ScrollView
-      bounces={false}
-      contentContainerStyle={{ flexGrow: 1, justifyContent: "space-between" }}>
+    <View style={{ flexGrow: 1, justifyContent: "space-between" }}>
       <View>
         <MyText
           fontWeight="light"
           fontSize={18}
           color="rgba(0, 0, 0, 0.5)"
-          style={{ textAlign: "center", marginTop: 67 }}>
+          style={{ textAlign: "center", marginTop: rpHeight(67) }}>
           산책할 반려동물이 없습니다.
         </MyText>
         <MyText
           fontWeight="light"
           fontSize={18}
           color="rgba(0, 0, 0, 0.5)"
-          style={{ textAlign: "center", marginTop: 5 }}>
+          style={{ textAlign: "center", marginTop: rpHeight(5) }}>
           기기등록을 해주세요!
         </MyText>
       </View>
       <Dog
-        width={163}
-        height={232}
+        width={rpHeight(163)}
+        height={rpHeight(232)}
         style={{
           alignSelf: "flex-end",
           marginRight: 46,
-          marginVertical: 45,
+          marginVertical: rpHeight(45),
         }}
       />
       <Button
-        style={{ width: 126, marginBottom: 67 }}
+        style={{ width: 126, marginBottom: rpHeight(67) }}
         onPress={() => {
           navigation.navigate("BleRootStackNav");
         }}>
         등록
       </Button>
-    </ScrollView>
+    </View>
   );
 };
 

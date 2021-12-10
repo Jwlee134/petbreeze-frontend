@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Keyboard, StyleSheet, TouchableWithoutFeedback } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import styled from "styled-components/native";
@@ -63,6 +63,10 @@ const Area = ({ navigation }: { navigation: AreaScreenNavigationProp }) => {
       );
     } catch {}
   };
+
+  useEffect(() => {
+    handleMyLocation();
+  }, []);
 
   const bottomSheetHeight = 188 + bottom;
   const mapPadding = {

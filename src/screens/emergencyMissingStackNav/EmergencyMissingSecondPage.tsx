@@ -11,7 +11,7 @@ import Plus from "~/assets/svg/plus/plus-blue.svg";
 import { TouchableOpacity, useWindowDimensions, View } from "react-native";
 import imageHandler from "~/utils/imageHandler";
 import Modal from "react-native-modal";
-import useModal from "~/hooks/useModal";
+import useModal, { ModalPosition } from "~/hooks/useModal";
 import IosBottomModal from "~/components/modal/IosBottomModal";
 import Divider from "~/components/common/Divider";
 import palette from "~/styles/palette";
@@ -211,7 +211,7 @@ const EmergencyMissingSecondPage = ({
           확인
         </Button>
       </KeyboardAwareScrollContainer>
-      <Modal {...modalProps({ type: "bottom" })}>
+      <Modal {...modalProps({ type: ModalPosition.Bottom })}>
         <IosBottomModal close={close}>
           <IosBottomModalButton onPress={onPhotoChange}>
             <MyText color={palette.blue_7b}>변경</MyText>

@@ -510,7 +510,7 @@ const deviceApi = api.injectEndpoints({
 
     getDeviceSetting: builder.query<
       DeviceSetting<AreaResponse> & {
-        Setting_confirmation: boolean;
+        setting_confirmation: boolean;
       },
       number
     >({
@@ -536,7 +536,7 @@ const deviceApi = api.injectEndpoints({
       void,
       {
         deviceID: number;
-        body: Partial<DeviceSetting<Omit<AreaResponse, "thumbnail">>>;
+        body: DeviceSetting<Omit<AreaResponse, "thumbnail">>;
       }
     >({
       query: ({ deviceID, body }) => ({
@@ -544,28 +544,23 @@ const deviceApi = api.injectEndpoints({
         method: "PUT",
         body,
       }),
-      onQueryStarted: async (
-        { deviceID, body },
-        { dispatch, queryFulfilled },
-      ) => {
-        const putResult = dispatch(
-          deviceApi.util.updateQueryData(
-            "getDeviceSetting",
-            deviceID,
-            draft => {
-              if (body.collection_period)
-                draft.collection_period = body.collection_period;
-            },
-          ),
-        );
-        queryFulfilled.catch(putResult.undo);
-      },
       invalidatesTags: (result, error, { deviceID }) => {
         if (shouldInvalidateDeviceList(error)) {
           return [{ type: "Device", id: deviceID }];
         }
         return [];
       },
+    }),
+
+    updateCollectionPeriod: builder.mutation<
+      void,
+      { deviceID: number; period: number }
+    >({
+      query: ({ deviceID, period }) => ({
+        url: `/device/${deviceID}/setting/collection-period/`,
+        method: "PUT",
+        body: { "collection-period": period },
+      }),
     }),
 
     updateSafetyZoneThumbnail: builder.mutation<

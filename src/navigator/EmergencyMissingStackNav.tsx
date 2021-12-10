@@ -1,8 +1,5 @@
 import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
-import {
-  createStackNavigator,
-  StackCardInterpolationProps,
-} from "@react-navigation/stack";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import deviceApi from "~/api/device";
@@ -16,13 +13,7 @@ import {
   EmergencyMissingStackNavScreenRouteProp,
 } from "~/types/navigator";
 
-const Stack = createStackNavigator<EmergencyMissingStackNavParamList>();
-
-const forFade = ({ current }: StackCardInterpolationProps) => ({
-  cardStyle: {
-    opacity: current.progress,
-  },
-});
+const Stack = createNativeStackNavigator<EmergencyMissingStackNavParamList>();
 
 const EmergencyMissingStackNav = ({
   navigation,
@@ -101,10 +92,7 @@ const EmergencyMissingStackNav = ({
         totalPage={2}
       />
       <Stack.Navigator
-        screenOptions={{
-          headerShown: false,
-          cardStyleInterpolator: forFade,
-        }}>
+        screenOptions={{ headerShown: false, animation: "fade" }}>
         <Stack.Screen name="EmergencyMissingFirstPage">
           {props => (
             <EmergencyMissingFirstPage name={name} avatar={avatar} {...props} />

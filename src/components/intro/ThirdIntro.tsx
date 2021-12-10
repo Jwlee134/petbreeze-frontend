@@ -5,7 +5,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useDispatch } from "react-redux";
 import styled from "styled-components/native";
 import MyText from "~/components/common/MyText";
-import { DimensionsContext, RpWidth } from "~/context/DimensionsContext";
+import { DimensionsContext } from "~/context/DimensionsContext";
 import { storageActions } from "~/store/storage";
 import palette from "~/styles/palette";
 import { IntroScreenNavigationProp } from "~/types/navigator";
