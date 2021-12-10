@@ -45,8 +45,6 @@ const ChargingCheck = ({
   };
 
   const handlePress = async () => {
-    navigation.replace("BleWithoutHeaderStackNav");
-    dispatch(bleActions.setStatus("scanning"));
     try {
       await permissionCheck.bluetooth();
       if (isAndroid) {
