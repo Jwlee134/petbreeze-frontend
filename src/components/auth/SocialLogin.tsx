@@ -68,11 +68,14 @@ const SocialLogin = ({ name }: { name: string }) => {
       if (kakaoLoading) setKakaoLoading(false);
       navigation.replace("LoggedInNav", { initialRouteName: "Policy" });
     } catch (error) {
+      if (fbLoading) setFbLoading(false);
+      if (kakaoLoading) setKakaoLoading(false);
       console.log(error);
     }
   };
 
   const handleKakaoLogin = async () => {
+    if (kakaoLoading) return;
     try {
       const { accessToken } = await login();
       signUp(accessToken, name);
@@ -82,13 +85,14 @@ const SocialLogin = ({ name }: { name: string }) => {
   };
 
   const handleFbLogin = async () => {
+    if (fbLoading) return;
     LoginManager.logOut();
     try {
       await LoginManager.logInWithPermissions([
         "public_profile",
-        /* "email",
+        "email",
         "user_gender",
-        "user_birthday", */
+        "user_birthday",
       ]);
       const data = await AccessToken.getCurrentAccessToken();
       if (data) {
