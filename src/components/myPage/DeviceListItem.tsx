@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React from "react";
 import styled from "styled-components/native";
 import { Device } from "~/api/device";
 import { noName } from "~/constants";
@@ -58,4 +58,4 @@ const DeviceListItem = ({ device, navigation }: Props) => (
   </ListItem>
 );
 
-export default memo(DeviceListItem);
+export default DeviceListItem;

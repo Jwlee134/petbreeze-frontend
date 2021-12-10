@@ -2,11 +2,8 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components/native";
 import deviceApi from "~/api/device";
 import MyText from "~/components/common/MyText";
-import Swipeable from "~/components/common/Swipeable";
 import palette from "~/styles/palette";
 import SectionHeader from "./SectionHeader";
-import Minus from "~/assets/svg/minus/minus-white.svg";
-import SwipeableButton from "~/components/common/SwipeableButton";
 import * as SecureStore from "expo-secure-store";
 import { secureItems } from "~/constants";
 import Crown from "~/assets/svg/myPage/crown.svg";
@@ -15,6 +12,9 @@ import useModal from "~/hooks/useModal";
 import Toast from "react-native-toast-message";
 import Clipboard from "@react-native-clipboard/clipboard";
 import { ToastType } from "~/styles/toast";
+import { SwipeListView } from "react-native-swipe-list-view";
+import { hiddenButtonWidth } from "~/styles/constants";
+import HiddenButton from "../common/HiddenButton";
 
 const Item = styled.View`
   height: 49px;
@@ -62,6 +62,9 @@ const FamilySection = ({ deviceID }: { deviceID: number }) => {
     data?.members[
       data.members.findIndex(member => member.id === data.owner_id)
     ];
+  const isOwner = myID === data?.owner_id;
+  const members =
+    data?.members.filter(member => member.id !== data.owner_id) || [];
 
   return (
     <>
@@ -80,40 +83,37 @@ const FamilySection = ({ deviceID }: { deviceID: number }) => {
           <Crown />
         </CrownContainer>
       </Item>
-      {data?.members
-        .filter(member => member.id !== data.owner_id)
-        .map(member => (
-          <Swipeable
-            key={member.id}
-            rightThreshold={36}
-            enableRightActions
-            RenderRightActions={() => (
-              <>
-                {myID !== data.owner_id ? (
-                  <></>
-                ) : (
-                  <SwipeableButton
-                    backgroundColor="red"
-                    onPress={() => {
-                      setClickedID(member.id);
-                      open();
-                    }}>
-                    <Minus />
-                  </SwipeableButton>
-                )}
-              </>
-            )}>
+      {members.length ? (
+        <SwipeListView
+          disableRightSwipe
+          disableLeftSwipe={!isOwner}
+          rightOpenValue={-hiddenButtonWidth}
+          data={members}
+          keyExtractor={data => String(data.id)}
+          previewRowKey={isOwner ? String(members[0].id) : ""}
+          previewOpenValue={isOwner ? -hiddenButtonWidth : 0}
+          renderItem={({ item }) => (
             <Item>
               <MyText
                 color={
-                  data?.owner_id === member.id ? palette.blue_86 : undefined
+                  data?.owner_id === item.id ? palette.blue_86 : undefined
                 }>
-                {member.nickname}
-                {myID === member.id && " (나)"}
+                {item.nickname}
+                {myID === item.id && " (나)"}
               </MyText>
             </Item>
-          </Swipeable>
-        ))}
+          )}
+          renderHiddenItem={({ item }, rowMap) => (
+            <HiddenButton
+              onPress={() => {
+                setClickedID(item.id);
+                rowMap[item.id].closeRow();
+                open();
+              }}
+            />
+          )}
+        />
+      ) : null}
       <CommonCenterModal
         close={close}
         onRightButtonPress={() => {

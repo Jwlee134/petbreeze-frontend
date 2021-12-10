@@ -12,6 +12,8 @@ export const textLoadingIndicatorSize = 36;
 
 export const headerHeight = 48;
 
+export const hiddenButtonWidth = 78;
+
 // 홈 맵, 산책 맵 공통
 export const liveModeButtonStyle = (top: number): StyleProp<ViewStyle> => ({
   position: "absolute",

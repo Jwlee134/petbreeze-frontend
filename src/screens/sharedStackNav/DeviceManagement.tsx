@@ -1,10 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
-import { ScrollView } from "react-native";
 import CustomHeader from "~/components/navigator/CustomHeader";
 import { DeviceManagementScreenNavigationProp } from "~/types/navigator";
-import Swipeable from "~/components/common/Swipeable";
 import DeviceListItem from "~/components/myPage/DeviceListItem";
-import SwipeableButton from "~/components/common/SwipeableButton";
 import deviceApi from "~/api/device";
 import useDevice from "~/hooks/useDevice";
 import { useDispatch } from "react-redux";
@@ -12,7 +9,9 @@ import { commonActions } from "~/store/common";
 import useModal from "~/hooks/useModal";
 import CommonCenterModal from "~/components/modal/CommonCenterModal";
 import Plus from "~/assets/svg/plus/plus-blue.svg";
-import Minus from "~/assets/svg/minus/minus-white.svg";
+import { SwipeListView } from "react-native-swipe-list-view";
+import HiddenButton from "~/components/common/HiddenButton";
+import { hiddenButtonWidth } from "~/styles/constants";
 
 const DeviceManagement = ({
   navigation,
@@ -34,12 +33,7 @@ const DeviceManagement = ({
   }, []);
 
   const onRightbuttonPress = () => {
-    navigation.navigate("BleRootStackNav");
-  };
-
-  const onByeClick = (id: number) => {
-    setId(id);
-    open();
+    navigation.navigate("AddDevice");
   };
 
   return (
@@ -50,23 +44,28 @@ const DeviceManagement = ({
         navigation={navigation}
         title="기기관리"
       />
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        {deviceList?.map((device, i) => (
-          <Swipeable
-            animate={i === 0}
-            key={device.id}
-            RenderRightActions={() => (
-              <SwipeableButton
-                backgroundColor="red"
-                onPress={() => onByeClick(device.id)}>
-                <Minus />
-              </SwipeableButton>
-            )}
-            enableRightActions>
-            <DeviceListItem navigation={navigation} device={device} />
-          </Swipeable>
-        ))}
-      </ScrollView>
+      {deviceList?.length && (
+        <SwipeListView
+          disableRightSwipe
+          rightOpenValue={-hiddenButtonWidth}
+          keyExtractor={({ id }) => String(id)}
+          previewRowKey={String(deviceList[0].id)}
+          previewOpenValue={-hiddenButtonWidth}
+          data={deviceList}
+          renderItem={({ item }) => (
+            <DeviceListItem navigation={navigation} device={item} />
+          )}
+          renderHiddenItem={({ item }, rowMap) => (
+            <HiddenButton
+              onPress={() => {
+                setId(id);
+                rowMap[item.id].closeRow();
+                open();
+              }}
+            />
+          )}
+        />
+      )}
       <CommonCenterModal
         modalProps={modalProps}
         close={close}
