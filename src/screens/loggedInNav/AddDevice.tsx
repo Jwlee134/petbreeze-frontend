@@ -4,7 +4,7 @@ import styled from "styled-components/native";
 import Button from "~/components/common/Button";
 import { DimensionsContext } from "~/context/DimensionsContext";
 import useAnimatedSequence from "~/hooks/useAnimatedSequence";
-import { AddDeviceScreenNavigationProp } from "~/types/navigator";
+import { AddDeviceScreenProps } from "~/types/navigator";
 import Device from "~/assets/svg/device/device.svg";
 import CustomHeader from "~/components/navigator/CustomHeader";
 import MyText from "~/components/common/MyText";
@@ -21,9 +21,8 @@ const BottomContainer = styled.View`
 
 const AddDevice = ({
   navigation,
-}: {
-  navigation: AddDeviceScreenNavigationProp;
-}) => {
+  route: { params: { isOnboarding = false } = {} },
+}: AddDeviceScreenProps) => {
   const [value1] = useAnimatedSequence({ numOfValues: 1 });
   const { rpHeight } = useContext(DimensionsContext);
 
@@ -68,17 +67,25 @@ const AddDevice = ({
           <Button style={{ marginBottom: 9 }} onPress={handleNewDevice}>
             새로 등록하기
           </Button>
-          <Button style={{ marginBottom: 9 }} onPress={handleInvitationCode}>
+          <Button
+            {...(!isOnboarding && {
+              useBottomInset: true,
+              useCommonMarginBottom: true,
+            })}
+            style={{ ...(isOnboarding && { marginBottom: 9 }) }}
+            onPress={handleInvitationCode}>
             초대코드로 등록하기
           </Button>
-          <Button
-            backgroundColor="transparent"
-            fontColor="rgba(0, 0, 0, 0.5)"
-            useBottomInset
-            useCommonMarginBottom
-            onPress={handleSkip}>
-            건너뛰기
-          </Button>
+          {isOnboarding && (
+            <Button
+              backgroundColor="transparent"
+              fontColor="rgba(0, 0, 0, 0.5)"
+              useBottomInset
+              useCommonMarginBottom
+              onPress={handleSkip}>
+              건너뛰기
+            </Button>
+          )}
         </Animated.View>
       </BottomContainer>
     </>

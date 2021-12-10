@@ -164,7 +164,7 @@ const StartWalking = ({
       <Button
         style={{ width: 126, marginBottom: rpHeight(67) }}
         onPress={() => {
-          navigation.navigate("BleRootStackNav");
+          navigation.navigate("AddDevice");
         }}>
         등록
       </Button>

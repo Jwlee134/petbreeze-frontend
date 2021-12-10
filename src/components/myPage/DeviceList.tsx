@@ -22,7 +22,7 @@ const Image = styled.Image`
 const DeviceList = ({ deviceList }: { deviceList: Device[] | undefined }) => {
   const navigation = useNavigation<MyPageScreenNavigationProp>();
 
-  const onRegister = () => navigation.navigate("BleRootStackNav");
+  const onRegister = () => navigation.navigate("AddDevice");
 
   return deviceList?.length ? (
     <>

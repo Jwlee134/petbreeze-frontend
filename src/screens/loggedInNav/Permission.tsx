@@ -29,7 +29,7 @@ const Permission = ({
   const { rpHeight } = useContext(DimensionsContext);
   const handlePress = async () => {
     await requestNotifications(["alert", "badge"]);
-    navigation.navigate("AddDevice");
+    navigation.navigate("AddDevice", { isOnboarding: true });
   };
 
   return (
