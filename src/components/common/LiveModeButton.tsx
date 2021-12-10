@@ -45,6 +45,15 @@ const LiveModeButton = ({
 
   const isLoading = isUpdatingSetting || isStoppingWalk;
 
+  const resetAndClose = () => {
+    close();
+    setTimeout(() => {
+      if (resume) resume();
+      setSelectedIDs([]);
+      setIsSelected(false);
+    }, centerModalOutTiming);
+  };
+
   const onRightButtonPress = async () => {
     if (!isSelected) {
       if (!selectedIDs.length) return;
@@ -78,7 +87,7 @@ const LiveModeButton = ({
         if (quitWalk) {
           quitWalk(close);
         } else {
-          close();
+          resetAndClose();
         }
       }
     }
@@ -97,15 +106,6 @@ const LiveModeButton = ({
       }
       return copy;
     });
-  };
-
-  const resetAndClose = () => {
-    close();
-    setTimeout(() => {
-      if (resume) resume();
-      setSelectedIDs([]);
-      setIsSelected(false);
-    }, centerModalOutTiming);
   };
 
   return (
