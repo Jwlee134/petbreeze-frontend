@@ -1,4 +1,4 @@
-import Toast, { BaseToastProps } from "react-native-toast-message";
+import { BaseToastProps } from "react-native-toast-message";
 import { isAndroid } from "~/utils";
 import palette from "./palette";
 
@@ -7,13 +7,12 @@ export enum ToastType {
   Error = "error",
 }
 
-const toastStyle = (top: number, type: ToastType): BaseToastProps => ({
+const toastStyle = (type: ToastType): BaseToastProps => ({
   style: {
     borderLeftColor:
       type === ToastType.Notification ? palette.blue_86 : palette.red_f0,
     borderLeftWidth: 7,
     height: "auto",
-    marginTop: top,
   },
   contentContainerStyle: {
     paddingLeft: 14,
@@ -31,14 +30,6 @@ const toastStyle = (top: number, type: ToastType): BaseToastProps => ({
     fontFamily: "NotoSansKR-Regular",
     includeFontPadding: false,
   },
-  trailingIconContainerStyle: {
-    width: 40,
-  },
-  trailingIconStyle: {
-    width: 10,
-    height: 10,
-  },
-  onTrailingIconPress: Toast.hide,
   text1NumberOfLines: 1,
   text2NumberOfLines: 3,
 });

@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { useAppSelector } from "~/store";
 import LoggedInNav from "./LoggedInNav";
 import { StatusBar } from "react-native";
@@ -7,9 +7,6 @@ import Start from "~/screens/rootNav/Start";
 import { RootNavParamList } from "~/types/navigator";
 import Intro from "~/screens/rootNav/Intro";
 import Auth from "~/screens/rootNav/Auth";
-import Toast, { BaseToast, BaseToastProps } from "react-native-toast-message";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import toastStyle, { ToastType } from "~/styles/toast";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 const Stack = createNativeStackNavigator<RootNavParamList>();
@@ -17,19 +14,6 @@ const Stack = createNativeStackNavigator<RootNavParamList>();
 const RootNav = () => {
   const { isCodePushUpdated, isIntroPassed } = useAppSelector(
     state => state.storage.init,
-  );
-  const { top } = useSafeAreaInsets();
-
-  const toastConfig = useMemo(
-    () => ({
-      notification: ({ ...rest }: BaseToastProps) => (
-        <BaseToast {...rest} {...toastStyle(top, ToastType.Notification)} />
-      ),
-      error: ({ ...rest }: BaseToastProps) => (
-        <BaseToast {...rest} {...toastStyle(top, ToastType.Error)} />
-      ),
-    }),
-    [],
   );
 
   return (
@@ -56,7 +40,6 @@ const RootNav = () => {
         <Stack.Screen name="Start" component={Start} />
         <Stack.Screen name="LoggedInNav" component={LoggedInNav} />
       </Stack.Navigator>
-      <Toast config={toastConfig} ref={ref => Toast.setRef(ref)} />
     </>
   );
 };
