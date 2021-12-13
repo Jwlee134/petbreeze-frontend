@@ -94,7 +94,7 @@ export type LoggedInNavParamList = {
   DeleteAccountStackNav: undefined;
   UpdateWiFi: { id: number };
   BatteryAlert: BatteryAlertParams;
-  UserRequestSuccess: { text: string; key?: string };
+  Success: { text: string; key?: string };
   WalkDetailDay: WalkDetailDayParams;
   Welcome: undefined;
 };
@@ -146,18 +146,14 @@ export type BatteryAlertScreenProps = CompositeScreenProps<
   NativeStackScreenProps<LoggedInNavParamList, "BatteryAlert">,
   NativeStackScreenProps<RootNavParamList>
 >;
-export type UserRequestSuccessScreenProps = CompositeScreenProps<
-  NativeStackScreenProps<LoggedInNavParamList, "UserRequestSuccess">,
+export type SuccessScreenProps = CompositeScreenProps<
+  NativeStackScreenProps<LoggedInNavParamList, "Success">,
   NativeStackScreenProps<RootNavParamList>
 >;
-export type EmergencyMissingStackNavScreenNavigationProp =
-  NativeStackNavigationProp<EmergencyMissingStackNavParamList>;
 export type EmergencyMissingStackNavScreenRouteProp = RouteProp<
   LoggedInNavParamList,
   "EmergencyMissingStackNav"
 >;
-export type DeleteAccountStackNavScreenNavigationProp =
-  NativeStackNavigationProp<DeleteAccountStackNavParamList>;
 export type DeleteAccountStackNavScreenRouteProp = RouteProp<
   LoggedInNavParamList,
   "DeleteAccountStackNav"

@@ -1,6 +1,6 @@
 import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import React from "react";
+import React, { useRef } from "react";
 import {
   Keyboard,
   StyleSheet,
@@ -9,24 +9,27 @@ import {
 } from "react-native";
 import MyText from "~/components/common/MyText";
 import CustomHeader from "~/components/navigator/CustomHeader";
-import DeleteAccountFirstPage from "~/screens/deleteAccountStackNav/DeleteAccountFirstPage";
-import DeleteAccountSecondPage from "~/screens/deleteAccountStackNav/DeleteAccountSecondPage";
+import DeleteAccountFirstPage, {
+  DeleteAccountFirstGoBack,
+} from "~/screens/deleteAccountStackNav/DeleteAccountFirstPage";
+import DeleteAccountSecondPage, {
+  DeleteAccountSecondGoBack,
+} from "~/screens/deleteAccountStackNav/DeleteAccountSecondPage";
 import {
   DeleteAccountStackNavParamList,
-  DeleteAccountStackNavScreenNavigationProp,
   DeleteAccountStackNavScreenRouteProp,
 } from "~/types/navigator";
 
 const Stack = createNativeStackNavigator<DeleteAccountStackNavParamList>();
 
 const DeleteAccountStackNav = ({
-  navigation,
   route,
 }: {
-  navigation: DeleteAccountStackNavScreenNavigationProp;
   route: DeleteAccountStackNavScreenRouteProp;
 }) => {
   const currentRouteName = getFocusedRouteNameFromRoute(route);
+  const deleteAccountFirstRef = useRef<DeleteAccountFirstGoBack>(null);
+  const deleteAccountSecondRef = useRef<DeleteAccountSecondGoBack>(null);
 
   return (
     <>
@@ -34,9 +37,9 @@ const DeleteAccountStackNav = ({
         title="탈퇴하기"
         onBackButtonPress={() => {
           if (currentRouteName === "DeleteAccountSecondPage") {
-            navigation.replace("DeleteAccountFirstPage");
+            deleteAccountSecondRef.current?.goBack();
           } else {
-            navigation.goBack();
+            deleteAccountFirstRef.current?.goBack();
           }
         }}
       />
@@ -66,14 +69,22 @@ const DeleteAccountStackNav = ({
       </TouchableWithoutFeedback>
       <Stack.Navigator
         screenOptions={{ headerShown: false, animation: "fade" }}>
-        <Stack.Screen
-          name="DeleteAccountFirstPage"
-          component={DeleteAccountFirstPage}
-        />
-        <Stack.Screen
-          name="DeleteAccountSecondPage"
-          component={DeleteAccountSecondPage}
-        />
+        <Stack.Screen name="DeleteAccountFirstPage">
+          {({ navigation }) => (
+            <DeleteAccountFirstPage
+              ref={deleteAccountFirstRef}
+              navigation={navigation}
+            />
+          )}
+        </Stack.Screen>
+        <Stack.Screen name="DeleteAccountSecondPage">
+          {({ navigation }) => (
+            <DeleteAccountSecondPage
+              ref={deleteAccountSecondRef}
+              navigation={navigation}
+            />
+          )}
+        </Stack.Screen>
       </Stack.Navigator>
     </>
   );

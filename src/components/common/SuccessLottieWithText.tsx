@@ -31,7 +31,9 @@ const SuccessLottieWithText = ({
     <>
       <TopContainer>
         <Lottie style={{ marginBottom: 54 }} />
-        <MyText fontSize={24}>{text}</MyText>
+        <MyText style={{ textAlign: "center" }} fontSize={24}>
+          {text}
+        </MyText>
       </TopContainer>
       <BottomContainer isOtaUpdateSuccess={isOtaUpdateSuccess}>
         {Buttons || null}

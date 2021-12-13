@@ -1,31 +1,34 @@
 import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import deviceApi from "~/api/device";
 import CustomHeader from "~/components/navigator/CustomHeader";
-import EmergencyMissingFirstPage from "~/screens/emergencyMissingStackNav/EmergencyMissingFirstPage";
-import EmergencyMissingSecondPage from "~/screens/emergencyMissingStackNav/EmergencyMissingSecondPage";
+import EmergencyMissingFirstPage, {
+  EmergencyMissingFirstGoBack,
+} from "~/screens/emergencyMissingStackNav/EmergencyMissingFirstPage";
+import EmergencyMissingSecondPage, {
+  EmergencyMissingSecondGoBack,
+} from "~/screens/emergencyMissingStackNav/EmergencyMissingSecondPage";
 import { formActions } from "~/store/form";
 import {
   EmergencyMissingStackNavParamList,
-  EmergencyMissingStackNavScreenNavigationProp,
   EmergencyMissingStackNavScreenRouteProp,
 } from "~/types/navigator";
 
 const Stack = createNativeStackNavigator<EmergencyMissingStackNavParamList>();
 
 const EmergencyMissingStackNav = ({
-  navigation,
   route,
 }: {
-  navigation: EmergencyMissingStackNavScreenNavigationProp;
   route: EmergencyMissingStackNavScreenRouteProp;
 }) => {
   const currentRouteName = getFocusedRouteNameFromRoute(route);
   const dispatch = useDispatch();
   const [getMissingInfo, { data }] =
     deviceApi.useLazyGetEmergencyMissingQuery();
+  const emergencyMissingFirstRef = useRef<EmergencyMissingFirstGoBack>(null);
+  const emergencyMissingSecondRef = useRef<EmergencyMissingSecondGoBack>(null);
 
   const {
     params: { name, avatar, deviceID, isModify },
@@ -84,9 +87,9 @@ const EmergencyMissingStackNav = ({
         currentPage={currentRouteName === "EmergencyMissingSecondPage" ? 2 : 1}
         onBackButtonPress={() => {
           if (currentRouteName === "EmergencyMissingSecondPage") {
-            navigation.replace("EmergencyMissingFirstPage");
+            emergencyMissingSecondRef.current?.goBack();
           } else {
-            navigation.goBack();
+            emergencyMissingFirstRef.current?.goBack();
           }
         }}
         totalPage={2}
@@ -95,12 +98,18 @@ const EmergencyMissingStackNav = ({
         screenOptions={{ headerShown: false, animation: "fade" }}>
         <Stack.Screen name="EmergencyMissingFirstPage">
           {props => (
-            <EmergencyMissingFirstPage name={name} avatar={avatar} {...props} />
+            <EmergencyMissingFirstPage
+              name={name}
+              avatar={avatar}
+              ref={emergencyMissingFirstRef}
+              {...props}
+            />
           )}
         </Stack.Screen>
         <Stack.Screen name="EmergencyMissingSecondPage">
           {props => (
             <EmergencyMissingSecondPage
+              ref={emergencyMissingSecondRef}
               deviceID={deviceID}
               isModify={isModify}
               {...props}

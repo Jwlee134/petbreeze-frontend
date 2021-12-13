@@ -1,4 +1,4 @@
-import React from "react";
+import React, { forwardRef, useImperativeHandle } from "react";
 import { useDispatch } from "react-redux";
 import styled from "styled-components/native";
 import Button from "~/components/common/Button";
@@ -32,15 +32,24 @@ const RowContainer = styled.View`
   flex-direction: row;
 `;
 
-const EmergencyMissingFirstPage = ({
-  navigation,
-  name,
-  avatar,
-}: {
+export interface EmergencyMissingFirstGoBack {
+  goBack: () => void;
+}
+
+interface Props {
   navigation: EmergencyMissingFirstPageScreenNavigationProp;
   name: string;
   avatar: string;
-}) => {
+}
+
+const EmergencyMissingFirstPage = forwardRef<
+  EmergencyMissingFirstGoBack,
+  Props
+>(({ navigation, name, avatar }, ref) => {
+  useImperativeHandle(ref, () => ({
+    goBack: () => navigation.goBack(),
+  }));
+
   const {
     hasTag,
     phoneNumber,
@@ -131,6 +140,6 @@ const EmergencyMissingFirstPage = ({
       <DateModal close={close} modalProps={modalProps} isEmergency />
     </>
   );
-};
+});
 
 export default EmergencyMissingFirstPage;

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { forwardRef, useImperativeHandle } from "react";
 import { View } from "react-native";
 import { useDispatch } from "react-redux";
 import styled from "styled-components/native";
@@ -32,73 +32,84 @@ const reasons = [
   "서비스 이용이 불편해요.",
 ];
 
-const DeleteAccountFirstPage = ({
-  navigation,
-}: {
+export interface DeleteAccountFirstGoBack {
+  goBack: () => void;
+}
+
+interface Props {
   navigation: DeleteAccountFirstPageScreenNavigationProp;
-}) => {
-  const { body, text } = useAppSelector(state => state.common.deleteAccount);
-  const dispatch = useDispatch();
+}
 
-  const onReasonClick = (i: number) => {
-    if (body.includes(i)) {
-      dispatch(
-        commonActions.setDeleteAccount({ body: body.filter(num => num !== i) }),
-      );
-    } else {
-      dispatch(commonActions.setDeleteAccount({ body: [...body, i] }));
-    }
-  };
+const DeleteAccountFirstPage = forwardRef<DeleteAccountFirstGoBack, Props>(
+  ({ navigation }, ref) => {
+    useImperativeHandle(ref, () => ({
+      goBack: () => navigation.goBack(),
+    }));
+    const { body, text } = useAppSelector(state => state.common.deleteAccount);
+    const dispatch = useDispatch();
 
-  const onChangeText = (text: string) => {
-    dispatch(commonActions.setDeleteAccount({ text }));
-  };
+    const onReasonClick = (i: number) => {
+      if (body.includes(i)) {
+        dispatch(
+          commonActions.setDeleteAccount({
+            body: body.filter(num => num !== i),
+          }),
+        );
+      } else {
+        dispatch(commonActions.setDeleteAccount({ body: [...body, i] }));
+      }
+    };
 
-  const onPress = () => {
-    if (text) {
-      const filtered = body.filter(item => typeof item === "number");
-      dispatch(commonActions.setDeleteAccount({ body: [...filtered, text] }));
-    }
-    navigation.navigate("DeleteAccountSecondPage");
-  };
+    const onChangeText = (text: string) => {
+      dispatch(commonActions.setDeleteAccount({ text }));
+    };
 
-  return (
-    <KeyboardAwareScrollContainer isSpaceBetween>
-      <View>
-        {reasons.map((reason, i) => (
-          <Item
-            key={i}
-            style={{
-              ...(i === reasons.length - 1 && { marginBottom: 13.5 }),
-            }}
-            onPress={() => onReasonClick(i)}>
-            <MyText>{reason}</MyText>
-            <CheckCircle selected={body.includes(i)} />
-          </Item>
-        ))}
-        <InputContainer>
-          <Input
-            value={text}
-            onChangeText={onChangeText}
-            placeholder="직접 입력"
-            multiline
-            scrollEnabled={false}
-            textAlignVertical="top"
-            style={{ paddingHorizontal: 0 }}
-            hasBorder={false}
-            placeholderTextColor="rgba(0, 0, 0, 0.8)"
-          />
-        </InputContainer>
-      </View>
-      <Button
-        style={{ marginTop: minSpace }}
-        useCommonMarginBottom
-        disabled={!body.length && !text}
-        onPress={onPress}>
-        다음
-      </Button>
-    </KeyboardAwareScrollContainer>
-  );
-};
+    const onPress = () => {
+      if (text) {
+        const filtered = body.filter(item => typeof item === "number");
+        dispatch(commonActions.setDeleteAccount({ body: [...filtered, text] }));
+      }
+      navigation.navigate("DeleteAccountSecondPage");
+    };
+
+    return (
+      <KeyboardAwareScrollContainer isSpaceBetween>
+        <View>
+          {reasons.map((reason, i) => (
+            <Item
+              key={i}
+              style={{
+                ...(i === reasons.length - 1 && { marginBottom: 13.5 }),
+              }}
+              onPress={() => onReasonClick(i)}>
+              <MyText>{reason}</MyText>
+              <CheckCircle selected={body.includes(i)} />
+            </Item>
+          ))}
+          <InputContainer>
+            <Input
+              value={text}
+              onChangeText={onChangeText}
+              placeholder="직접 입력"
+              multiline
+              scrollEnabled={false}
+              textAlignVertical="top"
+              style={{ paddingHorizontal: 0 }}
+              hasBorder={false}
+              placeholderTextColor="rgba(0, 0, 0, 0.8)"
+            />
+          </InputContainer>
+        </View>
+        <Button
+          style={{ marginTop: minSpace }}
+          useCommonMarginBottom
+          disabled={!body.length && !text}
+          onPress={onPress}>
+          다음
+        </Button>
+      </KeyboardAwareScrollContainer>
+    );
+  },
+);
 
 export default DeleteAccountFirstPage;

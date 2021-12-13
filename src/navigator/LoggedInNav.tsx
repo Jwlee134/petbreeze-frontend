@@ -18,7 +18,7 @@ import CodePush from "react-native-code-push";
 import userApi from "~/api/user";
 import { useDispatch } from "react-redux";
 import Toast from "react-native-toast-message";
-import UserRequestSuccess from "~/screens/loggedInNav/UserRequestSuccess";
+import Success from "~/screens/loggedInNav/Success";
 import notificationHandler from "~/utils/notificationHandler";
 import WalkDetailDay from "~/screens/loggedInNav/WalkDetailDay";
 import UpdateArea from "~/screens/loggedInNav/UpdateArea";
@@ -153,7 +153,7 @@ const LoggedInNav = ({
       <Stack.Screen name="UpdateProfile" component={UpdateProfile} />
       <Stack.Screen name="UpdateArea" component={UpdateArea} />
       <Stack.Screen name="BatteryAlert" component={BatteryAlert} />
-      <Stack.Screen name="UserRequestSuccess" component={UserRequestSuccess} />
+      <Stack.Screen name="Success" component={Success} />
       <Stack.Screen name="WalkDetailDay" component={WalkDetailDay} />
       <Stack.Screen name="Welcome" component={Welcome} />
     </Stack.Navigator>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { forwardRef, useImperativeHandle, useState } from "react";
 import { useDispatch } from "react-redux";
 import styled from "styled-components/native";
 import Button from "~/components/common/Button";
@@ -41,15 +41,23 @@ const Photo = styled.Image`
   width: 100%;
 `;
 
-const EmergencyMissingSecondPage = ({
-  navigation,
-  deviceID,
-  isModify,
-}: {
+export interface EmergencyMissingSecondGoBack {
+  goBack: () => void;
+}
+
+interface Props {
   navigation: EmergencyMissingSecondPageScreenNavigationProp;
   deviceID: number;
   isModify: boolean | undefined;
-}) => {
+}
+
+const EmergencyMissingSecondPage = forwardRef<
+  EmergencyMissingSecondGoBack,
+  Props
+>(({ navigation, deviceID, isModify }, ref) => {
+  useImperativeHandle(ref, () => ({
+    goBack: () => navigation.goBack(),
+  }));
   const [selectedIndex, setSelectedIndex] = useState(0);
   const { open, close, modalProps } = useModal();
 
@@ -94,16 +102,10 @@ const EmergencyMissingSecondPage = ({
     let key = "";
     try {
       if (isModify) {
-        await update({
-          deviceID,
-          body,
-        }).unwrap();
+        await update({ deviceID, body }).unwrap();
         key = emergencyKey;
       } else {
-        const data = await register({
-          deviceID,
-          body,
-        }).unwrap();
+        const data = await register({ deviceID, body }).unwrap();
         key = data.emergency_key;
       }
     } catch {
@@ -120,10 +122,7 @@ const EmergencyMissingSecondPage = ({
       }
     }
 
-    navigation.replace("UserRequestSuccess", {
-      text: isModify ? "수정되었습니다." : "업로드 되었습니다.",
-      key,
-    });
+    navigation.replace("Success", { text: "업로드 되었어요!", key });
   };
 
   const onMessageChange = (text: string) => {
@@ -224,6 +223,6 @@ const EmergencyMissingSecondPage = ({
       </Modal>
     </>
   );
-};
+});
 
 export default EmergencyMissingSecondPage;
