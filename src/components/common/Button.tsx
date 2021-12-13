@@ -1,13 +1,14 @@
 import React, { ReactNode, useEffect, useRef, useState } from "react";
 import {
-  ActivityIndicator,
   Animated,
   TouchableOpacityProps,
   useWindowDimensions,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import styled, { css } from "styled-components/native";
+import { textLoadingIndicatorSize } from "~/styles/constants";
 import palette from "~/styles/palette";
+import LoadingIndicator from "../lottie/LoadingIndicator";
 import MyText, { FontWeight } from "./MyText";
 
 interface Props extends TouchableOpacityProps {
@@ -103,7 +104,7 @@ const Button = ({
       {...props}>
       <Container style={{ backgroundColor: backgroundColorInterpolate }}>
         {isLoading ? (
-          <ActivityIndicator color="white" size={25} />
+          <LoadingIndicator size={textLoadingIndicatorSize} />
         ) : (
           <>
             {RightIcon && <RightIcon />}

@@ -9,6 +9,8 @@ import userApi from "~/api/user";
 import { useIsFocused } from "@react-navigation/native";
 import useDevice from "~/hooks/useDevice";
 import useAppState from "~/hooks/useAppState";
+import { View } from "react-native";
+import LoadingIndicator from "~/components/lottie/LoadingIndicator";
 
 const Container = styled.ScrollView`
   flex: 1;
@@ -46,7 +48,12 @@ const Notification = () => {
     if (appState === "active") refetch();
   }, [appState]);
 
-  if (!data || !deviceList) return null;
+  if (!data || !deviceList)
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <LoadingIndicator size={80} />
+      </View>
+    );
   if (!deviceList.length || !data.length) return <Empty />;
 
   const newNotif = data.filter(notif => notif.is_new);

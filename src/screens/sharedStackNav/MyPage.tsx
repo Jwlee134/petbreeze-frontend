@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { ScrollView, useWindowDimensions } from "react-native";
 import MyText from "~/components/common/MyText";
 import styled from "styled-components/native";
@@ -41,9 +41,11 @@ const MyPage = ({ navigation }: { navigation: MyPageScreenNavigationProp }) => {
   const { open, close, modalProps } = useModal();
   const { width } = useWindowDimensions();
   const [logout] = userApi.useLogoutMutation();
+  const [isLoading, setIsLoading] = useState(false);
 
   const onLogout = async () => {
     try {
+      setIsLoading(true);
       const fbToken = await SecureStore.getItemAsync(secureItems.firebaseToken);
       await logout(fbToken as string).unwrap();
       await Promise.all(
@@ -61,6 +63,8 @@ const MyPage = ({ navigation }: { navigation: MyPageScreenNavigationProp }) => {
       close();
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -119,6 +123,7 @@ const MyPage = ({ navigation }: { navigation: MyPageScreenNavigationProp }) => {
         close={close}
         modalProps={modalProps}
         rightButtonText="로그아웃"
+        isLoading={isLoading}
         onRightButtonPress={onLogout}
         title="로그아웃 하시나요?"
       />

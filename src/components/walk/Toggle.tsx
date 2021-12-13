@@ -18,7 +18,6 @@ import { WalkMapScreenNavigationProp } from "~/types/navigator";
 import { Shadow } from "react-native-shadow-2";
 import deviceApi from "~/api/device";
 import allSettled from "promise.allsettled";
-import { ActivityIndicator } from "react-native";
 import permissionCheck from "~/utils/permissionCheck";
 import { WalkContext } from "~/context/WalkContext";
 
@@ -158,7 +157,8 @@ const Toggle = () => {
       <CommonCenterModal
         modalProps={modalProps}
         close={onModalClose}
-        rightButtonText={isLoading ? <ActivityIndicator /> : "종료"}
+        isLoading={isLoading}
+        rightButtonText="종료"
         title={`1분 미만의 산책은\n기록되지 않습니다.\n산책을 종료할까요?`}
         onRightButtonPress={onFinishWalking}
       />

@@ -1,11 +1,5 @@
 import React, { memo, useState } from "react";
-import {
-  ActivityIndicator,
-  ScrollView,
-  StyleProp,
-  View,
-  ViewStyle,
-} from "react-native";
+import { ScrollView, StyleProp, View, ViewStyle } from "react-native";
 import deviceApi, { Device } from "~/api/device";
 import useModal from "~/hooks/useModal";
 import { centerModalOutTiming } from "~/styles/constants";
@@ -131,7 +125,8 @@ const LiveModeButton = ({
             ? `실시간 모드에서는\n배터리가 빠르게 소모될 수 있습니다.`
             : undefined
         }
-        rightButtonText={isLoading ? <ActivityIndicator /> : "확인"}
+        rightButtonText="확인"
+        isLoading={isLoading}
         onRightButtonPress={onRightButtonPress}
         close={resetAndClose}>
         {!isSelected ? (

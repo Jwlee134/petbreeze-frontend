@@ -6,13 +6,15 @@ import Divider from "../common/Divider";
 import MyText, { FontWeight } from "../common/MyText";
 import Modal, { ModalProps } from "react-native-modal";
 import { ModalPosition } from "~/hooks/useModal";
+import LoadingIndicator from "../lottie/LoadingIndicator";
+import { textLoadingIndicatorSize } from "~/styles/constants";
 
 interface Props {
   title?: string;
   titleFontWeight?: FontWeight;
   description?: string;
   onRightButtonPress: () => void;
-  rightButtonText: string | JSX.Element;
+  rightButtonText: string;
   close: () => void;
   children?: ReactNode;
   containerStyle?: StyleProp<ViewStyle>;
@@ -23,6 +25,7 @@ interface Props {
     type: ModalPosition;
   }) => Partial<ModalProps>;
   extraProps?: Partial<ModalProps>;
+  isLoading?: boolean;
 }
 
 const Container = styled.View`
@@ -51,6 +54,7 @@ const CommonCenterModal = ({
   containerStyle,
   modalProps,
   extraProps,
+  isLoading,
 }: Props) => (
   <Modal {...modalProps({ type: ModalPosition.Center, ...extraProps })}>
     <Container style={containerStyle}>
@@ -79,12 +83,12 @@ const CommonCenterModal = ({
         </Button>
         <Divider isVertical />
         <Button onPress={onRightButtonPress}>
-          {typeof rightButtonText === "string" ? (
+          {isLoading ? (
+            <LoadingIndicator size={textLoadingIndicatorSize} />
+          ) : (
             <MyText fontWeight="medium" color={palette.blue_7b}>
               {rightButtonText}
             </MyText>
-          ) : (
-            rightButtonText
           )}
         </Button>
       </View>
