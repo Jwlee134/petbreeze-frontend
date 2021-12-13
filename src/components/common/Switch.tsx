@@ -1,13 +1,5 @@
-import React from "react";
-import { Pressable } from "react-native";
-import Animated, {
-  Easing,
-  interpolate,
-  interpolateColor,
-  useAnimatedStyle,
-  useSharedValue,
-  withTiming,
-} from "react-native-reanimated";
+import React, { useEffect, useRef } from "react";
+import { Animated, Easing, Pressable } from "react-native";
 import styled from "styled-components/native";
 import palette from "~/styles/palette";
 
@@ -37,44 +29,32 @@ const ToggleWheel = styled(Animated.View)`
 `;
 
 const Switch = ({ isOn, onToggle }: Props) => {
-  const color = useSharedValue(0);
-  const trans = useSharedValue(0);
+  const value = useRef(new Animated.Value(0)).current;
 
-  const backgroundColorToggle = useAnimatedStyle(() => {
-    color.value = isOn ? 1 : 0;
-    const backgroundColor = interpolateColor(
-      color.value,
-      [0, 1],
-      ["rgba(120, 120, 128, 0.16)", palette.blue_86],
-    );
-    return {
-      backgroundColor: withTiming(backgroundColor, {
-        duration: 200,
-        easing: Easing.linear,
-      }),
-    };
-  }, [isOn]);
+  const backgroundColor = value.interpolate({
+    inputRange: [0, 1],
+    outputRange: ["rgba(120, 120, 128, 0.16)", palette.blue_86],
+  });
 
-  const moveSwitchToggle = useAnimatedStyle(() => {
-    trans.value = isOn ? 1 : 0;
-    const translateX = interpolate(trans.value, [0, 1], [5, 30]);
-    return {
-      transform: [
-        {
-          translateX: withTiming(translateX, {
-            duration: 200,
-            easing: Easing.linear,
-          }),
-        },
-      ],
-    };
+  const translateX = value.interpolate({
+    inputRange: [0, 1],
+    outputRange: [5, 30],
+  });
+
+  useEffect(() => {
+    Animated.timing(value, {
+      toValue: isOn ? 1 : 0,
+      duration: 200,
+      useNativeDriver: false,
+      easing: Easing.linear,
+    }).start();
   }, [isOn]);
 
   return (
     <Wrap>
       <Pressable onPress={onToggle}>
-        <ToggleContainer style={[backgroundColorToggle]}>
-          <ToggleWheel style={[moveSwitchToggle]} />
+        <ToggleContainer style={{ backgroundColor }}>
+          <ToggleWheel style={{ transform: [{ translateX }] }} />
         </ToggleContainer>
       </Pressable>
     </Wrap>
