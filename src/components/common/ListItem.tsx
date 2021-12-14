@@ -1,12 +1,12 @@
 import React, { ReactNode } from "react";
-import { TouchableOpacityProps, View } from "react-native";
+import { PressableProps, View } from "react-native";
 import styled from "styled-components/native";
 
 import RightArrow from "~/assets/svg/arrow/arrow-right-blue.svg";
 import RightArrowGray from "~/assets/svg/arrow/arrow-right-gray.svg";
 import CheckCircle from "./CheckCircle";
 
-interface Props extends TouchableOpacityProps {
+interface Props extends PressableProps {
   selected?: boolean;
   isIconArrow?: boolean;
   isGrayArrow?: boolean;
@@ -14,13 +14,13 @@ interface Props extends TouchableOpacityProps {
   showIcon?: boolean;
 }
 
-const Container = styled.TouchableOpacity`
+const Container = styled.Pressable`
   height: 108px;
   padding: 0 32px;
-  background-color: white;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+  background-color: white;
 `;
 
 const ListItem = ({
@@ -31,7 +31,7 @@ const ListItem = ({
   showIcon = true,
   ...props
 }: Props) => (
-  <Container activeOpacity={1} {...props}>
+  <Container {...props}>
     {children}
     {showIcon && (
       <View

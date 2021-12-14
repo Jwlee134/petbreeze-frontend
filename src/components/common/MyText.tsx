@@ -1,16 +1,18 @@
 import React, { ReactNode } from "react";
-import { Animated, TextProps, TextStyle } from "react-native";
+import { StyleProp, TextProps, TextStyle } from "react-native";
+import Animated from "react-native-reanimated";
 import styled from "styled-components/native";
 import palette from "~/styles/palette";
 
 export type FontWeight = "light" | "medium" | "bold";
 
-interface Props extends Animated.AnimatedProps<TextProps> {
+interface Props extends TextProps {
   children: ReactNode;
   fontWeight?: FontWeight;
   fontSize?: number | undefined;
   color?: string;
-  style?: Animated.AnimatedProps<TextStyle>;
+  style?: StyleProp<TextStyle>;
+  animatedStyle?: { color?: string | number; opacity?: number };
 }
 
 interface STextProps {
@@ -38,17 +40,21 @@ const MyText = ({
   fontSize,
   color,
   style,
+  animatedStyle,
   ...props
 }: Props) => (
   <SText
     fontWeight={fontWeight}
-    style={{
-      includeFontPadding: false,
-      color: color || palette.black_2e,
-      flexShrink: 1,
-      fontSize: fontSize || 16,
-      ...(style as object),
-    }}
+    style={[
+      {
+        includeFontPadding: false,
+        color: color || palette.black_2e,
+        flexShrink: 1,
+        fontSize: fontSize || 16,
+        ...(style as object),
+      },
+      animatedStyle,
+    ]}
     {...props}>
     {children}
   </SText>

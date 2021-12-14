@@ -12,7 +12,7 @@ import { commonActions } from "~/store/common";
 import { minSpace } from "~/styles/constants";
 import { DeleteAccountFirstPageScreenNavigationProp } from "~/types/navigator";
 
-const Item = styled.TouchableOpacity`
+const Item = styled.Pressable`
   flex-direction: row;
   justify-content: space-between;
   height: 54px;

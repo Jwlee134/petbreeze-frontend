@@ -8,14 +8,15 @@ import MyText from "~/components/common/MyText";
 import styled from "styled-components/native";
 import { DimensionsContext } from "~/context/DimensionsContext";
 import { View } from "react-native";
-import useAnimatedSequence from "~/hooks/useAnimatedSequence";
+import {
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withDelay,
+  withTiming,
+} from "react-native-reanimated";
 
-const TopContainer = styled.View`
-  flex: 1;
-  justify-content: space-between;
-`;
-
-const BottomContainer = styled.View`
+const Container = styled.View`
   flex: 1;
   justify-content: space-between;
 `;
@@ -25,7 +26,16 @@ const Permission = ({
 }: {
   navigation: PermissionScreenNavigationProp;
 }) => {
-  const [value1] = useAnimatedSequence({ numOfValues: 1 });
+  const value = useSharedValue(0);
+  const opacity = useAnimatedStyle(() => {
+    value.value = 1;
+    return {
+      opacity: withDelay(
+        400,
+        withTiming(value.value, { duration: 200, easing: Easing.linear }),
+      ),
+    };
+  });
   const { rpHeight } = useContext(DimensionsContext);
   const handlePress = async () => {
     await requestNotifications(["alert", "badge"]);
@@ -34,7 +44,7 @@ const Permission = ({
 
   return (
     <>
-      <TopContainer>
+      <Container>
         <CustomHeader navigation={navigation} />
         <View>
           <Bell
@@ -48,14 +58,11 @@ const Permission = ({
             푸시 알림을{"\n"}허용해주세요.
           </MyText>
         </View>
-      </TopContainer>
-      <BottomContainer>
+      </Container>
+      <Container>
         <MyText
-          style={{
-            marginTop: rpHeight(44),
-            opacity: value1,
-            textAlign: "center",
-          }}
+          style={{ marginTop: rpHeight(44), textAlign: "center" }}
+          animatedStyle={opacity}
           color="rgba(0, 0, 0, 0.7)"
           fontSize={14}
           fontWeight="light">
@@ -64,11 +71,11 @@ const Permission = ({
         <Button
           useCommonMarginBottom
           useBottomInset
-          delay={600}
+          delay={800}
           onPress={handlePress}>
           다음
         </Button>
-      </BottomContainer>
+      </Container>
     </>
   );
 };

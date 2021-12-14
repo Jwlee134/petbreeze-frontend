@@ -1,5 +1,12 @@
-import React, { useEffect, useRef } from "react";
-import { Animated, Easing, Pressable } from "react-native";
+import React from "react";
+import { Pressable } from "react-native";
+import Animated, {
+  interpolate,
+  interpolateColor,
+  useAnimatedStyle,
+  useDerivedValue,
+  withTiming,
+} from "react-native-reanimated";
 import styled from "styled-components/native";
 import palette from "~/styles/palette";
 
@@ -29,32 +36,25 @@ const ToggleWheel = styled(Animated.View)`
 `;
 
 const Switch = ({ isOn, onToggle }: Props) => {
-  const value = useRef(new Animated.Value(0)).current;
+  const value = useDerivedValue(() => (isOn ? withTiming(1) : withTiming(0)));
 
-  const backgroundColor = value.interpolate({
-    inputRange: [0, 1],
-    outputRange: ["rgba(120, 120, 128, 0.16)", palette.blue_86],
-  });
+  const backgroundColor = useAnimatedStyle(() => ({
+    backgroundColor: interpolateColor(
+      value.value,
+      [0, 1],
+      ["rgba(120, 120, 128, 0.16)", palette.blue_86],
+    ),
+  }));
 
-  const translateX = value.interpolate({
-    inputRange: [0, 1],
-    outputRange: [5, 30],
-  });
-
-  useEffect(() => {
-    Animated.timing(value, {
-      toValue: isOn ? 1 : 0,
-      duration: 200,
-      useNativeDriver: false,
-      easing: Easing.linear,
-    }).start();
-  }, [isOn]);
+  const translateX = useAnimatedStyle(() => ({
+    transform: [{ translateX: interpolate(value.value, [0, 1], [5, 30]) }],
+  }));
 
   return (
     <Wrap>
       <Pressable onPress={onToggle}>
-        <ToggleContainer style={{ backgroundColor }}>
-          <ToggleWheel style={{ transform: [{ translateX }] }} />
+        <ToggleContainer style={[backgroundColor]}>
+          <ToggleWheel style={[translateX]} />
         </ToggleContainer>
       </Pressable>
     </Wrap>

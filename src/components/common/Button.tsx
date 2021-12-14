@@ -1,9 +1,12 @@
 import React, { ReactNode, useEffect, useRef, useState } from "react";
-import {
-  Animated,
-  TouchableOpacityProps,
-  useWindowDimensions,
-} from "react-native";
+import { PressableProps, useWindowDimensions } from "react-native";
+import Animated, {
+  Easing,
+  interpolateColor,
+  useAnimatedStyle,
+  useDerivedValue,
+  withTiming,
+} from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import styled, { css } from "styled-components/native";
 import { textLoadingIndicatorSize } from "~/styles/constants";
@@ -11,7 +14,7 @@ import palette from "~/styles/palette";
 import LoadingIndicator from "../lottie/LoadingIndicator";
 import MyText, { FontWeight } from "./MyText";
 
-interface Props extends TouchableOpacityProps {
+interface Props extends PressableProps {
   children?: ReactNode;
   RightIcon?: () => JSX.Element;
   isLoading?: boolean;
@@ -23,7 +26,7 @@ interface Props extends TouchableOpacityProps {
   delay?: number;
 }
 
-const SButton = styled.TouchableOpacity<{ width: number }>`
+const SButton = styled.Pressable<{ width: number }>`
   ${({ width }) => css`
     width: ${width - 32}px;
     height: 50.5px;
@@ -56,40 +59,38 @@ const Button = ({
 }: Props) => {
   const { bottom } = useSafeAreaInsets();
   const { width } = useWindowDimensions();
-  const value = useRef(
-    new Animated.Value(props.disabled || delay ? 0 : 1),
-  ).current;
-  const [disableDuringDelay, setDisableDuringDelay] = useState(
-    !!delay ?? false,
-  );
-
-  const color = value.interpolate({
-    inputRange: [0, 1],
-    outputRange: ["rgba(0, 0, 0, 0.5)", fontColor || "white"],
-  });
-
-  const backgroundColorInterpolate = value.interpolate({
-    inputRange: [0, 1],
-    outputRange: ["rgba(0, 0, 0, 0.05)", backgroundColor || palette.blue_86],
-  });
-
-  const transition = () =>
-    Animated.timing(value, {
-      toValue: props.disabled ? 0 : 1,
-      duration: 200,
-      useNativeDriver: false,
-    });
+  const [disabled, setDisabled] = useState(props.disabled || !!delay);
+  const timeout = useRef<NodeJS.Timeout>();
 
   useEffect(() => {
     if (delay) {
-      setTimeout(() => {
-        setDisableDuringDelay(false);
-      }, delay);
-      Animated.sequence([Animated.delay(delay), transition()]).start();
-    } else {
-      transition().start();
-    }
+      timeout.current = setTimeout(
+        () => setDisabled(props.disabled || false),
+        delay,
+      );
+    } else if (typeof props.disabled === "boolean") setDisabled(props.disabled);
+    return () => timeout.current && clearTimeout(timeout.current);
   }, [props.disabled, delay]);
+
+  const value = useDerivedValue(() =>
+    disabled
+      ? withTiming(0, { duration: 200, easing: Easing.linear })
+      : withTiming(1, { duration: 200, easing: Easing.linear }),
+  );
+  const color = useAnimatedStyle(() => ({
+    color: interpolateColor(
+      value.value,
+      [0, 1],
+      ["rgba(0, 0, 0, 0.5)", fontColor || "white"],
+    ),
+  }));
+  const bgColor = useAnimatedStyle(() => ({
+    backgroundColor: interpolateColor(
+      value.value,
+      [0, 1],
+      ["rgba(0, 0, 0, 0.05)", backgroundColor || palette.blue_86],
+    ),
+  }));
 
   return (
     <SButton
@@ -100,19 +101,15 @@ const Button = ({
         }),
         ...(style as object),
       }}
-      disabled={disableDuringDelay || props.disabled}
+      disabled={disabled}
       {...props}>
-      <Container style={{ backgroundColor: backgroundColorInterpolate }}>
+      <Container style={[bgColor]}>
         {isLoading ? (
-          <LoadingIndicator size={textLoadingIndicatorSize} />
+          <LoadingIndicator white size={textLoadingIndicatorSize} />
         ) : (
           <>
             {RightIcon && <RightIcon />}
-            <MyText
-              fontWeight={fontWeight || "medium"}
-              style={{
-                color,
-              }}>
+            <MyText fontWeight={fontWeight || "medium"} animatedStyle={color}>
               {children}
             </MyText>
           </>

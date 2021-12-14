@@ -1,5 +1,11 @@
-import React, { useEffect, useRef } from "react";
-import { Animated, StyleProp, ViewStyle } from "react-native";
+import React from "react";
+import { StyleProp, useWindowDimensions, ViewStyle } from "react-native";
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 import styled from "styled-components/native";
 import palette from "~/styles/palette";
 
@@ -22,27 +28,21 @@ const PageIndicator = ({
   totalPage: number;
   style?: StyleProp<ViewStyle>;
 }) => {
-  const value = useRef(new Animated.Value(currentPage)).current;
+  const { width } = useWindowDimensions();
+  const value = useSharedValue(currentPage);
 
-  useEffect(() => {
-    if (currentPage) {
-      Animated.timing(value, {
-        toValue: currentPage,
-        useNativeDriver: false,
-        duration: 200,
-      }).start();
-    }
-  }, [currentPage]);
-
-  const widthInterpolate = value.interpolate({
-    inputRange: [0, currentPage],
-    outputRange: ["0%", `${(currentPage / totalPage) * 100}%`],
-  });
+  const widthStyle = useAnimatedStyle(() => {
+    value.value = withTiming(width * (currentPage / totalPage), {
+      duration: 200,
+      easing: Easing.linear,
+    });
+    return { width: value.value };
+  }, [currentPage, totalPage]);
 
   return (
     <PageBarBackground
       style={{ ...(style as object), backgroundColor: "rgba(0, 0, 0, 0.1)" }}>
-      <PageBar style={{ width: widthInterpolate }} />
+      <PageBar style={[widthStyle]} />
     </PageBarBackground>
   );
 };

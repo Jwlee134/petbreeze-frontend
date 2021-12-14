@@ -1,22 +1,24 @@
-import React, { ReactNode, useEffect, useRef } from "react";
-import {
-  Animated,
-  StyleProp,
-  TouchableOpacityProps,
-  ViewStyle,
-} from "react-native";
+import React, { ReactNode } from "react";
+import { PressableProps, StyleProp, ViewStyle } from "react-native";
+import Animated, {
+  Easing,
+  interpolateColor,
+  useAnimatedStyle,
+  useDerivedValue,
+  withTiming,
+} from "react-native-reanimated";
 import styled from "styled-components/native";
 import palette from "~/styles/palette";
 import MyText from "./MyText";
 
-interface Props extends TouchableOpacityProps {
+interface Props extends PressableProps {
   selected: boolean;
   children: ReactNode;
-  containerStyle?: Animated.AnimatedProps<StyleProp<ViewStyle>>;
+  containerStyle?: StyleProp<ViewStyle>;
   fontColor?: string;
 }
 
-const Button = styled.TouchableOpacity`
+const Button = styled.Pressable`
   height: 39px;
   margin-bottom: 20px;
   flex-grow: 1;
@@ -38,29 +40,35 @@ const SelectableButton = ({
   fontColor,
   ...props
 }: Props) => {
-  const value = useRef(new Animated.Value(selected ? 1 : 0)).current;
+  const value = useDerivedValue(() =>
+    selected
+      ? withTiming(1, { duration: 200, easing: Easing.linear })
+      : withTiming(0, { duration: 200, easing: Easing.linear }),
+  );
 
-  const color = value.interpolate({
-    inputRange: [0, 1],
-    outputRange: ["rgba(0, 0, 0, 0.1)", palette.blue_7b],
-  });
-
-  useEffect(() => {
-    Animated.timing(value, {
-      toValue: selected ? 1 : 0,
-      useNativeDriver: false,
-      duration: 200,
-    }).start();
-  }, [selected]);
+  const color = useAnimatedStyle(() => ({
+    color: interpolateColor(
+      value.value,
+      [0, 1],
+      ["rgba(0, 0, 0, 0.1)", palette.blue_7b],
+    ),
+  }));
+  const borderColor = useAnimatedStyle(() => ({
+    borderColor: interpolateColor(
+      value.value,
+      [0, 1],
+      ["rgba(0, 0, 0, 0.1)", palette.blue_7b],
+    ),
+  }));
 
   return (
     <Button {...props}>
-      <Container
-        style={{
-          borderColor: color,
-          ...(containerStyle as object),
-        }}>
-        <MyText style={{ color: fontColor || color }}>{children}</MyText>
+      <Container style={[{ ...(containerStyle as object) }, borderColor]}>
+        <MyText
+          style={fontColor ? { color: fontColor } : undefined}
+          animatedStyle={!fontColor ? color : undefined}>
+          {children}
+        </MyText>
       </Container>
     </Button>
   );

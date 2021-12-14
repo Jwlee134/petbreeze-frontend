@@ -1,7 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 import React, { memo, useCallback, useEffect, useRef, useState } from "react";
 import {
-  Animated,
   NativeScrollEvent,
   NativeSyntheticEvent,
   StyleProp,
@@ -13,6 +12,11 @@ import styled from "styled-components/native";
 import palette from "~/styles/palette";
 import { isIos } from "~/utils";
 import { ScrollView } from "react-native-gesture-handler";
+import {
+  interpolateColor,
+  useAnimatedStyle,
+  useDerivedValue,
+} from "react-native-reanimated";
 
 interface ScrollPickerProps {
   width: string | number;
@@ -142,20 +146,15 @@ const ScrollPicker = ({
         onScrollEndDrag={e => onScrollEndDrag(e)}>
         {data.map((item, index) => {
           const selected = item === data[selectedIndex];
-          const value = useRef(new Animated.Value(0)).current;
+          const value = useDerivedValue(() => (selected ? 1 : 0));
 
-          const color = value.interpolate({
-            inputRange: [0, 1],
-            outputRange: ["rgba(0, 0, 0, 0.3)", palette.blue_7b],
-          });
-
-          useEffect(() => {
-            Animated.timing(value, {
-              toValue: selected ? 1 : 0,
-              useNativeDriver: false,
-              duration: 200,
-            }).start();
-          }, [selected]);
+          const color = useAnimatedStyle(() => ({
+            color: interpolateColor(
+              value.value,
+              [0, 1],
+              ["rgba(0, 0, 0, 0.3)", palette.blue_7b],
+            ),
+          }));
 
           return (
             <View
@@ -169,7 +168,8 @@ const ScrollPicker = ({
                 backgroundColor: "white",
               }}>
               <MyText
-                style={{ color, marginTop: -3 }}
+                style={{ marginTop: -3 }}
+                animatedStyle={color}
                 fontWeight="medium"
                 key={index}>
                 {item}

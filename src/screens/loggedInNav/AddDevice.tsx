@@ -1,20 +1,21 @@
 import React, { useContext } from "react";
-import { Animated, View } from "react-native";
+import { View } from "react-native";
 import styled from "styled-components/native";
 import Button from "~/components/common/Button";
 import { DimensionsContext } from "~/context/DimensionsContext";
-import useAnimatedSequence from "~/hooks/useAnimatedSequence";
 import { AddDeviceScreenProps } from "~/types/navigator";
 import Device from "~/assets/svg/device/device.svg";
 import CustomHeader from "~/components/navigator/CustomHeader";
 import MyText from "~/components/common/MyText";
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withDelay,
+  withTiming,
+} from "react-native-reanimated";
 
-const TopContainer = styled.View`
-  flex: 1;
-  justify-content: space-between;
-`;
-
-const BottomContainer = styled.View`
+const Container = styled.View`
   flex: 1;
   justify-content: space-between;
 `;
@@ -23,7 +24,19 @@ const AddDevice = ({
   navigation,
   route: { params: { isOnboarding = false } = {} },
 }: AddDeviceScreenProps) => {
-  const [value1] = useAnimatedSequence({ numOfValues: 1 });
+  const value = useSharedValue(0);
+  const opacity = useAnimatedStyle(() => {
+    value.value = 1;
+    return {
+      opacity: withDelay(
+        400,
+        withTiming(value.value, {
+          duration: 200,
+          easing: Easing.linear,
+        }),
+      ),
+    };
+  });
   const { rpHeight } = useContext(DimensionsContext);
 
   const handleNewDevice = () => navigation.navigate("BleRootStackNav");
@@ -35,7 +48,7 @@ const AddDevice = ({
 
   return (
     <>
-      <TopContainer>
+      <Container>
         <CustomHeader navigation={navigation} />
         <View>
           <Device
@@ -49,21 +62,18 @@ const AddDevice = ({
             디바이스를{"\n"}추가해주세요.
           </MyText>
         </View>
-      </TopContainer>
-      <BottomContainer>
+      </Container>
+      <Container>
         <MyText
-          style={{
-            marginTop: rpHeight(44),
-            opacity: value1,
-            textAlign: "center",
-          }}
+          style={{ marginTop: rpHeight(44), textAlign: "center" }}
+          animatedStyle={opacity}
           color="rgba(0, 0, 0, 0.7)"
           fontSize={14}
           fontWeight="light">
           이미 등록된 디바이스는 유저가 보내준{"\n"}초대코드에 의해서만
           추가등록이 가능합니다.
         </MyText>
-        <Animated.View style={{ opacity: value1 }}>
+        <Animated.View style={[opacity]}>
           <Button style={{ marginBottom: 9 }} onPress={handleNewDevice}>
             새로 등록하기
           </Button>
@@ -87,7 +97,7 @@ const AddDevice = ({
             </Button>
           )}
         </Animated.View>
-      </BottomContainer>
+      </Container>
     </>
   );
 };

@@ -25,7 +25,7 @@ const RowContainer = styled.View`
   align-items: center;
 `;
 
-const ListItem = styled.TouchableOpacity<{ rpHeight: RpHeight }>`
+const ListItem = styled.Pressable<{ rpHeight: RpHeight }>`
   height: ${({ rpHeight }) => rpHeight(49)}px;
   padding-left: 47px;
   flex-direction: row;
@@ -33,7 +33,7 @@ const ListItem = styled.TouchableOpacity<{ rpHeight: RpHeight }>`
   align-items: center;
 `;
 
-const ArrowButton = styled.TouchableOpacity`
+const ArrowButton = styled.Pressable`
   height: 100%;
   width: 50px;
   justify-content: center;

@@ -141,7 +141,11 @@ const LiveModeButton = ({
                 <ListItem
                   key={device.id}
                   onPress={() => onListItemPress(device)}
-                  style={{ width: "100%", height: 67 }}
+                  style={{
+                    width: "100%",
+                    height: 67,
+                    backgroundColor: "transparent",
+                  }}
                   isIconArrow={false}
                   selected={selectedIDs.includes(device.id)}>
                   <View style={{ flexDirection: "row", alignItems: "center" }}>

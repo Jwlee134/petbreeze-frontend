@@ -1,4 +1,4 @@
-import React, { ForwardedRef, forwardRef, useState } from "react";
+import React, { ForwardedRef, forwardRef, useEffect, useState } from "react";
 import {
   StyleProp,
   TextInput,
@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import Animated, {
   useAnimatedStyle,
-  useSharedValue,
+  useDerivedValue,
   withTiming,
 } from "react-native-reanimated";
 import styled, { css } from "styled-components/native";
@@ -78,12 +78,16 @@ const Input = forwardRef(
   ) => {
     const [borderWidth, setBorderWidth] = useState(0);
     const [isFocused, setIsFocused] = useState(!!props.value || false);
-    const value = useSharedValue(isFocused ? 1 : 0);
+    const value = useDerivedValue(() => (isFocused ? borderWidth : 0));
 
-    const width = useAnimatedStyle(() => {
-      value.value = isFocused ? borderWidth : 0;
-      return { width: withTiming(value.value, { duration: 200 }) };
-    }, [isFocused, borderWidth]);
+    useEffect(() => {
+      if (props.value && !isFocused) setIsFocused(true);
+    }, [props.value]);
+
+    const width = useAnimatedStyle(
+      () => ({ width: withTiming(value.value, { duration: 200 }) }),
+      [isFocused, borderWidth],
+    );
 
     const handleFocus = () => setIsFocused(true);
     const handleBlur = () => {

@@ -48,6 +48,7 @@ const useModal = () => {
     deviceHeight: height,
     statusBarTranslucent: true,
     useNativeDriver: true,
+    useNativeDriverForBackdrop: true,
     hideModalContentWhileAnimating: true,
     style: {
       margin: 0,

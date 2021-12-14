@@ -17,7 +17,7 @@ import { secureItems } from "~/constants";
 import useDevice from "~/hooks/useDevice";
 import userApi from "~/api/user";
 
-const Button = styled.TouchableOpacity<{ isLast?: boolean }>`
+const Button = styled.Pressable<{ isLast?: boolean }>`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
