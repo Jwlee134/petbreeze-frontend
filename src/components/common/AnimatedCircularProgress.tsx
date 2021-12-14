@@ -49,24 +49,19 @@ const AnimatedCircularProgress = ({
   style,
 }: Props) => {
   const batteryValue = battery || 0;
-  const value = useRef(new Animated.Value(0)).current;
-
-  const scale = value.interpolate({
-    inputRange: [0, 1],
-    outputRange: [1, 1.3],
-  });
+  const scale = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
     if (highlightOnEmergency) {
       Animated.loop(
         Animated.sequence([
-          Animated.timing(value, {
-            toValue: 1,
+          Animated.timing(scale, {
+            toValue: 1.3,
             useNativeDriver: true,
             duration: 400,
           }),
-          Animated.timing(value, {
-            toValue: 0,
+          Animated.timing(scale, {
+            toValue: 1,
             useNativeDriver: true,
             duration: 400,
           }),
@@ -79,7 +74,7 @@ const AnimatedCircularProgress = ({
   return (
     <View style={style}>
       {highlightOnEmergency ? (
-        <Alert style={{ transform: [{ scale }] }} width={circleWidth || 0}>
+        <Alert style={{ transform: [{ scale }] }} width={circleWidth}>
           <Icon width={7} height={36} />
         </Alert>
       ) : null}

@@ -8,6 +8,9 @@ import Clipboard from "@react-native-clipboard/clipboard";
 import Toast from "react-native-toast-message";
 import { Animated, useWindowDimensions, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import LoadingIndicator from "../lottie/LoadingIndicator";
+import { textLoadingIndicatorSize } from "~/styles/constants";
+import { noAvatar } from "~/constants";
 
 const Container = styled(Animated.View)`
   background-color: white;
@@ -16,6 +19,14 @@ const Container = styled(Animated.View)`
   left: 0;
   justify-content: flex-end;
   padding-left: 37px;
+`;
+
+const LoadingContainer = styled.View`
+  width: 100%;
+  height: 52px;
+  justify-content: center;
+  align-items: center;
+  padding-right: 37px;
 `;
 
 const Wrapper = styled.View`
@@ -45,15 +56,16 @@ const Button = styled.TouchableOpacity`
   align-items: center;
 `;
 
-const AddressBlock = () => {
+const HomeInfoHeader = () => {
   const deviceList = useDevice();
   const address = useAppSelector(state => state.common.home.address);
   const pressedID = useAppSelector(state => state.common.home.pressedID);
   const deviceCoord = useAppSelector(state => state.common.home.deviceCoord);
-  const showDeviceLocation = useAppSelector(
-    state => state.common.home.showDeviceLocation,
+  const showInfoHeader = useAppSelector(
+    state => state.common.home.showInfoHeader,
   );
   const areaRadius = useAppSelector(state => state.common.home.areaRadius);
+  const isLoading = useAppSelector(state => state.common.home.isLoading);
   const { top } = useSafeAreaInsets();
   const { width } = useWindowDimensions();
 
@@ -66,37 +78,40 @@ const AddressBlock = () => {
 
   useEffect(() => {
     Animated.timing(value, {
-      toValue: showDeviceLocation ? 1 : 0,
+      toValue: showInfoHeader ? 1 : 0,
       useNativeDriver: true,
       duration: 200,
     }).start();
-  }, [showDeviceLocation]);
+  }, [showInfoHeader]);
 
   const onClipPress = () => {
     if (areaRadius) return;
     Clipboard.setString(address);
     Toast.show({
       type: "notification",
-      text1: "클립보드에 복사되었습니다.",
+      text1: "주소가 클립보드에 복사되었습니다.",
     });
   };
+
+  const uri =
+    deviceList[deviceList.findIndex(device => device.id === pressedID)]
+      ?.profile_image || "";
 
   return (
     <Container
       style={{
+        opacity: value,
         width,
         height: top + 52,
         transform: [{ translateY }],
       }}>
-      {deviceList && pressedID && address && deviceCoord.time ? (
+      {isLoading ? (
+        <LoadingContainer>
+          <LoadingIndicator size={textLoadingIndicatorSize} />
+        </LoadingContainer>
+      ) : address && deviceCoord.time ? (
         <Wrapper>
-          <Avatar
-            source={{
-              uri: deviceList[
-                deviceList.findIndex(device => device.id === pressedID)
-              ].profile_image,
-            }}
-          />
+          <Avatar source={uri ? { uri } : noAvatar} />
           <SpaceBetweenContainer>
             <View style={{ flexShrink: 1 }}>
               <MyText numberOfLines={1} fontSize={14} fontWeight="medium">
@@ -117,4 +132,4 @@ const AddressBlock = () => {
   );
 };
 
-export default AddressBlock;
+export default HomeInfoHeader;

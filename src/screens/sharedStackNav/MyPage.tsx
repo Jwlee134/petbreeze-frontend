@@ -6,7 +6,7 @@ import Setting from "~/assets/svg/myPage/setting.svg";
 import Bell from "~/assets/svg/myPage/bell.svg";
 import Tag from "~/assets/svg/myPage/name-tag.svg";
 import { MyPageScreenNavigationProp } from "~/types/navigator";
-import DeviceList from "~/components/myPage/DeviceList";
+import MyPageDeviceList from "~/components/myPage/MyPageDeviceList";
 import useModal from "~/hooks/useModal";
 import CommonCenterModal from "~/components/modal/CommonCenterModal";
 import Divider from "~/components/common/Divider";
@@ -71,7 +71,7 @@ const MyPage = ({ navigation }: { navigation: MyPageScreenNavigationProp }) => {
   return (
     <>
       <ScrollView>
-        <DeviceList deviceList={deviceList} />
+        <MyPageDeviceList deviceList={deviceList} />
         <Divider isHairline={false} style={{ marginBottom: 10 }} />
         <Button
           disabled={!deviceList?.length}

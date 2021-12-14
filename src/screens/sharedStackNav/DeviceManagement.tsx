@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import CustomHeader from "~/components/navigator/CustomHeader";
 import { DeviceManagementScreenNavigationProp } from "~/types/navigator";
-import DeviceListItem from "~/components/myPage/DeviceListItem";
+import MyPageDeviceListItem from "~/components/myPage/MyPageDeviceListItem";
 import deviceApi from "~/api/device";
 import useDevice from "~/hooks/useDevice";
 import useModal from "~/hooks/useModal";
@@ -52,7 +52,7 @@ const DeviceManagement = ({
           previewOpenValue={-hiddenButtonWidth}
           data={deviceList}
           renderItem={({ item }) => (
-            <DeviceListItem navigation={navigation} device={item} />
+            <MyPageDeviceListItem navigation={navigation} device={item} />
           )}
           renderHiddenItem={({ item }, rowMap) => (
             <HiddenButton

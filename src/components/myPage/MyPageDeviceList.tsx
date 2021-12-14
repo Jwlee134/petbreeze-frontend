@@ -27,7 +27,7 @@ const Image = styled.Image`
   margin-bottom: 7px;
 `;
 
-const DeviceList = ({ deviceList }: { deviceList: Device[] }) => {
+const MyPageDeviceList = ({ deviceList }: { deviceList: Device[] }) => {
   const navigation = useNavigation<MyPageScreenNavigationProp>();
 
   const onRegister = () => navigation.navigate("AddDevice");
@@ -39,7 +39,7 @@ const DeviceList = ({ deviceList }: { deviceList: Device[] }) => {
       contentContainerStyle={{
         ...(deviceList.length < 4
           ? { flexGrow: 1, justifyContent: "center" }
-          : { paddingHorizontal: 98 }),
+          : { paddingHorizontal: 90 }),
       }}>
       {deviceList.map((device, i) => (
         <AvatarContainer
@@ -75,4 +75,4 @@ const DeviceList = ({ deviceList }: { deviceList: Device[] }) => {
   );
 };
 
-export default DeviceList;
+export default MyPageDeviceList;

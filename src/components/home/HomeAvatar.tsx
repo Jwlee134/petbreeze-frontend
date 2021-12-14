@@ -1,5 +1,4 @@
 import React, { memo } from "react";
-import { Animated, ViewStyle } from "react-native";
 import styled, { css } from "styled-components/native";
 import { Device } from "~/api/device";
 import AnimatedCircularProgress from "../common/AnimatedCircularProgress";
@@ -9,7 +8,6 @@ interface Props {
   length: number;
   onAvatarPress: (id: number) => void;
   onAvatarLongPress: (id: number) => void;
-  style?: Animated.AnimatedProps<ViewStyle>;
   device: Device;
 }
 
@@ -30,7 +28,7 @@ const Pressable = styled.Pressable<PressableProps>`
       case 2:
         return css`
           margin-left: -45px;
-          ${index === 0 ? { left: "33%" } : { left: "66%" }}
+          left: ${index === 0 ? "33%" : "66%"};
         `;
       case 3:
         return css`
@@ -57,22 +55,19 @@ const HomeAvatar = ({
   index,
   onAvatarPress,
   onAvatarLongPress,
-  style,
 }: Props) => (
   <Pressable
     onPress={() => onAvatarPress(device.id)}
     onLongPress={() => onAvatarLongPress(device.id)}
     length={length}
     index={index}>
-    <Animated.View style={style}>
-      <AnimatedCircularProgress
-        avatar={device.profile_image}
-        circleWidth={length > 2 ? 70 : 90}
-        lineWidth={length > 2 ? 2.5 : 3.5}
-        battery={device.battery}
-        highlightOnEmergency={device.is_missed}
-      />
-    </Animated.View>
+    <AnimatedCircularProgress
+      avatar={device.profile_image}
+      circleWidth={length > 2 ? 70 : 90}
+      lineWidth={length > 2 ? 2.5 : 3.5}
+      battery={device.battery}
+      highlightOnEmergency={device.is_missed}
+    />
   </Pressable>
 );
 

@@ -4,10 +4,12 @@ interface HomeState {
   address: string;
   deviceCoord: { latitude: number; longitude: number; time: string };
   areaRadius: number;
-  showDeviceLocation: boolean;
+  showMarker: boolean;
+  showInfoHeader: boolean;
   isDeviceMoved: boolean;
-  isPressed: boolean;
+  isMapClicked: boolean;
   pressedID: number;
+  isLoading: boolean;
 }
 
 interface DeleteAccountState {
@@ -27,10 +29,12 @@ const initialState: State = {
     address: "",
     deviceCoord: { latitude: 0, longitude: 0, time: "" },
     areaRadius: 0,
-    showDeviceLocation: false,
+    showMarker: false,
+    showInfoHeader: false,
     isDeviceMoved: true,
-    isPressed: false,
+    isMapClicked: false,
     pressedID: 0,
+    isLoading: false,
   },
   deleteAccount: {
     body: [],

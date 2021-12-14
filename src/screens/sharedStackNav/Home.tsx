@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components/native";
 
-import DeviceList from "~/components/home/DeviceList";
+import HomeDeviceList from "~/components/home/HomeDeviceList";
 import HomeMap from "~/components/home/HomeMap";
 
 const Container = styled.View`
@@ -13,7 +13,7 @@ const Home = () => {
   return (
     <Container>
       <HomeMap />
-      <DeviceList />
+      <HomeDeviceList />
     </Container>
   );
 };

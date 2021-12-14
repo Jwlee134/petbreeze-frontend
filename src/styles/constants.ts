@@ -15,13 +15,19 @@ export const headerHeight = 48;
 export const hiddenButtonWidth = 78;
 
 // 홈 맵, 산책 맵 공통
-export const liveModeButtonStyle = (top: number): StyleProp<ViewStyle> => ({
+export const liveModeButtonStyle = (
+  top: number,
+  isHome = false,
+): StyleProp<ViewStyle> => ({
   position: "absolute",
   right: 16,
-  top: top + 74,
+  top: top + (isHome ? 18 : 74),
 });
-export const myLocationButtonStyle = (top: number): StyleProp<ViewStyle> => ({
+export const myLocationButtonStyle = (
+  top: number,
+  isHome = false,
+): StyleProp<ViewStyle> => ({
   position: "absolute",
   right: 16,
-  top: top + 140,
+  top: top + (isHome ? 84 : 140),
 });

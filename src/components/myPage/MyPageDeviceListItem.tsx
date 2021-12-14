@@ -27,7 +27,7 @@ interface Props {
   navigation: MyPageScreenNavigationProp | DeviceManagementScreenNavigationProp;
 }
 
-const DeviceListItem = ({ device, navigation }: Props) => (
+const MyPageDeviceListItem = ({ device, navigation }: Props) => (
   <ListItem
     onPress={() => {
       navigation.navigate("DeviceSetting", {
@@ -58,4 +58,4 @@ const DeviceListItem = ({ device, navigation }: Props) => (
   </ListItem>
 );
 
-export default DeviceListItem;
+export default MyPageDeviceListItem;
