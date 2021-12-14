@@ -16,7 +16,6 @@ import DeleteAccountStackNav from "./DeleteAccountStackNav";
 import WalkContextProvider from "~/context/WalkContext";
 import CodePush from "react-native-code-push";
 import userApi from "~/api/user";
-import { useDispatch } from "react-redux";
 import Toast from "react-native-toast-message";
 import Success from "~/screens/loggedInNav/Success";
 import notificationHandler from "~/utils/notificationHandler";
@@ -27,9 +26,14 @@ import Permission from "~/screens/loggedInNav/Permission";
 import AddDevice from "~/screens/loggedInNav/AddDevice";
 import InvitationCodeForm from "~/screens/loggedInNav/InvitationCodeForm";
 import Welcome from "~/screens/loggedInNav/Welcome";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { secureItems } from "~/constants";
+import * as SecureStore from "expo-secure-store";
+import { useDispatch } from "react-redux";
+import { commonActions } from "~/store/common";
+import { useAppSelector } from "~/store";
+import { createStackNavigator } from "@react-navigation/stack";
 
-const Stack = createNativeStackNavigator<LoggedInNavParamList>();
+const Stack = createStackNavigator<LoggedInNavParamList>();
 
 const LoggedInNav = ({
   navigation,
@@ -47,8 +51,23 @@ const LoggedInNav = ({
   route: LoggedInNavRouteProp;
 }) => {
   const dispatch = useDispatch();
+  const isTokenInvalid = useAppSelector(state => state.common.isTokenInvalid);
 
   const [handleRead] = userApi.useReadNotificationsMutation();
+
+  useEffect(() => {
+    if (isTokenInvalid) {
+      (async () => {
+        await Promise.all(
+          Object.values(secureItems).map(item =>
+            SecureStore.deleteItemAsync(item),
+          ),
+        );
+        navigation.reset({ index: 0, routes: [{ name: "Start" }] });
+        dispatch(commonActions.setIsTokenInvalid(false));
+      })();
+    }
+  }, [isTokenInvalid]);
 
   useEffect(() => {
     if (initialWalkDetailDayParams) {
@@ -115,7 +134,12 @@ const LoggedInNav = ({
   return (
     <Stack.Navigator
       initialRouteName={initialRouteName}
-      screenOptions={{ headerShown: false, animation: "fade" }}>
+      screenOptions={{
+        headerShown: false,
+        cardStyleInterpolator: ({ current }) => ({
+          cardStyle: { opacity: current.progress },
+        }),
+      }}>
       <Stack.Screen
         name="BottomTabNav"
         component={BottomTabNav}

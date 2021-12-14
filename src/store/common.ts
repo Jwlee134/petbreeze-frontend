@@ -18,8 +18,8 @@ interface DeleteAccountState {
 interface State {
   home: HomeState;
   deleteAccount: DeleteAccountState;
-  animateSwipeable: boolean;
   isBleManagerInitialized: boolean;
+  isTokenInvalid: boolean;
 }
 
 const initialState: State = {
@@ -36,8 +36,8 @@ const initialState: State = {
     body: [],
     text: "",
   },
-  animateSwipeable: false,
   isBleManagerInitialized: false,
+  isTokenInvalid: false,
 };
 
 const common = createSlice({
@@ -61,14 +61,14 @@ const common = createSlice({
         state.deleteAccount = initialState.deleteAccount;
       }
     },
-    setAnimateSwipeable: (state, { payload }: PayloadAction<boolean>) => {
-      state.animateSwipeable = payload;
-    },
     setIsBleManagerInitialized: (
       state,
       { payload }: PayloadAction<boolean>,
     ) => {
       state.isBleManagerInitialized = payload;
+    },
+    setIsTokenInvalid: (state, { payload }: PayloadAction<boolean>) => {
+      state.isTokenInvalid = payload;
     },
   },
 });
