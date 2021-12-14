@@ -1,40 +1,39 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import CustomHeader from "~/components/navigator/CustomHeader";
 import { DeviceManagementScreenNavigationProp } from "~/types/navigator";
 import DeviceListItem from "~/components/myPage/DeviceListItem";
 import deviceApi from "~/api/device";
 import useDevice from "~/hooks/useDevice";
-import { useDispatch } from "react-redux";
-import { commonActions } from "~/store/common";
 import useModal from "~/hooks/useModal";
 import CommonCenterModal from "~/components/modal/CommonCenterModal";
 import Plus from "~/assets/svg/plus/plus-blue.svg";
 import { SwipeListView } from "react-native-swipe-list-view";
 import HiddenButton from "~/components/common/HiddenButton";
 import { hiddenButtonWidth } from "~/styles/constants";
+import Toast from "react-native-toast-message";
+import { ToastType } from "~/styles/toast";
 
 const DeviceManagement = ({
   navigation,
 }: {
   navigation: DeviceManagementScreenNavigationProp;
 }) => {
-  const [deleteDevice] = deviceApi.useDeleteDeviceMutation();
+  const [deleteDevice, { isSuccess }] = deviceApi.useDeleteDeviceMutation();
   const deviceList = useDevice();
-  const dispatch = useDispatch();
-  const timeout = useRef<NodeJS.Timeout>();
   const [id, setId] = useState(0);
   const { open, close, modalProps } = useModal();
-
-  useEffect(() => {
-    return () => {
-      if (timeout.current) clearTimeout(timeout.current);
-      dispatch(commonActions.setAnimateSwipeable(false));
-    };
-  }, []);
 
   const onRightbuttonPress = () => {
     navigation.navigate("AddDevice");
   };
+
+  useEffect(() => {
+    if (isSuccess)
+      Toast.show({
+        type: ToastType.Notification,
+        text1: "성공적으로 삭제되었습니다.",
+      });
+  }, [isSuccess]);
 
   return (
     <>
@@ -58,7 +57,7 @@ const DeviceManagement = ({
           renderHiddenItem={({ item }, rowMap) => (
             <HiddenButton
               onPress={() => {
-                setId(id);
+                setId(item.id);
                 rowMap[item.id].closeRow();
                 open();
               }}

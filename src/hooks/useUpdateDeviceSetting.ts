@@ -5,7 +5,7 @@ import { store } from "~/store";
 import imageHandler from "~/utils/imageHandler";
 
 const useUpdateDeviceSetting = (deviceID: number) => {
-  const [updateSetting, { isLoading: updatingDeviceSetting }] =
+  const [updateSetting, { isLoading: updatingDeviceSetting, isSuccess }] =
     deviceApi.useUpdateDeviceSettingMutation();
   const [updateSafetyZoneThumbnail, { isLoading: updatingThumbnail }] =
     deviceApi.useUpdateSafetyZoneThumbnailMutation();
@@ -32,8 +32,7 @@ const useUpdateDeviceSetting = (deviceID: number) => {
   const thumbnails = (safety_areas: AreaResponse[]) =>
     safety_areas
       .filter(
-        area =>
-          area.thumbnail !== null && !area.thumbnail.includes(serverImageUri),
+        area => !!area.thumbnail && !area.thumbnail.includes(serverImageUri),
       )
       .map(area => ({ id: area.safety_area_number, data: area.thumbnail }));
 
@@ -72,7 +71,7 @@ const useUpdateDeviceSetting = (deviceID: number) => {
     }
   };
 
-  return { sendRequest, isLoading };
+  return { sendRequest, isLoading, isSuccess };
 };
 
 export default useUpdateDeviceSetting;

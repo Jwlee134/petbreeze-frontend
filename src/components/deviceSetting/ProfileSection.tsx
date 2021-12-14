@@ -51,6 +51,7 @@ const ProfileSection = ({
           birthDay: parseInt(data.birthdate?.split("-")[2], 10),
         }),
         weight: data.weight?.toString() || "",
+        sex: data.sex,
       }),
     );
     navigation.navigate("UpdateProfile", { deviceID });

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import { View, ScrollView } from "react-native";
 import MyText from "~/components/common/MyText";
 import PeriodSection from "~/components/deviceSetting/PeriodSection";
@@ -9,7 +9,6 @@ import palette from "~/styles/palette";
 import ProfileSection from "~/components/deviceSetting/ProfileSection";
 import FamilySection from "~/components/deviceSetting/FamilySection";
 import { DeviceSettingScreenProps } from "~/types/navigator";
-import { commonActions } from "~/store/common";
 import { useDispatch } from "react-redux";
 import deviceApi, { AreaResponse } from "~/api/device";
 import { deviceSettingActions } from "~/store/deviceSetting";
@@ -26,13 +25,13 @@ const DeviceSetting = ({
     params: { deviceID, avatar, name },
   },
 }: DeviceSettingScreenProps) => {
-  const timeout = useRef<NodeJS.Timeout>();
   const dispatch = useDispatch();
 
   const { data: settings } = deviceApi.useGetDeviceSettingQuery(deviceID, {
     refetchOnMountOrArgChange: true,
   });
-  const { sendRequest, isLoading } = useUpdateDeviceSetting(deviceID);
+  const { sendRequest, isLoading, isSuccess } =
+    useUpdateDeviceSetting(deviceID);
 
   // 마운트 시 스토어에 response 저장
   useEffect(() => {
@@ -83,9 +82,15 @@ const DeviceSetting = ({
   };
 
   useEffect(() => {
+    if (isSuccess)
+      Toast.show({
+        type: ToastType.Notification,
+        text1: "성공적으로 변경되었습니다.",
+      });
+  }, [isSuccess]);
+
+  useEffect(() => {
     return () => {
-      if (timeout.current) clearTimeout(timeout.current);
-      dispatch(commonActions.setAnimateSwipeable(false));
       dispatch(deviceSettingActions.reset());
     };
   }, []);

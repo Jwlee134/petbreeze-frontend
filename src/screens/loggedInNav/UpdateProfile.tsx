@@ -19,6 +19,8 @@ import MyText from "~/components/common/MyText";
 import palette from "~/styles/palette";
 import { textLoadingIndicatorSize } from "~/styles/constants";
 import Camera from "~/assets/svg/camera/camera-white.svg";
+import { ToastType } from "~/styles/toast";
+import Toast from "react-native-toast-message";
 
 const AvatarButton = styled.TouchableOpacity`
   width: 108px;
@@ -59,7 +61,8 @@ const UpdateProfile = ({
 }: UpdateProfileScreenProps) => {
   const { name, birthYear, birthMonth, birthDay, species, photos, weight } =
     useAppSelector(state => state.form);
-  const { updateProfileReq, isLoading } = useUpdateDeviceProfile(deviceID);
+  const { updateProfileReq, isLoading, isSuccess } =
+    useUpdateDeviceProfile(deviceID);
   const dispatch = useDispatch();
 
   const handleSubmit = () => {
@@ -81,6 +84,14 @@ const UpdateProfile = ({
       dispatch(formActions.setState(null));
     };
   }, []);
+
+  useEffect(() => {
+    if (isSuccess)
+      Toast.show({
+        type: ToastType.Notification,
+        text1: "성공적으로 수정되었습니다.",
+      });
+  }, [isSuccess]);
 
   return (
     <>

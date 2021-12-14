@@ -10,6 +10,8 @@ import CustomHeader from "~/components/navigator/CustomHeader";
 import { textLoadingIndicatorSize } from "~/styles/constants";
 import palette from "~/styles/palette";
 import { UpdateNicknameScreenNavigationProp } from "~/types/navigator";
+import Toast from "react-native-toast-message";
+import { ToastType } from "~/styles/toast";
 
 const Container = styled.View`
   flex: 1;
@@ -22,7 +24,8 @@ const UpdateNickname = ({
   navigation: UpdateNicknameScreenNavigationProp;
 }) => {
   const { data } = userApi.useGetNicknameQuery();
-  const [trigger, { isLoading }] = userApi.useUpdateNicknameMutation();
+  const [trigger, { isLoading, isSuccess }] =
+    userApi.useUpdateNicknameMutation();
   const [name, setName] = useState("");
 
   const onNameChange = (text: string) => setName(text);
@@ -36,6 +39,14 @@ const UpdateNickname = ({
   const handleSubmit = () => {
     trigger(name);
   };
+
+  useEffect(() => {
+    if (isSuccess)
+      Toast.show({
+        type: ToastType.Notification,
+        text1: "성공적으로 변경되었습니다.",
+      });
+  }, [isSuccess]);
 
   return (
     <>

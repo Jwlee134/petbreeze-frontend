@@ -15,12 +15,17 @@ const useUpdateDeviceProfile = (deviceID: number) => {
     weight,
     photos,
   } = useAppSelector(state => state.form);
-  const [triggerProfile, { isLoading: loadingProfile }] =
-    deviceApi.useUpdateDeviceProfileMutation();
-  const [triggerAvatar, { isLoading: loadingAvatar }] =
-    deviceApi.useUpdateDeviceProfileAvatarMutation();
+  const [
+    triggerProfile,
+    { isLoading: loadingProfile, isSuccess: profileSuccess },
+  ] = deviceApi.useUpdateDeviceProfileMutation();
+  const [
+    triggerAvatar,
+    { isLoading: loadingAvatar, isSuccess: avatarSuccess },
+  ] = deviceApi.useUpdateDeviceProfileAvatarMutation();
 
   const isLoading = loadingProfile || loadingAvatar;
+  const isSuccess = profileSuccess || avatarSuccess;
 
   const updateProfileReq = async () => {
     if (isLoading) return;
@@ -49,7 +54,7 @@ const useUpdateDeviceProfile = (deviceID: number) => {
     } catch {}
   };
 
-  return { updateProfileReq, isLoading };
+  return { updateProfileReq, isLoading, isSuccess };
 };
 
 export default useUpdateDeviceProfile;
