@@ -5,7 +5,7 @@ const useDevice = () => {
     pollingInterval: 60000,
   });
 
-  return data;
+  return data || [];
 };
 
 export default useDevice;

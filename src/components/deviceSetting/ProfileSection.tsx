@@ -13,7 +13,7 @@ import { formActions } from "~/store/form";
 
 const Container = styled.View`
   align-items: center;
-  padding-top: 13px;
+  padding-top: 10px;
   padding-bottom: 26px;
 `;
 

@@ -5,35 +5,66 @@ import { MyPageScreenNavigationProp } from "~/types/navigator";
 import MyText from "../common/MyText";
 import { Device } from "~/api/device";
 import { noAvatar } from "~/constants";
-import DeviceListItem from "./DeviceListItem";
+import { ScrollView } from "react-native";
 
-const Button = styled.TouchableOpacity`
-  flex-direction: row;
+const AvatarContainer = styled.Pressable`
   align-items: center;
+  justify-content: center;
+  padding-top: 10px;
+  padding-bottom: 14px;
+`;
+
+const Button = styled.Pressable`
+  align-items: center;
+  padding-top: 10px;
+  padding-bottom: 14px;
 `;
 
 const Image = styled.Image`
   width: 70px;
   height: 70px;
   border-radius: 35px;
-  margin: 23px 30px;
+  margin-bottom: 7px;
 `;
 
-const DeviceList = ({ deviceList }: { deviceList: Device[] | undefined }) => {
+const DeviceList = ({ deviceList }: { deviceList: Device[] }) => {
   const navigation = useNavigation<MyPageScreenNavigationProp>();
 
   const onRegister = () => navigation.navigate("AddDevice");
 
-  return deviceList?.length ? (
-    <>
-      {deviceList.map(device => (
-        <DeviceListItem
-          navigation={navigation}
+  return deviceList.length ? (
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      contentContainerStyle={{
+        ...(deviceList.length < 4
+          ? { flexGrow: 1, justifyContent: "center" }
+          : { paddingHorizontal: 98 }),
+      }}>
+      {deviceList.map((device, i) => (
+        <AvatarContainer
           key={device.id}
-          device={device}
-        />
+          style={{
+            ...(deviceList.length < 4
+              ? { width: "30%" }
+              : { marginRight: i !== deviceList.length - 1 ? 40 : 0 }),
+          }}
+          onPress={() => {
+            navigation.navigate("DeviceSetting", {
+              deviceID: device.id,
+              avatar: device.profile_image,
+              name: device.name,
+            });
+          }}>
+          <Image
+            source={
+              device.profile_image ? { uri: device.profile_image } : noAvatar
+            }
+          />
+          <MyText fontWeight="medium">{device.name}</MyText>
+        </AvatarContainer>
       ))}
-    </>
+    </ScrollView>
   ) : (
     <Button onPress={onRegister}>
       <Image source={noAvatar} />

@@ -72,7 +72,7 @@ const MyPage = ({ navigation }: { navigation: MyPageScreenNavigationProp }) => {
     <>
       <ScrollView>
         <DeviceList deviceList={deviceList} />
-        <Divider isHairline={false} style={{ marginVertical: 10 }} />
+        <Divider isHairline={false} style={{ marginBottom: 10 }} />
         <Button
           disabled={!deviceList?.length}
           onPress={() => {
