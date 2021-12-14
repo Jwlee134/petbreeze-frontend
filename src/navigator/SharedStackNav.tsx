@@ -9,13 +9,18 @@ import WalkDetailMonth from "~/screens/sharedStackNav/WalkDetailMonth";
 import DeviceManagement from "~/screens/sharedStackNav/DeviceManagement";
 import NotificationSetting from "~/screens/sharedStackNav/NotificationSetting";
 import UpdateNickname from "~/screens/sharedStackNav/UpdateNickname";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createStackNavigator } from "@react-navigation/stack";
 
-const Stack = createNativeStackNavigator();
+const Stack = createStackNavigator();
 
 const SharedStackNav = ({ screenName }: { screenName: string }) => {
   return (
-    <Stack.Navigator screenOptions={{ animation: "fade" }}>
+    <Stack.Navigator
+      screenOptions={{
+        cardStyleInterpolator: ({ current }) => ({
+          cardStyle: { opacity: current.progress },
+        }),
+      }}>
       {screenName === "Home" && (
         <Stack.Screen
           name="Home"

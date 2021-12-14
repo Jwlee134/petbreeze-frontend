@@ -7,9 +7,9 @@ import Start from "~/screens/rootNav/Start";
 import { RootNavParamList } from "~/types/navigator";
 import Intro from "~/screens/rootNav/Intro";
 import Auth from "~/screens/rootNav/Auth";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createStackNavigator } from "@react-navigation/stack";
 
-const Stack = createNativeStackNavigator<RootNavParamList>();
+const Stack = createStackNavigator<RootNavParamList>();
 
 const RootNav = () => {
   const { isCodePushUpdated, isIntroPassed } = useAppSelector(
@@ -24,7 +24,12 @@ const RootNav = () => {
         backgroundColor="transparent"
       />
       <Stack.Navigator
-        screenOptions={{ headerShown: false, animation: "fade" }}
+        screenOptions={{
+          headerShown: false,
+          cardStyleInterpolator: ({ current }) => ({
+            cardStyle: { opacity: current.progress },
+          }),
+        }}
         initialRouteName={(() => {
           if (!isCodePushUpdated) {
             return "FirmwareUpdate";

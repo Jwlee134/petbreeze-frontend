@@ -20,9 +20,9 @@ import WiFiForm, {
 } from "~/screens/bleWithHeaderStackNav/WiFiForm";
 import { headerHeight } from "~/styles/constants";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createStackNavigator } from "@react-navigation/stack";
 
-const Stack = createNativeStackNavigator<BleWithHeaderStackNavParamList>();
+const Stack = createStackNavigator<BleWithHeaderStackNavParamList>();
 
 const BleWithHeaderStackNav = ({
   navigation,
@@ -73,7 +73,12 @@ const BleWithHeaderStackNav = ({
       />
       <Stack.Navigator
         initialRouteName={route.params?.initialRouteName}
-        screenOptions={{ headerShown: false, animation: "fade" }}>
+        screenOptions={{
+          headerShown: false,
+          cardStyleInterpolator: ({ current }) => ({
+            cardStyle: { opacity: current.progress },
+          }),
+        }}>
         <Stack.Screen name="ChargingCheck" component={ChargingCheck} />
         <Stack.Screen name="PreArea" component={PreArea} />
         <Stack.Screen name="PreWiFiForm" component={PreWiFiForm} />

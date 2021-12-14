@@ -8,10 +8,7 @@ import {
   RouteProp,
 } from "@react-navigation/native";
 import { MaterialTopTabNavigationProp } from "@react-navigation/material-top-tabs";
-import {
-  NativeStackNavigationProp,
-  NativeStackScreenProps,
-} from "@react-navigation/native-stack";
+import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
 
 interface StartWalkingParams {
   preSelectedID?: number;
@@ -43,24 +40,24 @@ export type RootNavParamList = {
       }
     | undefined;
 };
-export type FirmwareUpdateScreenNavigationProp = NativeStackNavigationProp<
+export type FirmwareUpdateScreenNavigationProp = StackNavigationProp<
   RootNavParamList,
   "FirmwareUpdate"
 >;
-export type StartScreenNavigationProp = NativeStackNavigationProp<
+export type StartScreenNavigationProp = StackNavigationProp<
   RootNavParamList,
   "Start"
 >;
-export type IntroScreenNavigationProp = NativeStackNavigationProp<
+export type IntroScreenNavigationProp = StackNavigationProp<
   RootNavParamList,
   "Intro"
 >;
-export type AuthScreenNavigationProp = NativeStackNavigationProp<
+export type AuthScreenNavigationProp = StackNavigationProp<
   RootNavParamList,
   "Auth"
 >;
 export type LoggedInNavScreenNavigationProp =
-  NativeStackNavigationProp<LoggedInNavParamList>;
+  StackNavigationProp<LoggedInNavParamList>;
 export type LoggedInNavRouteProp = RouteProp<RootNavParamList, "LoggedInNav">;
 
 export type LoggedInNavParamList = {
@@ -107,48 +104,48 @@ export type BleRootStackNavRouteProp = RouteProp<
   "BleRootStackNav"
 >;
 export type PolicyScreenNavigationProp = CompositeNavigationProp<
-  NativeStackNavigationProp<LoggedInNavParamList, "Policy">,
-  NativeStackNavigationProp<RootNavParamList>
+  StackNavigationProp<LoggedInNavParamList, "Policy">,
+  StackNavigationProp<RootNavParamList>
 >;
 export type PermissionScreenNavigationProp = CompositeNavigationProp<
-  NativeStackNavigationProp<LoggedInNavParamList, "Permission">,
-  NativeStackNavigationProp<RootNavParamList>
+  StackNavigationProp<LoggedInNavParamList, "Permission">,
+  StackNavigationProp<RootNavParamList>
 >;
 export type AddDeviceScreenProps = CompositeScreenProps<
-  NativeStackScreenProps<LoggedInNavParamList, "AddDevice">,
-  NativeStackScreenProps<RootNavParamList>
+  StackScreenProps<LoggedInNavParamList, "AddDevice">,
+  StackScreenProps<RootNavParamList>
 >;
 export type InvitationCodeFormScreenNavigationProp = CompositeNavigationProp<
-  NativeStackNavigationProp<LoggedInNavParamList, "InvitationCodeForm">,
-  NativeStackNavigationProp<RootNavParamList>
+  StackNavigationProp<LoggedInNavParamList, "InvitationCodeForm">,
+  StackNavigationProp<RootNavParamList>
 >;
 export type WalkMapScreenNavigationProp = CompositeNavigationProp<
-  NativeStackNavigationProp<LoggedInNavParamList, "WalkMap">,
-  NativeStackNavigationProp<RootNavParamList>
+  StackNavigationProp<LoggedInNavParamList, "WalkMap">,
+  StackNavigationProp<RootNavParamList>
 >;
 export type UpdateAreaScreenNavigationProp = CompositeNavigationProp<
-  NativeStackNavigationProp<LoggedInNavParamList, "UpdateArea">,
-  NativeStackNavigationProp<RootNavParamList>
+  StackNavigationProp<LoggedInNavParamList, "UpdateArea">,
+  StackNavigationProp<RootNavParamList>
 >;
 export type WelcomeScreenNavigationProp = CompositeNavigationProp<
-  NativeStackNavigationProp<LoggedInNavParamList, "Welcome">,
-  NativeStackNavigationProp<RootNavParamList>
+  StackNavigationProp<LoggedInNavParamList, "Welcome">,
+  StackNavigationProp<RootNavParamList>
 >;
 export type UpdateProfileScreenProps = CompositeScreenProps<
-  NativeStackScreenProps<LoggedInNavParamList, "UpdateProfile">,
-  NativeStackScreenProps<RootNavParamList>
+  StackScreenProps<LoggedInNavParamList, "UpdateProfile">,
+  StackScreenProps<RootNavParamList>
 >;
 export type UpdateWiFiScreenProps = CompositeScreenProps<
-  NativeStackScreenProps<LoggedInNavParamList, "UpdateWiFi">,
-  NativeStackScreenProps<RootNavParamList>
+  StackScreenProps<LoggedInNavParamList, "UpdateWiFi">,
+  StackScreenProps<RootNavParamList>
 >;
 export type BatteryAlertScreenProps = CompositeScreenProps<
-  NativeStackScreenProps<LoggedInNavParamList, "BatteryAlert">,
-  NativeStackScreenProps<RootNavParamList>
+  StackScreenProps<LoggedInNavParamList, "BatteryAlert">,
+  StackScreenProps<RootNavParamList>
 >;
 export type SuccessScreenProps = CompositeScreenProps<
-  NativeStackScreenProps<LoggedInNavParamList, "Success">,
-  NativeStackScreenProps<RootNavParamList>
+  StackScreenProps<LoggedInNavParamList, "Success">,
+  StackScreenProps<RootNavParamList>
 >;
 export type EmergencyMissingStackNavScreenRouteProp = RouteProp<
   LoggedInNavParamList,
@@ -159,8 +156,8 @@ export type DeleteAccountStackNavScreenRouteProp = RouteProp<
   "DeleteAccountStackNav"
 >;
 export type WalkDetailDayScreenProps = CompositeScreenProps<
-  NativeStackScreenProps<LoggedInNavParamList, "WalkDetailDay">,
-  NativeStackScreenProps<RootNavParamList>
+  StackScreenProps<LoggedInNavParamList, "WalkDetailDay">,
+  StackScreenProps<RootNavParamList>
 >;
 export type WalkDetailDayScreenRouteProp = WalkDetailDayScreenProps["route"];
 
@@ -170,24 +167,24 @@ export type EmergencyMissingStackNavParamList = {
 };
 export type EmergencyMissingFirstPageScreenNavigationProp =
   CompositeNavigationProp<
-    NativeStackNavigationProp<
+    StackNavigationProp<
       EmergencyMissingStackNavParamList,
       "EmergencyMissingFirstPage"
     >,
     CompositeNavigationProp<
-      NativeStackNavigationProp<LoggedInNavParamList>,
-      NativeStackNavigationProp<RootNavParamList>
+      StackNavigationProp<LoggedInNavParamList>,
+      StackNavigationProp<RootNavParamList>
     >
   >;
 export type EmergencyMissingSecondPageScreenNavigationProp =
   CompositeNavigationProp<
-    NativeStackNavigationProp<
+    StackNavigationProp<
       EmergencyMissingStackNavParamList,
       "EmergencyMissingSecondPage"
     >,
     CompositeNavigationProp<
-      NativeStackNavigationProp<LoggedInNavParamList>,
-      NativeStackNavigationProp<RootNavParamList>
+      StackNavigationProp<LoggedInNavParamList>,
+      StackNavigationProp<RootNavParamList>
     >
   >;
 
@@ -197,24 +194,24 @@ export type DeleteAccountStackNavParamList = {
 };
 export type DeleteAccountFirstPageScreenNavigationProp =
   CompositeNavigationProp<
-    NativeStackNavigationProp<
+    StackNavigationProp<
       DeleteAccountStackNavParamList,
       "DeleteAccountFirstPage"
     >,
     CompositeNavigationProp<
-      NativeStackNavigationProp<LoggedInNavParamList>,
-      NativeStackNavigationProp<RootNavParamList>
+      StackNavigationProp<LoggedInNavParamList>,
+      StackNavigationProp<RootNavParamList>
     >
   >;
 export type DeleteAccountSecondPageScreenNavigationProp =
   CompositeNavigationProp<
-    NativeStackNavigationProp<
+    StackNavigationProp<
       DeleteAccountStackNavParamList,
       "DeleteAccountSecondPage"
     >,
     CompositeNavigationProp<
-      NativeStackNavigationProp<LoggedInNavParamList>,
-      NativeStackNavigationProp<RootNavParamList>
+      StackNavigationProp<LoggedInNavParamList>,
+      StackNavigationProp<RootNavParamList>
     >
   >;
 
@@ -236,7 +233,7 @@ export type BleWithHeaderStackNavScreenRouteProp = RouteProp<
   "BleWithHeaderStackNav"
 >;
 export type BleWithHeaderStackNavScreenNavigationProp =
-  NativeStackNavigationProp<BleWithHeaderStackNavParamList>;
+  StackNavigationProp<BleWithHeaderStackNavParamList>;
 export type BleWithoutHeaderStackNavScreenRouteProp = RouteProp<
   BleRootStackNavParamList,
   "BleWithoutHeaderStackNav"
@@ -251,68 +248,62 @@ export type BleWithHeaderStackNavParamList = {
   RegisterProfileSecond: undefined;
 };
 export type ChargingCheckScreenNavigationProp = CompositeNavigationProp<
-  NativeStackNavigationProp<BleWithHeaderStackNavParamList, "ChargingCheck">,
+  StackNavigationProp<BleWithHeaderStackNavParamList, "ChargingCheck">,
   CompositeNavigationProp<
-    NativeStackNavigationProp<BleRootStackNavParamList>,
+    StackNavigationProp<BleRootStackNavParamList>,
     CompositeNavigationProp<
-      NativeStackNavigationProp<LoggedInNavParamList>,
-      NativeStackNavigationProp<RootNavParamList>
+      StackNavigationProp<LoggedInNavParamList>,
+      StackNavigationProp<RootNavParamList>
     >
   >
 >;
 export type PreWiFiFormScreenNavigationProp = CompositeNavigationProp<
-  NativeStackNavigationProp<BleWithHeaderStackNavParamList, "PreWiFiForm">,
+  StackNavigationProp<BleWithHeaderStackNavParamList, "PreWiFiForm">,
   CompositeNavigationProp<
-    NativeStackNavigationProp<BleRootStackNavParamList>,
+    StackNavigationProp<BleRootStackNavParamList>,
     CompositeNavigationProp<
-      NativeStackNavigationProp<LoggedInNavParamList>,
-      NativeStackNavigationProp<RootNavParamList>
+      StackNavigationProp<LoggedInNavParamList>,
+      StackNavigationProp<RootNavParamList>
     >
   >
 >;
 export type WiFiFormScreenNavigationProp = CompositeNavigationProp<
-  NativeStackNavigationProp<BleWithHeaderStackNavParamList, "WiFiForm">,
+  StackNavigationProp<BleWithHeaderStackNavParamList, "WiFiForm">,
   CompositeNavigationProp<
-    NativeStackNavigationProp<BleRootStackNavParamList>,
+    StackNavigationProp<BleRootStackNavParamList>,
     CompositeNavigationProp<
-      NativeStackNavigationProp<LoggedInNavParamList>,
-      NativeStackNavigationProp<RootNavParamList>
+      StackNavigationProp<LoggedInNavParamList>,
+      StackNavigationProp<RootNavParamList>
     >
   >
 >;
 export type PreAreaScreenNavigationProp = CompositeNavigationProp<
-  NativeStackNavigationProp<BleWithHeaderStackNavParamList, "PreArea">,
+  StackNavigationProp<BleWithHeaderStackNavParamList, "PreArea">,
   CompositeNavigationProp<
-    NativeStackNavigationProp<BleRootStackNavParamList>,
+    StackNavigationProp<BleRootStackNavParamList>,
     CompositeNavigationProp<
-      NativeStackNavigationProp<LoggedInNavParamList>,
-      NativeStackNavigationProp<RootNavParamList>
+      StackNavigationProp<LoggedInNavParamList>,
+      StackNavigationProp<RootNavParamList>
     >
   >
 >;
 export type RegisterProfileFirstScreenNavigationProp = CompositeNavigationProp<
-  NativeStackNavigationProp<
-    BleWithHeaderStackNavParamList,
-    "RegisterProfileFirst"
-  >,
+  StackNavigationProp<BleWithHeaderStackNavParamList, "RegisterProfileFirst">,
   CompositeNavigationProp<
-    NativeStackNavigationProp<BleRootStackNavParamList>,
+    StackNavigationProp<BleRootStackNavParamList>,
     CompositeNavigationProp<
-      NativeStackNavigationProp<LoggedInNavParamList>,
-      NativeStackNavigationProp<RootNavParamList>
+      StackNavigationProp<LoggedInNavParamList>,
+      StackNavigationProp<RootNavParamList>
     >
   >
 >;
 export type RegisterProfileSecondScreenNavigationProp = CompositeNavigationProp<
-  NativeStackNavigationProp<
-    BleWithHeaderStackNavParamList,
-    "RegisterProfileSecond"
-  >,
+  StackNavigationProp<BleWithHeaderStackNavParamList, "RegisterProfileSecond">,
   CompositeNavigationProp<
-    NativeStackNavigationProp<BleRootStackNavParamList>,
+    StackNavigationProp<BleRootStackNavParamList>,
     CompositeNavigationProp<
-      NativeStackNavigationProp<LoggedInNavParamList>,
-      NativeStackNavigationProp<RootNavParamList>
+      StackNavigationProp<LoggedInNavParamList>,
+      StackNavigationProp<RootNavParamList>
     >
   >
 >;
@@ -328,65 +319,62 @@ export type BleWithoutHeaderStackNavParamList = {
   Area: undefined;
 };
 export type BleLoadingScreenScreenProps = CompositeScreenProps<
-  NativeStackScreenProps<BleWithoutHeaderStackNavParamList, "BleLoading">,
+  StackScreenProps<BleWithoutHeaderStackNavParamList, "BleLoading">,
   CompositeScreenProps<
-    NativeStackScreenProps<BleRootStackNavParamList>,
+    StackScreenProps<BleRootStackNavParamList>,
     CompositeScreenProps<
-      NativeStackScreenProps<LoggedInNavParamList>,
-      NativeStackScreenProps<RootNavParamList>
+      StackScreenProps<LoggedInNavParamList>,
+      StackScreenProps<RootNavParamList>
     >
   >
 >;
 export type ScanningScreenNavigationProp = CompositeNavigationProp<
-  NativeStackNavigationProp<BleWithoutHeaderStackNavParamList, "Scanning">,
+  StackNavigationProp<BleWithoutHeaderStackNavParamList, "Scanning">,
   CompositeNavigationProp<
-    NativeStackNavigationProp<BleRootStackNavParamList>,
+    StackNavigationProp<BleRootStackNavParamList>,
     CompositeNavigationProp<
-      NativeStackNavigationProp<LoggedInNavParamList>,
-      NativeStackNavigationProp<RootNavParamList>
+      StackNavigationProp<LoggedInNavParamList>,
+      StackNavigationProp<RootNavParamList>
     >
   >
 >;
 export type FailScreenNavigationProp = CompositeNavigationProp<
-  NativeStackNavigationProp<BleWithoutHeaderStackNavParamList, "Fail">,
+  StackNavigationProp<BleWithoutHeaderStackNavParamList, "Fail">,
   CompositeNavigationProp<
-    NativeStackNavigationProp<BleRootStackNavParamList>,
+    StackNavigationProp<BleRootStackNavParamList>,
     CompositeNavigationProp<
-      NativeStackNavigationProp<LoggedInNavParamList>,
-      NativeStackNavigationProp<RootNavParamList>
+      StackNavigationProp<LoggedInNavParamList>,
+      StackNavigationProp<RootNavParamList>
     >
   >
 >;
 export type SuccessScreenNavigationProp = CompositeNavigationProp<
-  NativeStackNavigationProp<BleWithoutHeaderStackNavParamList, "Success">,
+  StackNavigationProp<BleWithoutHeaderStackNavParamList, "Success">,
   CompositeNavigationProp<
-    NativeStackNavigationProp<BleRootStackNavParamList>,
+    StackNavigationProp<BleRootStackNavParamList>,
     CompositeNavigationProp<
-      NativeStackNavigationProp<LoggedInNavParamList>,
-      NativeStackNavigationProp<RootNavParamList>
+      StackNavigationProp<LoggedInNavParamList>,
+      StackNavigationProp<RootNavParamList>
     >
   >
 >;
 export type FirmwareProgressScreenNavigationProp = CompositeNavigationProp<
-  NativeStackNavigationProp<
-    BleWithoutHeaderStackNavParamList,
-    "FirmwareProgress"
-  >,
+  StackNavigationProp<BleWithoutHeaderStackNavParamList, "FirmwareProgress">,
   CompositeNavigationProp<
-    NativeStackNavigationProp<BleRootStackNavParamList>,
+    StackNavigationProp<BleRootStackNavParamList>,
     CompositeNavigationProp<
-      NativeStackNavigationProp<LoggedInNavParamList>,
-      NativeStackNavigationProp<RootNavParamList>
+      StackNavigationProp<LoggedInNavParamList>,
+      StackNavigationProp<RootNavParamList>
     >
   >
 >;
 export type AreaScreenNavigationProp = CompositeNavigationProp<
-  NativeStackNavigationProp<BleWithoutHeaderStackNavParamList, "Area">,
+  StackNavigationProp<BleWithoutHeaderStackNavParamList, "Area">,
   CompositeNavigationProp<
-    NativeStackNavigationProp<BleRootStackNavParamList>,
+    StackNavigationProp<BleRootStackNavParamList>,
     CompositeNavigationProp<
-      NativeStackNavigationProp<LoggedInNavParamList>,
-      NativeStackNavigationProp<RootNavParamList>
+      StackNavigationProp<LoggedInNavParamList>,
+      StackNavigationProp<RootNavParamList>
     >
   >
 >;
@@ -426,72 +414,72 @@ export type WalkTopTabNavRouteProp = RouteProp<
   "WalkTopTabNav"
 >;
 export type HomeScreenNavigationProp = CompositeNavigationProp<
-  NativeStackNavigationProp<SharedStackNavParamList, "Home">,
+  StackNavigationProp<SharedStackNavParamList, "Home">,
   CompositeNavigationProp<
     BottomTabNavigationProp<BottomTabParamList>,
     CompositeNavigationProp<
-      NativeStackNavigationProp<LoggedInNavParamList>,
-      NativeStackNavigationProp<RootNavParamList>
+      StackNavigationProp<LoggedInNavParamList>,
+      StackNavigationProp<RootNavParamList>
     >
   >
 >;
 export type NotificationScreenNavigationProp = CompositeNavigationProp<
-  NativeStackNavigationProp<SharedStackNavParamList, "Notification">,
+  StackNavigationProp<SharedStackNavParamList, "Notification">,
   CompositeNavigationProp<
     BottomTabNavigationProp<BottomTabParamList>,
     CompositeNavigationProp<
-      NativeStackNavigationProp<LoggedInNavParamList>,
-      NativeStackNavigationProp<RootNavParamList>
+      StackNavigationProp<LoggedInNavParamList>,
+      StackNavigationProp<RootNavParamList>
     >
   >
 >;
 export type MyPageScreenNavigationProp = CompositeNavigationProp<
-  NativeStackNavigationProp<SharedStackNavParamList, "MyPage">,
+  StackNavigationProp<SharedStackNavParamList, "MyPage">,
   CompositeNavigationProp<
     BottomTabNavigationProp<BottomTabParamList>,
     CompositeNavigationProp<
-      NativeStackNavigationProp<LoggedInNavParamList>,
-      NativeStackNavigationProp<RootNavParamList>
+      StackNavigationProp<LoggedInNavParamList>,
+      StackNavigationProp<RootNavParamList>
     >
   >
 >;
 export type WalkDetailMonthScreenProps = CompositeScreenProps<
-  NativeStackScreenProps<SharedStackNavParamList, "WalkDetailMonth">,
+  StackScreenProps<SharedStackNavParamList, "WalkDetailMonth">,
   CompositeScreenProps<
     BottomTabScreenProps<BottomTabParamList>,
     CompositeScreenProps<
-      NativeStackScreenProps<LoggedInNavParamList>,
-      NativeStackScreenProps<RootNavParamList>
+      StackScreenProps<LoggedInNavParamList>,
+      StackScreenProps<RootNavParamList>
     >
   >
 >;
 export type DeviceManagementScreenNavigationProp = CompositeNavigationProp<
-  NativeStackNavigationProp<SharedStackNavParamList, "DeviceManagement">,
+  StackNavigationProp<SharedStackNavParamList, "DeviceManagement">,
   CompositeNavigationProp<
     BottomTabNavigationProp<BottomTabParamList>,
     CompositeNavigationProp<
-      NativeStackNavigationProp<LoggedInNavParamList>,
-      NativeStackNavigationProp<RootNavParamList>
+      StackNavigationProp<LoggedInNavParamList>,
+      StackNavigationProp<RootNavParamList>
     >
   >
 >;
 export type UpdateNicknameScreenNavigationProp = CompositeNavigationProp<
-  NativeStackNavigationProp<SharedStackNavParamList, "UpdateNickname">,
+  StackNavigationProp<SharedStackNavParamList, "UpdateNickname">,
   CompositeNavigationProp<
     BottomTabNavigationProp<BottomTabParamList>,
     CompositeNavigationProp<
-      NativeStackNavigationProp<LoggedInNavParamList>,
-      NativeStackNavigationProp<RootNavParamList>
+      StackNavigationProp<LoggedInNavParamList>,
+      StackNavigationProp<RootNavParamList>
     >
   >
 >;
 export type DeviceSettingScreenProps = CompositeScreenProps<
-  NativeStackScreenProps<SharedStackNavParamList, "DeviceSetting">,
+  StackScreenProps<SharedStackNavParamList, "DeviceSetting">,
   CompositeScreenProps<
     BottomTabScreenProps<BottomTabParamList>,
     CompositeScreenProps<
-      NativeStackScreenProps<LoggedInNavParamList>,
-      NativeStackScreenProps<RootNavParamList>
+      StackScreenProps<LoggedInNavParamList>,
+      StackScreenProps<RootNavParamList>
     >
   >
 >;
@@ -505,12 +493,12 @@ export type WalkTopTabParamList = {
 export type StartWalkingScreenNavigationProp = CompositeNavigationProp<
   MaterialTopTabNavigationProp<WalkTopTabParamList, "StartWalking">,
   CompositeNavigationProp<
-    NativeStackNavigationProp<SharedStackNavParamList>,
+    StackNavigationProp<SharedStackNavParamList>,
     CompositeNavigationProp<
       BottomTabNavigationProp<BottomTabParamList>,
       CompositeNavigationProp<
-        NativeStackNavigationProp<LoggedInNavParamList>,
-        NativeStackNavigationProp<RootNavParamList>
+        StackNavigationProp<LoggedInNavParamList>,
+        StackNavigationProp<RootNavParamList>
       >
     >
   >
@@ -522,12 +510,12 @@ export type StartWalkingScreenRouteProp = RouteProp<
 export type WalkRecordScreenNavigationProp = CompositeNavigationProp<
   MaterialTopTabNavigationProp<WalkTopTabParamList, "WalkRecord">,
   CompositeNavigationProp<
-    NativeStackNavigationProp<SharedStackNavParamList>,
+    StackNavigationProp<SharedStackNavParamList>,
     CompositeNavigationProp<
       BottomTabNavigationProp<BottomTabParamList>,
       CompositeNavigationProp<
-        NativeStackNavigationProp<LoggedInNavParamList>,
-        NativeStackNavigationProp<RootNavParamList>
+        StackNavigationProp<LoggedInNavParamList>,
+        StackNavigationProp<RootNavParamList>
       >
     >
   >

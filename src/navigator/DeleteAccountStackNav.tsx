@@ -1,5 +1,5 @@
 import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createStackNavigator } from "@react-navigation/stack";
 import React, { useRef } from "react";
 import {
   Keyboard,
@@ -20,7 +20,7 @@ import {
   DeleteAccountStackNavScreenRouteProp,
 } from "~/types/navigator";
 
-const Stack = createNativeStackNavigator<DeleteAccountStackNavParamList>();
+const Stack = createStackNavigator<DeleteAccountStackNavParamList>();
 
 const DeleteAccountStackNav = ({
   route,
@@ -68,7 +68,12 @@ const DeleteAccountStackNav = ({
         </View>
       </TouchableWithoutFeedback>
       <Stack.Navigator
-        screenOptions={{ headerShown: false, animation: "fade" }}>
+        screenOptions={{
+          headerShown: false,
+          cardStyleInterpolator: ({ current }) => ({
+            cardStyle: { opacity: current.progress },
+          }),
+        }}>
         <Stack.Screen name="DeleteAccountFirstPage">
           {({ navigation }) => (
             <DeleteAccountFirstPage

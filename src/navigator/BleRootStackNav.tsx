@@ -10,9 +10,9 @@ import { useDispatch } from "react-redux";
 import { bleActions } from "~/store/ble";
 import { formActions } from "~/store/form";
 import { deviceSettingActions } from "~/store/deviceSetting";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createStackNavigator } from "@react-navigation/stack";
 
-const Stack = createNativeStackNavigator<BleRootStackNavParamList>();
+const Stack = createStackNavigator<BleRootStackNavParamList>();
 
 const BleRootStackNav = ({
   route: {
@@ -41,7 +41,12 @@ const BleRootStackNav = ({
   return (
     <Stack.Navigator
       initialRouteName={initialRouteName}
-      screenOptions={{ headerShown: false, animation: "fade" }}>
+      screenOptions={{
+        headerShown: false,
+        cardStyleInterpolator: ({ current }) => ({
+          cardStyle: { opacity: current.progress },
+        }),
+      }}>
       <Stack.Screen
         name="BleWithHeaderStackNav"
         initialParams={{

@@ -9,9 +9,9 @@ import {
   BleWithoutHeaderStackNavScreenRouteProp,
 } from "~/types/navigator";
 import BleLoading from "~/screens/bleWithoutHeaderStackNav/BleLoading";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createStackNavigator } from "@react-navigation/stack";
 
-const Stack = createNativeStackNavigator<BleWithoutHeaderStackNavParamList>();
+const Stack = createStackNavigator<BleWithoutHeaderStackNavParamList>();
 
 const BleWithoutHeaderStackNav = ({
   route: { params: { initialRouteName, loadingText } = {} },
@@ -21,7 +21,12 @@ const BleWithoutHeaderStackNav = ({
   return (
     <Stack.Navigator
       initialRouteName={initialRouteName}
-      screenOptions={{ headerShown: false, animation: "fade" }}>
+      screenOptions={{
+        headerShown: false,
+        cardStyleInterpolator: ({ current }) => ({
+          cardStyle: { opacity: current.progress },
+        }),
+      }}>
       <Stack.Screen name="Scanning" component={Scanning} />
       <Stack.Screen name="Fail" component={Fail} />
       <Stack.Screen name="FirmwareProgress" component={FirmwareProgress} />
