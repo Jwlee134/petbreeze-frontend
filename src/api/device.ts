@@ -31,7 +31,7 @@ interface InvitationCode {
   expire_datetime: string;
 }
 
-interface EmergencyMissingForm {
+interface MissingReportForm {
   missing_datetime: string;
   missing_location: string;
   message: string;
@@ -39,7 +39,7 @@ interface EmergencyMissingForm {
   has_dog_tag: boolean;
 }
 
-interface EmergencyMissing extends EmergencyMissingForm {
+interface MissingReport extends MissingReportForm {
   device_name: string;
   device_species: string;
   emergency_key: string;
@@ -196,7 +196,7 @@ const deviceApi = api.injectEndpoints({
       }),
     }),
 
-    getEmergencyMissing: builder.query<EmergencyMissing, number>({
+    getMissingReport: builder.query<MissingReport, number>({
       query: deviceID => ({
         url: `/device/${deviceID}/emergency/`,
         method: "GET",
@@ -217,9 +217,9 @@ const deviceApi = api.injectEndpoints({
       },
     }),
 
-    postEmergencyMissing: builder.mutation<
+    postMissingReport: builder.mutation<
       { emergency_key: string },
-      { deviceID: number; body: EmergencyMissingForm }
+      { deviceID: number; body: MissingReportForm }
     >({
       query: ({ deviceID, body }) => ({
         url: `/device/${deviceID}/emergency/`,
@@ -247,9 +247,9 @@ const deviceApi = api.injectEndpoints({
       },
     }),
 
-    updateEmergencyMissing: builder.mutation<
+    updateMissingReport: builder.mutation<
       void,
-      { deviceID: number; body: EmergencyMissingForm }
+      { deviceID: number; body: MissingReportForm }
     >({
       query: ({ deviceID, body }) => ({
         url: `/device/${deviceID}/emergency/`,
@@ -268,7 +268,7 @@ const deviceApi = api.injectEndpoints({
       },
     }),
 
-    updateEmergencyMissingThumbnail: builder.mutation<
+    updateMissingReportThumbnail: builder.mutation<
       void,
       { deviceID: number; body: FormData }
     >({
@@ -292,7 +292,7 @@ const deviceApi = api.injectEndpoints({
       },
     }),
 
-    deleteEmergencyMissing: builder.mutation<void, number>({
+    deleteMissingReport: builder.mutation<void, number>({
       query: deviceID => ({
         url: `/device/${deviceID}/emergency/`,
         method: "DELETE",

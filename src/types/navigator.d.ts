@@ -56,8 +56,10 @@ export type AuthScreenNavigationProp = StackNavigationProp<
   RootNavParamList,
   "Auth"
 >;
-export type LoggedInNavScreenNavigationProp =
-  StackNavigationProp<LoggedInNavParamList>;
+export type LoggedInNavScreenNavigationProp = CompositeNavigationProp<
+  StackNavigationProp<RootNavParamList>,
+  StackNavigationProp<LoggedInNavParamList>
+>;
 export type LoggedInNavRouteProp = RouteProp<RootNavParamList, "LoggedInNav">;
 
 export type LoggedInNavParamList = {
@@ -82,7 +84,7 @@ export type LoggedInNavParamList = {
   UpdateProfile: {
     deviceID: number;
   };
-  EmergencyMissingStackNav: {
+  MissingReportStackNav: {
     deviceID: number;
     name: string;
     avatar: string;
@@ -147,9 +149,9 @@ export type SuccessScreenProps = CompositeScreenProps<
   StackScreenProps<LoggedInNavParamList, "Success">,
   StackScreenProps<RootNavParamList>
 >;
-export type EmergencyMissingStackNavScreenRouteProp = RouteProp<
+export type MissingReportStackNavScreenRouteProp = RouteProp<
   LoggedInNavParamList,
-  "EmergencyMissingStackNav"
+  "MissingReportStackNav"
 >;
 export type DeleteAccountStackNavScreenRouteProp = RouteProp<
   LoggedInNavParamList,
@@ -161,26 +163,26 @@ export type WalkDetailDayScreenProps = CompositeScreenProps<
 >;
 export type WalkDetailDayScreenRouteProp = WalkDetailDayScreenProps["route"];
 
-export type EmergencyMissingStackNavParamList = {
-  EmergencyMissingFirstPage: undefined;
-  EmergencyMissingSecondPage: undefined;
+export type MissingReportStackNavParamList = {
+  MissingReportFirstPage: undefined;
+  MissingReportSecondPage: undefined;
 };
-export type EmergencyMissingFirstPageScreenNavigationProp =
+export type MissingReportFirstPageScreenNavigationProp =
   CompositeNavigationProp<
     StackNavigationProp<
-      EmergencyMissingStackNavParamList,
-      "EmergencyMissingFirstPage"
+      MissingReportStackNavParamList,
+      "MissingReportFirstPage"
     >,
     CompositeNavigationProp<
       StackNavigationProp<LoggedInNavParamList>,
       StackNavigationProp<RootNavParamList>
     >
   >;
-export type EmergencyMissingSecondPageScreenNavigationProp =
+export type MissingReportSecondPageScreenNavigationProp =
   CompositeNavigationProp<
     StackNavigationProp<
-      EmergencyMissingStackNavParamList,
-      "EmergencyMissingSecondPage"
+      MissingReportStackNavParamList,
+      "MissingReportSecondPage"
     >,
     CompositeNavigationProp<
       StackNavigationProp<LoggedInNavParamList>,

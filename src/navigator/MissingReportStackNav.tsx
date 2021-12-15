@@ -4,31 +4,30 @@ import React, { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import deviceApi from "~/api/device";
 import CustomHeader from "~/components/navigator/CustomHeader";
-import EmergencyMissingFirstPage, {
-  EmergencyMissingFirstGoBack,
-} from "~/screens/emergencyMissingStackNav/EmergencyMissingFirstPage";
-import EmergencyMissingSecondPage, {
-  EmergencyMissingSecondGoBack,
-} from "~/screens/emergencyMissingStackNav/EmergencyMissingSecondPage";
+import MissingReportFirstPage, {
+  MissingReportFirstGoBack,
+} from "~/screens/missingReportStackNav/MissingReportFirstPage";
+import MissingReportSecondPage, {
+  MissingReportSecondGoBack,
+} from "~/screens/missingReportStackNav/MissingReportSecondPage";
 import { formActions } from "~/store/form";
 import {
-  EmergencyMissingStackNavParamList,
-  EmergencyMissingStackNavScreenRouteProp,
+  MissingReportStackNavParamList,
+  MissingReportStackNavScreenRouteProp,
 } from "~/types/navigator";
 
-const Stack = createStackNavigator<EmergencyMissingStackNavParamList>();
+const Stack = createStackNavigator<MissingReportStackNavParamList>();
 
-const EmergencyMissingStackNav = ({
+const MissingReportStackNav = ({
   route,
 }: {
-  route: EmergencyMissingStackNavScreenRouteProp;
+  route: MissingReportStackNavScreenRouteProp;
 }) => {
   const currentRouteName = getFocusedRouteNameFromRoute(route);
   const dispatch = useDispatch();
-  const [getMissingInfo, { data }] =
-    deviceApi.useLazyGetEmergencyMissingQuery();
-  const emergencyMissingFirstRef = useRef<EmergencyMissingFirstGoBack>(null);
-  const emergencyMissingSecondRef = useRef<EmergencyMissingSecondGoBack>(null);
+  const [getMissingInfo, { data }] = deviceApi.useLazyGetMissingReportQuery();
+  const missingReportFirstRef = useRef<MissingReportFirstGoBack>(null);
+  const missingReportSecondRef = useRef<MissingReportSecondGoBack>(null);
 
   const {
     params: { name, avatar, deviceID, isModify },
@@ -84,12 +83,12 @@ const EmergencyMissingStackNav = ({
     <>
       <CustomHeader
         title="실종신고"
-        currentPage={currentRouteName === "EmergencyMissingSecondPage" ? 2 : 1}
+        currentPage={currentRouteName === "MissingReportSecondPage" ? 2 : 1}
         onBackButtonPress={() => {
-          if (currentRouteName === "EmergencyMissingSecondPage") {
-            emergencyMissingSecondRef.current?.goBack();
+          if (currentRouteName === "MissingReportSecondPage") {
+            missingReportSecondRef.current?.goBack();
           } else {
-            emergencyMissingFirstRef.current?.goBack();
+            missingReportFirstRef.current?.goBack();
           }
         }}
         totalPage={2}
@@ -101,20 +100,20 @@ const EmergencyMissingStackNav = ({
             cardStyle: { opacity: current.progress },
           }),
         }}>
-        <Stack.Screen name="EmergencyMissingFirstPage">
+        <Stack.Screen name="MissingReportFirstPage">
           {props => (
-            <EmergencyMissingFirstPage
+            <MissingReportFirstPage
               name={name}
               avatar={avatar}
-              ref={emergencyMissingFirstRef}
+              ref={missingReportFirstRef}
               {...props}
             />
           )}
         </Stack.Screen>
-        <Stack.Screen name="EmergencyMissingSecondPage">
+        <Stack.Screen name="MissingReportSecondPage">
           {props => (
-            <EmergencyMissingSecondPage
-              ref={emergencyMissingSecondRef}
+            <MissingReportSecondPage
+              ref={missingReportSecondRef}
               deviceID={deviceID}
               isModify={isModify}
               {...props}
@@ -126,4 +125,4 @@ const EmergencyMissingStackNav = ({
   );
 };
 
-export default EmergencyMissingStackNav;
+export default MissingReportStackNav;

@@ -8,7 +8,7 @@ import {
   LoggedInNavScreenNavigationProp,
 } from "~/types/navigator";
 import UpdateProfile from "~/screens/loggedInNav/UpdateProfile";
-import EmergencyMissingStackNav from "./EmergencyMissingStackNav";
+import MissingReportStackNav from "./MissingReportStackNav";
 import BleRootStackNav from "./BleRootStackNav";
 import UpdateWiFi from "~/screens/loggedInNav/UpdateWiFi";
 import BatteryAlert from "~/screens/loggedInNav/BatteryAlert";
@@ -159,8 +159,8 @@ const LoggedInNav = ({
         }}
       />
       <Stack.Screen
-        name="EmergencyMissingStackNav"
-        component={EmergencyMissingStackNav}
+        name="MissingReportStackNav"
+        component={MissingReportStackNav}
       />
       <Stack.Screen
         name="DeleteAccountStackNav"

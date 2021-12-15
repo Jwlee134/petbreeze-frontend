@@ -23,7 +23,7 @@ const AvatarContainer = styled.View`
 
 const HomeBottomModal = ({ device, close }: Props) => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
-  const [trigger] = deviceApi.useDeleteEmergencyMissingMutation();
+  const [trigger] = deviceApi.useDeleteMissingReportMutation();
 
   const onDeviceSettingPress = () => {
     close();
@@ -37,7 +37,7 @@ const HomeBottomModal = ({ device, close }: Props) => {
   const onEmergencyMissingPress = () => {
     if (!device.is_missed) {
       close();
-      navigation.navigate("EmergencyMissingStackNav", {
+      navigation.navigate("MissingReportStackNav", {
         avatar: device.profile_image,
         name: device.name,
         deviceID: device.id,
@@ -66,7 +66,7 @@ const HomeBottomModal = ({ device, close }: Props) => {
         <IosBottomModalButton
           onPress={() => {
             close();
-            navigation.navigate("EmergencyMissingStackNav", {
+            navigation.navigate("MissingReportStackNav", {
               avatar: device.profile_image,
               name: device.name,
               deviceID: device.id,
