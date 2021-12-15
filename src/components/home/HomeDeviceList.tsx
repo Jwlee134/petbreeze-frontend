@@ -6,8 +6,7 @@ import React, {
   useState,
 } from "react";
 import HomeAvatar from "./HomeAvatar";
-import Modal from "react-native-modal";
-import useModal, { ModalPosition } from "~/hooks/useModal";
+import useModal from "~/hooks/useModal";
 import IosBottomModal from "../modal/IosBottomModal";
 import HomeBottomModal from "../modal/HomeBottomModal";
 import useDevice from "~/hooks/useDevice";
@@ -246,15 +245,9 @@ const HomeDeviceList = () => {
           ))}
         </ScrollView>
       )}
-      <Modal {...modalProps({ type: ModalPosition.Bottom })}>
-        {device ? (
-          <IosBottomModal close={close}>
-            <HomeBottomModal close={close} device={device} />
-          </IosBottomModal>
-        ) : (
-          <></>
-        )}
-      </Modal>
+      <IosBottomModal close={close} modalProps={modalProps}>
+        {device ? <HomeBottomModal close={close} device={device} /> : null}
+      </IosBottomModal>
     </>
   );
 };

@@ -7,12 +7,20 @@ import palette from "~/styles/palette";
 import Button from "../common/Button";
 import Divider from "../common/Divider";
 import MyText from "../common/MyText";
+import Modal, { ModalProps } from "react-native-modal";
+import { ModalPosition } from "~/hooks/useModal";
 
 interface Props {
   children: ReactNode;
   close: () => void;
   title?: string;
   closeButtonText?: string;
+  modalProps: ({
+    type,
+    ...props
+  }: Partial<ModalProps> & {
+    type: ModalPosition;
+  }) => Partial<ModalProps>;
 }
 
 const Container = styled.View`
@@ -36,43 +44,45 @@ const IosBottomModal = ({
   close,
   title,
   closeButtonText = "취소",
+  modalProps,
 }: Props) => {
   const { bottom } = useSafeAreaInsets();
   const { width } = useWindowDimensions();
 
   return (
-    <Container style={{ marginBottom: isIphoneX() ? bottom : 9 }}>
-      <MenuContainer>
-        {title && (
-          <>
-            <NameContainer>
-              <MyText
-                fontSize={14}
-                fontWeight="medium"
-                color="rgba(0, 0, 0, 0.3)">
-                {title}
-              </MyText>
-            </NameContainer>
-            <Divider />
-          </>
-        )}
-        {children}
-      </MenuContainer>
-      <Button
-        activeOpacity={1}
-        onPress={close}
-        style={{
-          width: width - 18,
-          marginTop: 9,
-          borderRadius: 12,
-          height: 50,
-        }}
-        backgroundColor="white"
-        fontWeight="medium"
-        fontColor={palette.blue_7b}>
-        {closeButtonText}
-      </Button>
-    </Container>
+    <Modal {...modalProps({ type: ModalPosition.Bottom })}>
+      <Container style={{ marginBottom: isIphoneX() ? bottom : 9 }}>
+        <MenuContainer>
+          {title && (
+            <>
+              <NameContainer>
+                <MyText
+                  fontSize={14}
+                  fontWeight="medium"
+                  color="rgba(0, 0, 0, 0.3)">
+                  {title}
+                </MyText>
+              </NameContainer>
+              <Divider />
+            </>
+          )}
+          {children}
+        </MenuContainer>
+        <Button
+          onPress={close}
+          style={{
+            width: width - 18,
+            marginTop: 9,
+            borderRadius: 12,
+            height: 50,
+          }}
+          backgroundColor="white"
+          fontWeight="medium"
+          fontColor={palette.blue_7b}>
+          {closeButtonText}
+        </Button>
+      </Container>
+    </Modal>
   );
 };
 

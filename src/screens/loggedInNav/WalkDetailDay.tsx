@@ -10,12 +10,11 @@ import Path from "~/assets/svg/walk/path.svg";
 import Divider from "~/components/common/Divider";
 import { formatWalkDistance, formatWalkTime } from "~/utils";
 import { noAvatar, noName } from "~/constants";
-import Modal from "react-native-modal";
 import IosBottomModal from "~/components/modal/IosBottomModal";
 import CustomHeader from "~/components/navigator/CustomHeader";
 import deviceApi from "~/api/device";
 import { useDispatch } from "react-redux";
-import useModal, { ModalPosition } from "~/hooks/useModal";
+import useModal from "~/hooks/useModal";
 import IosBottomModalButton from "~/components/modal/IosBottomModalButton";
 
 const Container = styled.View``;
@@ -164,13 +163,14 @@ const WalkDetailDay = ({
           </Fragment>
         )}
       />
-      <Modal {...modalProps({ type: ModalPosition.Bottom })}>
-        <IosBottomModal close={close} title="이 산책 기록을 삭제하시겠습니까?">
-          <IosBottomModalButton isLast onPress={deleteRecord}>
-            <MyText color={palette.red_f0}>삭제</MyText>
-          </IosBottomModalButton>
-        </IosBottomModal>
-      </Modal>
+      <IosBottomModal
+        modalProps={modalProps}
+        close={close}
+        title="이 산책 기록을 삭제하시겠습니까?">
+        <IosBottomModalButton isLast onPress={deleteRecord}>
+          <MyText color={palette.red_f0}>삭제</MyText>
+        </IosBottomModalButton>
+      </IosBottomModal>
     </>
   );
 };
