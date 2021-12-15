@@ -1,4 +1,4 @@
-import React, { memo, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { ScrollView, StyleProp, View, ViewStyle } from "react-native";
 import deviceApi, { Device } from "~/api/device";
 import useModal from "~/hooks/useModal";
@@ -13,6 +13,13 @@ import allSettled from "promise.allsettled";
 import { formatNickname } from "~/utils";
 import Toast from "react-native-toast-message";
 import { ToastType } from "~/styles/toast";
+import styled from "styled-components/native";
+import Switch from "./Switch";
+
+const RowContainer = styled.View`
+  flex-direction: row;
+  align-items: center;
+`;
 
 interface Props {
   style?: StyleProp<ViewStyle>;
@@ -32,74 +39,103 @@ const LiveModeButton = ({
   isStoppingWalk,
 }: Props) => {
   const { open, close, modalProps } = useModal();
-  const [selectedIDs, setSelectedIDs] = useState<number[]>([]);
+  const [draft, setDraft] = useState<Device[]>([]);
   const [isSelected, setIsSelected] = useState(false);
   const [update, { isLoading: isUpdatingSetting }] =
     deviceApi.useUpdateCollectionPeriodMutation();
 
   const isLoading = isUpdatingSetting || isStoppingWalk;
 
+  useEffect(() => {
+    if (deviceList.length) setDraft(deviceList);
+  }, [deviceList]);
+
   const resetAndClose = () => {
     close();
     setTimeout(() => {
       if (resume) resume();
-      setSelectedIDs([]);
       setIsSelected(false);
     }, centerModalOutTiming);
   };
 
-  const onRightButtonPress = async () => {
-    if (!isSelected) {
-      if (!selectedIDs.length) return;
-      setIsSelected(true);
-    } else {
-      if (!deviceList || isLoading) return;
-      const results = await allSettled(
-        selectedIDs.map(id => update({ deviceID: id, period: 1 })),
-      );
-      if (
-        results.some(
-          result =>
-            result.status === "rejected" && result.reason.status === 400,
+  const sendRequest = async (list: { id: number; value: number }[]) => {
+    const results = await allSettled(
+      list.map(item => update({ deviceID: item.id, period: item.value })),
+    );
+    if (
+      results.some(
+        result => result.status === "rejected" && result.reason.status === 400,
+      )
+    ) {
+      const rejectedNames = list
+        .filter((item, i) => results[i].status === "rejected")
+        .map(
+          item =>
+            deviceList[deviceList.findIndex(device => device.id === item.id)]
+              .name,
         )
-      ) {
-        const rejectedNames = selectedIDs
-          .filter((id, i) => results[i].status === "rejected")
-          .map(
-            id =>
-              deviceList[deviceList.findIndex(device => device.id === id)].name,
-          )
-          .join(", ");
-        Toast.show({
-          type: ToastType.Error,
-          text1: "최근에 다른 멤버가 설정을 변경했나요?",
-          text2: `${formatNickname(
-            rejectedNames,
-          )}를 라이브 모드로 변경할 수 없습니다.`,
-        });
+        .join(", ");
+      Toast.show({
+        type: ToastType.Error,
+        text1: "최근에 다른 멤버가 설정을 변경했나요?",
+        text2: `${formatNickname(rejectedNames)}의 모드를 변경할 수 없습니다.`,
+      });
+    } else {
+      Toast.show({
+        type: ToastType.Notification,
+        text1: "성공적으로 변경되었습니다.",
+      });
+      if (list.some(item => item.value === 1) && quitWalk) {
+        quitWalk(close);
       } else {
-        if (quitWalk) {
-          quitWalk(close);
-        } else {
-          resetAndClose();
-        }
+        resetAndClose();
       }
     }
   };
 
-  const onListItemPress = (device: Device) => {
-    setSelectedIDs(prev => {
-      const copy = [...prev];
-      if (copy.includes(device.id)) {
-        copy.splice(
-          copy.findIndex(id => id === device.id),
-          1,
-        );
-      } else {
-        copy.push(device.id);
-      }
-      return copy;
-    });
+  const onRightButtonPress = async () => {
+    if (isLoading) return;
+    const listToChange = draft
+      .filter(
+        (device, i) =>
+          device.collection_period !== deviceList[i].collection_period,
+      )
+      .map(device => ({ id: device.id, value: device.collection_period }));
+    if (isSelected) {
+      sendRequest(listToChange);
+      return;
+    }
+    if (!listToChange.length) {
+      resetAndClose();
+      return;
+    }
+    if (listToChange.some(item => item.value === 1)) {
+      setIsSelected(true);
+    } else {
+      sendRequest(listToChange);
+    }
+  };
+
+  const onListItemPress = (currentID: number) => {
+    setDraft(prev =>
+      prev.map(device => {
+        if (device.id === currentID) {
+          const originalPeriod =
+            deviceList[deviceList.findIndex(device => device.id === currentID)]
+              .collection_period;
+          const period = () => {
+            if (originalPeriod === 1) {
+              // 처음부터 활성화 상태였다면 비활성화할 때 300으로 설정
+              return device.collection_period === 1 ? 300 : 1;
+            }
+            // 처음부터 비활성화 상태였다면 활성화 후 비활성화할 때 기존의 주기로 설정
+            return device.collection_period === 1 ? originalPeriod : 1;
+          };
+          return { ...device, collection_period: period() };
+        }
+        return device;
+      }),
+    );
   };
 
   return (
@@ -134,38 +170,39 @@ const LiveModeButton = ({
             <MyText
               fontWeight="medium"
               style={{ marginTop: 25, marginBottom: 18 }}>
-              디바이스를 선택해주세요.
+              Live 모드 변경
             </MyText>
             <ScrollView style={{ width: "100%", maxHeight: 236 }}>
-              {deviceList?.map(device => (
+              {draft.map(device => (
                 <ListItem
                   key={device.id}
-                  onPress={() => onListItemPress(device)}
-                  style={{
-                    width: "100%",
-                    height: 67,
-                    backgroundColor: "transparent",
-                  }}
-                  isIconArrow={false}
-                  selected={selectedIDs.includes(device.id)}>
-                  <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <AnimatedCircularProgress
-                      avatar={device.profile_image}
-                      circleWidth={54}
-                      lineWidth={2}
-                      battery={device.battery}
+                  style={{ height: 67, backgroundColor: "transparent" }}
+                  showIcon={false}>
+                  <RowContainer
+                    style={{ justifyContent: "space-between", width: "100%" }}>
+                    <RowContainer>
+                      <AnimatedCircularProgress
+                        avatar={device.profile_image}
+                        circleWidth={54}
+                        lineWidth={2}
+                        battery={device.battery}
+                      />
+                      <MyText
+                        style={{ marginHorizontal: 13.5, maxWidth: 50 }}
+                        numberOfLines={1}
+                        fontWeight="medium">
+                        {device.name}
+                      </MyText>
+                      <MyText color={palette.blue_7b} fontSize={12}>
+                        {device.battery || 0}%
+                      </MyText>
+                    </RowContainer>
+                    <Switch
+                      isOn={device.collection_period === 1}
+                      onToggle={() => onListItemPress(device.id)}
+                      isLiveToggle
                     />
-                    <MyText
-                      style={{ marginHorizontal: 13.5 }}
-                      fontWeight="medium">
-                      {device.name.length > 4
-                        ? `${device.name.slice(0, 3)}...`
-                        : device.name}
-                    </MyText>
-                    <MyText color={palette.blue_7b} fontSize={12}>
-                      {device.battery || 0}%
-                    </MyText>
-                  </View>
+                  </RowContainer>
                 </ListItem>
               ))}
             </ScrollView>

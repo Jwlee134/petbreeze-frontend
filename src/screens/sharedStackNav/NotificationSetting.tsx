@@ -10,6 +10,7 @@ import * as SecureStore from "expo-secure-store";
 
 const Container = styled.View`
   padding-top: 35px;
+  padding-right: 32px;
 `;
 
 const Svg = styled.View`

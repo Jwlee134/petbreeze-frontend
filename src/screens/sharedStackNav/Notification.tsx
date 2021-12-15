@@ -48,7 +48,7 @@ const Notification = () => {
     if (appState === "active") refetch();
   }, [appState]);
 
-  if (!data || !deviceList)
+  if (!data)
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <LoadingIndicator size={80} />

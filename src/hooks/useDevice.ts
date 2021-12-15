@@ -2,7 +2,7 @@ import deviceApi from "~/api/device";
 
 const useDevice = () => {
   const { data } = deviceApi.useGetDeviceListQuery(undefined, {
-    pollingInterval: 60000,
+    pollingInterval: 300000,
   });
 
   return data || [];

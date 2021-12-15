@@ -40,12 +40,20 @@ const useUpdateDeviceSetting = (deviceID: number) => {
     safety_areas: AreaResponse[],
     collection_period = 300,
   ) => {
-    let putResult: PatchCollection | null = null;
+    let deviceSettingPutResult: PatchCollection | null = null;
+    let deviceListPutResult: PatchCollection | null = null;
     try {
-      putResult = store.dispatch(
+      deviceSettingPutResult = store.dispatch(
         deviceApi.util.updateQueryData("getDeviceSetting", deviceID, draft => {
           draft.collection_period = collection_period;
           draft.safety_areas = safety_areas;
+        }),
+      );
+      deviceListPutResult = store.dispatch(
+        deviceApi.util.updateQueryData("getDeviceList", undefined, draft => {
+          draft[
+            draft.findIndex(device => device.id === deviceID)
+          ].collection_period = collection_period;
         }),
       );
       await updateSetting({
@@ -53,7 +61,8 @@ const useUpdateDeviceSetting = (deviceID: number) => {
         body: { safety_areas: formatArea(safety_areas), collection_period },
       }).unwrap();
     } catch {
-      putResult?.undo();
+      deviceSettingPutResult?.undo();
+      deviceListPutResult?.undo();
       return;
     }
     if (thumbnails(safety_areas).length) {

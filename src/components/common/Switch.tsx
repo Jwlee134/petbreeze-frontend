@@ -13,29 +13,29 @@ import palette from "~/styles/palette";
 interface Props {
   isOn: boolean;
   onToggle: () => void;
+  isLiveToggle?: boolean;
 }
 
 const Wrap = styled.View`
   flex-direction: row;
   align-items: center;
-  margin-right: 32px;
 `;
 
-const ToggleContainer = styled(Animated.View)`
-  width: 51px;
-  height: 23px;
-  border-radius: 25.5px;
+const ToggleContainer = styled(Animated.View)<{ isLiveToggle: boolean }>`
+  width: ${({ isLiveToggle }) => (isLiveToggle ? 44 : 52)}px;
+  height: 24px;
+  border-radius: 100px;
   justify-content: center;
 `;
 
-const ToggleWheel = styled(Animated.View)`
+const ToggleWheel = styled(Animated.View)<{ isLiveToggle: boolean }>`
   width: 16px;
-  height: 15px;
+  height: 16px;
   border-radius: 8px;
   background-color: white;
 `;
 
-const Switch = ({ isOn, onToggle }: Props) => {
+const Switch = ({ isOn, onToggle, isLiveToggle = false }: Props) => {
   const value = useDerivedValue(() => (isOn ? withTiming(1) : withTiming(0)));
 
   const backgroundColor = useAnimatedStyle(() => ({
@@ -47,14 +47,22 @@ const Switch = ({ isOn, onToggle }: Props) => {
   }));
 
   const translateX = useAnimatedStyle(() => ({
-    transform: [{ translateX: interpolate(value.value, [0, 1], [5, 30]) }],
+    transform: [
+      {
+        translateX: interpolate(
+          value.value,
+          [0, 1],
+          [4, isLiveToggle ? 24 : 32],
+        ),
+      },
+    ],
   }));
 
   return (
     <Wrap>
       <Pressable onPress={onToggle}>
-        <ToggleContainer style={[backgroundColor]}>
-          <ToggleWheel style={[translateX]} />
+        <ToggleContainer isLiveToggle={isLiveToggle} style={[backgroundColor]}>
+          <ToggleWheel isLiveToggle={isLiveToggle} style={[translateX]} />
         </ToggleContainer>
       </Pressable>
     </Wrap>

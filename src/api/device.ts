@@ -559,8 +559,31 @@ const deviceApi = api.injectEndpoints({
       query: ({ deviceID, period }) => ({
         url: `/device/${deviceID}/setting/collection-period/`,
         method: "PUT",
-        body: { "collection-period": period },
+        body: { collection_period: period },
       }),
+      onQueryStarted: async (
+        { deviceID, period },
+        { dispatch, queryFulfilled },
+      ) => {
+        const deviceListPutResult = dispatch(
+          deviceApi.util.updateQueryData("getDeviceList", undefined, draft => {
+            draft[
+              draft.findIndex(device => device.id === deviceID)
+            ].collection_period = period;
+          }),
+        );
+        const deviceSettingPutResult = dispatch(
+          deviceApi.util.updateQueryData(
+            "getDeviceSetting",
+            deviceID,
+            draft => {
+              draft.collection_period = period;
+            },
+          ),
+        );
+        queryFulfilled.catch(deviceListPutResult.undo);
+        queryFulfilled.catch(deviceSettingPutResult.undo);
+      },
     }),
 
     updateSafetyZoneThumbnail: builder.mutation<
