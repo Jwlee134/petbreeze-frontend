@@ -1,4 +1,5 @@
 import React from "react";
+import { StyleProp, ViewStyle } from "react-native";
 import styled from "styled-components/native";
 import Arrow from "~/assets/svg/arrow/arrow-left.svg";
 
@@ -12,16 +13,17 @@ const Button = styled.TouchableOpacity`
 interface Props {
   onBackButtonPress?: () => void;
   navigation?: any;
+  style?: StyleProp<ViewStyle>;
 }
 
-const BackButton = ({ onBackButtonPress, navigation }: Props) => {
+const BackButton = ({ onBackButtonPress, navigation, style }: Props) => {
   const onPress = () => {
     if (onBackButtonPress) onBackButtonPress();
     if (navigation) navigation.goBack();
   };
 
   return (
-    <Button onPress={onPress}>
+    <Button onPress={onPress} style={style}>
       <Arrow />
     </Button>
   );

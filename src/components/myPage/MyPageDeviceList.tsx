@@ -7,7 +7,7 @@ import { Device } from "~/api/device";
 import { noAvatar } from "~/constants";
 import { ScrollView } from "react-native";
 
-const AvatarContainer = styled.Pressable`
+const AvatarContainer = styled.TouchableOpacity`
   align-items: center;
   justify-content: center;
   padding-top: 10px;

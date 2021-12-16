@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import { useWindowDimensions } from "react-native";
+import { useWindowDimensions, View } from "react-native";
 import { isIphoneX } from "react-native-iphone-x-helper";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import styled from "styled-components/native";
@@ -39,6 +39,14 @@ const NameContainer = styled.View`
   align-items: center;
 `;
 
+const CloseButtonContainer = styled.View`
+  margin-top: 9px;
+  height: 50px;
+  background-color: white;
+  border-radius: 12px;
+  overflow: hidden;
+`;
+
 const IosBottomModal = ({
   children,
   close,
@@ -68,19 +76,16 @@ const IosBottomModal = ({
           )}
           {children}
         </MenuContainer>
-        <Button
-          onPress={close}
-          style={{
-            width: width - 18,
-            marginTop: 9,
-            borderRadius: 12,
-            height: 50,
-          }}
-          backgroundColor="white"
-          fontWeight="medium"
-          fontColor={palette.blue_7b}>
-          {closeButtonText}
-        </Button>
+        <CloseButtonContainer>
+          <Button
+            onPress={close}
+            style={{ width: width - 18 }}
+            backgroundColor="white"
+            fontWeight="medium"
+            fontColor={palette.blue_7b}>
+            {closeButtonText}
+          </Button>
+        </CloseButtonContainer>
       </Container>
     </Modal>
   );

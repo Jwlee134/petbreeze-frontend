@@ -1,5 +1,5 @@
 import React, { ReactNode, useEffect, useRef, useState } from "react";
-import { PressableProps, useWindowDimensions } from "react-native";
+import { TouchableOpacityProps, useWindowDimensions } from "react-native";
 import Animated, {
   Easing,
   interpolateColor,
@@ -14,7 +14,7 @@ import palette from "~/styles/palette";
 import LoadingIndicator from "../lottie/LoadingIndicator";
 import MyText, { FontWeight } from "./MyText";
 
-interface Props extends PressableProps {
+interface Props extends TouchableOpacityProps {
   children?: ReactNode;
   RightIcon?: () => JSX.Element;
   isLoading?: boolean;
@@ -26,7 +26,7 @@ interface Props extends PressableProps {
   delay?: number;
 }
 
-const SButton = styled.Pressable<{ width: number }>`
+const SButton = styled.TouchableOpacity<{ width: number }>`
   ${({ width }) => css`
     width: ${width - 32}px;
     height: 50.5px;

@@ -18,7 +18,7 @@ interface Props extends PressableProps {
   fontColor?: string;
 }
 
-const Button = styled.Pressable`
+const Button = styled.TouchableOpacity`
   height: 39px;
   margin-bottom: 20px;
   flex-grow: 1;
