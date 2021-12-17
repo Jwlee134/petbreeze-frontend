@@ -45,28 +45,38 @@ const SocialLogin = ({ name }: { name: string }) => {
   const signUp = async (token: string, name: string, id?: string) => {
     try {
       const firebaseToken = await messaging().getToken();
+      let statusCode = 0;
       if (id) {
         setFbLoading(true);
-        const data = await postFacebookUser({
+        const { status, data } = await postFacebookUser({
           accessToken: token,
           firebaseToken,
           userID: id,
         }).unwrap();
+        statusCode = status;
         console.log(data.key, firebaseToken, data.user_id);
         await saveTokens(data.key, firebaseToken, data.user_id);
       } else {
         setKakaoLoading(true);
-        const { key, user_id } = await postKakaoUser({
+        const {
+          status,
+          data: { key, user_id },
+        } = await postKakaoUser({
           accessToken: token,
           firebaseToken,
         }).unwrap();
+        statusCode = status;
         console.log(key, firebaseToken, user_id);
         await saveTokens(key, firebaseToken, user_id);
       }
       await updateNickname(name).unwrap();
       if (fbLoading) setFbLoading(false);
       if (kakaoLoading) setKakaoLoading(false);
-      navigation.replace("LoggedInNav", { initialRouteName: "Policy" });
+      if (statusCode === 201) {
+        navigation.replace("LoggedInNav", { initialRouteName: "Policy" });
+      } else {
+        navigation.replace("LoggedInNav");
+      }
     } catch (error) {
       if (fbLoading) setFbLoading(false);
       if (kakaoLoading) setKakaoLoading(false);

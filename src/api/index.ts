@@ -4,6 +4,8 @@ import { isRejectedWithValue, Middleware } from "@reduxjs/toolkit";
 import { secureItems } from "~/constants";
 import Toast from "react-native-toast-message";
 import { ToastType } from "~/styles/toast";
+import { store } from "~/store";
+import { commonActions } from "~/store/common";
 
 export const baseUrl = "https://dev.petbreeze.co/api";
 
@@ -34,10 +36,19 @@ export const rtkQueryErrorLogger: Middleware = () => next => action => {
     const detail = action.payload?.data?.detail;
     const code = action.payload?.data?.error_code;
 
-    if (originalStatus === 500 || originalStatus === 502) {
+    if (originalStatus?.toString()[0] === "5") {
       Toast.show({
         type: ToastType.Error,
         text1: "서버에 연결할 수 없습니다.",
+      });
+    }
+
+    if (code === "authentication_failed") {
+      Toast.show({
+        type: ToastType.Error,
+        text1: "세션이 만료되었습니다.",
+        text2: "클릭하여 다시 로그인해주세요.",
+        onPress: () => store.dispatch(commonActions.setIsTokenInvalid(true)),
       });
     }
 
@@ -60,7 +71,7 @@ export const rtkQueryErrorLogger: Middleware = () => next => action => {
     if (code === "permission_denied") {
       Toast.show({
         type: ToastType.Error,
-        text1: "디바이스의 멤버가 아닙니다.",
+        text1: "요청을 수행할 권한이 없습니다.",
       });
     }
     if (code === "D003") {

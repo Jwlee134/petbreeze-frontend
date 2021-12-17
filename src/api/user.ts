@@ -9,8 +9,8 @@ export enum NotificationCode {
 }
 
 interface LoginRes {
-  user_id: number;
-  key: string;
+  status: number;
+  data: { user_id: number; key: string };
 }
 
 interface LoginArgs {
@@ -45,6 +45,10 @@ const userApi = api.injectEndpoints({
           "firebase-registration-token": firebaseToken,
           uid: userID,
         },
+        responseHandler: async res => {
+          const data = await res.json();
+          return { status: res.status, data };
+        },
       }),
     }),
 
@@ -55,6 +59,10 @@ const userApi = api.injectEndpoints({
         headers: {
           "access-token": accessToken,
           "firebase-registration-token": firebaseToken,
+        },
+        responseHandler: async res => {
+          const data = await res.json();
+          return { status: res.status, data };
         },
       }),
     }),
