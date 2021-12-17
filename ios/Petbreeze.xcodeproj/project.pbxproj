@@ -17,6 +17,7 @@
 		8405B7922668C7C200BEE203 /* SwiftBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8405B7912668C7C200BEE203 /* SwiftBridge.swift */; };
 		8408C036BBEF720BBDB6E105 /* libPods-Petbreeze.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F50C09CE2B924FCC7A4B2FE2 /* libPods-Petbreeze.a */; };
 		84E1A1C026BD102900C50525 /* Fonts in Resources */ = {isa = PBXBuildFile; fileRef = 84E1A1BF26BD102900C50525 /* Fonts */; };
+		E86AE973276B4804004AFA49 /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E86AE972276B4804004AFA49 /* NetworkExtension.framework */; };
 		E8A9CFA726CE0C7800526CD4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E8A9CFA626CE0C7800526CD4 /* GoogleService-Info.plist */; };
 		F016418510F2E3103A3BCE48 /* libPods-Petbreeze-PetbreezeTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8EB3D11E76E5AA33B5CD828E /* libPods-Petbreeze-PetbreezeTests.a */; };
 /* End PBXBuildFile section */
@@ -54,6 +55,7 @@
 		86C4457819D856F3646BA70B /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-Petbreeze-PetbreezeTests/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		8EB3D11E76E5AA33B5CD828E /* libPods-Petbreeze-PetbreezeTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Petbreeze-PetbreezeTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E79577DFDC5E1FD49BDDFB89 /* Pods-Petbreeze.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Petbreeze.debug.xcconfig"; path = "Target Support Files/Pods-Petbreeze/Pods-Petbreeze.debug.xcconfig"; sourceTree = "<group>"; };
+		E86AE972276B4804004AFA49 /* NetworkExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NetworkExtension.framework; path = System/Library/Frameworks/NetworkExtension.framework; sourceTree = SDKROOT; };
 		E8A9CFA526CE006700526CD4 /* Petbreeze.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Petbreeze.entitlements; path = Petbreeze/Petbreeze.entitlements; sourceTree = "<group>"; };
 		E8A9CFA626CE0C7800526CD4 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
@@ -74,6 +76,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8408C036BBEF720BBDB6E105 /* libPods-Petbreeze.a in Frameworks */,
+				E86AE973276B4804004AFA49 /* NetworkExtension.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -116,6 +119,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E86AE972276B4804004AFA49 /* NetworkExtension.framework */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				F50C09CE2B924FCC7A4B2FE2 /* libPods-Petbreeze.a */,
 				8EB3D11E76E5AA33B5CD828E /* libPods-Petbreeze-PetbreezeTests.a */,
@@ -556,7 +560,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODEPUSH_KEY = N04dY4yvPDzdyLCP7CQKjJZEOzA5qVtnEerOZ;
 				CODE_SIGN_ENTITLEMENTS = Petbreeze/Petbreeze.entitlements;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = 7AS4P2AF79;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Petbreeze/Info.plist;
@@ -564,7 +568,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.3.0;
+				MARKETING_VERSION = 1.4.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -587,14 +591,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Petbreeze/Petbreeze.entitlements;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = 7AS4P2AF79;
 				INFOPLIST_FILE = Petbreeze/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.3.0;
+				MARKETING_VERSION = 1.4.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -800,14 +804,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Petbreeze/Petbreeze.entitlements;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = 7AS4P2AF79;
 				INFOPLIST_FILE = Petbreeze/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.3.0;
+				MARKETING_VERSION = 1.4.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
