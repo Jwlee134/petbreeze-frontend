@@ -31,14 +31,14 @@ const AreaSearchResultItem = ({
     dispatch(storageActions.setSafetyZoneSearchHistory(item));
     setTimeout(() => {
       dispatch(
-        deviceSettingActions.setArea({
-          isSearchMode: false,
-          animateCamera: true,
+        deviceSettingActions.setAreaDraft({
+          coord: { latitude: item.latitude, longitude: item.longitude },
         }),
       );
       dispatch(
-        deviceSettingActions.setAreaDraft({
-          coord: { latitude: item.latitude, longitude: item.longitude },
+        deviceSettingActions.setArea({
+          isSearchMode: false,
+          animateCamera: true,
         }),
       );
     }, 200);
