@@ -53,7 +53,7 @@
     "react-native-nmap": "^0.0.66",
     "react-native-pager-view": "^5.4.9",
     "react-native-permissions": "^3.2.0",
-    "react-native-reanimated": "^2.3.0",
+    "react-native-reanimated": "^2.3.1",
     "react-native-safe-area-context": "^3.3.2",
     "react-native-screens": "^3.10.1",
     "react-native-shadow-2": "^5.1.2",
@@ -62,7 +62,7 @@
     "react-native-tab-view": "^3.1.1",
     "react-native-toast-message": "^2.1.0",
     "react-native-view-shot": "^3.1.2",
-    "react-native-wifi-reborn": "^4.4.1",
+    "react-native-wifi-reborn": "^4.5.0",
     "react-redux": "^7.2.6",
     "redux-persist": "^6.0.0",
     "styled-components": "^5.3.3"
