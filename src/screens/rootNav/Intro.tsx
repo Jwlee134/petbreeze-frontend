@@ -1,5 +1,11 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
-import { Animated, FlatList, useWindowDimensions, View } from "react-native";
+import React, { useContext, useRef, useState } from "react";
+import { FlatList, useWindowDimensions, View } from "react-native";
+import {
+  interpolateColor,
+  useAnimatedStyle,
+  useDerivedValue,
+  withTiming,
+} from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useDispatch } from "react-redux";
 import styled from "styled-components/native";
@@ -33,20 +39,17 @@ const Intro = ({ navigation }: { navigation: IntroScreenNavigationProp }) => {
   const { top, bottom } = useSafeAreaInsets();
   const { rpHeight } = useContext(DimensionsContext);
   const [currentPage, setCurrentPage] = useState(0);
-  const value = useRef(new Animated.Value(0)).current;
+  const value = useDerivedValue(() =>
+    withTiming(currentPage, { duration: 200 }),
+  );
 
-  const color = value.interpolate({
-    inputRange: [0, 1, 2],
-    outputRange: ["white", "rgba(0, 0, 0, 0.5)", "white"],
-  });
-
-  useEffect(() => {
-    Animated.timing(value, {
-      toValue: currentPage,
-      useNativeDriver: false,
-      duration: 200,
-    }).start();
-  }, [currentPage]);
+  const color = useAnimatedStyle(() => ({
+    color: interpolateColor(
+      value.value,
+      [0, 1, 2],
+      ["white", "rgba(0, 0, 0, 0.5)", "white"],
+    ),
+  }));
 
   const flatListRef = useRef<FlatList>(null);
   const { width } = useWindowDimensions();
@@ -55,20 +58,12 @@ const Intro = ({ navigation }: { navigation: IntroScreenNavigationProp }) => {
   return (
     <>
       <SkipButton
-        style={{
-          marginTop: 18 + top,
-          marginRight: 20,
-          marginLeft: "auto",
-        }}
+        style={{ marginTop: 18 + top, marginRight: 20, marginLeft: "auto" }}
         onPress={() => {
-          dispatch(
-            storageActions.setInit({
-              isIntroPassed: true,
-            }),
-          );
+          dispatch(storageActions.setInit({ isIntroPassed: true }));
           navigation.replace("Start");
         }}>
-        <MyText fontWeight="medium" fontSize={14} style={{ color }}>
+        <MyText fontWeight="medium" fontSize={14} animatedStyle={color}>
           건너뛰기
         </MyText>
       </SkipButton>
@@ -97,10 +92,7 @@ const Intro = ({ navigation }: { navigation: IntroScreenNavigationProp }) => {
         scrollEventThrottle={16}
         scrollEnabled
       />
-      <PageIndicator
-        style={{
-          marginBottom: rpHeight(54) + bottom,
-        }}>
+      <PageIndicator style={{ marginBottom: rpHeight(54) + bottom }}>
         <PageIndicatorCircle isFocused={currentPage === 0} />
         <PageIndicatorCircle isFocused={currentPage === 1} />
         <PageIndicatorCircle isFocused={currentPage === 2} />
