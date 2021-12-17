@@ -77,11 +77,6 @@
 	<dict>
 		<key>NSExceptionDomains</key>
 		<dict>
-			<key>3.36.100.60</key>
-			<dict>
-				<key>NSExceptionAllowsInsecureHTTPLoads</key>
-				<true/>
-			</dict>
 			<key>localhost</key>
 			<dict>
 				<key>NSExceptionAllowsInsecureHTTPLoads</key>

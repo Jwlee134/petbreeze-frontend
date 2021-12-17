@@ -15,19 +15,17 @@ import { deviceSettingActions } from "~/store/deviceSetting";
 import { WiFiFormScreenNavigationProp } from "~/types/navigator";
 import { useAppSelector } from "~/store";
 import useModal from "~/hooks/useModal";
-import WifiManager from "react-native-wifi-reborn";
 import {
   centerModalOutTiming,
   headerHeight,
   minSpace,
-  textLoadingIndicatorSize,
 } from "~/styles/constants";
 import styled from "styled-components/native";
 import palette from "~/styles/palette";
 import MyText from "~/components/common/MyText";
 import { DimensionsContext } from "~/context/DimensionsContext";
 import useUpdateDeviceSetting from "~/hooks/useUpdateDeviceSetting";
-import LoadingIndicator from "~/components/lottie/LoadingIndicator";
+import useWiFi from "~/hooks/useWiFi";
 
 const TopContainer = styled.View`
   padding: 0 43px;
@@ -48,6 +46,8 @@ const WiFiForm = forwardRef<
     navigation: WiFiFormScreenNavigationProp;
   }
 >(({ navigation }, ref) => {
+  const { getCurrentWiFiSSID, connectToProtectedSSID, isConnecting } =
+    useWiFi();
   const dispatch = useDispatch();
   const { open, close, modalProps } = useModal();
   const { ssid, password } = useAppSelector(
@@ -65,11 +65,7 @@ const WiFiForm = forwardRef<
   }));
 
   useEffect(() => {
-    if (!ssid) {
-      WifiManager.getCurrentWifiSSID().then(ssid => {
-        dispatch(deviceSettingActions.setWiFiDraft({ ssid }));
-      });
-    }
+    if (!ssid) getCurrentWiFiSSID();
   }, []);
 
   const onChangeSsid = (text: string) =>
@@ -79,9 +75,13 @@ const WiFiForm = forwardRef<
     dispatch(deviceSettingActions.setWiFiDraft({ password: text }));
 
   const onNextButtonPress = async () => {
-    /* 와이파이 연결 테스트 */
-    await sendRequest(safety_areas);
-    navigation.navigate("RegisterProfileFirst");
+    try {
+      await connectToProtectedSSID(ssid, password);
+      await sendRequest(safety_areas);
+      navigation.navigate("RegisterProfileFirst");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const onSkip = async () => {
@@ -117,20 +117,17 @@ const WiFiForm = forwardRef<
               •
             </MyText>
             <MyText fontWeight="light" color="rgba(0, 0, 0, 0.5)" fontSize={14}>
-              2G WiFi만 등록 가능합니다.
+              5G WiFi는 기기에서 인식하지 못합니다.
             </MyText>
           </RowContainer>
         </TopContainer>
         <View style={{ marginTop: minSpace }}>
           <Button
+            isLoading={isConnecting || isLoading}
             disabled={!ssid || (!!password && password.length < 8)}
             onPress={onNextButtonPress}
             style={{ marginBottom: 12 }}>
-            {isLoading ? (
-              <LoadingIndicator size={textLoadingIndicatorSize} />
-            ) : (
-              "확인"
-            )}
+            확인
           </Button>
           <Button
             onPress={open}
@@ -148,13 +145,8 @@ const WiFiForm = forwardRef<
         title="잠깐!"
         titleFontWeight="medium"
         description={`와이파이 미등록 시,\n배터리 소모가 크게 증가할 수 있습니다.`}
-        rightButtonText={
-          isLoading ? (
-            <LoadingIndicator size={textLoadingIndicatorSize} />
-          ) : (
-            "건너뛰기"
-          )
-        }
+        rightButtonText="건너뛰기"
+        isLoading={isLoading}
       />
     </>
   );

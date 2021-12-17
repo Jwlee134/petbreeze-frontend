@@ -8,6 +8,7 @@ import Input from "~/components/common/Input";
 import InputTitle from "~/components/common/InputTitle";
 import MyText from "~/components/common/MyText";
 import CustomHeader from "~/components/navigator/CustomHeader";
+import useWiFi from "~/hooks/useWiFi";
 import { useAppSelector } from "~/store";
 import { deviceSettingActions } from "~/store/deviceSetting";
 import { minSpace } from "~/styles/constants";
@@ -25,17 +26,25 @@ const UpdateWiFi = ({
     params: { id },
   },
 }: UpdateWiFiScreenProps) => {
+  const { getCurrentWiFiSSID, connectToProtectedSSID, isConnecting } =
+    useWiFi();
   const { ssid, password } = useAppSelector(
     state => state.deviceSetting.draft.wifi,
   );
   const dispatch = useDispatch();
 
-  const onButtonPress = () => {
-    dispatch(deviceSettingActions.updateWiFiResult(id));
-    navigation.goBack();
+  const onButtonPress = async () => {
+    try {
+      await connectToProtectedSSID(ssid, password);
+      dispatch(deviceSettingActions.updateWiFiResult(id));
+      navigation.goBack();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
+    if (!ssid) getCurrentWiFiSSID();
     return () => {
       dispatch(deviceSettingActions.setWiFiDraft(null));
     };
@@ -74,11 +83,12 @@ const UpdateWiFi = ({
               •
             </MyText>
             <MyText fontWeight="light" color="rgba(0, 0, 0, 0.5)" fontSize={14}>
-              2G WiFi만 등록 가능합니다.
+              5G WiFi는 기기에서 인식하지 못합니다.
             </MyText>
           </RowContainer>
         </View>
         <Button
+          isLoading={isConnecting}
           onPress={onButtonPress}
           disabled={!ssid || (!!password && password.length < 8)}
           useCommonMarginBottom>
