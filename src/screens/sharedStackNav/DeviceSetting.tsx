@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { View, ScrollView } from "react-native";
+import { View } from "react-native";
 import MyText from "~/components/common/MyText";
 import PeriodSection from "~/components/deviceSetting/PeriodSection";
 import AreaSection from "~/components/deviceSetting/AreaSection";
@@ -18,6 +18,7 @@ import { textLoadingIndicatorSize } from "~/styles/constants";
 import useUpdateDeviceSetting from "~/hooks/useUpdateDeviceSetting";
 import Toast from "react-native-toast-message";
 import { ToastType } from "~/styles/toast";
+import { ScrollView } from "react-native-gesture-handler";
 
 const DeviceSetting = ({
   navigation,
@@ -27,9 +28,10 @@ const DeviceSetting = ({
 }: DeviceSettingScreenProps) => {
   const dispatch = useDispatch();
 
-  const { data: settings } = deviceApi.useGetDeviceSettingQuery(deviceID, {
-    refetchOnMountOrArgChange: true,
-  });
+  const { data: settings, isLoading: getLoading } =
+    deviceApi.useGetDeviceSettingQuery(deviceID, {
+      refetchOnMountOrArgChange: true,
+    });
   const { sendRequest, isLoading, isSuccess } =
     useUpdateDeviceSetting(deviceID);
 
@@ -109,19 +111,26 @@ const DeviceSetting = ({
         navigation={navigation}
         title="기기설정"
       />
-      <ScrollView contentContainerStyle={{ flexGrow: 1, paddingBottom: 16 }}>
-        <ProfileSection deviceID={deviceID} avatar={avatar} name={name} />
-        <Divider isHairline={false} />
-        <PeriodSection />
-        <View style={{ paddingHorizontal: 16, paddingBottom: 10 }}>
-          <Divider />
+      {getLoading ? (
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+          <LoadingIndicator size={80} />
         </View>
-        <AreaSection />
-        <View style={{ paddingHorizontal: 16, paddingBottom: 10 }}>
-          <Divider />
-        </View>
-        <FamilySection deviceID={deviceID} />
-      </ScrollView>
+      ) : (
+        <ScrollView contentContainerStyle={{ flexGrow: 1, paddingBottom: 16 }}>
+          <ProfileSection deviceID={deviceID} avatar={avatar} name={name} />
+          <Divider isHairline={false} />
+          <PeriodSection />
+          <View style={{ paddingHorizontal: 16, paddingBottom: 10 }}>
+            <Divider />
+          </View>
+          <AreaSection />
+          <View style={{ paddingHorizontal: 16, paddingBottom: 10 }}>
+            <Divider />
+          </View>
+          <FamilySection deviceID={deviceID} />
+        </ScrollView>
+      )}
     </>
   );
 };
