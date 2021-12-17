@@ -32,6 +32,7 @@ const useWiFi = () => {
           type: ToastType.Notification,
           text1: "WiFi 검증이 완료되었습니다.",
         });
+        resolve();
       })
       .catch(reject)
       .finally(() => {
