@@ -25,6 +25,13 @@ interface BatteryAlertParams {
   avatarUrl: string;
 }
 
+interface MissingReportStackNavParams {
+  deviceID: number;
+  name: string;
+  avatar: string;
+  isModify?: boolean;
+}
+
 export type RootNavParamList = {
   FirmwareUpdate: undefined;
   Start: undefined;
@@ -79,21 +86,15 @@ export type LoggedInNavParamList = {
         initialBleWithoutHeaderStackNavRouteName?: keyof BleWithoutHeaderStackNavParamList;
       }
     | undefined;
+  MissingReportInfo: { deviceID: number; name: string; avatar: string };
   WalkMap: undefined;
   UpdateArea: undefined;
-  UpdateProfile: {
-    deviceID: number;
-  };
-  MissingReportStackNav: {
-    deviceID: number;
-    name: string;
-    avatar: string;
-    isModify?: boolean;
-  };
+  UpdateProfile: { deviceID: number };
+  MissingReportStackNav: MissingReportStackNavParams;
   DeleteAccountStackNav: undefined;
   UpdateWiFi: { id: number };
   BatteryAlert: BatteryAlertParams;
-  Success: { text: string; key?: string };
+  Success: { text: string; key?: string } & MissingReportStackNavParams;
   WalkDetailDay: WalkDetailDayParams;
   Welcome: undefined;
 };
@@ -132,6 +133,10 @@ export type UpdateAreaScreenNavigationProp = CompositeNavigationProp<
 export type WelcomeScreenNavigationProp = CompositeNavigationProp<
   StackNavigationProp<LoggedInNavParamList, "Welcome">,
   StackNavigationProp<RootNavParamList>
+>;
+export type MissingReportInfoScreenProps = CompositeScreenProps<
+  StackScreenProps<LoggedInNavParamList, "MissingReportInfo">,
+  StackScreenProps<RootNavParamList>
 >;
 export type UpdateProfileScreenProps = CompositeScreenProps<
   StackScreenProps<LoggedInNavParamList, "UpdateProfile">,
@@ -311,9 +316,7 @@ export type RegisterProfileSecondScreenNavigationProp = CompositeNavigationProp<
 >;
 
 export type BleWithoutHeaderStackNavParamList = {
-  BleLoading: {
-    loadingText: string;
-  };
+  BleLoading: { loadingText: string };
   Scanning: undefined;
   Fail: undefined;
   FirmwareProgress: undefined;
@@ -398,16 +401,8 @@ export type SharedStackNavParamList = {
   Notification: undefined;
   MyPage: undefined;
   NotificationSetting: undefined;
-  WalkDetailMonth: {
-    deviceID: number;
-    avatarUrl: string;
-    name: string;
-  };
-  DeviceSetting: {
-    deviceID: number;
-    avatar: string;
-    name: string;
-  };
+  WalkDetailMonth: { deviceID: number; avatarUrl: string; name: string };
+  DeviceSetting: { deviceID: number; avatar: string; name: string };
   DeviceManagement: undefined;
   UpdateNickname: undefined;
 };

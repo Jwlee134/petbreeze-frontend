@@ -10,8 +10,7 @@ import { useAppSelector } from "~/store";
 import Plus from "~/assets/svg/plus/plus-blue.svg";
 import { TouchableOpacity, useWindowDimensions, View } from "react-native";
 import imageHandler from "~/utils/imageHandler";
-import Modal from "react-native-modal";
-import useModal, { ModalPosition } from "~/hooks/useModal";
+import useModal from "~/hooks/useModal";
 import IosBottomModal from "~/components/modal/IosBottomModal";
 import Divider from "~/components/common/Divider";
 import palette from "~/styles/palette";
@@ -49,10 +48,12 @@ interface Props {
   navigation: MissingReportSecondPageScreenNavigationProp;
   deviceID: number;
   isModify: boolean | undefined;
+  name: string;
+  avatar: string;
 }
 
 const MissingReportSecondPage = forwardRef<MissingReportSecondGoBack, Props>(
-  ({ navigation, deviceID, isModify }, ref) => {
+  ({ navigation, deviceID, isModify, name, avatar }, ref) => {
     useImperativeHandle(ref, () => ({
       goBack: () => navigation.goBack(),
     }));
@@ -120,7 +121,14 @@ const MissingReportSecondPage = forwardRef<MissingReportSecondGoBack, Props>(
         }
       }
 
-      navigation.replace("Success", { text: "업로드 되었어요!", key });
+      navigation.replace("Success", {
+        text: "업로드 되었어요!",
+        key,
+        avatar,
+        deviceID,
+        name,
+        isModify,
+      });
     };
 
     const onMessageChange = (text: string) => {
@@ -208,17 +216,15 @@ const MissingReportSecondPage = forwardRef<MissingReportSecondGoBack, Props>(
             확인
           </Button>
         </KeyboardAwareScrollContainer>
-        <Modal {...modalProps({ type: ModalPosition.Bottom })}>
-          <IosBottomModal close={close}>
-            <IosBottomModalButton onPress={onPhotoChange}>
-              <MyText color={palette.blue_7b}>변경</MyText>
-            </IosBottomModalButton>
-            <Divider />
-            <IosBottomModalButton isLast onPress={onPhotoDelete}>
-              <MyText color={palette.red_f0}>삭제</MyText>
-            </IosBottomModalButton>
-          </IosBottomModal>
-        </Modal>
+        <IosBottomModal modalProps={modalProps} close={close}>
+          <IosBottomModalButton onPress={onPhotoChange}>
+            <MyText color={palette.blue_7b}>변경</MyText>
+          </IosBottomModalButton>
+          <Divider />
+          <IosBottomModalButton isLast onPress={onPhotoDelete}>
+            <MyText color={palette.red_f0}>삭제</MyText>
+          </IosBottomModalButton>
+        </IosBottomModal>
       </>
     );
   },

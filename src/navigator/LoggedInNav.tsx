@@ -32,6 +32,7 @@ import { useDispatch } from "react-redux";
 import { commonActions } from "~/store/common";
 import { useAppSelector } from "~/store";
 import { createStackNavigator } from "@react-navigation/stack";
+import MissingReportInfo from "~/screens/loggedInNav/MissingReportInfo";
 
 const Stack = createStackNavigator<LoggedInNavParamList>();
 
@@ -173,6 +174,7 @@ const LoggedInNav = ({
           </WalkContextProvider>
         )}
       </Stack.Screen>
+      <Stack.Screen name="MissingReportInfo" component={MissingReportInfo} />
       <Stack.Screen name="UpdateWiFi" component={UpdateWiFi} />
       <Stack.Screen name="UpdateProfile" component={UpdateProfile} />
       <Stack.Screen name="UpdateArea" component={UpdateArea} />

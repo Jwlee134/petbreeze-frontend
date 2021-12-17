@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Linking, View } from "react-native";
+import { View } from "react-native";
 import Button from "~/components/common/Button";
 import SuccessLottieWithText from "~/components/common/SuccessLottieWithText";
 import { SuccessScreenProps } from "~/types/navigator";
@@ -7,7 +7,7 @@ import { SuccessScreenProps } from "~/types/navigator";
 const Success = ({
   navigation,
   route: {
-    params: { key, text },
+    params: { key, text, name, deviceID, avatar, isModify },
   },
 }: SuccessScreenProps) => {
   useEffect(() => {
@@ -23,12 +23,18 @@ const Success = ({
     <SuccessLottieWithText
       text={text}
       Buttons={
-        key ? (
+        key && name && deviceID && avatar ? (
           <View>
             <Button
               style={{ marginBottom: 12 }}
               onPress={() =>
-                Linking.openURL(`https://petbreeze.co/lost?key=${key}`)
+                isModify
+                  ? navigation.goBack()
+                  : navigation.replace("MissingReportInfo", {
+                      deviceID,
+                      name,
+                      avatar,
+                    })
               }>
               확인하러 가기
             </Button>

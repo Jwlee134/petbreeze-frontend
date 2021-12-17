@@ -1,7 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import styled from "styled-components/native";
-import deviceApi, { Device } from "~/api/device";
+import { Device } from "~/api/device";
 import palette from "~/styles/palette";
 import { HomeScreenNavigationProp } from "~/types/navigator";
 import AnimatedCircularProgress from "../common/AnimatedCircularProgress";
@@ -23,7 +23,6 @@ const AvatarContainer = styled.View`
 
 const HomeBottomModal = ({ device, close }: Props) => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
-  const [trigger] = deviceApi.useDeleteMissingReportMutation();
 
   const onDeviceSettingPress = () => {
     close();
@@ -34,17 +33,20 @@ const HomeBottomModal = ({ device, close }: Props) => {
     });
   };
 
-  const onEmergencyMissingPress = () => {
+  const onMissigReportPress = () => {
+    close();
     if (!device.is_missed) {
-      close();
       navigation.navigate("MissingReportStackNav", {
         avatar: device.profile_image,
         name: device.name,
         deviceID: device.id,
       });
     } else {
-      close();
-      trigger(device.id);
+      navigation.navigate("MissingReportInfo", {
+        avatar: device.profile_image,
+        name: device.name,
+        deviceID: device.id,
+      });
     }
   };
 
@@ -62,24 +64,8 @@ const HomeBottomModal = ({ device, close }: Props) => {
       <IosBottomModalButton onPress={onDeviceSettingPress}>
         <MyText color={palette.blue_7b}>기기설정</MyText>
       </IosBottomModalButton>
-      {device.is_missed && (
-        <IosBottomModalButton
-          onPress={() => {
-            close();
-            navigation.navigate("MissingReportStackNav", {
-              avatar: device.profile_image,
-              name: device.name,
-              deviceID: device.id,
-              isModify: true,
-            });
-          }}>
-          <MyText color={palette.red_f0}>긴급실종 수정</MyText>
-        </IosBottomModalButton>
-      )}
-      <IosBottomModalButton isLast onPress={onEmergencyMissingPress}>
-        <MyText color={palette.red_f0}>
-          {device.is_missed ? "찾았어요" : "긴급실종"}
-        </MyText>
+      <IosBottomModalButton isLast onPress={onMissigReportPress}>
+        <MyText color={palette.red_f0}>실종신고</MyText>
       </IosBottomModalButton>
     </>
   );

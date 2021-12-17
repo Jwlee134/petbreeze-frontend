@@ -39,7 +39,7 @@ interface MissingReportForm {
   has_dog_tag: boolean;
 }
 
-interface MissingReport extends MissingReportForm {
+export interface MissingReport extends MissingReportForm {
   device_name: string;
   device_species: string;
   emergency_key: string;
@@ -51,7 +51,7 @@ interface MissingReport extends MissingReportForm {
   has_dog_tag: boolean;
 }
 
-interface DeviceCoord {
+export interface DeviceCoord {
   date_time: string;
   coordinate: {
     type: GeoJsonType.Point;
@@ -133,8 +133,10 @@ interface WalkBody {
   };
 }
 
-const shouldInvalidateDeviceList = (error: FetchBaseQueryError | undefined) =>
-  error?.status === 403 || error?.data?.detail === "Device id does not exist.";
+const shouldInvalidateDeviceList = (error: FetchBaseQueryError | undefined) => {
+  const code = error?.data?.error_code;
+  return code === "D003" || code === "permission_denied";
+};
 
 const shouldInvalidateUserList = (error: FetchBaseQueryError | undefined) =>
   error?.data?.detail?.includes("user") ||
@@ -182,7 +184,7 @@ const deviceApi = api.injectEndpoints({
         queryFulfilled.catch(deleteResult.undo);
       },
       invalidatesTags: (result, error, deviceID) => {
-        if (!error || shouldInvalidateDeviceList(error)) {
+        if (shouldInvalidateDeviceList(error)) {
           return [{ type: "Device", id: deviceID }];
         }
         return [];
@@ -201,6 +203,7 @@ const deviceApi = api.injectEndpoints({
         url: `/device/${deviceID}/emergency/`,
         method: "GET",
       }),
+      providesTags: () => [{ type: "Device", id: "MISSING" }],
       onQueryStarted: async (deviceID, { dispatch, queryFulfilled }) => {
         try {
           await queryFulfilled;
@@ -236,11 +239,7 @@ const deviceApi = api.injectEndpoints({
         queryFulfilled.catch(postResult.undo);
       },
       invalidatesTags: (result, error, { deviceID }) => {
-        if (
-          !error ||
-          error?.status === 400 ||
-          shouldInvalidateDeviceList(error)
-        ) {
+        if (error?.status === 400 || shouldInvalidateDeviceList(error)) {
           return [{ type: "Device", id: deviceID }];
         }
         return [];
@@ -256,12 +255,23 @@ const deviceApi = api.injectEndpoints({
         method: "PUT",
         body,
       }),
+      onQueryStarted: async (
+        { deviceID, body },
+        { dispatch, queryFulfilled },
+      ) => {
+        const putResult = dispatch(
+          deviceApi.util.updateQueryData(
+            "getMissingReport",
+            deviceID,
+            draft => {
+              Object.assign(draft, body);
+            },
+          ),
+        );
+        queryFulfilled.catch(putResult.undo);
+      },
       invalidatesTags: (result, error, { deviceID }) => {
-        if (
-          !error ||
-          error?.status === 400 ||
-          shouldInvalidateDeviceList(error)
-        ) {
+        if (error?.status === 400 || shouldInvalidateDeviceList(error)) {
           return [{ type: "Device", id: deviceID }];
         }
         return [];
@@ -281,14 +291,10 @@ const deviceApi = api.injectEndpoints({
         body,
       }),
       invalidatesTags: (result, error, { deviceID }) => {
-        if (
-          !error ||
-          error?.status === 400 ||
-          shouldInvalidateDeviceList(error)
-        ) {
+        if (error?.status === 400 || shouldInvalidateDeviceList(error)) {
           return [{ type: "Device", id: deviceID }];
         }
-        return [];
+        return [{ type: "Device", id: "MISSING" }];
       },
     }),
 
@@ -307,11 +313,7 @@ const deviceApi = api.injectEndpoints({
         queryFulfilled.catch(deleteResult.undo);
       },
       invalidatesTags: (result, error, deviceID) => {
-        if (
-          !error ||
-          error?.status === 400 ||
-          shouldInvalidateDeviceList(error)
-        ) {
+        if (error?.status === 400 || shouldInvalidateDeviceList(error)) {
           return [{ type: "Device", id: deviceID }];
         }
         return [];
@@ -385,7 +387,7 @@ const deviceApi = api.injectEndpoints({
         if (shouldInvalidateDeviceList(error)) {
           return [{ type: "Device", id: deviceID }];
         }
-        if (!error || shouldInvalidateUserList(error)) {
+        if (shouldInvalidateUserList(error)) {
           return [{ type: "Member", id: userID }];
         }
         return [];
@@ -419,7 +421,7 @@ const deviceApi = api.injectEndpoints({
         if (shouldInvalidateDeviceList(error)) {
           return [{ type: "Device", id: deviceID }];
         }
-        if (!error || shouldInvalidateUserList(error)) {
+        if (shouldInvalidateUserList(error)) {
           return [{ type: "Member", id: userID }];
         }
         return [];
@@ -447,7 +449,7 @@ const deviceApi = api.injectEndpoints({
         body,
       }),
       onQueryStarted: ({ deviceID, body }, { dispatch, queryFulfilled }) => {
-        const putResult = dispatch(
+        const profilePutResult = dispatch(
           deviceApi.util.updateQueryData(
             "getDeviceProfile",
             deviceID,
@@ -456,15 +458,16 @@ const deviceApi = api.injectEndpoints({
             },
           ),
         );
-        queryFulfilled.catch(putResult.undo);
+        const listPutResult = dispatch(
+          deviceApi.util.updateQueryData("getDeviceList", undefined, draft => {
+            draft[draft.findIndex(({ id }) => id === deviceID)].name =
+              body.name;
+          }),
+        );
+        queryFulfilled.catch(profilePutResult.undo);
+        queryFulfilled.catch(listPutResult.undo);
       },
       invalidatesTags: (result, error, { deviceID }) => {
-        if (!error) {
-          return [
-            { type: "Device", id: "PROFILE" },
-            { type: "Device", id: deviceID },
-          ];
-        }
         if (shouldInvalidateDeviceList(error)) {
           return [{ type: "Device", id: deviceID }];
         }
@@ -495,6 +498,17 @@ const deviceApi = api.injectEndpoints({
               deviceID,
               draft => {
                 draft.profile_image = profile_image;
+              },
+            ),
+          );
+          dispatch(
+            deviceApi.util.updateQueryData(
+              "getDeviceList",
+              undefined,
+              draft => {
+                draft[
+                  draft.findIndex(({ id }) => id === deviceID)
+                ].profile_image = profile_image;
               },
             ),
           );

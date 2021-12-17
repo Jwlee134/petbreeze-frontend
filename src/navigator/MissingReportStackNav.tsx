@@ -2,7 +2,6 @@ import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import React, { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
-import deviceApi from "~/api/device";
 import CustomHeader from "~/components/navigator/CustomHeader";
 import MissingReportFirstPage, {
   MissingReportFirstGoBack,
@@ -25,53 +24,12 @@ const MissingReportStackNav = ({
 }) => {
   const currentRouteName = getFocusedRouteNameFromRoute(route);
   const dispatch = useDispatch();
-  const [getMissingInfo, { data }] = deviceApi.useLazyGetMissingReportQuery();
   const missingReportFirstRef = useRef<MissingReportFirstGoBack>(null);
   const missingReportSecondRef = useRef<MissingReportSecondGoBack>(null);
 
   const {
     params: { name, avatar, deviceID, isModify },
   } = route;
-
-  useEffect(() => {
-    if (data) {
-      const {
-        emergency_key,
-        contact_number,
-        has_dog_tag,
-        missing_datetime,
-        missing_location,
-        message,
-        image1_thumbnail: one,
-        image2_thumbnail: two,
-        image3_thumbnail: three,
-        image4_thumbnail: four,
-      } = data;
-      const photoArr = [one, two, three, four].filter(
-        photo => photo !== null && photo.length !== 0,
-      );
-      dispatch(
-        formActions.setState({
-          emergencyKey: emergency_key,
-          hasTag: has_dog_tag,
-          phoneNumber: contact_number,
-          lostPlace: missing_location,
-          message,
-          lostMonth: new Date(missing_datetime).getMonth() + 1,
-          lostHour: new Date(missing_datetime).getHours(),
-          lostDate: new Date(missing_datetime).getDate(),
-          lostMinute: new Date(missing_datetime).getMinutes(),
-          photos: photoArr,
-        }),
-      );
-    }
-  }, [data]);
-
-  useEffect(() => {
-    if (isModify) {
-      getMissingInfo(deviceID);
-    }
-  }, [isModify]);
 
   useEffect(() => {
     return () => {
@@ -114,6 +72,8 @@ const MissingReportStackNav = ({
           {props => (
             <MissingReportSecondPage
               ref={missingReportSecondRef}
+              name={name}
+              avatar={avatar}
               deviceID={deviceID}
               isModify={isModify}
               {...props}
