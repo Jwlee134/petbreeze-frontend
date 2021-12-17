@@ -54,6 +54,7 @@ const LiveModeButton = ({
     close();
     setTimeout(() => {
       if (resume) resume();
+      setDraft(deviceList);
       setIsSelected(false);
     }, centerModalOutTiming);
   };
