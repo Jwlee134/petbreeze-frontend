@@ -1,7 +1,9 @@
-import React, { ReactNode } from "react";
+import React from "react";
 import { TouchableOpacityProps } from "react-native";
 import styled from "styled-components/native";
+import palette from "~/styles/palette";
 import Divider from "../common/Divider";
+import MyText from "../common/MyText";
 
 const Button = styled.TouchableOpacity`
   justify-content: center;
@@ -10,18 +12,24 @@ const Button = styled.TouchableOpacity`
 `;
 
 interface Props extends TouchableOpacityProps {
-  children: ReactNode;
+  title: string;
   isLast?: boolean;
+  color: "blue" | "red";
 }
 
 const IosBottomModalButton = ({
-  children,
+  title,
   isLast = false,
+  color,
   ...props
 }: Props) => {
   return (
     <>
-      <Button {...props}>{children}</Button>
+      <Button {...props}>
+        <MyText color={color === "blue" ? palette.blue_7b : palette.red_f0}>
+          {title}
+        </MyText>
+      </Button>
       {!isLast && <Divider />}
     </>
   );

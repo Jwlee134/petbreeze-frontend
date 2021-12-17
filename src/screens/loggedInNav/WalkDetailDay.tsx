@@ -167,9 +167,12 @@ const WalkDetailDay = ({
         modalProps={modalProps}
         close={close}
         title="이 산책 기록을 삭제하시겠습니까?">
-        <IosBottomModalButton isLast onPress={deleteRecord}>
-          <MyText color={palette.red_f0}>삭제</MyText>
-        </IosBottomModalButton>
+        <IosBottomModalButton
+          title="삭제"
+          color="red"
+          isLast
+          onPress={deleteRecord}
+        />
       </IosBottomModal>
     </>
   );

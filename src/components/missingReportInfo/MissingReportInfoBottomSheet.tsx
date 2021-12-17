@@ -19,7 +19,7 @@ import ShareIcon from "~/assets/svg/missingReportInfo/share.svg";
 import Divider from "../common/Divider";
 import { useDispatch } from "react-redux";
 import { formActions } from "~/store/form";
-import { bottomModalOutTiming } from "~/styles/constants";
+import { bottomModalOutTiming, centerModalOutTiming } from "~/styles/constants";
 import CommonCenterModal from "../modal/CommonCenterModal";
 
 const RowContainer = styled.View`
@@ -107,17 +107,21 @@ const MissingReportInfoBottomSheet = ({ data }: { data: MissingReport }) => {
     });
   };
 
-  const onDeletePress = () => {};
-
-  const handleDelete = async () => {
+  const onDeletePress = async () => {
     try {
       await deleteReport(deviceID).unwrap();
       bottomModalClose();
-      await delay(bottomModalOutTiming);
+      await delay(centerModalOutTiming);
       navigation.goBack();
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const handleDelete = async () => {
+    bottomModalClose();
+    await delay(bottomModalOutTiming + 100);
+    centerModalOpen();
   };
 
   return (
@@ -205,19 +209,29 @@ const MissingReportInfoBottomSheet = ({ data }: { data: MissingReport }) => {
         </Button>
       </BottomSheetScrollView>
       <IosBottomModal modalProps={bottomModalProps} close={bottomModalClose}>
-        <IosBottomModalButton onPress={onModifyPress}>
-          <MyText color={palette.blue_7b}>수정</MyText>
-        </IosBottomModalButton>
-        <IosBottomModalButton onPress={handleDelete}>
-          <MyText color={palette.red_f0}>찾았어요</MyText>
-        </IosBottomModalButton>
+        <IosBottomModalButton
+          title="수정"
+          color="blue"
+          onPress={onModifyPress}
+        />
+        <IosBottomModalButton
+          title="삭제"
+          color="blue"
+          onPress={handleDelete}
+        />
+        <IosBottomModalButton
+          isLast
+          title="찾았어요"
+          color="red"
+          onPress={handleDelete}
+        />
       </IosBottomModal>
       <CommonCenterModal
         title="위치공유를 중단하시겠어요?"
         modalProps={centerModalProps}
         close={centerModalClose}
         rightButtonText="확인"
-        onRightButtonPress={handleDelete}
+        onRightButtonPress={onDeletePress}
       />
     </>
   );
