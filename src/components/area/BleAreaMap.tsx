@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { Keyboard, StyleSheet } from "react-native";
 import NaverMapView, { Circle } from "react-native-nmap";
 import { getLeftRightPointsOfCircle } from "~/utils";
@@ -33,7 +33,6 @@ const BleAreaMap = ({ mapPadding, style }: Props) => {
     state => state.deviceSetting.area,
   );
   const dispatch = useDispatch();
-
   const mapRef = useRef<NaverMapView>(null);
   const viewShotRef = useRef<ViewShot>(null);
 
@@ -44,19 +43,12 @@ const BleAreaMap = ({ mapPadding, style }: Props) => {
     }
   }, [coord]);
 
-  const coordsArr = useMemo(() => {
-    if (coord.latitude && coord.longitude) {
-      return getLeftRightPointsOfCircle(
-        coord.latitude,
-        coord.longitude,
-        radius,
-      );
-    }
-  }, [radius, step2]);
-
   useEffect(() => {
-    if (!mapRef.current || !radius || !coordsArr) return;
-    mapRef.current.animateToTwoCoordinates(coordsArr[0], coordsArr[1]);
+    if (!mapRef.current || !step2) return;
+    mapRef.current?.animateToTwoCoordinates(
+      getLeftRightPointsOfCircle(coord.latitude, coord.longitude, radius)[0],
+      getLeftRightPointsOfCircle(coord.latitude, coord.longitude, radius)[1],
+    );
   }, [mapRef.current, radius, step2]);
 
   useEffect(() => {
@@ -82,13 +74,7 @@ const BleAreaMap = ({ mapPadding, style }: Props) => {
 
   return (
     <Animated.View
-      style={[
-        {
-          ...(StyleSheet.absoluteFill as object),
-          zIndex: 0,
-        },
-        style,
-      ]}>
+      style={[{ ...(StyleSheet.absoluteFill as object), zIndex: 0 }, style]}>
       <ViewShot ref={viewShotRef} style={StyleSheet.absoluteFill as object}>
         <Map
           ref={mapRef}

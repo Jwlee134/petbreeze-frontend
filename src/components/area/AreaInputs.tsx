@@ -34,6 +34,7 @@ const AreaInputs = ({ style }: { style?: StyleProp<ViewStyle> }) => {
         radius: parseInt(data[index], 10),
       }),
     );
+    dispatch(deviceSettingActions.setArea({ animateCamera: true }));
   };
 
   return (

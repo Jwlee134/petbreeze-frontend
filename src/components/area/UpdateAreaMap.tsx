@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useWindowDimensions, View } from "react-native";
 import NaverMapView, { Circle } from "react-native-nmap";
 import ViewShot from "react-native-view-shot";
@@ -26,6 +26,7 @@ const UpdateAreaMap = () => {
   const isSubmitting = useAppSelector(
     state => state.deviceSetting.area.isSubmitting,
   );
+  const [capture, setCapture] = useState(false);
   const dispatch = useDispatch();
 
   const mapRef = useRef<NaverMapView>(null);
@@ -33,25 +34,31 @@ const UpdateAreaMap = () => {
 
   const { width } = useWindowDimensions();
 
-  useEffect(() => {
-    if (animateCamera && coord.latitude && coord.longitude) {
-      mapRef.current?.animateToCoordinate(coord);
-      dispatch(deviceSettingActions.setArea({ animateCamera: false }));
-    }
-  }, [coord]);
+  const animateToTwoCoordinates = (
+    lat: number,
+    lng: number,
+    radius: number,
+  ) => {
+    mapRef.current?.animateToTwoCoordinates(
+      getLeftRightPointsOfCircle(lat, lng, radius)[0],
+      getLeftRightPointsOfCircle(lat, lng, radius)[1],
+    );
+  };
 
-  const edgePoints = useMemo(
-    () => getLeftRightPointsOfCircle(coord.latitude, coord.longitude, radius),
-    [radius],
-  );
+  useEffect(() => {
+    if (!animateCamera) return;
+    animateToTwoCoordinates(coord.latitude, coord.longitude, radius);
+    dispatch(deviceSettingActions.setArea({ animateCamera: false }));
+  }, [animateCamera]);
 
   useEffect(() => {
     if (!mapRef.current) return;
-    if (!coord.latitude && !coord.longitude) {
-      permissionCheck.location().then(() => {
+    (async () => {
+      try {
+        await permissionCheck.location();
         Geolocation.getCurrentPosition(
           ({ coords: { latitude, longitude } }) => {
-            dispatch(deviceSettingActions.setArea({ animateCamera: true }));
+            animateToTwoCoordinates(latitude, longitude, radius);
             dispatch(
               deviceSettingActions.setAreaDraft({
                 coord: { latitude, longitude },
@@ -61,33 +68,38 @@ const UpdateAreaMap = () => {
           () => {},
           { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
         );
-      });
-    } else {
-      mapRef.current.animateToTwoCoordinates(edgePoints[0], edgePoints[1]);
-    }
-  }, [mapRef.current, radius]);
+      } catch {
+        animateToTwoCoordinates(coord.latitude, coord.longitude, radius);
+      }
+    })();
+  }, [mapRef.current]);
+
+  useEffect(() => {
+    if (!capture) return;
+    (async () => {
+      const uri = await viewShotRef.current?.capture();
+      const data = await getAddressByCoord(coord.latitude, coord.longitude);
+      dispatch(
+        deviceSettingActions.updateAreaResult({
+          thumbnail: uri || "",
+          address: data,
+        }),
+      );
+      navigation.goBack();
+    })();
+  }, [capture]);
 
   useEffect(() => {
     if (!isSubmitting || !viewShotRef.current || !mapRef.current) return;
-    (async () => {
-      const edgePoints = getLeftRightPointsOfCircle(
-        coord.latitude,
-        coord.longitude,
-        radius,
-      );
-      mapRef.current?.animateToTwoCoordinates(edgePoints[0], edgePoints[1]);
-      const uri = await viewShotRef.current?.capture();
-      const data = await getAddressByCoord(coord.latitude, coord.longitude);
-      setTimeout(async () => {
-        dispatch(
-          deviceSettingActions.updateAreaResult({
-            thumbnail: uri || "",
-            address: data,
-          }),
-        );
-        navigation.goBack();
-      }, 500);
-    })();
+    const edgePoints = getLeftRightPointsOfCircle(
+      coord.latitude,
+      coord.longitude,
+      radius,
+    );
+    mapRef.current?.animateToTwoCoordinates(edgePoints[0], edgePoints[1]);
+    setTimeout(() => {
+      setCapture(true);
+    }, 500);
   }, [isSubmitting, viewShotRef.current]);
 
   return (
