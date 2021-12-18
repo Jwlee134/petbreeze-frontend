@@ -1,9 +1,13 @@
 /* eslint-disable default-case */
 import { Platform } from "react-native";
+import { secureItems } from "~/constants";
 import { store } from "~/store";
 import { bleActions } from "~/store/ble";
+import { commonActions } from "~/store/common";
 import { deviceSettingActions } from "~/store/deviceSetting";
+import { formActions } from "~/store/form";
 import { storageActions } from "~/store/storage";
+import * as SecureStore from "expo-secure-store";
 
 export const formatNickname = (str: string) => {
   const finalChrCode = str.charCodeAt(str.length - 1);
@@ -11,10 +15,15 @@ export const formatNickname = (str: string) => {
   return finalConsonantCode === 0 ? str : `${str}이`;
 };
 
-export const resetAll = () => {
+export const resetAll = async () => {
   store.dispatch(bleActions.reset());
   store.dispatch(deviceSettingActions.reset());
   store.dispatch(storageActions.reset());
+  store.dispatch(formActions.reset());
+  store.dispatch(commonActions.reset());
+  await Promise.all(
+    Object.values(secureItems).map(item => SecureStore.deleteItemAsync(item)),
+  );
 };
 
 export const formatWalkTime = (minute: number) => {

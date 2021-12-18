@@ -8,8 +8,7 @@ import { View } from "react-native";
 import { DeleteAccountSecondPageScreenNavigationProp } from "~/types/navigator";
 import { useAppSelector } from "~/store";
 import userApi from "~/api/user";
-import { useDispatch } from "react-redux";
-import { commonActions } from "~/store/common";
+import { resetAll } from "~/utils";
 
 const Container = styled.View`
   flex: 1;
@@ -40,11 +39,8 @@ const DeleteAccountSecondPage = forwardRef<DeleteAccountSecondGoBack, Props>(
     const { body } = useAppSelector(state => state.common.deleteAccount);
     const [deleteAccount, { isLoading, isSuccess }] =
       userApi.useDeleteAccountMutation();
-    const dispatch = useDispatch();
 
     const onPress = () => {
-      navigation.replace("Success", { text: "정상적으로\n탈퇴되었습니다." });
-      return;
       if (isLoading) return;
       const parsed = JSON.stringify(body).replace(/[[[\]"]/g, "");
       deleteAccount(parsed);
@@ -52,8 +48,12 @@ const DeleteAccountSecondPage = forwardRef<DeleteAccountSecondGoBack, Props>(
 
     useEffect(() => {
       if (isSuccess) {
-        dispatch(commonActions.setDeleteAccount(null));
-        navigation.replace("Success", { text: "정상적으로\n탈퇴되었습니다." });
+        (async () => {
+          await resetAll();
+          navigation.replace("Success", {
+            text: "정상적으로\n탈퇴되었습니다.",
+          });
+        })();
       }
     }, [isSuccess]);
 

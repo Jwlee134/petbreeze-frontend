@@ -171,9 +171,7 @@ const userApi = api.injectEndpoints({
       query: reason => ({
         url: "/account/withdraw/",
         method: "POST",
-        body: {
-          with_draw_reason: reason,
-        },
+        body: { reason },
       }),
     }),
   }),

@@ -74,6 +74,7 @@ const common = createSlice({
     setIsTokenInvalid: (state, { payload }: PayloadAction<boolean>) => {
       state.isTokenInvalid = payload;
     },
+    reset: () => initialState,
   },
 });
 

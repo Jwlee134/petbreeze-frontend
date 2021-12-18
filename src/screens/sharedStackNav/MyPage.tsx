@@ -48,11 +48,6 @@ const MyPage = ({ navigation }: { navigation: MyPageScreenNavigationProp }) => {
       setIsLoading(true);
       const fbToken = await SecureStore.getItemAsync(secureItems.firebaseToken);
       await logout(fbToken as string).unwrap();
-      await Promise.all(
-        Object.values(secureItems).map(item =>
-          SecureStore.deleteItemAsync(item),
-        ),
-      );
       resetAll();
       setTimeout(() => {
         navigation.reset({

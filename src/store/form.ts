@@ -46,6 +46,7 @@ const form = createSlice({
   reducers: {
     setState: (state, { payload }: PayloadAction<Partial<State> | null>) =>
       payload ? { ...state, ...payload } : initialState,
+    reset: () => initialState,
   },
 });
 
