@@ -28,12 +28,16 @@ const DeviceManagement = ({
   };
 
   useEffect(() => {
-    if (isSuccess)
+    if (isSuccess) {
       Toast.show({
         type: ToastType.Notification,
         text1: "성공적으로 삭제되었습니다.",
       });
-  }, [isSuccess]);
+      if (!deviceList.length) {
+        navigation.goBack();
+      }
+    }
+  }, [isSuccess, deviceList]);
 
   return (
     <>
@@ -43,13 +47,12 @@ const DeviceManagement = ({
         navigation={navigation}
         title="기기관리"
       />
-      {deviceList?.length && (
+      {deviceList.length ? (
         <SwipeListView
           disableRightSwipe
           rightOpenValue={-hiddenButtonWidth}
           keyExtractor={({ id }) => String(id)}
           previewRowKey={String(deviceList[0].id)}
-          previewOpenValue={-hiddenButtonWidth}
           data={deviceList}
           renderItem={({ item }) => (
             <MyPageDeviceListItem navigation={navigation} device={item} />
@@ -64,7 +67,7 @@ const DeviceManagement = ({
             />
           )}
         />
-      )}
+      ) : null}
       <CommonCenterModal
         modalProps={modalProps}
         close={close}

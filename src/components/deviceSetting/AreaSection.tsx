@@ -8,18 +8,16 @@ import { useDispatch } from "react-redux";
 import { DeviceSettingScreenNavigationProp } from "~/types/navigator";
 import { useAppSelector } from "~/store";
 import { deviceSettingActions } from "~/store/deviceSetting";
+import { noAvatar } from "~/constants";
+import CommonCenterModal from "~/components/modal/CommonCenterModal";
+import useModal from "~/hooks/useModal";
+import { AreaResponse } from "~/api/device";
+import SwipeableList from "../common/SwipeableList";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
-import { noAvatar } from "~/constants";
-import CommonCenterModal from "~/components/modal/CommonCenterModal";
-import useModal from "~/hooks/useModal";
-import { AreaResponse } from "~/api/device";
-import { SwipeListView } from "react-native-swipe-list-view";
-import { hiddenButtonWidth } from "~/styles/constants";
-import HiddenButton from "../common/HiddenButton";
 
 const RowContainer = styled.View`
   flex-shrink: 1;
@@ -50,11 +48,10 @@ const AreaSection = () => {
   );
 
   const itemHeight = 99;
-  const listPaddingBottom = 11;
 
   const height = useMemo(() => {
     return result.filter(item => item.name).length
-      ? result.filter(item => item.name).length * itemHeight + listPaddingBottom
+      ? result.filter(item => item.name).length * itemHeight
       : 1;
   }, [result.filter(item => item.name).length]);
 
@@ -110,57 +107,44 @@ const AreaSection = () => {
         onPlusButtonClick={onPlusButtonPress}
       />
       <Animated.View style={[animatedStyle]}>
-        {data.length ? (
-          <SwipeListView
-            disableRightSwipe
-            rightOpenValue={-hiddenButtonWidth}
-            keyExtractor={data => String(data.safety_area_number)}
-            previewRowKey={String(result[0].safety_area_number)}
-            previewOpenValue={-hiddenButtonWidth}
-            data={data}
-            renderItem={({ item }) => (
-              <ListItem
-                style={{ paddingRight: 36, height: 99 }}
-                onPress={() => onAreaPress(item)}>
-                <RowContainer>
-                  <Image
-                    source={item.thumbnail ? { uri: item.thumbnail } : noAvatar}
-                  />
-                  <TextContainer>
+        <SwipeableList
+          keyExtractor={item => item.safety_area_number.toString()}
+          data={data}
+          onHiddenButtonPress={item => {
+            setClickedID(item.safety_area_number);
+            open();
+          }}
+          renderItem={item => (
+            <ListItem
+              style={{ paddingRight: 36, height: 99 }}
+              onPress={() => onAreaPress(item)}>
+              <RowContainer>
+                <Image
+                  source={item.thumbnail ? { uri: item.thumbnail } : noAvatar}
+                />
+                <TextContainer>
+                  <MyText
+                    numberOfLines={1}
+                    fontSize={12}
+                    color="rgba(0, 0, 0, 0.3)">
+                    {item.address || "주소 없음"}
+                  </MyText>
+                  <RowContainer style={{ marginTop: 10 }}>
                     <MyText
+                      color="rgba(0, 0, 0, 0.7)"
                       numberOfLines={1}
-                      fontSize={12}
-                      color="rgba(0, 0, 0, 0.3)">
-                      {item.address || "주소 없음"}
+                      style={{ width: "50%" }}>
+                      {item.name}
                     </MyText>
-                    <RowContainer style={{ marginTop: 10 }}>
-                      <MyText
-                        color="rgba(0, 0, 0, 0.7)"
-                        numberOfLines={1}
-                        style={{ width: "50%" }}>
-                        {item.name}
-                      </MyText>
-                      <MyText
-                        style={{ width: "50%" }}
-                        color="rgba(0, 0, 0, 0.7)">
-                        {item.radius}m
-                      </MyText>
-                    </RowContainer>
-                  </TextContainer>
-                </RowContainer>
-              </ListItem>
-            )}
-            renderHiddenItem={({ item }, rowMap) => (
-              <HiddenButton
-                onPress={() => {
-                  setClickedID(item.safety_area_number);
-                  rowMap[item.safety_area_number].closeRow();
-                  open();
-                }}
-              />
-            )}
-          />
-        ) : null}
+                    <MyText style={{ width: "50%" }} color="rgba(0, 0, 0, 0.7)">
+                      {item.radius}m
+                    </MyText>
+                  </RowContainer>
+                </TextContainer>
+              </RowContainer>
+            </ListItem>
+          )}
+        />
       </Animated.View>
       <CommonCenterModal
         close={close}

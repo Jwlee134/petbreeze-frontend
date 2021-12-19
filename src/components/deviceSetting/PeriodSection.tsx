@@ -18,9 +18,9 @@ const SvgContainer = styled.View`
 `;
 
 const Container = styled(RowContainer)`
-  height: 64px;
   padding: 0 16px;
   justify-content: space-between;
+  height: 36px;
 `;
 
 const PeriodSection = () => {

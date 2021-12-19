@@ -12,9 +12,7 @@ import useModal from "~/hooks/useModal";
 import Toast from "react-native-toast-message";
 import Clipboard from "@react-native-clipboard/clipboard";
 import { ToastType } from "~/styles/toast";
-import { SwipeListView } from "react-native-swipe-list-view";
-import { hiddenButtonWidth } from "~/styles/constants";
-import HiddenButton from "../common/HiddenButton";
+import SwipeableList from "../common/SwipeableList";
 
 const Item = styled.View`
   height: 49px;
@@ -83,37 +81,24 @@ const FamilySection = ({ deviceID }: { deviceID: number }) => {
           <Crown />
         </CrownContainer>
       </Item>
-      {members.length ? (
-        <SwipeListView
-          disableRightSwipe
-          disableLeftSwipe={!isOwner}
-          rightOpenValue={-hiddenButtonWidth}
-          data={members}
-          keyExtractor={data => String(data.id)}
-          previewRowKey={isOwner ? String(members[0].id) : ""}
-          previewOpenValue={isOwner ? -hiddenButtonWidth : 0}
-          renderItem={({ item }) => (
-            <Item>
-              <MyText
-                color={
-                  data?.owner_id === item.id ? palette.blue_86 : undefined
-                }>
-                {item.nickname}
-                {myID === item.id && " (나)"}
-              </MyText>
-            </Item>
-          )}
-          renderHiddenItem={({ item }, rowMap) => (
-            <HiddenButton
-              onPress={() => {
-                setClickedID(item.id);
-                rowMap[item.id].closeRow();
-                open();
-              }}
-            />
-          )}
-        />
-      ) : null}
+      <SwipeableList
+        disableLeftSwipe={!isOwner}
+        keyExtractor={item => item.id.toString()}
+        data={members}
+        onHiddenButtonPress={item => {
+          setClickedID(item.id);
+          open();
+        }}
+        renderItem={item => (
+          <Item>
+            <MyText
+              color={data?.owner_id === item.id ? palette.blue_86 : undefined}>
+              {item.nickname}
+              {myID === item.id && " (나)"}
+            </MyText>
+          </Item>
+        )}
+      />
       <CommonCenterModal
         close={close}
         onRightButtonPress={() => {

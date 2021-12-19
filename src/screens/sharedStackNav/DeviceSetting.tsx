@@ -119,13 +119,13 @@ const DeviceSetting = ({
       ) : (
         <ScrollView contentContainerStyle={{ flexGrow: 1, paddingBottom: 16 }}>
           <ProfileSection deviceID={deviceID} avatar={avatar} name={name} />
-          <Divider isHairline={false} />
+          <Divider isHairline={false} style={{ marginBottom: 10 }} />
           <PeriodSection />
-          <View style={{ paddingHorizontal: 16, paddingBottom: 10 }}>
+          <View style={{ paddingHorizontal: 16, paddingVertical: 10 }}>
             <Divider />
           </View>
           <AreaSection />
-          <View style={{ paddingHorizontal: 16, paddingBottom: 10 }}>
+          <View style={{ paddingHorizontal: 16, paddingVertical: 10 }}>
             <Divider />
           </View>
           <FamilySection deviceID={deviceID} />

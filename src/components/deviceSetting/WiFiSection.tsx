@@ -9,9 +9,7 @@ import { WiFiResponse } from "~/api/device";
 import { deviceSettingActions } from "~/store/deviceSetting";
 import { useNavigation } from "@react-navigation/native";
 import { UpdateAreaScreenNavigationProp } from "~/types/navigator";
-import { SwipeListView } from "react-native-swipe-list-view";
-import { hiddenButtonWidth } from "~/styles/constants";
-import HiddenButton from "../common/HiddenButton";
+import SwipeableList from "../common/SwipeableList";
 
 const WiFiSection = () => {
   const navigation = useNavigation<UpdateAreaScreenNavigationProp>();
@@ -47,38 +45,27 @@ const WiFiSection = () => {
         onPlusButtonClick={onPlusPress}
         disablePlusButton={result.filter(item => item.ssid).length > 2}
       />
-      {data.length ? (
-        <SwipeListView
-          disableRightSwipe
-          rightOpenValue={-hiddenButtonWidth}
-          data={data}
-          keyExtractor={({ wifi_number }) => String(wifi_number)}
-          previewRowKey={String(data[0].wifi_number)}
-          previewOpenValue={-hiddenButtonWidth}
-          renderItem={({ item }) => (
-            <ListItem
-              onPress={() => onWiFiPress(item)}
-              style={{ height: 54, paddingRight: 36 }}>
-              <View style={{ flexShrink: 1, paddingRight: 36 }}>
-                <MyText
-                  numberOfLines={1}
-                  style={{ marginLeft: 5 }}
-                  color="rgba(219, 113, 113, 0.7)">
-                  {item.ssid}
-                </MyText>
-              </View>
-            </ListItem>
-          )}
-          renderHiddenItem={({ item }, rowMap) => (
-            <HiddenButton
-              onPress={() => {
-                onMinusPress(item.wifi_number);
-                rowMap[item.wifi_number].closeRow();
-              }}
-            />
-          )}
-        />
-      ) : null}
+      <SwipeableList
+        data={data}
+        keyExtractor={item => item.wifi_number.toString()}
+        onHiddenButtonPress={item => {
+          onMinusPress(item.wifi_number);
+        }}
+        renderItem={item => (
+          <ListItem
+            onPress={() => onWiFiPress(item)}
+            style={{ height: 54, paddingRight: 36 }}>
+            <View style={{ flexShrink: 1, paddingRight: 36 }}>
+              <MyText
+                numberOfLines={1}
+                style={{ marginLeft: 5 }}
+                color="rgba(219, 113, 113, 0.7)">
+                {item.ssid}
+              </MyText>
+            </View>
+          </ListItem>
+        )}
+      />
     </>
   );
 };
