@@ -18,9 +18,8 @@ const WalkDeviceListItem = ({ device }: { device: Device }) => {
     <RowContainer>
       <AnimatedCircularProgress
         avatar={device.profile_image}
-        isBackgroundTransparent
         lineWidth={3}
-        circleWidth={70}
+        circleWidth={76}
         battery={device.battery}
       />
       <View style={{ marginLeft: 26 }}>

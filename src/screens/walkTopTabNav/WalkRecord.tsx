@@ -15,7 +15,7 @@ const WalkRecord = ({
   return (
     <ScrollView
       contentContainerStyle={{
-        paddingVertical: 31,
+        paddingVertical: 20,
         flexGrow: 1,
       }}
       showsVerticalScrollIndicator={false}>

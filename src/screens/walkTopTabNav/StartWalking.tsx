@@ -109,7 +109,7 @@ const StartWalking = ({
   return deviceList && deviceList.length ? (
     <ScrollView
       contentContainerStyle={{
-        paddingTop: 31,
+        paddingTop: 20,
         flexGrow: 1,
         justifyContent: "space-between",
         paddingBottom: 67,
