@@ -10,6 +10,7 @@ export default {
   red_f0_55: "#F000438C",
   red_f1: "#F11452",
   red_fc: "#FCCCD9",
+  red_f2: "#F21A56",
   gray_c4: "#C4C4C4",
   gray_f0: "#F0F0F0",
   gray_e5: "#E5E5E5",
