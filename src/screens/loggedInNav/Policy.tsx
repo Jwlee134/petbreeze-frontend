@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import styled from "styled-components/native";
 import { PolicyScreenNavigationProp } from "~/types/navigator";
-import PolicyIcon from "~/assets/svg/policy.svg";
+import PolicyIcon from "~/assets/svg/policy/policy.svg";
 import Button from "~/components/common/Button";
 import MyText from "~/components/common/MyText";
 import { Animated, Linking } from "react-native";

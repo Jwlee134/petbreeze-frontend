@@ -1,8 +1,8 @@
 import React, { memo } from "react";
 import { StyleProp, TouchableOpacityProps, ViewStyle } from "react-native";
 import styled from "styled-components/native";
-import Live from "~/assets/svg/live.svg";
-import MyLocation from "~/assets/svg/my-location.svg";
+import Live from "~/assets/svg/mapButton/live.svg";
+import MyLocation from "~/assets/svg/mapButton/my-location.svg";
 import { mapButtonSize } from "~/styles/constants";
 import { Shadow } from "react-native-shadow-2";
 

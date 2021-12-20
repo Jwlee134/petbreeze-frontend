@@ -17,7 +17,7 @@ import SocialLogin from "~/components/auth/SocialLogin";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { isIphoneX } from "react-native-iphone-x-helper";
 import useAnimatedSequence from "~/hooks/useAnimatedSequence";
-import LogoText from "~/assets/svg/logo-text.svg";
+import LogoText from "~/assets/svg/start/logo-text.svg";
 
 const TopContainer = styled.View`
   flex: 1;

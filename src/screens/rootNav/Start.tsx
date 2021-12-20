@@ -13,7 +13,7 @@ import notificationHandler from "~/utils/notificationHandler";
 import userApi from "~/api/user";
 import { store } from "~/store";
 import messaging from "@react-native-firebase/messaging";
-import LogoText from "~/assets/svg/logo-text.svg";
+import LogoText from "~/assets/svg/start/logo-text.svg";
 
 const Container = styled.View`
   flex: 1;

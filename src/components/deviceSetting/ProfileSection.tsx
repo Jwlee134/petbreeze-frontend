@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components/native";
-import Pencil from "~/assets/svg/myPage/pencil.svg";
+import Pencil from "~/assets/svg/myPage/pencil-white.svg";
 import Divider from "../common/Divider";
 import { TouchableOpacity } from "react-native";
 import MyText from "../common/MyText";

@@ -12,6 +12,8 @@ interface Props extends KeyboardAwareScrollViewProps {
   isSpaceBetween?: boolean;
 }
 
+// 이미 부모로 Flatlist나 ScrollView가 있다면 꼭 부모 요소에도
+// keyboardShoudPersistTap 속성을 설정해야 함
 const KeyboardAwareScrollContainer = ({
   children,
   isSpaceBetween = false,
@@ -20,6 +22,9 @@ const KeyboardAwareScrollContainer = ({
   const { bottom } = useSafeAreaInsets();
 
   if (isIos) {
+    // SafeAreaView 사용하지 않을 시 키보드가 올라왔을 때 스크롤 내릴 시
+    // 하단에 safe area bottom inset 만큼의 빈 공간이 생기고 이것을 없애려
+    // extraScrollHeight에 -bottom만큼 설정할 시 인풋으로 정확하게 스크롤이 안 감
     return (
       <SafeAreaContainer>
         <KeyboardAwareScrollView

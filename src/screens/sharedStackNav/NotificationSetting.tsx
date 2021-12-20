@@ -4,7 +4,7 @@ import Switch from "~/components/common/Switch";
 import MyText from "~/components/common/MyText";
 import Shield from "~/assets/svg/myPage/shield.svg";
 import Battery from "~/assets/svg/myPage/battery.svg";
-import Pencil from "~/assets/svg/myPage/pencil-noti.svg";
+import Pencil from "~/assets/svg/myPage/pencil-black.svg";
 import userApi from "~/api/user";
 import * as SecureStore from "expo-secure-store";
 

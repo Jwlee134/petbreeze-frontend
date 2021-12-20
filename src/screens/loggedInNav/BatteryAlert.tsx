@@ -5,7 +5,7 @@ import SafeAreaContainer from "~/components/common/container/SafeAreaContainer";
 import MyText from "~/components/common/MyText";
 import AnimatedCircularProgress from "~/components/common/AnimatedCircularProgress";
 import palette from "~/styles/palette";
-import NeedChargeElectricity from "~/assets/svg/need-charge-electricity.svg";
+import NeedChargeElectricity from "~/assets/svg/batteryAlert/need-charge-electricity.svg";
 import { BatteryAlertScreenProps } from "~/types/navigator";
 import { View } from "react-native";
 

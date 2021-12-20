@@ -64,6 +64,7 @@ const LoggedInNav = ({
             SecureStore.deleteItemAsync(item),
           ),
         );
+        await messaging().deleteToken();
         navigation.reset({ index: 0, routes: [{ name: "Start" }] });
         dispatch(commonActions.setIsTokenInvalid(false));
       })();

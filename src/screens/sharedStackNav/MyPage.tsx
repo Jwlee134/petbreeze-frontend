@@ -4,7 +4,7 @@ import MyText from "~/components/common/MyText";
 import styled from "styled-components/native";
 import Setting from "~/assets/svg/myPage/setting.svg";
 import Bell from "~/assets/svg/myPage/bell.svg";
-import Tag from "~/assets/svg/myPage/name-tag.svg";
+import Tag from "~/assets/svg/myPage/name-tag-black.svg";
 import { MyPageScreenNavigationProp } from "~/types/navigator";
 import MyPageDeviceList from "~/components/myPage/MyPageDeviceList";
 import useModal from "~/hooks/useModal";
@@ -75,7 +75,7 @@ const MyPage = ({ navigation }: { navigation: MyPageScreenNavigationProp }) => {
           }}>
           <RowContainer style={{ opacity: !deviceList?.length ? 0.2 : 1 }}>
             <SvgContainer>
-              <Setting width={19} height={20} />
+              <Setting />
             </SvgContainer>
             <MyText>기기관리</MyText>
           </RowContainer>
@@ -86,7 +86,7 @@ const MyPage = ({ navigation }: { navigation: MyPageScreenNavigationProp }) => {
           }}>
           <RowContainer>
             <SvgContainer>
-              <Bell width={17} height={21} />
+              <Bell />
             </SvgContainer>
             <MyText>알림설정</MyText>
           </RowContainer>
@@ -97,7 +97,7 @@ const MyPage = ({ navigation }: { navigation: MyPageScreenNavigationProp }) => {
           }}>
           <RowContainer>
             <SvgContainer>
-              <Tag width={12} height={19} />
+              <Tag />
             </SvgContainer>
             <MyText>이름변경</MyText>
           </RowContainer>

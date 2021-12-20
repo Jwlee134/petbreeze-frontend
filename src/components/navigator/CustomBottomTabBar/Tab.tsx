@@ -38,29 +38,13 @@ const Tab = ({
   const Icon = () => {
     switch (name) {
       case "HomeTab":
-        return isFocused ? (
-          <Home width={24} height={23} />
-        ) : (
-          <HomeOutline width={24} height={23} />
-        );
+        return isFocused ? <Home /> : <HomeOutline />;
       case "WalkTab":
-        return isFocused ? (
-          <Footprint width={25} height={24} />
-        ) : (
-          <FootprintOutline width={25} height={24} />
-        );
+        return isFocused ? <Footprint /> : <FootprintOutline />;
       case "NotificationTab":
-        return isFocused ? (
-          <Bell width={21} height={24} />
-        ) : (
-          <BellOutline width={21} height={24} />
-        );
+        return isFocused ? <Bell /> : <BellOutline />;
       case "MyPageTab":
-        return isFocused ? (
-          <User width={22} height={23} />
-        ) : (
-          <UserOutline width={22} height={23} />
-        );
+        return isFocused ? <User /> : <UserOutline />;
       default:
         return <></>;
     }

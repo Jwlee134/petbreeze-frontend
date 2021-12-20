@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import Button from "~/components/common/Button";
 import styled from "styled-components/native";
 
-import Shield from "~/assets/svg/safetyZone/footprint-shield.svg";
+import Shield from "~/assets/svg/area/footprint-shield.svg";
 import MyText from "~/components/common/MyText";
 import { PreAreaScreenNavigationProp } from "~/types/navigator";
 import { Animated } from "react-native";

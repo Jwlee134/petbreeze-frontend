@@ -7,7 +7,7 @@ import SearchResult from "./AreaSearchResult";
 import { useDispatch } from "react-redux";
 import { useAppSelector } from "~/store";
 import { deviceSettingActions } from "~/store/deviceSetting";
-import Search from "~/assets/svg/search.svg";
+import Search from "~/assets/svg/area/search.svg";
 import { Shadow } from "react-native-shadow-2";
 import { AreaScreenNavigationProp } from "~/types/navigator";
 

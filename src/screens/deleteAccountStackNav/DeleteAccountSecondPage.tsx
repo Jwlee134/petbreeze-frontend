@@ -9,6 +9,7 @@ import { DeleteAccountSecondPageScreenNavigationProp } from "~/types/navigator";
 import { useAppSelector } from "~/store";
 import userApi from "~/api/user";
 import { resetAll } from "~/utils";
+import messaging from "@react-native-firebase/messaging";
 
 const Container = styled.View`
   flex: 1;
@@ -50,6 +51,7 @@ const DeleteAccountSecondPage = forwardRef<DeleteAccountSecondGoBack, Props>(
       if (isSuccess) {
         (async () => {
           await resetAll();
+          await messaging().deleteToken();
           navigation.replace("Success", {
             text: "정상적으로\n탈퇴되었습니다.",
           });

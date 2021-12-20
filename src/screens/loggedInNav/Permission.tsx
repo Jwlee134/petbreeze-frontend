@@ -3,7 +3,7 @@ import { requestNotifications } from "react-native-permissions";
 import { PermissionScreenNavigationProp } from "~/types/navigator";
 import Button from "~/components/common/Button";
 import CustomHeader from "~/components/navigator/CustomHeader";
-import Bell from "~/assets/svg/bell.svg";
+import Bell from "~/assets/svg/permission/bell.svg";
 import MyText from "~/components/common/MyText";
 import styled from "styled-components/native";
 import { DimensionsContext } from "~/context/DimensionsContext";

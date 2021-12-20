@@ -1,7 +1,7 @@
 import React from "react";
 import { Keyboard, StyleSheet } from "react-native";
 import styled from "styled-components/native";
-import Search from "~/assets/svg/search.svg";
+import Search from "~/assets/svg/area/search.svg";
 import MyText from "~/components/common/MyText";
 import { useDispatch } from "react-redux";
 import { storageActions } from "~/store/storage";

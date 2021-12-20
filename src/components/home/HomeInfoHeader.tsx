@@ -3,7 +3,7 @@ import styled from "styled-components/native";
 import useDevice from "~/hooks/useDevice";
 import { useAppSelector } from "~/store";
 import MyText from "../common/MyText";
-import Clip from "~/assets/svg/clip.svg";
+import Clip from "~/assets/svg/home/clip.svg";
 import Clipboard from "@react-native-clipboard/clipboard";
 import Toast from "react-native-toast-message";
 import { Animated, useWindowDimensions, View } from "react-native";
