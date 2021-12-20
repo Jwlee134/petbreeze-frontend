@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, useCallback } from "react";
 import { TouchableWithoutFeedback, View } from "react-native";
 import styled from "styled-components/native";
 import palette from "~/styles/palette";
@@ -8,7 +8,7 @@ import Arrow from "~/assets/svg/arrow/arrow-right-b2.svg";
 import { Notification, NotificationCode } from "~/api/user";
 import { noAvatar } from "~/constants";
 import { Device } from "~/api/device";
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { NotificationScreenNavigationProp } from "~/types/navigator";
 
 const Container = styled.View<{ isLast: boolean }>`
@@ -40,6 +40,12 @@ interface Props {
 const NotificationItem = ({ data, device, isLast }: Props) => {
   const navigation = useNavigation<NotificationScreenNavigationProp>();
   const showArrow = data.notification_type_code === NotificationCode.FinishWalk;
+  const isFocused = useIsFocused();
+
+  const createdAt = useCallback(
+    () => formatCreatedAt(data.created_at),
+    [isFocused],
+  );
 
   const onPress = () => {
     if (!showArrow) return;
@@ -131,7 +137,7 @@ const NotificationItem = ({ data, device, isLast }: Props) => {
                 style={{ marginBottom: -2 }}
                 fontSize={12}
                 color="rgba(0, 0, 0, 0.3)">
-                {formatCreatedAt(data.created_at)}
+                {createdAt()}
               </MyText>
             </View>
           </MyText>

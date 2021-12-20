@@ -11,6 +11,7 @@ import useDevice from "~/hooks/useDevice";
 import useAppState from "~/hooks/useAppState";
 import { View } from "react-native";
 import LoadingIndicator from "~/components/lottie/LoadingIndicator";
+import { store } from "~/store";
 
 const Container = styled.ScrollView`
   flex: 1;
@@ -28,11 +29,11 @@ const Notification = () => {
   const [postRead] = userApi.useReadNotificationsMutation();
   const isFocused = useIsFocused();
   const appState = useAppState();
+  const newNotifs = data?.filter(notif => notif.is_new) || [];
 
   useEffect(() => {
     if (!data) return;
     const handleRead = async () => {
-      const newNotifs = data.filter(notif => notif.is_new);
       if (newNotifs.length) {
         postRead(newNotifs.map(notif => notif.id));
       }
@@ -41,12 +42,18 @@ const Notification = () => {
   }, [data]);
 
   useEffect(() => {
-    if (isFocused) refetch();
-  }, [isFocused]);
-
-  useEffect(() => {
-    if (appState === "active") refetch();
-  }, [appState]);
+    if (appState === "active" || isFocused) refetch();
+    if (!isFocused && newNotifs.length) {
+      store.dispatch(
+        userApi.util.updateQueryData("getNotifications", undefined, draft => {
+          newNotifs.forEach(newNotif => {
+            draft[draft.findIndex(notif => notif.id === newNotif.id)].is_new =
+              false;
+          });
+        }),
+      );
+    }
+  }, [appState, isFocused]);
 
   if (!data)
     return (
