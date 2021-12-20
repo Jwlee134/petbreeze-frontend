@@ -8,7 +8,6 @@ import {
 } from "~/types/navigator";
 import { useDispatch } from "react-redux";
 import { bleActions } from "~/store/ble";
-import { formActions } from "~/store/form";
 import { deviceSettingActions } from "~/store/deviceSetting";
 import { createStackNavigator } from "@react-navigation/stack";
 
@@ -31,7 +30,6 @@ const BleRootStackNav = ({
   useEffect(() => {
     return () => {
       dispatch(bleActions.reset());
-      dispatch(formActions.setState(null));
       dispatch(deviceSettingActions.setArea(null));
       dispatch(deviceSettingActions.setAreaDraft(null));
       dispatch(deviceSettingActions.setWiFiDraft(null));
