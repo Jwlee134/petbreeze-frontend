@@ -38,7 +38,9 @@ const Result = () => {
       (id, i) => results[i].status === "fulfilled",
     );
     const rejectedIds = selectedDeviceId.filter(
-      (id, i) => results[i].status === "rejected",
+      (id, i) =>
+        results[i].status === "rejected" &&
+        results[i].data.error_code === "D019",
     );
 
     if (rejectedIds.length) {
@@ -86,7 +88,6 @@ const Result = () => {
       );
     }
 
-    dispatch(deviceApi.util.invalidateTags([{ type: "Device", id: "LIST" }]));
     setTimeout(() => {
       dispatch(storageActions.setWalk(null));
     }, 200);

@@ -52,12 +52,12 @@ const StartWalking = ({
       const results = await allSettled(
         selectedIDs.map(id => startWalking(id).unwrap()),
       );
-      // 거절된 시작 요청이 있으면 거절된 디바이스의 id 토스트로 출력 및 성공한 디바이스
-      // 의 산책 종료 요청, 아니면 바로 산책 시작
+      // 거절된 시작 요청이 있으면 거절된 디바이스의 이름 토스트로 출력 및 성공한 디바이스의 산책 종료 요청, 아니면 바로 산책 시작
       if (
         results.some(
           result =>
-            result.status === "rejected" && result.reason.status === 400,
+            result.status === "rejected" &&
+            result.reason.data.error_code === "D018",
         )
       ) {
         const rejectedNames = selectedIDs
@@ -77,14 +77,8 @@ const StartWalking = ({
             .map(id => stopWalking(id)),
         );
       } else {
-        dispatch(
-          storageActions.setWalk({
-            selectedDeviceId: selectedIDs,
-          }),
-        );
-        navigation.replace("LoggedInNav", {
-          initialRouteName: "WalkMap",
-        });
+        dispatch(storageActions.setWalk({ selectedDeviceId: selectedIDs }));
+        navigation.replace("LoggedInNav", { initialRouteName: "WalkMap" });
       }
     } catch {}
   };
@@ -131,7 +125,7 @@ const StartWalking = ({
         style={{ width: 126, marginTop: 67 }}
         disabled={!selectedIDs.length}
         onPress={handleStart}>
-        선택 완료
+        산책하기
       </Button>
     </ScrollView>
   ) : (

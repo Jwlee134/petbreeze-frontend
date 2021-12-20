@@ -82,17 +82,19 @@ const InvitationCodeForm = ({
   const formatText = (text: string) => text.replace(/[^0-9a-zA-Z]/g, "");
 
   useEffect(() => {
-    if (!data) return;
-    const { name, profile_image, species, sex, birthdate } = data;
-    dispatch(
-      formActions.setState({
-        name,
-        photos: [profile_image],
-        species,
-        sex,
-        birthYear: new Date(birthdate).getFullYear(),
-      }),
-    );
+    if (data === undefined) return;
+    if (data) {
+      const { name, profile_image, species, sex, birthdate } = data;
+      dispatch(
+        formActions.setState({
+          name,
+          photos: [profile_image],
+          species,
+          sex,
+          birthYear: new Date(birthdate).getFullYear(),
+        }),
+      );
+    }
     navigation.navigate("Welcome");
   }, [data]);
 

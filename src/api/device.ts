@@ -135,12 +135,18 @@ interface WalkBody {
 
 const shouldInvalidateDeviceList = (error: FetchBaseQueryError | undefined) => {
   const code = error?.data?.error_code;
-  return code === "D003" || code === "permission_denied";
+  return (
+    code === "D003" ||
+    code === "D016" ||
+    code === "D017" ||
+    code === "permission_denied"
+  );
 };
 
-const shouldInvalidateUserList = (error: FetchBaseQueryError | undefined) =>
-  error?.data?.detail?.includes("user") ||
-  error?.data?.detail?.includes("User");
+const shouldInvalidateUserList = (error: FetchBaseQueryError | undefined) => {
+  const code = error?.data?.error_code;
+  return code === "D008";
+};
 
 const deviceApi = api.injectEndpoints({
   endpoints: builder => ({
@@ -239,7 +245,7 @@ const deviceApi = api.injectEndpoints({
         queryFulfilled.catch(postResult.undo);
       },
       invalidatesTags: (result, error, { deviceID }) => {
-        if (error?.status === 400 || shouldInvalidateDeviceList(error)) {
+        if (shouldInvalidateDeviceList(error)) {
           return [{ type: "Device", id: deviceID }];
         }
         return [];
@@ -271,7 +277,7 @@ const deviceApi = api.injectEndpoints({
         queryFulfilled.catch(putResult.undo);
       },
       invalidatesTags: (result, error, { deviceID }) => {
-        if (error?.status === 400 || shouldInvalidateDeviceList(error)) {
+        if (shouldInvalidateDeviceList(error)) {
           return [{ type: "Device", id: deviceID }];
         }
         return [];
@@ -291,7 +297,7 @@ const deviceApi = api.injectEndpoints({
         body,
       }),
       invalidatesTags: (result, error, { deviceID }) => {
-        if (error?.status === 400 || shouldInvalidateDeviceList(error)) {
+        if (shouldInvalidateDeviceList(error)) {
           return [{ type: "Device", id: deviceID }];
         }
         return [{ type: "Device", id: "MISSING" }];
@@ -313,7 +319,7 @@ const deviceApi = api.injectEndpoints({
         queryFulfilled.catch(deleteResult.undo);
       },
       invalidatesTags: (result, error, deviceID) => {
-        if (error?.status === 400 || shouldInvalidateDeviceList(error)) {
+        if (shouldInvalidateDeviceList(error)) {
           return [{ type: "Device", id: deviceID }];
         }
         return [];
@@ -711,6 +717,15 @@ const deviceApi = api.injectEndpoints({
         method: "POST",
         body,
       }),
+      onQueryStarted: async ({ deviceID }, { dispatch, queryFulfilled }) => {
+        const postResult = dispatch(
+          deviceApi.util.updateQueryData("getDeviceList", undefined, draft => {
+            draft[draft.findIndex(device => device.id === deviceID)].last_walk =
+              new Date().toISOString();
+          }),
+        );
+        queryFulfilled.catch(postResult.undo);
+      },
       invalidatesTags: (result, error, { deviceID }) => {
         if (shouldInvalidateDeviceList(error)) {
           return [{ type: "Device", id: deviceID }];
@@ -764,7 +779,7 @@ const deviceApi = api.injectEndpoints({
         if (shouldInvalidateDeviceList(error)) {
           return [{ type: "Device", id: deviceID }];
         }
-        if (!error || error?.data?.detail === "Walk id does not exist.") {
+        if (!error || error?.data?.error_code === "D010") {
           return [
             { type: "Walk", id: walkID },
             { type: "Walk", id: "MONTHLY" },
