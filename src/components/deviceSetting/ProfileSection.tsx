@@ -10,6 +10,7 @@ import { DeviceSettingScreenNavigationProp } from "~/types/navigator";
 import { useDispatch } from "react-redux";
 import { noAvatar, noName } from "~/constants";
 import { formActions } from "~/store/form";
+import palette from "~/styles/palette";
 
 const Container = styled.View`
   align-items: center;
@@ -21,6 +22,18 @@ const Image = styled.Image`
   width: 70px;
   height: 70px;
   border-radius: 35px;
+`;
+
+const PencilContainer = styled.View`
+  background-color: ${palette.blue_7b};
+  width: 28px;
+  height: 28px;
+  border-radius: 14px;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  bottom: 0;
+  right: -12px;
 `;
 
 const ProfileSection = ({
@@ -69,15 +82,9 @@ const ProfileSection = ({
               : noAvatar
           }
         />
-        <Pencil
-          width={28}
-          height={28}
-          style={{
-            position: "absolute",
-            bottom: 0,
-            right: -10,
-          }}
-        />
+        <PencilContainer>
+          <Pencil />
+        </PencilContainer>
       </TouchableOpacity>
       <MyText style={{ marginTop: 7 }} fontWeight="medium">
         {data?.name || name || noName}
