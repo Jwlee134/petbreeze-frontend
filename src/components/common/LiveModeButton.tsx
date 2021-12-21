@@ -10,7 +10,7 @@ import MapButton from "./MapButton";
 import MyText from "./MyText";
 import CommonCenterModal from "../modal/CommonCenterModal";
 import allSettled from "promise.allsettled";
-import { formatNickname } from "~/utils";
+import { delay, formatNickname } from "~/utils";
 import Toast from "react-native-toast-message";
 import { ToastType } from "~/styles/toast";
 import styled from "styled-components/native";
@@ -50,12 +50,11 @@ const LiveModeButton = ({
     if (deviceList.length) setDraft(deviceList);
   }, [deviceList]);
 
-  const resetAndClose = () => {
+  const resetAndClose = async () => {
     close();
-    setTimeout(() => {
-      if (resume) resume();
-      setIsSelected(false);
-    }, centerModalOutTiming);
+    await delay(centerModalOutTiming);
+    if (resume) resume();
+    setIsSelected(false);
   };
 
   const sendRequest = async (list: { id: number; value: number }[]) => {
@@ -151,8 +150,14 @@ const LiveModeButton = ({
       <CommonCenterModal
         modalProps={modalProps}
         extraProps={{
-          onBackButtonPress: resetAndClose,
-          onBackdropPress: resetAndClose,
+          onBackButtonPress: () => {
+            setDraft(deviceList);
+            resetAndClose();
+          },
+          onBackdropPress: () => {
+            setDraft(deviceList);
+            resetAndClose();
+          },
         }}
         title={isSelected ? "잠깐!" : undefined}
         titleFontWeight={isSelected ? "medium" : undefined}
