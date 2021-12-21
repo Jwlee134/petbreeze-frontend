@@ -59,7 +59,7 @@ export interface DeviceCoord {
   };
 }
 
-interface DeviceMember {
+export interface DeviceMember {
   id: number;
   nickname: string;
 }

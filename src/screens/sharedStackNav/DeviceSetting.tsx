@@ -10,7 +10,7 @@ import ProfileSection from "~/components/deviceSetting/ProfileSection";
 import FamilySection from "~/components/deviceSetting/FamilySection";
 import { DeviceSettingScreenProps } from "~/types/navigator";
 import { useDispatch } from "react-redux";
-import deviceApi, { AreaResponse } from "~/api/device";
+import deviceApi, { AreaResponse, DeviceMembers } from "~/api/device";
 import { deviceSettingActions } from "~/store/deviceSetting";
 import { store } from "~/store";
 import LoadingIndicator from "~/components/lottie/LoadingIndicator";
@@ -19,6 +19,7 @@ import useUpdateDeviceSetting from "~/hooks/useUpdateDeviceSetting";
 import Toast from "react-native-toast-message";
 import { ToastType } from "~/styles/toast";
 import { ScrollView } from "react-native-gesture-handler";
+import allSettled from "promise.allsettled";
 
 const DeviceSetting = ({
   navigation,
@@ -39,14 +40,17 @@ const DeviceSetting = ({
     deviceApi.useGetDeviceMembersQuery(deviceID, {
       refetchOnMountOrArgChange: true,
     });
-  const isLoading = getSetting || getProfile || getMembers;
+  const [deleteMember, { isLoading: isDeleting, isSuccess: isDeleted }] =
+    deviceApi.useDeleteDeviceMemberMutation();
   const {
     sendRequest,
-    isLoading: isUpdating,
-    isSuccess,
+    isLoading: isChanging,
+    isSuccess: isUpdated,
   } = useUpdateDeviceSetting(deviceID);
+  const isLoading = getSetting || getProfile || getMembers;
+  const isUpdating = isChanging || isDeleting;
+  const isSuccess = isUpdated || isDeleted;
 
-  // 마운트 시 스토어에 response 저장
   useEffect(() => {
     if (!settings) return;
     if (!settings.setting_confirmation) {
@@ -59,6 +63,11 @@ const DeviceSetting = ({
     dispatch(deviceSettingActions.setAreaResult(settings.safety_areas));
     dispatch(deviceSettingActions.setPeriod(settings.collection_period));
   }, [settings]);
+
+  useEffect(() => {
+    if (!members) return;
+    dispatch(deviceSettingActions.setMembersResult(members));
+  }, [members]);
 
   const isAreaChanged = (safety_areas: AreaResponse[]) =>
     safety_areas.some(area => {
@@ -84,23 +93,42 @@ const DeviceSetting = ({
     );
   };
 
+  const deletedMemberIDs = (memberResult: DeviceMembers | null) => {
+    if (!memberResult) return [];
+    return (
+      members?.members
+        .filter(
+          member =>
+            !memberResult.members.map(member => member.id).includes(member.id),
+        )
+        .map(member => member.id) || []
+    );
+  };
+
+  const sendMemberRequest = async (list: number[]) => {
+    await allSettled(list.map(id => deleteMember({ deviceID, userID: id })));
+  };
+
   const handleSubmit = async () => {
-    if (isUpdating || !settings) return;
+    if (isUpdating || !settings || !members) return;
     const {
-      result: { collection_period, safety_areas },
+      result: { collection_period, safety_areas, members: memberResult },
     } = store.getState().deviceSetting;
     if (isSettingsChanged(collection_period, safety_areas)) {
       await sendRequest(safety_areas, collection_period);
     }
+    if (deletedMemberIDs(memberResult).length) {
+      await sendMemberRequest(deletedMemberIDs(memberResult));
+    }
   };
 
   useEffect(() => {
-    if (isSuccess)
+    if (isSuccess || isDeleted)
       Toast.show({
         type: ToastType.Notification,
         text1: "성공적으로 변경되었습니다.",
       });
-  }, [isSuccess]);
+  }, [isSuccess, isDeleted]);
 
   useEffect(() => {
     return () => {
@@ -144,7 +172,7 @@ const DeviceSetting = ({
           <View style={{ paddingHorizontal: 16, paddingVertical: 10 }}>
             <Divider />
           </View>
-          <FamilySection data={members} deviceID={deviceID} />
+          <FamilySection deviceID={deviceID} />
         </ScrollView>
       )}
     </>

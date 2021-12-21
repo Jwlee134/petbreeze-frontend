@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components/native";
-import deviceApi, { DeviceMembers } from "~/api/device";
+import deviceApi from "~/api/device";
 import MyText from "~/components/common/MyText";
 import palette from "~/styles/palette";
 import SectionHeader from "./SectionHeader";
@@ -13,6 +13,9 @@ import Toast from "react-native-toast-message";
 import Clipboard from "@react-native-clipboard/clipboard";
 import { ToastType } from "~/styles/toast";
 import SwipeableList from "../common/SwipeableList";
+import { useAppSelector } from "~/store";
+import { useDispatch } from "react-redux";
+import { deviceSettingActions } from "~/store/deviceSetting";
 
 const Item = styled.View`
   height: 49px;
@@ -29,19 +32,14 @@ const CrownContainer = styled.View`
   align-items: center;
 `;
 
-const FamilySection = ({
-  data,
-  deviceID,
-}: {
-  data: DeviceMembers | undefined;
-  deviceID: number;
-}) => {
+const FamilySection = ({ deviceID }: { deviceID: number }) => {
+  const data = useAppSelector(state => state.deviceSetting.result.members);
   const { open, close, modalProps } = useModal();
   const [addMember, { data: codeData, isLoading }] =
     deviceApi.useLazyGetInvitationCodeQuery();
-  const [deleteMember] = deviceApi.useDeleteDeviceMemberMutation();
   const [myID, setMyID] = useState(0);
   const [clickedID, setClickedID] = useState(0);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     SecureStore.getItemAsync(secureItems.userID).then(id => {
@@ -105,7 +103,7 @@ const FamilySection = ({
       <CommonCenterModal
         close={close}
         onRightButtonPress={() => {
-          deleteMember({ deviceID, userID: clickedID });
+          dispatch(deviceSettingActions.deleteMember(clickedID));
           close();
         }}
         title="삭제하시나요?"

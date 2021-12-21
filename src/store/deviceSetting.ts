@@ -1,5 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { AreaResponse, GeoJsonType, WiFiResponse } from "~/api/device";
+import {
+  AreaResponse,
+  DeviceMembers,
+  GeoJsonType,
+  WiFiResponse,
+} from "~/api/device";
 
 interface AreaDraft {
   name: string;
@@ -25,6 +30,7 @@ interface State {
   result: {
     collection_period: number;
     safety_areas: AreaResponse[];
+    members: DeviceMembers | null;
   };
   draft: {
     area: AreaDraft;
@@ -59,6 +65,7 @@ const initialState: State = {
         password: "",
       })),
     })),
+    members: null,
   },
   draft: {
     area: {
@@ -171,6 +178,16 @@ const deviceSetting = createSlice({
       } else {
         state.draft.wifi = initialState.draft.wifi;
       }
+    },
+
+    setMembersResult: (state, { payload }: PayloadAction<DeviceMembers>) => {
+      state.result.members = payload;
+    },
+    deleteMember: (state, { payload }: PayloadAction<number>) => {
+      if (!state.result.members) return;
+      state.result.members.members = state.result.members.members.filter(
+        member => member.id !== payload,
+      );
     },
 
     reset: () => initialState,
