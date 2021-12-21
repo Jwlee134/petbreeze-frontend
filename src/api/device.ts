@@ -1,4 +1,3 @@
-import { FetchBaseQueryError } from "@reduxjs/toolkit/query/react";
 import api, { providesList } from ".";
 
 export type DeepPartial<T> = {
@@ -133,8 +132,8 @@ interface WalkBody {
   };
 }
 
-const shouldInvalidateDeviceList = (error: FetchBaseQueryError | undefined) => {
-  const code = error?.data?.error_code;
+const shouldInvalidateDeviceList = (error: any) => {
+  const code = error?.error?.data?.error_code;
   return (
     code === "D003" ||
     code === "D016" ||
@@ -143,8 +142,8 @@ const shouldInvalidateDeviceList = (error: FetchBaseQueryError | undefined) => {
   );
 };
 
-const shouldInvalidateUserList = (error: FetchBaseQueryError | undefined) => {
-  const code = error?.data?.error_code;
+const shouldInvalidateUserList = (error: any) => {
+  const code = error?.error?.data?.error_code;
   return code === "D008";
 };
 
@@ -214,10 +213,7 @@ const deviceApi = api.injectEndpoints({
         try {
           await queryFulfilled;
         } catch (error: any) {
-          if (
-            error?.data?.detail.includes("not in emergency") ||
-            shouldInvalidateDeviceList(error)
-          ) {
+          if (shouldInvalidateDeviceList(error)) {
             dispatch(
               deviceApi.util.invalidateTags([{ type: "Device", id: deviceID }]),
             );

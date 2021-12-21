@@ -53,33 +53,30 @@ const StartWalking = ({
         selectedIDs.map(id => startWalking(id).unwrap()),
       );
       // 거절된 시작 요청이 있으면 거절된 디바이스의 이름 토스트로 출력 및 성공한 디바이스의 산책 종료 요청, 아니면 바로 산책 시작
-      if (
-        results.some(
-          result =>
-            result.status === "rejected" &&
-            result.reason.data.error_code === "D018",
-        )
-      ) {
-        const rejectedNames = selectedIDs
-          .filter((id, i) => results[i].status === "rejected")
-          .map(
-            id =>
-              deviceList[deviceList.findIndex(device => device.id === id)].name,
-          )
-          .join(", ");
-        Toast.show({
-          type: ToastType.Error,
-          text1: `${formatNickname(rejectedNames)}는 이미 산책중입니다.`,
-        });
+      if (results.some(result => result.status === "rejected")) {
+        if (results.some(result => result.reason.data.error_code === "D018")) {
+          const rejectedNames = selectedIDs
+            .filter((id, i) => results[i].status === "rejected")
+            .map(
+              id =>
+                deviceList[deviceList.findIndex(device => device.id === id)]
+                  .name,
+            )
+            .join(", ");
+          Toast.show({
+            type: ToastType.Error,
+            text1: `${formatNickname(rejectedNames)}는 이미 산책중입니다.`,
+          });
+        }
         await allSettled(
           selectedIDs
             .filter((id, i) => results[i].status !== "rejected")
             .map(id => stopWalking(id)),
         );
-      } else {
-        dispatch(storageActions.setWalk({ selectedDeviceId: selectedIDs }));
-        navigation.replace("LoggedInNav", { initialRouteName: "WalkMap" });
+        return;
       }
+      dispatch(storageActions.setWalk({ selectedDeviceId: selectedIDs }));
+      navigation.replace("LoggedInNav", { initialRouteName: "WalkMap" });
     } catch {}
   };
 
