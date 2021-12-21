@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components/native";
-import deviceApi from "~/api/device";
+import deviceApi, { DeviceMembers } from "~/api/device";
 import MyText from "~/components/common/MyText";
 import palette from "~/styles/palette";
 import SectionHeader from "./SectionHeader";
@@ -29,11 +29,14 @@ const CrownContainer = styled.View`
   align-items: center;
 `;
 
-const FamilySection = ({ deviceID }: { deviceID: number }) => {
+const FamilySection = ({
+  data,
+  deviceID,
+}: {
+  data: DeviceMembers | undefined;
+  deviceID: number;
+}) => {
   const { open, close, modalProps } = useModal();
-  const { data } = deviceApi.useGetDeviceMembersQuery(deviceID, {
-    refetchOnMountOrArgChange: true,
-  });
   const [addMember, { data: codeData, isLoading }] =
     deviceApi.useLazyGetInvitationCodeQuery();
   const [deleteMember] = deviceApi.useDeleteDeviceMemberMutation();

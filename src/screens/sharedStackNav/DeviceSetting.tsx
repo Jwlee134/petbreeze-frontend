@@ -27,13 +27,24 @@ const DeviceSetting = ({
   },
 }: DeviceSettingScreenProps) => {
   const dispatch = useDispatch();
-
-  const { data: settings, isLoading: getLoading } =
+  const { data: settings, isLoading: getSetting } =
     deviceApi.useGetDeviceSettingQuery(deviceID, {
       refetchOnMountOrArgChange: true,
     });
-  const { sendRequest, isLoading, isSuccess } =
-    useUpdateDeviceSetting(deviceID);
+  const { data: profile, isLoading: getProfile } =
+    deviceApi.useGetDeviceProfileQuery(deviceID, {
+      refetchOnMountOrArgChange: true,
+    });
+  const { data: members, isLoading: getMembers } =
+    deviceApi.useGetDeviceMembersQuery(deviceID, {
+      refetchOnMountOrArgChange: true,
+    });
+  const isLoading = getSetting || getProfile || getMembers;
+  const {
+    sendRequest,
+    isLoading: isUpdating,
+    isSuccess,
+  } = useUpdateDeviceSetting(deviceID);
 
   // 마운트 시 스토어에 response 저장
   useEffect(() => {
@@ -74,7 +85,7 @@ const DeviceSetting = ({
   };
 
   const handleSubmit = async () => {
-    if (isLoading || !settings) return;
+    if (isUpdating || !settings) return;
     const {
       result: { collection_period, safety_areas },
     } = store.getState().deviceSetting;
@@ -101,7 +112,7 @@ const DeviceSetting = ({
     <>
       <CustomHeader
         RightButtonText={
-          isLoading ? (
+          isUpdating ? (
             <LoadingIndicator size={textLoadingIndicatorSize} />
           ) : (
             <MyText color={palette.blue_7b}>완료</MyText>
@@ -111,14 +122,19 @@ const DeviceSetting = ({
         navigation={navigation}
         title="기기설정"
       />
-      {getLoading ? (
+      {isLoading ? (
         <View
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
           <LoadingIndicator size={80} />
         </View>
       ) : (
         <ScrollView contentContainerStyle={{ flexGrow: 1, paddingBottom: 16 }}>
-          <ProfileSection deviceID={deviceID} avatar={avatar} name={name} />
+          <ProfileSection
+            data={profile}
+            deviceID={deviceID}
+            avatar={avatar}
+            name={name}
+          />
           <Divider isHairline={false} style={{ marginBottom: 10 }} />
           <PeriodSection />
           <View style={{ paddingHorizontal: 16, paddingVertical: 10 }}>
@@ -128,7 +144,7 @@ const DeviceSetting = ({
           <View style={{ paddingHorizontal: 16, paddingVertical: 10 }}>
             <Divider />
           </View>
-          <FamilySection deviceID={deviceID} />
+          <FamilySection data={members} deviceID={deviceID} />
         </ScrollView>
       )}
     </>

@@ -64,7 +64,7 @@ interface DeviceMember {
   nickname: string;
 }
 
-interface DeviceMembers {
+export interface DeviceMembers {
   owner_id: number;
   members: DeviceMember[];
 }

@@ -5,7 +5,7 @@ import Divider from "../common/Divider";
 import { TouchableOpacity } from "react-native";
 import MyText from "../common/MyText";
 import { useNavigation } from "@react-navigation/native";
-import deviceApi from "~/api/device";
+import { DeviceProfile } from "~/api/device";
 import { DeviceSettingScreenNavigationProp } from "~/types/navigator";
 import { useDispatch } from "react-redux";
 import { noAvatar, noName } from "~/constants";
@@ -36,19 +36,16 @@ const PencilContainer = styled.View`
   right: -12px;
 `;
 
-const ProfileSection = ({
-  deviceID,
-  avatar,
-  name,
-}: {
+interface Props {
+  data: DeviceProfile | undefined;
   deviceID: number;
   avatar: string;
   name: string;
-}) => {
+}
+
+const ProfileSection = ({ data, deviceID, avatar, name }: Props) => {
   const navigation = useNavigation<DeviceSettingScreenNavigationProp>();
-  const { data } = deviceApi.useGetDeviceProfileQuery(deviceID, {
-    refetchOnMountOrArgChange: true,
-  });
+
   const dispatch = useDispatch();
 
   const onPress = () => {
