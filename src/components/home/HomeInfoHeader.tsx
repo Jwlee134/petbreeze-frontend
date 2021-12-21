@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import styled from "styled-components/native";
 import useDevice from "~/hooks/useDevice";
 import { useAppSelector } from "~/store";
@@ -6,11 +6,16 @@ import MyText from "../common/MyText";
 import Clip from "~/assets/svg/home/clip.svg";
 import Clipboard from "@react-native-clipboard/clipboard";
 import Toast from "react-native-toast-message";
-import { Animated, useWindowDimensions, View } from "react-native";
+import { useWindowDimensions, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import LoadingIndicator from "../lottie/LoadingIndicator";
 import { textLoadingIndicatorSize } from "~/styles/constants";
 import { noAvatar } from "~/constants";
+import Animated, {
+  useAnimatedStyle,
+  useDerivedValue,
+  withTiming,
+} from "react-native-reanimated";
 
 const Container = styled(Animated.View)`
   background-color: white;
@@ -69,20 +74,14 @@ const HomeInfoHeader = () => {
   const { top } = useSafeAreaInsets();
   const { width } = useWindowDimensions();
 
-  const value = useRef(new Animated.Value(0)).current;
+  const height = top + 52;
 
-  const translateY = value.interpolate({
-    inputRange: [0, 1],
-    outputRange: [-200, 0],
-  });
-
-  useEffect(() => {
-    Animated.timing(value, {
-      toValue: showInfoHeader ? 1 : 0,
-      useNativeDriver: true,
-      duration: 200,
-    }).start();
-  }, [showInfoHeader]);
+  const value = useDerivedValue(() =>
+    showInfoHeader ? withTiming(0) : withTiming(-height),
+  );
+  const transStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: value.value }],
+  }));
 
   const onClipPress = () => {
     if (areaRadius) return;
@@ -98,13 +97,7 @@ const HomeInfoHeader = () => {
       ?.profile_image || "";
 
   return (
-    <Container
-      style={{
-        opacity: value,
-        width,
-        height: top + 52,
-        transform: [{ translateY }],
-      }}>
+    <Container style={[{ width, height }, transStyle]}>
       {isLoading ? (
         <LoadingContainer>
           <LoadingIndicator size={textLoadingIndicatorSize} />

@@ -1,5 +1,4 @@
-import React, { useCallback, useEffect, useRef } from "react";
-import { Animated } from "react-native";
+import React, { useCallback } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import useDevice from "~/hooks/useDevice";
 import { liveModeButtonStyle, myLocationButtonStyle } from "~/styles/constants";
@@ -10,6 +9,11 @@ import Toast from "react-native-toast-message";
 import { ToastType } from "~/styles/toast";
 import Geolocation from "react-native-geolocation-service";
 import { useAppSelector } from "~/store";
+import Animated, {
+  useAnimatedStyle,
+  useDerivedValue,
+  withTiming,
+} from "react-native-reanimated";
 
 interface Props {
   setIsMyLocationMoved: React.Dispatch<React.SetStateAction<boolean>>;
@@ -34,20 +38,17 @@ const HomeMapButtons = ({
   setCoords,
   trackingId,
 }: Props) => {
-  const value = useRef(new Animated.Value(0)).current;
   const deviceList = useDevice();
   const { top } = useSafeAreaInsets();
   const showInfoHeader = useAppSelector(
     state => state.common.home.showInfoHeader,
   );
-
-  useEffect(() => {
-    Animated.timing(value, {
-      toValue: showInfoHeader ? 56 : 0,
-      useNativeDriver: true,
-      duration: 200,
-    }).start();
-  }, [showInfoHeader]);
+  const value = useDerivedValue(() =>
+    showInfoHeader ? withTiming(56) : withTiming(0),
+  );
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: value.value }],
+  }));
 
   const handleMyLocation = useCallback(async () => {
     try {
@@ -78,18 +79,10 @@ const HomeMapButtons = ({
 
   return (
     <>
-      <Animated.View
-        style={{
-          ...(liveModeButtonStyle(top, true) as object),
-          transform: [{ translateY: value }],
-        }}>
+      <Animated.View style={[liveModeButtonStyle(top, true), animatedStyle]}>
         <LiveModeButton deviceList={deviceList} />
       </Animated.View>
-      <Animated.View
-        style={{
-          ...(myLocationButtonStyle(top, true) as object),
-          transform: [{ translateY: value }],
-        }}>
+      <Animated.View style={[myLocationButtonStyle(top, true), animatedStyle]}>
         <MapButton onPress={handleMyLocation} icon="myLocation" />
       </Animated.View>
     </>
