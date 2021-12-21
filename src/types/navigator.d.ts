@@ -44,6 +44,7 @@ export type RootNavParamList = {
         initialBleWithHeaderStackNavRouteName?: keyof BleWithHeaderStackNavParamList;
         initialWalkDetailDayParams?: WalkDetailDayParams;
         initialBatteryAlertParams?: BatteryAlertParams;
+        initialPermissionParams?: { isLogIn: boolean };
       }
     | undefined;
 };
@@ -71,7 +72,7 @@ export type LoggedInNavRouteProp = RouteProp<RootNavParamList, "LoggedInNav">;
 
 export type LoggedInNavParamList = {
   Policy: undefined;
-  Permission: undefined;
+  Permission: { isLogIn?: boolean } | undefined;
   AddDevice: { isOnboarding?: boolean } | undefined;
   InvitationCodeForm: undefined;
   BottomTabNav:
@@ -110,9 +111,9 @@ export type PolicyScreenNavigationProp = CompositeNavigationProp<
   StackNavigationProp<LoggedInNavParamList, "Policy">,
   StackNavigationProp<RootNavParamList>
 >;
-export type PermissionScreenNavigationProp = CompositeNavigationProp<
-  StackNavigationProp<LoggedInNavParamList, "Permission">,
-  StackNavigationProp<RootNavParamList>
+export type PermissionScreenProps = CompositeScreenProps<
+  StackScreenProps<LoggedInNavParamList, "Permission">,
+  StackScreenProps<RootNavParamList>
 >;
 export type AddDeviceScreenProps = CompositeScreenProps<
   StackScreenProps<LoggedInNavParamList, "AddDevice">,

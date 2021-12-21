@@ -45,6 +45,7 @@ const LoggedInNav = ({
       initialBottomTabRouteName,
       initialWalkDetailDayParams,
       initialBatteryAlertParams,
+      initialPermissionParams,
     } = {},
   },
 }: {
@@ -150,7 +151,11 @@ const LoggedInNav = ({
         }}
       />
       <Stack.Screen name="Policy" component={Policy} />
-      <Stack.Screen name="Permission" component={Permission} />
+      <Stack.Screen
+        name="Permission"
+        component={Permission}
+        initialParams={initialPermissionParams}
+      />
       <Stack.Screen name="AddDevice" component={AddDevice} />
       <Stack.Screen name="InvitationCodeForm" component={InvitationCodeForm} />
       <Stack.Screen

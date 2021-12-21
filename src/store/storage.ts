@@ -3,6 +3,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 interface Init {
   isCodePushUpdated: boolean;
   isIntroPassed: boolean;
+  isPermissionAllowed: boolean;
 }
 
 interface Walk {
@@ -41,6 +42,7 @@ const initialState: State = {
   init: {
     isCodePushUpdated: false,
     isIntroPassed: false,
+    isPermissionAllowed: false,
   },
   walk: {
     selectedDeviceId: [],

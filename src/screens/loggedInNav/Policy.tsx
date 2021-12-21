@@ -10,6 +10,7 @@ import Arrow from "~/assets/svg/arrow/arrow-right-light-gray.svg";
 import { DimensionsContext, RpHeight } from "~/context/DimensionsContext";
 import useAnimatedSequence from "~/hooks/useAnimatedSequence";
 import { useSafeAreaFrame } from "react-native-safe-area-context";
+import { useAppSelector } from "~/store";
 
 const TopContainer = styled(Animated.View)`
   flex-grow: 1;
@@ -73,10 +74,20 @@ const data = [
 
 const Policy = ({ navigation }: { navigation: PolicyScreenNavigationProp }) => {
   const { width, rpHeight } = useContext(DimensionsContext);
-  const handleNext = () => navigation.navigate("Permission");
   const [selected, setSelected] = useState<number[]>([]);
   const [value1, value2] = useAnimatedSequence({ numOfValues: 2 });
   const { height } = useSafeAreaFrame();
+  const isPermissionAllowed = useAppSelector(
+    state => state.storage.init.isPermissionAllowed,
+  );
+
+  const handleNext = () => {
+    if (isPermissionAllowed) {
+      navigation.navigate("AddDevice", { isOnboarding: true });
+    } else {
+      navigation.navigate("Permission");
+    }
+  };
 
   const handlePress = (i: number) =>
     setSelected(prev => {

@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { requestNotifications } from "react-native-permissions";
-import { PermissionScreenNavigationProp } from "~/types/navigator";
+import { PermissionScreenProps } from "~/types/navigator";
 import Button from "~/components/common/Button";
 import CustomHeader from "~/components/navigator/CustomHeader";
 import Bell from "~/assets/svg/permission/bell.svg";
@@ -15,6 +15,8 @@ import {
   withDelay,
   withTiming,
 } from "react-native-reanimated";
+import { useDispatch } from "react-redux";
+import { storageActions } from "~/store/storage";
 
 const Container = styled.View`
   flex: 1;
@@ -23,9 +25,8 @@ const Container = styled.View`
 
 const Permission = ({
   navigation,
-}: {
-  navigation: PermissionScreenNavigationProp;
-}) => {
+  route: { params: { isLogIn } = {} },
+}: PermissionScreenProps) => {
   const value = useSharedValue(0);
   const opacity = useAnimatedStyle(() => {
     value.value = 1;
@@ -37,15 +38,22 @@ const Permission = ({
     };
   });
   const { rpHeight } = useContext(DimensionsContext);
+  const dispatch = useDispatch();
+
   const handlePress = async () => {
     await requestNotifications(["alert", "badge"]);
-    navigation.navigate("AddDevice", { isOnboarding: true });
+    dispatch(storageActions.setInit({ isPermissionAllowed: true }));
+    if (isLogIn) {
+      navigation.replace("BottomTabNav");
+    } else {
+      navigation.navigate("AddDevice", { isOnboarding: true });
+    }
   };
 
   return (
     <>
       <Container>
-        <CustomHeader navigation={navigation} />
+        <CustomHeader navigation={!isLogIn ? navigation : undefined} />
         <View>
           <Bell
             width={rpHeight(105)}

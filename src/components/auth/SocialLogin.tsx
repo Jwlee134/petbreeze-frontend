@@ -11,6 +11,7 @@ import userApi from "~/api/user";
 import messaging from "@react-native-firebase/messaging";
 import * as SecureStore from "expo-secure-store";
 import { secureItems } from "~/constants";
+import { useAppSelector } from "~/store";
 
 const AuthButton = styled.TouchableOpacity`
   justify-content: center;
@@ -21,6 +22,9 @@ const AuthButton = styled.TouchableOpacity`
 `;
 
 const SocialLogin = ({ name }: { name: string }) => {
+  const isPermissionAllowed = useAppSelector(
+    state => state.storage.init.isPermissionAllowed,
+  );
   const navigation = useNavigation<AuthScreenNavigationProp>();
 
   const [kakaoLoading, setKakaoLoading] = useState(false);
@@ -73,9 +77,16 @@ const SocialLogin = ({ name }: { name: string }) => {
       if (fbLoading) setFbLoading(false);
       if (kakaoLoading) setKakaoLoading(false);
       if (statusCode === 201) {
+        // 회원가입
         navigation.replace("LoggedInNav", { initialRouteName: "Policy" });
       } else {
-        navigation.replace("LoggedInNav");
+        // 로그인
+        navigation.replace("LoggedInNav", {
+          initialRouteName: isPermissionAllowed ? "BottomTabNav" : "Permission",
+          initialPermissionParams: isPermissionAllowed
+            ? undefined
+            : { isLogIn: true },
+        });
       }
     } catch (error) {
       if (fbLoading) setFbLoading(false);
