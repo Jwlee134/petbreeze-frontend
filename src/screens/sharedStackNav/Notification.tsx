@@ -9,13 +9,9 @@ import userApi from "~/api/user";
 import { useIsFocused } from "@react-navigation/native";
 import useDevice from "~/hooks/useDevice";
 import useAppState from "~/hooks/useAppState";
-import { View } from "react-native";
+import { FlatList, View } from "react-native";
 import LoadingIndicator from "~/components/lottie/LoadingIndicator";
 import { store } from "~/store";
-
-const Container = styled.ScrollView`
-  flex: 1;
-`;
 
 const CategoryTitle = styled.View`
   margin-top: 25px;
@@ -67,55 +63,59 @@ const Notification = () => {
   const thisWeek = data.filter(notif => !notif.is_new);
 
   return (
-    <Container>
-      {newNotif.length ? (
+    <FlatList
+      data={thisWeek}
+      ListHeaderComponent={() => (
         <>
-          <CategoryTitle>
-            <MyText fontWeight="medium" fontSize={18} color="#333333">
-              새로운 알림
-            </MyText>
-          </CategoryTitle>
-          {newNotif.map((notif, i) => (
-            <NotificationItem
-              key={notif.id}
-              data={notif}
-              device={
-                deviceList[
-                  deviceList.findIndex(
-                    device => device.id === notif.related_device_id,
-                  )
-                ]
-              }
-              isLast={i === newNotif.length - 1}
-            />
-          ))}
-          {thisWeek.length ? <Divider /> : null}
+          {newNotif.length ? (
+            <>
+              <CategoryTitle>
+                <MyText fontWeight="medium" fontSize={18} color="#333333">
+                  새로운 알림
+                </MyText>
+              </CategoryTitle>
+              {newNotif.map((notif, i) => (
+                <NotificationItem
+                  key={notif.id}
+                  data={notif}
+                  device={
+                    deviceList[
+                      deviceList.findIndex(
+                        device => device.id === notif.related_device_id,
+                      )
+                    ]
+                  }
+                  isLast={i === newNotif.length - 1}
+                />
+              ))}
+              {thisWeek.length ? <Divider /> : null}
+            </>
+          ) : null}
+          {thisWeek.length ? (
+            <CategoryTitle>
+              <MyText fontWeight="medium" fontSize={18} color="#333333">
+                이번주
+              </MyText>
+            </CategoryTitle>
+          ) : null}
         </>
-      ) : null}
-      {thisWeek.length ? (
-        <>
-          <CategoryTitle>
-            <MyText fontWeight="medium" fontSize={18} color="#333333">
-              이번주
-            </MyText>
-          </CategoryTitle>
-          {thisWeek.map((notif, i) => (
-            <NotificationItem
-              key={notif.id}
-              data={notif}
-              device={
-                deviceList[
-                  deviceList.findIndex(
-                    device => device.id === notif.related_device_id,
-                  )
-                ]
-              }
-              isLast={i === thisWeek.length - 1}
-            />
-          ))}
-        </>
-      ) : null}
-    </Container>
+      )}
+      keyExtractor={item => `${item.id}`}
+      renderItem={({ item, index }) => (
+        <NotificationItem
+          key={item.id}
+          data={item}
+          device={
+            deviceList[
+              deviceList.findIndex(
+                device => device.id === item.related_device_id,
+              )
+            ]
+          }
+          isLast={index === thisWeek.length - 1}
+        />
+      )}
+    />
   );
 };
 
