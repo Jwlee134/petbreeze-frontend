@@ -1,5 +1,5 @@
 import { FirebaseMessagingTypes } from "@react-native-firebase/messaging";
-import { noName } from "~/constants";
+import deviceApi from "~/api/device";
 import { store } from "~/store";
 import {
   LoggedInNavScreenNavigationProp,
@@ -61,6 +61,9 @@ export default (
         initialWalkDetailDayParams: params,
       });
     } else {
+      store.dispatch(
+        deviceApi.util.invalidateTags([{ type: "Device", id: "LIST" }]),
+      );
       navigation.navigate("WalkDetailDay", params);
     }
   }
@@ -77,6 +80,9 @@ export default (
         initialBatteryAlertParams: params,
       });
     } else {
+      store.dispatch(
+        deviceApi.util.invalidateTags([{ type: "Device", id: "LIST" }]),
+      );
       navigation.navigate("BatteryAlert", params);
     }
   }
