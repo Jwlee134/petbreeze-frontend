@@ -35,14 +35,14 @@ const DateModal = ({ close, modalProps, isEmergency = false }: Props) => {
     ? lostMonth
       ? new Date(
           new Date().getFullYear(),
-          lostMonth + 1,
+          lostMonth - 1,
           lostDate,
           lostHour,
           lostMinute,
         )
       : new Date()
     : birthYear
-    ? new Date(birthYear, birthMonth + 1, birthDay)
+    ? new Date(birthYear, birthMonth - 1, birthDay)
     : new Date();
   const [date, setDate] = useState(initialDate);
   const dispatch = useDispatch();
