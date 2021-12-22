@@ -10,7 +10,7 @@ import MapButton from "./MapButton";
 import MyText from "./MyText";
 import CommonCenterModal from "../modal/CommonCenterModal";
 import allSettled from "promise.allsettled";
-import { delay, formatNickname } from "~/utils";
+import { consonantResponder, delay } from "~/utils";
 import Toast from "react-native-toast-message";
 import { ToastType } from "~/styles/toast";
 import styled from "styled-components/native";
@@ -77,7 +77,9 @@ const LiveModeButton = ({
       Toast.show({
         type: ToastType.Error,
         text1: "최근에 다른 멤버가 설정을 변경했나요?",
-        text2: `${formatNickname(rejectedNames)}의 모드를 변경할 수 없습니다.`,
+        text2: `${rejectedNames}${consonantResponder(
+          rejectedNames,
+        )}의 모드를 변경할 수 없습니다.`,
       });
     } else {
       Toast.show({

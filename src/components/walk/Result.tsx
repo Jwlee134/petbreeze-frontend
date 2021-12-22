@@ -4,7 +4,7 @@ import Button from "../common/Button";
 import { WalkContext } from "~/context/WalkContext";
 import { useNavigation } from "@react-navigation/native";
 import { WalkMapScreenNavigationProp } from "~/types/navigator";
-import { formatNickname } from "~/utils";
+import { consonantResponder } from "~/utils";
 import deviceApi, { GeoJsonType } from "~/api/device";
 import imageHandler from "~/utils/imageHandler";
 import allSettled from "promise.allsettled";
@@ -52,7 +52,9 @@ const Result = () => {
         .join(", ");
       Toast.show({
         type: "error",
-        text1: `${formatNickname(rejectedNames)}는 산책중이 아닙니다.`,
+        text1: `${rejectedNames}${consonantResponder(
+          rejectedNames,
+        )}는 산책중이 아닙니다.`,
       });
     }
     const fulfilledResults = await allSettled(

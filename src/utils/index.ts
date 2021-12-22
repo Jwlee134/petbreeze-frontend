@@ -9,11 +9,14 @@ import { formActions } from "~/store/form";
 import { storageActions } from "~/store/storage";
 import * as SecureStore from "expo-secure-store";
 
-export const formatNickname = (str: string) => {
+const isEndWithConsonant = (str: string) => {
   const finalChrCode = str.charCodeAt(str.length - 1);
   const finalConsonantCode = (finalChrCode - 44032) % 28;
-  return finalConsonantCode === 0 ? str : `${str}이`;
+  return finalConsonantCode !== 0 && /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/.test(str);
 };
+
+export const consonantResponder = (str: string) =>
+  isEndWithConsonant(str) ? "이" : "";
 
 export const resetAll = async () => {
   store.dispatch(bleActions.reset());

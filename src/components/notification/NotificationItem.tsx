@@ -2,11 +2,11 @@ import React, { memo, useCallback } from "react";
 import { TouchableWithoutFeedback, View } from "react-native";
 import styled from "styled-components/native";
 import palette from "~/styles/palette";
-import { formatCreatedAt, formatNickname } from "~/utils";
+import { formatCreatedAt, consonantResponder } from "~/utils";
 import MyText from "../common/MyText";
 import Arrow from "~/assets/svg/arrow/arrow-right-b2.svg";
 import { Notification, NotificationCode } from "~/api/user";
-import { noAvatar } from "~/constants";
+import { noAvatar, noName } from "~/constants";
 import { Device } from "~/api/device";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { NotificationScreenNavigationProp } from "~/types/navigator";
@@ -63,10 +63,11 @@ const NotificationItem = ({ data, device, isLast }: Props) => {
         return (
           <>
             <MyText fontSize={14} fontWeight="bold">
-              {formatNickname(device.name)}
+              {device.name}
             </MyText>
             <MyText fontSize={14}>
-              의 배터리가 {data.battery_level as number}% 남았어요!
+              {consonantResponder(device.name)}의 배터리가{" "}
+              {data.battery_level || 0}% 남았어요!
             </MyText>
           </>
         );
@@ -74,10 +75,10 @@ const NotificationItem = ({ data, device, isLast }: Props) => {
         return (
           <>
             <MyText color={palette.red_f0} fontSize={14} fontWeight="bold">
-              {formatNickname(device.name)}
+              {device.name}
             </MyText>
             <MyText color={palette.red_f0} fontSize={14}>
-              가 안심존을 벗어났어요!
+              {consonantResponder(device.name)}가 안심존을 벗어났어요!
             </MyText>
           </>
         );
@@ -85,35 +86,43 @@ const NotificationItem = ({ data, device, isLast }: Props) => {
         return (
           <>
             <MyText fontSize={14} fontWeight="bold">
-              {formatNickname(device.name)}
+              {device.name}
             </MyText>
-            <MyText fontSize={14}>가 안심존에 돌아왔어요!</MyText>
+            <MyText fontSize={14}>
+              {consonantResponder(device.name)}가 안심존에 돌아왔어요!
+            </MyText>
           </>
         );
       case NotificationCode.StartWalk:
         return (
           <>
             <MyText fontSize={14} fontWeight="bold">
-              {formatNickname(device.name)}
+              {device.name}
             </MyText>
-            <MyText fontSize={14}>가 </MyText>
+            <MyText fontSize={14}>{consonantResponder(device.name)}가 </MyText>
             <MyText fontSize={14} fontWeight="bold">
-              {formatNickname(data.walk_handler_nickname as string)}
+              {data.walk_handler_nickname}
             </MyText>
-            <MyText fontSize={14}>랑 산책을 시작했어요!</MyText>
+            <MyText fontSize={14}>
+              {consonantResponder(data.walk_handler_nickname || noName)}랑
+              산책을 시작했어요!
+            </MyText>
           </>
         );
       case NotificationCode.FinishWalk:
         return (
           <>
             <MyText fontSize={14} fontWeight="bold">
-              {formatNickname(device.name)}
+              {device.name}
             </MyText>
-            <MyText fontSize={14}>가 </MyText>
+            <MyText fontSize={14}>{consonantResponder(device.name)}가 </MyText>
             <MyText fontSize={14} fontWeight="bold">
-              {formatNickname(data.walk_handler_nickname as string)}
+              {data.walk_handler_nickname}
             </MyText>
-            <MyText fontSize={14}>와의 산책을 끝냈어요!</MyText>
+            <MyText fontSize={14}>
+              {consonantResponder(data.walk_handler_nickname || noName)}
+              와의 산책을 끝냈어요!
+            </MyText>
           </>
         );
       default:

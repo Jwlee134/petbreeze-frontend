@@ -15,7 +15,7 @@ import { useDispatch } from "react-redux";
 import allSettled from "promise.allsettled";
 import Toast from "react-native-toast-message";
 import permissionCheck from "~/utils/permissionCheck";
-import { formatNickname } from "~/utils";
+import { consonantResponder } from "~/utils";
 import { storageActions } from "~/store/storage";
 import { DimensionsContext } from "~/context/DimensionsContext";
 import { ToastType } from "~/styles/toast";
@@ -65,7 +65,9 @@ const StartWalking = ({
             .join(", ");
           Toast.show({
             type: ToastType.Error,
-            text1: `${formatNickname(rejectedNames)}는 이미 산책중입니다.`,
+            text1: `${rejectedNames}${consonantResponder(
+              rejectedNames,
+            )}는 이미 산책중입니다.`,
           });
         }
         await allSettled(
