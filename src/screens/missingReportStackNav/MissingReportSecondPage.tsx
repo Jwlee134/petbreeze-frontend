@@ -12,8 +12,6 @@ import { TouchableOpacity, useWindowDimensions, View } from "react-native";
 import imageHandler from "~/utils/imageHandler";
 import useModal from "~/hooks/useModal";
 import IosBottomModal from "~/components/modal/IosBottomModal";
-import Divider from "~/components/common/Divider";
-import palette from "~/styles/palette";
 import { formActions } from "~/store/form";
 import deviceApi from "~/api/device";
 import { MissingReportSecondPageScreenNavigationProp } from "~/types/navigator";
@@ -217,13 +215,17 @@ const MissingReportSecondPage = forwardRef<MissingReportSecondGoBack, Props>(
           </Button>
         </KeyboardAwareScrollContainer>
         <IosBottomModal modalProps={modalProps} close={close}>
-          <IosBottomModalButton onPress={onPhotoChange}>
-            <MyText color={palette.blue_7b}>변경</MyText>
-          </IosBottomModalButton>
-          <Divider />
-          <IosBottomModalButton isLast onPress={onPhotoDelete}>
-            <MyText color={palette.red_f0}>삭제</MyText>
-          </IosBottomModalButton>
+          <IosBottomModalButton
+            onPress={onPhotoChange}
+            title="변경"
+            color="blue"
+          />
+          <IosBottomModalButton
+            isLast
+            onPress={onPhotoDelete}
+            title="삭제"
+            color="red"
+          />
         </IosBottomModal>
       </>
     );

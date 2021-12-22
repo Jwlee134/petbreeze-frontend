@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { PermissionScreenNavigationProp } from "~/types/navigator";
+import { InvitationCodeFormScreenNavigationProp } from "~/types/navigator";
 import CustomHeader from "~/components/navigator/CustomHeader";
 import MyText from "~/components/common/MyText";
 import styled from "styled-components/native";
@@ -51,7 +51,7 @@ interface Form {
 const InvitationCodeForm = ({
   navigation,
 }: {
-  navigation: PermissionScreenNavigationProp;
+  navigation: InvitationCodeFormScreenNavigationProp;
 }) => {
   const { rpHeight } = useContext(DimensionsContext);
   const [postDevice, { isLoading: isPostLoading }] =

@@ -8,14 +8,10 @@ import ParagraphWithCheckCircle from "~/components/common/ParagraphWithCheckCirc
 import useModal from "~/hooks/useModal";
 import { PreWiFiFormScreenNavigationProp } from "~/types/navigator";
 import CommonCenterModal from "~/components/modal/CommonCenterModal";
-import {
-  centerModalOutTiming,
-  textLoadingIndicatorSize,
-} from "~/styles/constants";
+import { centerModalOutTiming } from "~/styles/constants";
 import { DimensionsContext } from "~/context/DimensionsContext";
 import useUpdateDeviceSetting from "~/hooks/useUpdateDeviceSetting";
 import { useAppSelector } from "~/store";
-import LoadingIndicator from "~/components/lottie/LoadingIndicator";
 
 const TopContainer = styled.View`
   flex: 1;
@@ -94,13 +90,8 @@ const PreWiFiForm = ({
         onRightButtonPress={onSkip}
         title="잠깐!"
         description={`와이파이 미등록 시,\n배터리 소모가 크게 증가할 수 있습니다.`}
-        rightButtonText={
-          isLoading ? (
-            <LoadingIndicator size={textLoadingIndicatorSize} />
-          ) : (
-            "건너뛰기"
-          )
-        }
+        isLoading={isLoading}
+        rightButtonText="건너뛰기"
       />
     </>
   );

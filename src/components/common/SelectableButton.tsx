@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import { PressableProps, StyleProp, ViewStyle } from "react-native";
+import { StyleProp, TouchableOpacityProps, ViewStyle } from "react-native";
 import Animated, {
   Easing,
   interpolateColor,
@@ -11,7 +11,7 @@ import styled from "styled-components/native";
 import palette from "~/styles/palette";
 import MyText from "./MyText";
 
-interface Props extends PressableProps {
+interface Props extends TouchableOpacityProps {
   selected: boolean;
   children: ReactNode;
   containerStyle?: StyleProp<ViewStyle>;

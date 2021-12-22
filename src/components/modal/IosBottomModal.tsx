@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import { useWindowDimensions, View } from "react-native";
+import { useWindowDimensions } from "react-native";
 import { isIphoneX } from "react-native-iphone-x-helper";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import styled from "styled-components/native";

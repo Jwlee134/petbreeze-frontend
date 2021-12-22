@@ -55,7 +55,6 @@ const HomeBottomModal = ({ device, close }: Props) => {
           circleWidth={90}
           lineWidth={3.5}
           battery={device.battery}
-          highlightOnEmergency={device.is_missed}
           avatar={device.profile_image}
         />
       </AvatarContainer>
