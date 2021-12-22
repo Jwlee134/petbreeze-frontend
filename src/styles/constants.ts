@@ -11,6 +11,7 @@ export const mapButtonSize = 48;
 export const textLoadingIndicatorSize = 36;
 
 export const headerHeight = 48;
+export const headerBackButtonWidth = 36;
 
 export const hiddenButtonWidth = 78;
 

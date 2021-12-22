@@ -18,6 +18,7 @@ interface WalkDetailDayParams {
   deviceID: number;
   date: string;
   avatarUrl: string;
+  name: string;
 }
 
 interface BatteryAlertParams {
@@ -65,8 +66,8 @@ export type AuthScreenNavigationProp = StackNavigationProp<
   "Auth"
 >;
 export type LoggedInNavScreenNavigationProp = CompositeNavigationProp<
-  StackNavigationProp<RootNavParamList>,
-  StackNavigationProp<LoggedInNavParamList>
+  StackNavigationProp<LoggedInNavParamList>,
+  StackNavigationProp<RootNavParamList>
 >;
 export type LoggedInNavRouteProp = RouteProp<RootNavParamList, "LoggedInNav">;
 

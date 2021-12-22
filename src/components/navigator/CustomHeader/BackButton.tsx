@@ -2,9 +2,10 @@ import React from "react";
 import { StyleProp, ViewStyle } from "react-native";
 import styled from "styled-components/native";
 import Arrow from "~/assets/svg/arrow/arrow-left.svg";
+import { headerBackButtonWidth } from "~/styles/constants";
 
 const Button = styled.TouchableOpacity`
-  width: 36px;
+  width: ${headerBackButtonWidth}px;
   height: 100%;
   justify-content: center;
   align-items: center;

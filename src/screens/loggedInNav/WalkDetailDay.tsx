@@ -4,10 +4,8 @@ import styled from "styled-components/native";
 import MyText from "~/components/common/MyText";
 import palette from "~/styles/palette";
 import { WalkDetailDayScreenProps } from "~/types/navigator";
-import Minus from "~/assets/svg/minus/minus-white.svg";
 import Timer from "~/assets/svg/walk/timer.svg";
 import Path from "~/assets/svg/walk/path.svg";
-import Divider from "~/components/common/Divider";
 import { formatWalkDistance, formatWalkTime } from "~/utils";
 import { noAvatar, noName } from "~/constants";
 import IosBottomModal from "~/components/modal/IosBottomModal";
@@ -16,6 +14,9 @@ import deviceApi from "~/api/device";
 import { useDispatch } from "react-redux";
 import useModal from "~/hooks/useModal";
 import IosBottomModalButton from "~/components/modal/IosBottomModalButton";
+import X from "~/assets/svg/walkDetailDay/x-black.svg";
+import { headerBackButtonWidth, headerHeight } from "~/styles/constants";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const Container = styled.View``;
 
@@ -24,21 +25,43 @@ const RowContainer = styled.View`
   align-items: center;
 `;
 
-const SvgContainer = styled(RowContainer)`
+const HeaderContainer = styled(RowContainer)`
+  position: absolute;
+  left: ${headerBackButtonWidth}px;
+  height: ${headerHeight}px;
+`;
+
+const TopContainer = styled(RowContainer)`
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 44px;
+  justify-content: space-between;
+`;
+
+const BottomContainer = styled(RowContainer)`
   justify-content: space-evenly;
-  padding-top: 18px;
-  padding-bottom: 27px;
+  height: 44px;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.8);
+`;
+
+const FloatingItem = styled.View`
+  height: 25.5px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 100px;
+  padding: 0 10px;
+  justify-content: center;
+  align-items: center;
 `;
 
 const Avatar = styled.Image`
-  width: 70px;
-  height: 70px;
-  border-radius: 35px;
-  margin-right: 25px;
-`;
-
-const MapContainer = styled.View`
-  padding: 0 28px;
+  width: 41px;
+  height: 41px;
+  border-radius: 20.5px;
+  margin-right: 17px;
 `;
 
 const Map = styled.Image`
@@ -47,8 +70,8 @@ const Map = styled.Image`
 `;
 
 const Delete = styled.TouchableOpacity`
-  width: 30px;
-  height: 30px;
+  width: 44px;
+  height: 44px;
   justify-content: center;
   align-items: center;
 `;
@@ -56,10 +79,11 @@ const Delete = styled.TouchableOpacity`
 const WalkDetailDay = ({
   navigation,
   route: {
-    params: { deviceID, date, avatarUrl },
+    params: { deviceID, date, avatarUrl, name },
   },
 }: WalkDetailDayScreenProps) => {
   const { width } = useWindowDimensions();
+  const { top, bottom } = useSafeAreaInsets();
   const { open, close, modalProps } = useModal();
   const dispatch = useDispatch();
 
@@ -104,63 +128,68 @@ const WalkDetailDay = ({
 
   return (
     <>
-      <CustomHeader
-        navigation={navigation}
-        title={`${new Date(date).getMonth() + 1}월 ${new Date(
-          date,
-        ).getDate()}일`}
-      />
+      <CustomHeader navigation={navigation} />
+      <HeaderContainer style={{ marginTop: top }}>
+        <Avatar source={avatarUrl ? { uri: avatarUrl } : noAvatar} />
+        <View>
+          <MyText fontSize={14} fontWeight="medium">
+            {name}
+          </MyText>
+          <MyText fontSize={12} color="rgba(0, 0, 0, 0.5)">{`${
+            new Date(date).getMonth() + 1
+          }월 ${new Date(date).getDate()}일`}</MyText>
+        </View>
+      </HeaderContainer>
       <FlatList
+        contentContainerStyle={{ paddingBottom: bottom }}
         data={data}
-        renderItem={({ item, index }) => (
-          <Fragment key={item.id}>
-            <Container>
-              <RowContainer
-                style={{
-                  paddingHorizontal: 32,
-                  justifyContent: "space-between",
-                  paddingVertical: 18,
-                }}>
-                <RowContainer>
-                  <Avatar source={avatarUrl ? { uri: avatarUrl } : noAvatar} />
-                  <View>
-                    <MyText color={palette.blue_7b} style={{ marginBottom: 5 }}>
-                      {item.handler_name || noName}
-                    </MyText>
-                    <MyText color="rgba(0, 0, 0, 0.5)">
-                      {formatPeriod(item.start_date_time, item.time)}
-                    </MyText>
-                  </View>
-                </RowContainer>
-                <Delete
-                  onPress={() => {
-                    openModal(item.id);
-                  }}>
-                  <Minus />
-                </Delete>
+        renderItem={({ item }) => (
+          <Container key={item.id} style={{ width, height: width }}>
+            <Map source={{ uri: item.path_image }} />
+            <TopContainer>
+              <RowContainer>
+                <FloatingItem style={{ marginLeft: 17 }}>
+                  <MyText
+                    color={palette.blue_7b}
+                    fontWeight="medium"
+                    fontSize={14}>
+                    {item.handler_name || noName}
+                  </MyText>
+                </FloatingItem>
+                <FloatingItem style={{ marginLeft: 14 }}>
+                  <MyText
+                    color="rgba(0, 0, 0, 0.5)"
+                    fontWeight="medium"
+                    fontSize={14}>
+                    {formatPeriod(item.start_date_time, item.time)}
+                  </MyText>
+                </FloatingItem>
               </RowContainer>
-              <MapContainer style={{ height: width * 0.66 }}>
-                <Map fadeDuration={0} source={{ uri: item.path_image }} />
-              </MapContainer>
-              <SvgContainer>
-                <RowContainer>
-                  <Timer width={22} height={27} style={{ marginRight: 17 }} />
-                  <MyText color={palette.blue_7b} fontSize={24}>
-                    {formatWalkTime(item.time)}
-                  </MyText>
-                </RowContainer>
-                <RowContainer>
-                  <Path width={21} height={22} style={{ marginRight: 17 }} />
-                  <MyText color={palette.blue_7b} fontSize={24}>
-                    {formatWalkDistance(item.distance)}
-                  </MyText>
-                </RowContainer>
-              </SvgContainer>
-            </Container>
-            {data && data.length > 1 && index !== data.length - 1 ? (
-              <Divider style={{ width: width - 34, alignSelf: "center" }} />
-            ) : null}
-          </Fragment>
+              <Delete onPress={() => openModal(item.id)}>
+                <X />
+              </Delete>
+            </TopContainer>
+            <BottomContainer>
+              <RowContainer>
+                <Timer style={{ marginRight: 17 }} />
+                <MyText
+                  fontWeight="medium"
+                  color={palette.blue_7b}
+                  fontSize={24}>
+                  {formatWalkTime(item.time)}
+                </MyText>
+              </RowContainer>
+              <RowContainer>
+                <Path style={{ marginRight: 17 }} />
+                <MyText
+                  fontWeight="medium"
+                  color={palette.blue_7b}
+                  fontSize={24}>
+                  {formatWalkDistance(item.distance)}
+                </MyText>
+              </RowContainer>
+            </BottomContainer>
+          </Container>
         )}
       />
       <IosBottomModal

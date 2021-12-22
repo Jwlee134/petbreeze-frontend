@@ -146,6 +146,7 @@ const WalkDetailMonth = ({
         deviceID,
         avatarUrl,
         date: new Date(day.dateString).toISOString(),
+        name,
       });
     }
   };

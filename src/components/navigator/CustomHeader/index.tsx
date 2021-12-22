@@ -1,5 +1,5 @@
 import { StackHeaderProps } from "@react-navigation/stack";
-import React, { ReactNode } from "react";
+import React from "react";
 import styled from "styled-components/native";
 import MyText from "../../common/MyText";
 
@@ -11,7 +11,6 @@ import PageCount from "./PageCount";
 import { headerHeight } from "~/styles/constants";
 
 interface Props extends Partial<StackHeaderProps> {
-  children?: ReactNode;
   currentPage?: number;
   totalPage?: number;
   height?: number;
@@ -26,7 +25,6 @@ interface Props extends Partial<StackHeaderProps> {
   leftDivStyle?: StyleProp<ViewStyle>;
   centerDivStyle?: StyleProp<ViewStyle>;
   rightDivStyle?: StyleProp<ViewStyle>;
-  childrenPosition?: "left" | "center" | "right";
 }
 
 const Container = styled.View`
@@ -59,14 +57,12 @@ const CustomHeader = ({
   onBackButtonPress,
   RightButtonText,
   onRightButtonPress,
-  children,
   containerStyle,
   pageIndicatorStyle,
   wrapperStyle,
   leftDivStyle,
   centerDivStyle,
   rightDivStyle,
-  childrenPosition,
 }: Props) => {
   const { top } = useSafeAreaInsets();
   const showPage = currentPage !== 0 && totalPage !== 0;
@@ -84,7 +80,6 @@ const CustomHeader = ({
                 navigation={navigation}
               />
             )}
-            {(childrenPosition === "left" && children) || null}
           </Div>
           <Div style={{ alignItems: "center", ...(centerDivStyle as object) }}>
             {title && (
@@ -92,7 +87,6 @@ const CustomHeader = ({
                 {title}
               </MyText>
             )}
-            {(childrenPosition === "center" && children) || null}
           </Div>
           <Div style={{ alignItems: "flex-end", ...(rightDivStyle as object) }}>
             {showPage && (
@@ -103,7 +97,6 @@ const CustomHeader = ({
                 {RightButtonText}
               </Rightbutton>
             )}
-            {(childrenPosition === "right" && children) || null}
           </Div>
         </Wrapper>
       </Container>

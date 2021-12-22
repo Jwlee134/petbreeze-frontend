@@ -53,6 +53,7 @@ const NotificationItem = ({ data, device, isLast }: Props) => {
       deviceID: device.id,
       date: data.created_at,
       avatarUrl: device.profile_image || "",
+      name: device.name,
     });
   };
 

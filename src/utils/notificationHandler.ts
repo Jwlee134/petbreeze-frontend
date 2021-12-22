@@ -1,4 +1,5 @@
 import { FirebaseMessagingTypes } from "@react-native-firebase/messaging";
+import { noName } from "~/constants";
 import { store } from "~/store";
 import {
   LoggedInNavScreenNavigationProp,
@@ -51,7 +52,8 @@ export default (
       date: message.sentTime
         ? new Date(message.sentTime).toISOString()
         : new Date().toISOString(),
-      avatarUrl: message.data.profileImageURL || "",
+      avatarUrl: message.data.profileImageURL,
+      name: message.data.name,
     };
     if (isStartNavigation(navigation)) {
       navigation.replace("LoggedInNav", {
