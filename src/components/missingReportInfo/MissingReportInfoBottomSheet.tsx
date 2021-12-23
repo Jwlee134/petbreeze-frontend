@@ -44,7 +44,8 @@ const MissingReportInfoBottomSheet = ({ data }: { data: MissingReport }) => {
     params: { name, avatar, deviceID },
   } = useRoute<MissingReportInfoScreenProps["route"]>();
 
-  const [deleteReport] = deviceApi.useDeleteMissingReportMutation();
+  const [deleteReport, { isLoading }] =
+    deviceApi.useDeleteMissingReportMutation();
   const dispatch = useDispatch();
   const photos: string[] = Object.values(data || []).filter(
     item => typeof item === "string" && item.includes(serverImageUri),
@@ -110,7 +111,7 @@ const MissingReportInfoBottomSheet = ({ data }: { data: MissingReport }) => {
   const onDeletePress = async () => {
     try {
       await deleteReport(deviceID).unwrap();
-      bottomModalClose();
+      centerModalClose();
       await delay(centerModalOutTiming);
       navigation.goBack();
     } catch (error) {
@@ -120,7 +121,7 @@ const MissingReportInfoBottomSheet = ({ data }: { data: MissingReport }) => {
 
   const handleDelete = async () => {
     bottomModalClose();
-    await delay(bottomModalOutTiming + 100);
+    await delay(bottomModalOutTiming + 200);
     centerModalOpen();
   };
 
@@ -232,6 +233,7 @@ const MissingReportInfoBottomSheet = ({ data }: { data: MissingReport }) => {
         close={centerModalClose}
         rightButtonText="확인"
         onRightButtonPress={onDeletePress}
+        isLoading={isLoading}
       />
     </>
   );

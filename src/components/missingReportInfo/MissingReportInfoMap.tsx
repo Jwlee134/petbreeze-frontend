@@ -1,3 +1,4 @@
+import { useIsFocused } from "@react-navigation/native";
 import React, { useEffect, useRef, useState } from "react";
 import NaverMapView, { Marker } from "react-native-nmap";
 import emergencyApi from "~/api/emergency";
@@ -10,9 +11,10 @@ interface Props {
 }
 
 const MissingReportInfoMap = ({ emergencyKey, bottom }: Props) => {
+  const isFocused = useIsFocused();
   const { data: { coordinate: { coordinates = [] } = {} } = {} } =
     emergencyApi.useGetLocationQuery(emergencyKey, {
-      skip: !emergencyKey,
+      skip: !emergencyKey || !isFocused,
       pollingInterval: 3000,
     });
   const mapRef = useRef<NaverMapView>(null);
