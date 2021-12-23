@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import deviceApi, { Device } from "~/api/device";
 import Button from "~/components/common/Button";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { FlatList, StyleSheet, View } from "react-native";
 import ListItem from "~/components/common/ListItem";
 import MyText from "~/components/common/MyText";
 import Dog from "~/assets/svg/dog/dog-with-device.svg";
@@ -20,6 +20,7 @@ import { storageActions } from "~/store/storage";
 import { DimensionsContext } from "~/context/DimensionsContext";
 import { ToastType } from "~/styles/toast";
 import styled from "styled-components/native";
+import useDevice from "~/hooks/useDevice";
 
 const Overlay = styled.View`
   ${StyleSheet.absoluteFill};
@@ -30,14 +31,13 @@ const Overlay = styled.View`
 interface Props {
   navigation: StartWalkingScreenNavigationProp;
   route: StartWalkingScreenRouteProp;
-  deviceList: Device[];
 }
 
 const StartWalking = ({
   navigation,
   route: { params: { preSelectedID } = {} },
-  deviceList,
 }: Props) => {
+  const deviceList = useDevice();
   const { rpHeight } = useContext(DimensionsContext);
   const isFocused = useIsFocused();
   const dispatch = useDispatch();
@@ -107,40 +107,41 @@ const StartWalking = ({
   }, [preSelectedID, isFocused, selectedByParams]);
 
   return deviceList && deviceList.length ? (
-    <ScrollView
-      contentContainerStyle={{
-        paddingTop: 20,
+    <FlatList
+      contentContainerStyle={{ paddingTop: 20, flexGrow: 1 }}
+      data={deviceList}
+      keyExtractor={item => `${item.id}`}
+      ListFooterComponent={
+        <Button
+          isLoading={isLoading}
+          style={{ width: 126 }}
+          disabled={!selectedIDs.length}
+          onPress={handleStart}>
+          산책하기
+        </Button>
+      }
+      ListFooterComponentStyle={{
         flexGrow: 1,
-        justifyContent: "space-between",
-        paddingBottom: 67,
+        justifyContent: "flex-end",
+        marginVertical: rpHeight(67),
       }}
-      showsVerticalScrollIndicator={false}>
-      <View>
-        {deviceList.map(device => (
-          <ListItem
-            key={device.id}
-            isIconArrow={false}
-            onPress={() => {
-              if (device.current_handler) return;
-              onDevicePress(device);
-            }}
-            selected={selectedIDs.includes(device.id)}>
-            <WalkDeviceListItem
-              isWalking={!!device.current_handler}
-              device={device}
-            />
-            {device.current_handler ? <Overlay /> : null}
-          </ListItem>
-        ))}
-      </View>
-      <Button
-        isLoading={isLoading}
-        style={{ width: 126, marginTop: 67 }}
-        disabled={!selectedIDs.length}
-        onPress={handleStart}>
-        산책하기
-      </Button>
-    </ScrollView>
+      renderItem={({ item }) => (
+        <ListItem
+          key={item.id}
+          isIconArrow={false}
+          onPress={() => {
+            if (item.current_handler) return;
+            onDevicePress(item);
+          }}
+          selected={selectedIDs.includes(item.id)}>
+          <WalkDeviceListItem
+            isWalking={!!item.current_handler}
+            device={item}
+          />
+          {item.current_handler ? <Overlay /> : null}
+        </ListItem>
+      )}
+    />
   ) : (
     <View style={{ flexGrow: 1, justifyContent: "space-between" }}>
       <View>

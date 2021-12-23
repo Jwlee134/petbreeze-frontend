@@ -104,10 +104,9 @@ const WalkContextProvider = ({ children }: { children: ReactNode }) => {
         Map,
         viewShotRef,
         ViewShot,
-        deviceList:
-          deviceList?.filter(device =>
-            selectedIds.some(id => device.id === id),
-          ) || [],
+        deviceList: deviceList.filter(device =>
+          selectedIds.some(id => device.id === id),
+        ),
         stoppedSnapIndex,
         headerHeight,
         pause,
