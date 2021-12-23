@@ -206,7 +206,7 @@ const deviceApi = api.injectEndpoints({
 
     getMissingReport: builder.query<MissingReport, number>({
       query: deviceID => ({
-        url: `/device/${deviceID}/emergency/`,
+        url: `/device/${deviceID}/missing-report/`,
         method: "GET",
       }),
       providesTags: () => [{ type: "Device", id: "MISSING" }],
@@ -228,7 +228,7 @@ const deviceApi = api.injectEndpoints({
       { deviceID: number; body: MissingReportForm }
     >({
       query: ({ deviceID, body }) => ({
-        url: `/device/${deviceID}/emergency/`,
+        url: `/device/${deviceID}/missing-report/`,
         method: "POST",
         body,
       }),
@@ -254,7 +254,7 @@ const deviceApi = api.injectEndpoints({
       { deviceID: number; body: MissingReportForm }
     >({
       query: ({ deviceID, body }) => ({
-        url: `/device/${deviceID}/emergency/`,
+        url: `/device/${deviceID}/missing-report/`,
         method: "PUT",
         body,
       }),
@@ -286,7 +286,7 @@ const deviceApi = api.injectEndpoints({
       { deviceID: number; body: FormData }
     >({
       query: ({ deviceID, body }) => ({
-        url: `/device/${deviceID}/emergency/`,
+        url: `/device/${deviceID}/missing-report/`,
         method: "PATCH",
         headers: {
           "Content-Type": "multipart/form-data;",
@@ -303,7 +303,7 @@ const deviceApi = api.injectEndpoints({
 
     deleteMissingReport: builder.mutation<void, number>({
       query: deviceID => ({
-        url: `/device/${deviceID}/emergency/`,
+        url: `/device/${deviceID}/missing-report/`,
         method: "DELETE",
       }),
       onQueryStarted: (deviceID, { dispatch, queryFulfilled }) => {
