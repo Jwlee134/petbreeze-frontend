@@ -11,7 +11,8 @@ import userApi from "~/api/user";
 import messaging from "@react-native-firebase/messaging";
 import * as SecureStore from "expo-secure-store";
 import { secureItems } from "~/constants";
-import { useAppSelector } from "~/store";
+import { store, useAppSelector } from "~/store";
+import deviceApi from "~/api/device";
 
 const AuthButton = styled.TouchableOpacity`
   justify-content: center;
@@ -73,6 +74,9 @@ const SocialLogin = ({ name }: { name: string }) => {
         console.log(key, firebaseToken, user_id);
         await saveTokens(key, firebaseToken, user_id);
       }
+      store.dispatch(
+        deviceApi.util.invalidateTags([{ type: "Device", id: "LIST" }]),
+      );
       await updateNickname(name).unwrap();
       if (fbLoading) setFbLoading(false);
       if (kakaoLoading) setKakaoLoading(false);
