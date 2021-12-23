@@ -163,8 +163,7 @@ const HomeDeviceList = () => {
       const { collection_period, safety_areas } = await getDeviceSetting(
         id,
       ).unwrap();
-      const period =
-        collection_period === 1 ? 3000 : 5000; /* collection_period * 1000 */
+      const period = collection_period === 1 ? 3000 : collection_period * 1000;
       fetchDeviceCoord(id, safety_areas);
       interval.current = setInterval(() => {
         fetchDeviceCoord(id, safety_areas);
