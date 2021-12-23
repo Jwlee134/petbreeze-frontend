@@ -133,7 +133,7 @@ const WalkDetailDay = ({
         <Avatar source={avatarUrl ? { uri: avatarUrl } : noAvatar} />
         <View>
           <MyText fontSize={14} fontWeight="medium">
-            {name}
+            {name || noName}
           </MyText>
           <MyText fontSize={12} color="rgba(0, 0, 0, 0.5)">{`${
             new Date(date).getMonth() + 1

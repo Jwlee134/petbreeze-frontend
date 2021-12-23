@@ -24,9 +24,7 @@ export default (
   if (message.notification?.title?.includes("안심존을 벗어났어요")) {
     if (isStartNavigation(navigation)) {
       if (coords.length) {
-        navigation.replace("LoggedInNav", {
-          initialRouteName: "WalkMap",
-        });
+        navigation.replace("LoggedInNav", { initialRouteName: "WalkMap" });
         return;
       }
       navigation.replace("LoggedInNav", {
@@ -45,15 +43,15 @@ export default (
 
   if (
     message.notification?.title?.includes("산책을 끝냈어요") &&
-    message.data?.deviceID
+    message.data
   ) {
     const params = {
       deviceID: parseInt(message.data.deviceID, 10),
       date: message.sentTime
         ? new Date(message.sentTime).toISOString()
         : new Date().toISOString(),
-      avatarUrl: message.data.profileImageURL,
-      name: message.data.name,
+      avatarUrl: message.data?.profileImageURL || "",
+      name: message.data?.name || "",
     };
     if (isStartNavigation(navigation)) {
       navigation.replace("LoggedInNav", {
@@ -68,7 +66,7 @@ export default (
     }
   }
 
-  if (message.notification?.title?.includes("배터리")) {
+  if (message.notification?.title?.includes("배터리") && message.data) {
     const battery = message.notification.title.split(" ")[2];
     const params = {
       battery,
