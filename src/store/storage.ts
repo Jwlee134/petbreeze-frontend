@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { isAndroid } from "~/utils";
 
 interface Init {
   isCodePushUpdated: boolean;
@@ -42,7 +43,7 @@ const initialState: State = {
   init: {
     isCodePushUpdated: false,
     isIntroPassed: false,
-    isPermissionAllowed: false,
+    isPermissionAllowed: isAndroid,
   },
   walk: {
     selectedDeviceId: [],
