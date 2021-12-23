@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import deviceApi, { Device } from "~/api/device";
 import Button from "~/components/common/Button";
-import { ScrollView, View } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 import ListItem from "~/components/common/ListItem";
 import MyText from "~/components/common/MyText";
 import Dog from "~/assets/svg/dog/dog-with-device.svg";
@@ -19,6 +19,13 @@ import { consonantResponder } from "~/utils";
 import { storageActions } from "~/store/storage";
 import { DimensionsContext } from "~/context/DimensionsContext";
 import { ToastType } from "~/styles/toast";
+import styled from "styled-components/native";
+
+const Overlay = styled.View`
+  ${StyleSheet.absoluteFill};
+  background-color: rgba(255, 255, 255, 0.6);
+  z-index: 10;
+`;
 
 interface Props {
   navigation: StartWalkingScreenNavigationProp;
@@ -113,9 +120,16 @@ const StartWalking = ({
           <ListItem
             key={device.id}
             isIconArrow={false}
-            onPress={() => onDevicePress(device)}
+            onPress={() => {
+              if (device.current_handler) return;
+              onDevicePress(device);
+            }}
             selected={selectedIDs.includes(device.id)}>
-            <WalkDeviceListItem device={device} />
+            <WalkDeviceListItem
+              isWalking={!!device.current_handler}
+              device={device}
+            />
+            {device.current_handler ? <Overlay /> : null}
           </ListItem>
         ))}
       </View>

@@ -13,7 +13,12 @@ const RowContainer = styled.View`
   align-items: center;
 `;
 
-const WalkDeviceListItem = ({ device }: { device: Device }) => {
+interface Props {
+  isWalking?: boolean;
+  device: Device;
+}
+
+const WalkDeviceListItem = ({ isWalking = false, device }: Props) => {
   return (
     <RowContainer>
       <AnimatedCircularProgress
@@ -32,13 +37,21 @@ const WalkDeviceListItem = ({ device }: { device: Device }) => {
             {device.battery || 0}%
           </MyText>
         </RowContainer>
-        {device.last_walk ? (
+        {device.last_walk && !isWalking ? (
           <MyText
             style={{ marginTop: 8 }}
             fontSize={12}
             color="rgba(0, 0, 0, 0.5)">
             마지막 산책{"   "}
             {formatCreatedAt(device.last_walk)}
+          </MyText>
+        ) : null}
+        {isWalking ? (
+          <MyText
+            style={{ marginTop: 8 }}
+            fontSize={12}
+            color="rgba(0, 0, 0, 0.5)">
+            산책중
           </MyText>
         ) : null}
       </View>

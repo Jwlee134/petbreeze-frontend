@@ -12,6 +12,7 @@ export enum GeoJsonType {
 export interface Device {
   id: number;
   name: string;
+  current_handler: number;
   profile_image: string;
   collection_period: number;
   battery: number;
