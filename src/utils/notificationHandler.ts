@@ -84,4 +84,8 @@ export default (
       navigation.navigate("BatteryAlert", params);
     }
   }
+
+  if (isStartNavigation(navigation)) {
+    navigation.replace("LoggedInNav");
+  }
 };
