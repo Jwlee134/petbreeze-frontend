@@ -1,6 +1,8 @@
 import React from "react";
 import styled from "styled-components/native";
 
+import HomeBottomSheet from "~/components/home/HomeBottomSheet";
+
 import HomeDeviceList from "~/components/home/HomeDeviceList";
 import HomeMap from "~/components/home/HomeMap";
 
@@ -14,6 +16,7 @@ const Home = () => {
     <Container>
       <HomeMap />
       <HomeDeviceList />
+      <HomeBottomSheet />
     </Container>
   );
 };

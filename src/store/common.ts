@@ -10,6 +10,8 @@ interface HomeState {
   isMapClicked: boolean;
   pressedID: number;
   isLoading: boolean;
+  showPath: boolean;
+  path: number[][];
 }
 
 interface DeleteAccountState {
@@ -35,6 +37,8 @@ const initialState: State = {
     isMapClicked: false,
     pressedID: 0,
     isLoading: false,
+    showPath: false,
+    path: [],
   },
   deleteAccount: {
     body: [],

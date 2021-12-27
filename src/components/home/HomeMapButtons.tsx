@@ -1,7 +1,12 @@
 import React, { useCallback } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import useDevice from "~/hooks/useDevice";
-import { liveModeButtonStyle, myLocationButtonStyle } from "~/styles/constants";
+import {
+  ANIMATION_CONFIGS_ANDROID,
+  ANIMATION_CONFIGS_IOS,
+  liveModeButtonStyle,
+  myLocationButtonStyle,
+} from "~/styles/constants";
 import permissionCheck from "~/utils/permissionCheck";
 import LiveModeButton from "../common/LiveModeButton";
 import MapButton from "../common/MapButton";
@@ -12,8 +17,10 @@ import { useAppSelector } from "~/store";
 import Animated, {
   useAnimatedStyle,
   useDerivedValue,
+  withSpring,
   withTiming,
 } from "react-native-reanimated";
+import { isAndroid } from "~/utils";
 
 interface Props {
   setIsMyLocationMoved: React.Dispatch<React.SetStateAction<boolean>>;
@@ -44,7 +51,13 @@ const HomeMapButtons = ({
     state => state.common.home.showInfoHeader,
   );
   const value = useDerivedValue(() =>
-    showInfoHeader ? withTiming(56) : withTiming(0),
+    showInfoHeader
+      ? isAndroid
+        ? withTiming(56, ANIMATION_CONFIGS_ANDROID)
+        : withSpring(56, ANIMATION_CONFIGS_IOS)
+      : isAndroid
+      ? withTiming(0, ANIMATION_CONFIGS_ANDROID)
+      : withSpring(0, ANIMATION_CONFIGS_IOS),
   );
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: value.value }],

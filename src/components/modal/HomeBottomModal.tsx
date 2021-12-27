@@ -1,8 +1,12 @@
 import { useNavigation } from "@react-navigation/native";
 import React from "react";
+import { useDispatch } from "react-redux";
 import styled from "styled-components/native";
 import { Device } from "~/api/device";
+import { commonActions } from "~/store/common";
+import { bottomModalOutTiming } from "~/styles/constants";
 import { HomeScreenNavigationProp } from "~/types/navigator";
+import { delay } from "~/utils";
 import AnimatedCircularProgress from "../common/AnimatedCircularProgress";
 import IosBottomModalButton from "./IosBottomModalButton";
 
@@ -21,9 +25,24 @@ const AvatarContainer = styled.View`
 
 const HomeBottomModal = ({ device, close }: Props) => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
+  const dispatch = useDispatch();
 
-  const onDeviceSettingPress = () => {
+  const onPathPress = async () => {
     close();
+    await delay(bottomModalOutTiming);
+    dispatch(
+      commonActions.setHome({
+        showPath: true,
+        showInfoHeader: true,
+        pressedID: device.id,
+        isLoading: true,
+      }),
+    );
+  };
+
+  const onDeviceSettingPress = async () => {
+    close();
+    await delay(bottomModalOutTiming);
     navigation.navigate("DeviceSetting", {
       deviceID: device.id,
       avatar: device.profile_image,
@@ -31,8 +50,9 @@ const HomeBottomModal = ({ device, close }: Props) => {
     });
   };
 
-  const onMissigReportPress = () => {
+  const onMissigReportPress = async () => {
     close();
+    await delay(bottomModalOutTiming);
     if (!device.is_missed) {
       navigation.navigate("MissingReportStackNav", {
         avatar: device.profile_image,
@@ -58,6 +78,11 @@ const HomeBottomModal = ({ device, close }: Props) => {
           avatar={device.profile_image}
         />
       </AvatarContainer>
+      <IosBottomModalButton
+        onPress={onPathPress}
+        title="이동경로"
+        color="blue"
+      />
       <IosBottomModalButton
         onPress={onDeviceSettingPress}
         title="기기설정"

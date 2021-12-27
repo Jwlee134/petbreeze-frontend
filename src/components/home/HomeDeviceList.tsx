@@ -88,23 +88,21 @@ const HomeDeviceList = () => {
   };
 
   const fetchAddress = async (lat: number, lng: number, time: string) => {
-    dispatch(
-      commonActions.setHome({
-        deviceCoord: { latitude: lat, longitude: lng, time },
-        areaRadius: 0,
-      }),
-    );
+    let address = "";
     try {
       const data = await getAddressByCoord(lat, lng);
-      dispatch(commonActions.setHome({ address: data || "주소 없음" }));
+      address = data || "주소 없음";
     } catch {
-      dispatch(commonActions.setHome({ address: "주소 없음", areaRadius: 0 }));
+      address = "주소 없음";
     } finally {
       dispatch(
         commonActions.setHome({
           showMarker: true,
           showInfoHeader: true,
           isLoading: false,
+          deviceCoord: { latitude: lat, longitude: lng, time },
+          areaRadius: 0,
+          address,
         }),
       );
     }
@@ -179,16 +177,13 @@ const HomeDeviceList = () => {
       if (isLoading) return;
       const { pressedID } = store.getState().common.home;
       clearTimer();
-      if (pressedID !== id) {
-        dispatch(
-          commonActions.setHome({
-            pressedID: id,
-            showMarker: false,
-            isDeviceMoved: false,
-          }),
-        );
-      }
-      dispatch(commonActions.setHome({ isLoading: true }));
+      dispatch(
+        commonActions.setHome({
+          isLoading: true,
+          isDeviceMoved: false,
+          ...(pressedID !== id && { pressedID: id, showMarker: false }),
+        }),
+      );
       fetchDeviceSetting(id);
     },
     [deviceList, isLoading],

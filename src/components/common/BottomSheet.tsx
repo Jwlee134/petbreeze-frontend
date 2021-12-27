@@ -4,8 +4,8 @@ import styled from "styled-components/native";
 import { Shadow } from "react-native-shadow-2";
 import { bottomSheetHandleHeight } from "~/styles/constants";
 
-const HandleContainer = styled.View`
-  height: ${bottomSheetHandleHeight}px;
+const HandleContainer = styled.View<{ handleHeight: number }>`
+  height: ${({ handleHeight }) => handleHeight}px;
   align-items: center;
 `;
 
@@ -19,10 +19,14 @@ const Handle = styled.View`
 
 interface Props extends BottomSheetProps {
   children: ReactNode;
+  handleHeight?: number;
 }
 
 const BottomSheet = forwardRef(
-  ({ children, ...props }: Props, ref: ForwardedRef<Sheet>) => (
+  (
+    { children, handleHeight = bottomSheetHandleHeight, ...props }: Props,
+    ref: ForwardedRef<Sheet>,
+  ) => (
     <Sheet
       ref={ref}
       handleComponent={() => (
@@ -33,7 +37,7 @@ const BottomSheet = forwardRef(
           radius={15}
           corners={["topLeft", "topRight"]}
           viewStyle={{ width: "100%" }}>
-          <HandleContainer>
+          <HandleContainer handleHeight={handleHeight}>
             <Handle />
           </HandleContainer>
         </Shadow>

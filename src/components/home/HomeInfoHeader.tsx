@@ -9,13 +9,19 @@ import Toast from "react-native-toast-message";
 import { useWindowDimensions, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import LoadingIndicator from "../lottie/LoadingIndicator";
-import { textLoadingIndicatorSize } from "~/styles/constants";
+import {
+  ANIMATION_CONFIGS_ANDROID,
+  ANIMATION_CONFIGS_IOS,
+  textLoadingIndicatorSize,
+} from "~/styles/constants";
 import { noAvatar } from "~/constants";
 import Animated, {
   useAnimatedStyle,
   useDerivedValue,
+  withSpring,
   withTiming,
 } from "react-native-reanimated";
+import { isAndroid } from "~/utils";
 
 const Container = styled(Animated.View)`
   background-color: white;
@@ -77,7 +83,13 @@ const HomeInfoHeader = () => {
   const height = top + 52;
 
   const value = useDerivedValue(() =>
-    showInfoHeader ? withTiming(0) : withTiming(-height),
+    showInfoHeader
+      ? isAndroid
+        ? withTiming(0, ANIMATION_CONFIGS_ANDROID)
+        : withSpring(0, ANIMATION_CONFIGS_IOS)
+      : isAndroid
+      ? withTiming(-height, ANIMATION_CONFIGS_ANDROID)
+      : withSpring(-height, ANIMATION_CONFIGS_IOS),
   );
   const transStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: value.value }],

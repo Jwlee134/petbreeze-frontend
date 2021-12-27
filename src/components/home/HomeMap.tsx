@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import NaverMapView, { Circle, Marker } from "react-native-nmap";
+import NaverMapView, { Circle, Marker, Path } from "react-native-nmap";
 import Geolocation from "react-native-geolocation-service";
 import { delta } from "~/constants";
 import useAppState from "~/hooks/useAppState";
@@ -15,6 +15,7 @@ import { storageActions } from "~/store/storage";
 import HomeInfoHeader from "./HomeInfoHeader";
 import palette from "~/styles/palette";
 import HomeMapButtons from "./HomeMapButtons";
+import { homeBottomSheetHeight } from "~/styles/constants";
 
 const HomeMap = () => {
   const mapRef = useRef<NaverMapView>(null);
@@ -36,6 +37,8 @@ const HomeMap = () => {
   );
   const showMarker = useAppSelector(state => state.common.home.showMarker);
   const areaRadius = useAppSelector(state => state.common.home.areaRadius);
+  const showPath = useAppSelector(state => state.common.home.showPath);
+  const path = useAppSelector(state => state.common.home.path);
 
   const [isMyLocationMoved, setIsMyLocationMoved] = useState(true);
   const [coords, setCoords] = useState({ latitude: 0, longitude: 0 });
@@ -99,11 +102,16 @@ const HomeMap = () => {
     dispatch(commonActions.setHome({ isMapClicked: true }));
   };
 
+  const defaultPadding = isAndroid ? top : 0;
+
   return (
     <>
       <Map
         ref={mapRef}
-        mapPadding={{ top: showInfoHeader ? (isAndroid ? top : 0) + 56 : top }}
+        mapPadding={{
+          top: showInfoHeader ? defaultPadding + 56 : defaultPadding,
+          bottom: showPath ? homeBottomSheetHeight : 0,
+        }}
         onMapClick={onMapClick}>
         {coords.latitude ? (
           <Marker
@@ -143,6 +151,35 @@ const HomeMap = () => {
             outlineColor={palette.blue_6e_50}
             outlineWidth={1}
           />
+        ) : null}
+        {path.length ? (
+          <>
+            <Path
+              coordinates={path.map(coord => ({
+                latitude: coord[0],
+                longitude: coord[1],
+              }))}
+              color="#D9D9D9"
+              outlineWidth={0}
+              width={7}
+            />
+            {path
+              .filter(
+                coord =>
+                  coord[0] !== deviceCoord.latitude &&
+                  coord[1] !== deviceCoord.longitude,
+              )
+              .map((coord, i) => (
+                <Marker
+                  key={i}
+                  image={require("~/assets/image/home-path-marker.png")}
+                  width={22}
+                  height={22}
+                  coordinate={{ latitude: coord[0], longitude: coord[1] }}
+                  anchor={{ x: 0.5, y: 0.5 }}
+                />
+              ))}
+          </>
         ) : null}
       </Map>
       <HomeInfoHeader />
