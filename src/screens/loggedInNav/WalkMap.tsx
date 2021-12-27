@@ -54,7 +54,11 @@ const WalkMap = () => {
           mapStyle,
         ]}>
         <ViewShot>
-          <Map mapPadding={mapPadding}>
+          <Map
+            scrollGesturesEnabled={!isStopped}
+            tiltGesturesEnabled={!isStopped}
+            rotateGesturesEnabled={!isStopped}
+            mapPadding={mapPadding}>
             <Path isStopped={isStopped} />
           </Map>
         </ViewShot>
