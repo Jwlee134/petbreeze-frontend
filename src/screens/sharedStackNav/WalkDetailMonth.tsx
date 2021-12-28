@@ -17,6 +17,7 @@ import Button from "~/components/common/Button";
 import { WalkDetailMonthScreenProps } from "~/types/navigator";
 import deviceApi from "~/api/device";
 import { DateData } from "react-native-calendars/src/types";
+import LoadingIndicator from "~/components/lottie/LoadingIndicator";
 
 const TopContainer = styled.View`
   align-items: center;
@@ -32,14 +33,19 @@ const Image = styled.Image`
 
 const RowContainer = styled.View`
   flex-direction: row;
-  justify-content: space-between;
-  padding: 30px 16px 0 16px;
+  justify-content: space-around;
+  border-width: 1px;
+  border-color: ${palette.blue_7b};
+  border-radius: 50px;
+  height: 47px;
+  align-self: center;
+  align-items: center;
+  margin-top: 31px;
 `;
 
-const NoWalkRecord = styled.View`
+const Loader = styled.View`
   background-color: rgba(255, 255, 255, 0.9);
   flex-grow: 1;
-  justify-content: flex-end;
 `;
 
 LocaleConfig.locales["ko"] = {
@@ -51,10 +57,6 @@ LocaleConfig.locales["ko"] = {
 };
 LocaleConfig.defaultLocale = "ko";
 
-interface DateObj {
-  [key: string]: { dots: { key: string; color: string }[] };
-}
-
 const WalkDetailMonth = ({
   navigation,
   route: {
@@ -62,90 +64,31 @@ const WalkDetailMonth = ({
   },
 }: WalkDetailMonthScreenProps) => {
   const { width } = useWindowDimensions();
-
   const [date, setDate] = useState({
     year: new Date().getFullYear(),
     month: new Date().getMonth() + 1,
   });
-  const [dateObj, setDateObj] = useState<DateObj>({});
-
-  const { data } = deviceApi.useGetMonthlyWalkRecordQuery(
-    {
-      deviceID,
-      year: date.year,
-      month: date.month,
-    },
-    {
-      refetchOnMountOrArgChange: true,
-    },
-  );
+  const { data, isFetching, refetch } = deviceApi.useGetMonthlyWalkRecordQuery({
+    deviceID,
+    year: date.year,
+    month: date.month,
+  });
 
   useEffect(() => {
-    if (!data) return;
-    // markedDates obj 변경되어도 달력의 dots 변화없는 문제 해결
-    // https://github.com/wix/react-native-calendars/issues/726#issuecomment-458659037
-    const obj: DateObj = JSON.parse(JSON.stringify(dateObj));
-
-    // 날짜 배열 아래와 같이 생성
-    //  [["2021-10-16", "0", "isLast"], ["2021-10-17", "0"], ["2021-10-17", "1", "isLast"], ["2021-10-18", "0", "isLast"]]
-    const dateArr = data.day_count
-      .map(({ date, count }) => {
-        const arr: string[][] = [];
-        for (let i = 0; i < count; i++) {
-          arr.push([date, i.toString(), ...(i === count - 1 ? ["last"] : [])]);
-        }
-        return arr;
-      })
-      .flat();
-
-    // 해당 날짜 산책기록이 전부 삭제되어 dateArr에서 필터링을 못할 때
-    const emptyKeys = Object.keys(obj).filter(objDate => {
-      const year = new Date(objDate).getFullYear();
-      const month = new Date(objDate).getMonth() + 1;
-      const currentMonth = year === date.year && month === date.month;
-
-      return currentMonth && !dateArr.map(date => date[0]).includes(objDate);
-    });
-    if (emptyKeys.length) {
-      emptyKeys.forEach(date => {
-        delete obj[date];
-      });
-    }
-
-    if (dateArr.length) {
-      dateArr.forEach(date => {
-        // 날짜 key가 없으면 새로 생성
-        if (!obj[date[0]]) {
-          obj[date[0]] = { dots: [{ key: date[1], color: palette.blue_7b }] };
-          return;
-        }
-        // dots 배열의 모든 항목 중 같은 키가 없을 때 push => 중복 push 방지 목적
-        if (obj[date[0]].dots.every(item => item.key !== date[1])) {
-          obj[date[0]].dots.push({ key: date[1], color: palette.blue_7b });
-        }
-
-        // 산책 기록이 삭제되어 dots 배열에 담긴 수가 새로 받아온 날짜 배열의 마지막 인덱스보다 클 때
-        if (date[2] && obj[date[0]].dots.length - 1 > parseInt(date[1], 10)) {
-          const numOfStale =
-            obj[date[0]].dots.length - 1 - parseInt(date[1], 10);
-          obj[date[0]].dots.splice(-numOfStale);
-        }
-      });
-    }
-
-    setDateObj(obj);
-  }, [data]);
+    if (data) refetch();
+  }, []);
 
   const onMonthChange = (months: DateData[]) => {
     setDate({ year: months[0].year, month: months[0].month });
   };
 
   const onDayPress = (day: DateData) => {
-    if (Object.keys(dateObj).some(date => date === day.dateString)) {
+    if (!data || !data.dateObj) return;
+    if (Object.keys(data.dateObj).some(date => date === day.dateString)) {
       navigation.navigate("WalkDetailDay", {
         deviceID,
         avatarUrl,
-        date: new Date(day.dateString).toISOString(),
+        date: day.dateString,
         name,
       });
     }
@@ -157,17 +100,14 @@ const WalkDetailMonth = ({
       routes: [
         {
           name: "WalkTopTabNav",
-          params: {
-            initialStartWalkingParams: { preSelectedID: deviceID },
-          },
+          params: { initialStartWalkingParams: { preSelectedID: deviceID } },
         },
       ],
     });
   };
 
   const isNoWalkRecordVisible =
-    data !== undefined &&
-    !data.day_count.length &&
+    data === null &&
     date.month === new Date().getMonth() + 1 &&
     date.year === new Date().getFullYear();
 
@@ -180,7 +120,7 @@ const WalkDetailMonth = ({
         </MyText>
       </TopContainer>
       <Divider isHairline={false} />
-      <View style={{ flexGrow: 1, paddingBottom: 30 }}>
+      <View style={{ flexGrow: 1, paddingVertical: 31 }}>
         <CalendarList
           calendarWidth={width}
           onVisibleMonthsChange={onMonthChange}
@@ -189,16 +129,20 @@ const WalkDetailMonth = ({
           pagingEnabled
           horizontal
           futureScrollRange={0}
-          markedDates={dateObj}
+          markedDates={data?.dateObj || undefined}
           theme={{
             // @ts-ignore
             "stylesheet.calendar.header": {
               monthText: {
-                margin: 31,
                 fontFamily: "NotoSansKR-Medium",
                 fontSize: 18,
                 color: palette.blue_7b,
                 includeFontPadding: false,
+              },
+              week: {
+                marginTop: 31,
+                flexDirection: "row",
+                justifyContent: "space-around",
               },
               dayHeader: {
                 fontFamily: "NotoSansKR-Regular",
@@ -208,11 +152,6 @@ const WalkDetailMonth = ({
               },
             },
             "stylesheet.day.basic": {
-              base: {
-                width: 32,
-                height: 32,
-                alignItems: "center",
-              },
               text: {
                 marginTop: isAndroid ? 4 : 6,
                 fontFamily: "NotoSansKR-Regular",
@@ -236,51 +175,64 @@ const WalkDetailMonth = ({
         />
         <Dissolve
           pointerEvents="none"
-          style={StyleSheet.absoluteFill}
-          isVisible={isNoWalkRecordVisible}>
-          <NoWalkRecord pointerEvents="none">
-            <MyText
-              color="rgba(0, 0, 0, 0.5)"
-              fontWeight="light"
-              fontSize={18}
-              style={{ textAlign: "center", marginBottom: 249 }}>
-              산책 기록이 없습니다.{"\n"}첫 산책을 시작해보세요!
-            </MyText>
-          </NoWalkRecord>
+          style={{ ...(StyleSheet.absoluteFill as object), zIndex: 10 }}
+          isVisible={isFetching || isNoWalkRecordVisible}>
+          {isNoWalkRecordVisible ? (
+            <Loader style={{ justifyContent: "flex-end" }} pointerEvents="none">
+              <MyText
+                color="rgba(0, 0, 0, 0.5)"
+                fontWeight="light"
+                fontSize={18}
+                style={{ textAlign: "center", marginBottom: 249 }}>
+                산책 기록이 없습니다.{"\n"}첫 산책을 시작해보세요!
+              </MyText>
+            </Loader>
+          ) : (
+            <Loader style={{ justifyContent: "center", alignItems: "center" }}>
+              <LoadingIndicator size={60} />
+            </Loader>
+          )}
         </Dissolve>
         <Dissolve
-          style={{ position: "absolute", alignSelf: "center", bottom: 84 }}
+          style={{
+            position: "absolute",
+            alignSelf: "center",
+            bottom: 84,
+            zIndex: 11,
+          }}
           isVisible={isNoWalkRecordVisible}>
           <Button onPress={onStartWalking} style={{ width: 126 }}>
             산책 시작
           </Button>
         </Dissolve>
-        {data && data.day_count.length !== 0 ? (
-          <RowContainer>
+        {data?.summary && !isFetching ? (
+          <RowContainer style={{ width: width - 64 }}>
             <MyText
               style={{ width: "33.3%", textAlign: "center" }}
-              fontSize={24}
+              fontSize={20}
               color="rgba(0, 0, 0, 0.5)">
-              {data?.summary.count || 0}회
+              {data.summary.count || 0}회
             </MyText>
             <MyText
               style={{ width: "33.3%", textAlign: "center" }}
-              fontSize={24}
+              fontSize={20}
               color={palette.blue_7b}>
               {
-                formatWalkTime(data?.summary.total_time || 0)
+                formatWalkTime(data.summary.total_time || 0)
                   .toString()
                   .split(" ")[0]
               }
             </MyText>
             <MyText
               style={{ width: "33.3%", textAlign: "center" }}
-              fontSize={24}
+              fontSize={20}
               color={palette.blue_7b}>
-              {formatWalkDistance(data?.summary.total_distance || 0)}
+              {formatWalkDistance(data.summary.total_distance || 0)}
             </MyText>
           </RowContainer>
-        ) : null}
+        ) : (
+          <View style={{ height: 47, marginTop: 31 }} />
+        )}
       </View>
     </ScrollView>
   );

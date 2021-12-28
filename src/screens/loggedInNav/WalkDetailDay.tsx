@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useState } from "react";
 import { FlatList, useWindowDimensions, View } from "react-native";
 import styled from "styled-components/native";
 import MyText from "~/components/common/MyText";
@@ -6,12 +6,11 @@ import palette from "~/styles/palette";
 import { WalkDetailDayScreenProps } from "~/types/navigator";
 import Timer from "~/assets/svg/walk/timer.svg";
 import Path from "~/assets/svg/walk/path.svg";
-import { formatWalkDistance, formatWalkTime, formatYYYYMMDD } from "~/utils";
+import { formatWalkDistance, formatWalkTime } from "~/utils";
 import { noAvatar, noName } from "~/constants";
 import IosBottomModal from "~/components/modal/IosBottomModal";
 import CustomHeader from "~/components/navigator/CustomHeader";
 import deviceApi from "~/api/device";
-import { useDispatch } from "react-redux";
 import useModal from "~/hooks/useModal";
 import IosBottomModalButton from "~/components/modal/IosBottomModalButton";
 import X from "~/assets/svg/walkDetailDay/x-black.svg";
@@ -85,10 +84,9 @@ const WalkDetailDay = ({
   const { width } = useWindowDimensions();
   const { top, bottom } = useSafeAreaInsets();
   const { open, close, modalProps } = useModal();
-  const dispatch = useDispatch();
 
   const { data } = deviceApi.useGetDailyWalkRecordQuery(
-    { deviceID, date: formatYYYYMMDD(date) },
+    { deviceID, date },
     { refetchOnMountOrArgChange: true },
   );
   const [deleteWalk] = deviceApi.useDeleteWalkRecordMutation();
@@ -106,10 +104,6 @@ const WalkDetailDay = ({
       .toString()
       .padStart(2, "0")}`;
   };
-
-  useEffect(() => {
-    dispatch(deviceApi.util.invalidateTags([{ type: "Walk", id: "MONTHLY" }]));
-  }, []);
 
   const deleteRecord = () => {
     close();

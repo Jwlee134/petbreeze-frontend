@@ -8,6 +8,8 @@ import { deviceSettingActions } from "~/store/deviceSetting";
 import { formActions } from "~/store/form";
 import { storageActions } from "~/store/storage";
 import * as SecureStore from "expo-secure-store";
+import { DateObj, MonthlyWalkRecord } from "~/api/device";
+import palette from "~/styles/palette";
 
 const isEndWithConsonant = (str: string) => {
   const finalChrCode = str.charCodeAt(str.length - 1);
@@ -51,13 +53,47 @@ export const formatWalkDistance = (meter: number) => {
   }`;
 };
 
+export const formatMonthlyWalkRecordResponse = (data: MonthlyWalkRecord) => {
+  const hasRecords = data.day_count.length > 0;
+  if (hasRecords) {
+    const obj: DateObj = {};
+    //  [["2021-10-16", "0"], ["2021-10-17", "0"], ["2021-10-17", "1"], ["2021-10-18", "0"]]
+    const dateArr = data.day_count
+      .map(({ date, count }) => {
+        const arr: string[][] = [];
+        for (let i = 0; i < count; i++) {
+          arr.push([date, i.toString()]);
+        }
+        return arr;
+      })
+      .flat();
+    dateArr.forEach(date => {
+      if (!Object.prototype.hasOwnProperty.call(obj, date[0])) {
+        obj[date[0]] = {
+          dots: [{ key: date[1], color: palette.blue_7b }],
+        };
+      } else {
+        obj[date[0]].dots.push({
+          key: date[1],
+          color: palette.blue_7b,
+        });
+      }
+    });
+    return {
+      dateObj: data.day_count.length ? obj : null,
+      summary: data.summary,
+    };
+  }
+  return null;
+};
+
 export const formatYYYYMMDD = (date: string) =>
   `${new Date(date).getFullYear()}-${new Date(date).getMonth() + 1}-${new Date(
     date,
   ).getDate()}`;
 
-export const delay = (sec: number) =>
-  new Promise<void>(resolve => setTimeout(resolve, sec));
+export const delay = (milliSec: number) =>
+  new Promise<void>(resolve => setTimeout(resolve, milliSec));
 
 export const isAndroid = Platform.OS === "android";
 

@@ -1,3 +1,4 @@
+import { formatMonthlyWalkRecordResponse } from "~/utils";
 import api, { providesList } from ".";
 
 export type DeepPartial<T> = {
@@ -114,7 +115,7 @@ interface DailyWalkRecord {
   path_image: string;
 }
 
-interface MonthlyWalkRecord {
+export interface MonthlyWalkRecord {
   summary: {
     total_time: number;
     total_distance: number;
@@ -133,6 +134,10 @@ interface WalkBody {
   };
 }
 
+export interface DateObj {
+  [key: string]: { dots: { key: string; color: string }[] };
+}
+
 const shouldInvalidateDeviceList = (error: any) => {
   const code = error?.error?.data?.error_code;
   return (
@@ -146,6 +151,11 @@ const shouldInvalidateDeviceList = (error: any) => {
 const shouldInvalidateUserList = (error: any) => {
   const code = error?.error?.data?.error_code;
   return code === "D008";
+};
+
+const shouldInvalidateWalkList = (error: any) => {
+  const code = error?.error?.data?.error_code;
+  return code === "D010";
 };
 
 const deviceApi = api.injectEndpoints({
@@ -654,12 +664,16 @@ const deviceApi = api.injectEndpoints({
     }),
 
     getMonthlyWalkRecord: builder.query<
-      MonthlyWalkRecord,
+      { dateObj: DateObj | null; summary: MonthlyWalkRecord["summary"] } | null,
       { deviceID: number; year: number; month: number }
     >({
       query: ({ deviceID, year, month }) => ({
         url: `/device/${deviceID}/walk/summary/?year=${year}&month=${month}`,
         method: "GET",
+        responseHandler: async res => {
+          const data: MonthlyWalkRecord = await res.json();
+          return formatMonthlyWalkRecordResponse(data);
+        },
       }),
       providesTags: () => [{ type: "Walk", id: "MONTHLY" }],
       onQueryStarted: async ({ deviceID }, { dispatch, queryFulfilled }) => {
@@ -770,17 +784,26 @@ const deviceApi = api.injectEndpoints({
             draft => draft.filter(walk => walk.id !== walkID),
           ),
         );
+        const [year, month] = date.split("-");
+        const deleteMonthlyResult = dispatch(
+          deviceApi.util.updateQueryData(
+            "getMonthlyWalkRecord",
+            { deviceID, year: Number(year), month: Number(month) },
+            draft => {
+              if (!draft?.dateObj) return;
+              draft?.dateObj[date].dots.splice(-1);
+            },
+          ),
+        );
         queryFulfilled.catch(deleteResult.undo);
+        queryFulfilled.catch(deleteMonthlyResult.undo);
       },
       invalidatesTags: (result, error, { walkID, deviceID }) => {
         if (shouldInvalidateDeviceList(error)) {
           return [{ type: "Device", id: deviceID }];
         }
-        if (!error || error?.data?.error_code === "D010") {
-          return [
-            { type: "Walk", id: walkID },
-            { type: "Walk", id: "MONTHLY" },
-          ];
+        if (shouldInvalidateWalkList(error)) {
+          return [{ type: "Walk", id: walkID }];
         }
         return [];
       },
