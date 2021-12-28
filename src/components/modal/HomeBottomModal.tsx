@@ -33,9 +33,11 @@ const HomeBottomModal = ({ device, close }: Props) => {
     dispatch(
       commonActions.setHome({
         showPath: true,
+        showMarker: false,
         showInfoHeader: true,
         pressedID: device.id,
         isLoading: true,
+        date: new Date().toISOString(),
       }),
     );
   };

@@ -26,7 +26,6 @@ const HomeMap = () => {
   const dispatch = useDispatch();
   const deviceList = useDevice();
 
-  const isLoading = useAppSelector(state => state.common.home.isLoading);
   const pressedID = useAppSelector(state => state.common.home.pressedID);
   const deviceCoord = useAppSelector(state => state.common.home.deviceCoord);
   const isDeviceMoved = useAppSelector(
@@ -122,7 +121,7 @@ const HomeMap = () => {
             anchor={{ x: 0.5, y: 0.5 }}
           />
         ) : null}
-        {deviceCoord.latitude && pressedID && showMarker && !isLoading ? (
+        {deviceCoord.latitude && pressedID && showMarker ? (
           <Marker
             coordinate={{
               latitude: deviceCoord.latitude,
@@ -152,12 +151,12 @@ const HomeMap = () => {
             outlineWidth={1}
           />
         ) : null}
-        {path.length ? (
+        {path.length && showMarker ? (
           <>
             <Path
               coordinates={path.map(coord => ({
-                latitude: coord[0],
-                longitude: coord[1],
+                latitude: coord[1],
+                longitude: coord[0],
               }))}
               color="#D9D9D9"
               outlineWidth={0}
@@ -166,8 +165,8 @@ const HomeMap = () => {
             {path
               .filter(
                 coord =>
-                  coord[0] !== deviceCoord.latitude &&
-                  coord[1] !== deviceCoord.longitude,
+                  coord[1] !== deviceCoord.latitude &&
+                  coord[0] !== deviceCoord.longitude,
               )
               .map((coord, i) => (
                 <Marker
@@ -175,7 +174,7 @@ const HomeMap = () => {
                   image={require("~/assets/image/home-path-marker.png")}
                   width={22}
                   height={22}
-                  coordinate={{ latitude: coord[0], longitude: coord[1] }}
+                  coordinate={{ latitude: coord[1], longitude: coord[0] }}
                   anchor={{ x: 0.5, y: 0.5 }}
                 />
               ))}

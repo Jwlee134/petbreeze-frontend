@@ -6,7 +6,7 @@ import palette from "~/styles/palette";
 import { WalkDetailDayScreenProps } from "~/types/navigator";
 import Timer from "~/assets/svg/walk/timer.svg";
 import Path from "~/assets/svg/walk/path.svg";
-import { formatWalkDistance, formatWalkTime } from "~/utils";
+import { formatWalkDistance, formatWalkTime, formatYYYYMMDD } from "~/utils";
 import { noAvatar, noName } from "~/constants";
 import IosBottomModal from "~/components/modal/IosBottomModal";
 import CustomHeader from "~/components/navigator/CustomHeader";
@@ -88,12 +88,7 @@ const WalkDetailDay = ({
   const dispatch = useDispatch();
 
   const { data } = deviceApi.useGetDailyWalkRecordQuery(
-    {
-      deviceID,
-      date: `${new Date(date).getFullYear()}-${
-        new Date(date).getMonth() + 1
-      }-${new Date(date).getDate()}`,
-    },
+    { deviceID, date: formatYYYYMMDD(date) },
     { refetchOnMountOrArgChange: true },
   );
   const [deleteWalk] = deviceApi.useDeleteWalkRecordMutation();

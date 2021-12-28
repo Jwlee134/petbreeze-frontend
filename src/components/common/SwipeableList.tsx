@@ -12,13 +12,13 @@ interface Props<T> {
   disableLeftSwipe?: boolean;
 }
 
-function SwipeableList<T>({
+const SwipeableList = <T extends object>({
   data,
   keyExtractor,
   renderItem,
   onHiddenButtonPress,
   disableLeftSwipe,
-}: Props<T>) {
+}: Props<T>) => {
   const swipeableRef = useRef<{ [key: string]: SwipeRow<unknown> | null }>({});
 
   return (
@@ -51,6 +51,6 @@ function SwipeableList<T>({
       ))}
     </View>
   );
-}
+};
 
 export default SwipeableList;

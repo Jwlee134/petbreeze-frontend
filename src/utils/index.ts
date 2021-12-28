@@ -51,6 +51,11 @@ export const formatWalkDistance = (meter: number) => {
   }`;
 };
 
+export const formatYYYYMMDD = (date: string) =>
+  `${new Date(date).getFullYear()}-${new Date(date).getMonth() + 1}-${new Date(
+    date,
+  ).getDate()}`;
+
 export const delay = (sec: number) =>
   new Promise<void>(resolve => setTimeout(resolve, sec));
 

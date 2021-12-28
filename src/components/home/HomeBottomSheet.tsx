@@ -1,10 +1,13 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useAppSelector } from "~/store";
 import { commonActions } from "~/store/common";
 import BottomSheetComponent from "@gorhom/bottom-sheet";
 import BottomSheet from "~/components/common/BottomSheet";
 import { useDispatch } from "react-redux";
-import { homeBottomSheetHeight } from "~/styles/constants";
+import {
+  homeBottomSheetHeight,
+  textLoadingIndicatorSize,
+} from "~/styles/constants";
 import ArrowLeft from "~/assets/svg/arrow/arrow-left.svg";
 import ArrowRight from "~/assets/svg/arrow/arrow-right.svg";
 import styled from "styled-components/native";
@@ -12,39 +15,8 @@ import MyText from "../common/MyText";
 import { Slider } from "@miblanchard/react-native-slider";
 import LoadingIndicator from "../lottie/LoadingIndicator";
 import { getAddressByCoord } from "~/api/place";
-
-const coords = {
-  "2021-12-24": [
-    [37.479255, 126.952387],
-    [37.479183, 126.953086],
-    [37.479119, 126.953617],
-    [37.478747, 126.954921],
-    [37.478581, 126.955559],
-    [37.479594, 126.955379],
-    [37.480128, 126.955414],
-    [37.479983, 126.955832],
-  ],
-  "2021-12-23": [
-    [37.479594, 126.955379],
-    [37.479983, 126.955832],
-    [37.479119, 126.953617],
-    [37.478747, 126.954921],
-    [37.479255, 126.952387],
-    [37.478581, 126.955559],
-    [37.479183, 126.953086],
-    [37.480128, 126.955414],
-  ],
-  "2021-12-22": [
-    [37.478581, 126.955559],
-    [37.479983, 126.955832],
-    [37.479119, 126.953617],
-    [37.479594, 126.955379],
-    [37.478747, 126.954921],
-    [37.480128, 126.955414],
-    [37.479255, 126.952387],
-    [37.479183, 126.953086],
-  ],
-};
+import { formatYYYYMMDD } from "~/utils";
+import { testApi } from "~/api";
 
 const DateContainer = styled.View`
   flex-direction: row;
@@ -82,9 +54,14 @@ const HomeBottomSheet = () => {
   const showPath = useAppSelector(state => state.common.home.showPath);
   const dispatch = useDispatch();
   const sheetRef = useRef<BottomSheetComponent>(null);
-  const [data, setData] = useState(null);
-  const [dateIndex, setDateIndex] = useState(0);
+  const date = useAppSelector(state => state.common.home.date);
   const [pathIndex, setPathIndex] = useState(0);
+  const { data, isFetching, refetch } = testApi.useGetPathQuery(
+    formatYYYYMMDD(date),
+    {
+      skip: !date,
+    },
+  );
 
   useEffect(() => {
     if (!showPath) return;
@@ -100,54 +77,63 @@ const HomeBottomSheet = () => {
     };
   }, [deviceCoord]);
 
-  const currentPath = useMemo(
-    () => (data ? data[Object.keys(data)[dateIndex]] : []),
-    [data, dateIndex],
-  );
-
   useEffect(() => {
-    if (!currentPath.length || !path.length) return;
+    if (!path.length) return;
+    const [longitude, latitude, time] = path[pathIndex];
     dispatch(
       commonActions.setHome({
-        deviceCoord: {
-          latitude: currentPath[pathIndex][0],
-          longitude: currentPath[pathIndex][1],
-          time: new Date().toISOString(),
-        },
+        deviceCoord: { latitude, longitude, time },
         isDeviceMoved: false,
-      }),
-    );
-  }, [pathIndex, currentPath]);
-
-  useEffect(() => {
-    if (!currentPath.length) return;
-    setPathIndex(currentPath.length - 1);
-    dispatch(
-      commonActions.setHome({
-        path: currentPath,
         showMarker: true,
-        isDeviceMoved: false,
+        showInfoHeader: true,
       }),
     );
-  }, [currentPath]);
+  }, [pathIndex, path]);
+
+  useEffect(() => {
+    if (!showPath || !data) return;
+    setPathIndex(data.length ? data.length - 1 : 0);
+    dispatch(
+      commonActions.setHome({
+        ...(data.length
+          ? {
+              path: data,
+            }
+          : {
+              path: [],
+              deviceCoord: { latitude: 0, longitude: 0, time: "" },
+              showMarker: false,
+              showInfoHeader: false,
+              address: "",
+            }),
+      }),
+    );
+  }, [showPath, data]);
 
   useEffect(() => {
     if (showPath) {
+      if (data?.length) refetch();
       sheetRef.current?.snapToIndex(0);
-      setTimeout(() => {
-        setData(coords);
-      }, 1000);
     } else {
       sheetRef.current?.close();
-      setData(null);
-      setDateIndex(0);
       setPathIndex(0);
       dispatch(commonActions.setHome(null));
     }
   }, [showPath]);
 
-  const onLeftPress = () => setDateIndex(prev => prev + 1);
-  const onRightPress = () => setDateIndex(prev => prev - 1);
+  const addDay = (date: string, day: number) => {
+    const result = new Date(date);
+    result.setDate(result.getDate() + day);
+    return result.toISOString();
+  };
+
+  const onLeftPress = () =>
+    dispatch(
+      commonActions.setHome({ date: addDay(date, -1), isLoading: true }),
+    );
+  const onRightPress = () =>
+    dispatch(commonActions.setHome({ date: addDay(date, 1), isLoading: true }));
+  const [, , currentDay] = formatYYYYMMDD(date).split("-");
 
   return (
     <BottomSheet
@@ -155,7 +141,10 @@ const HomeBottomSheet = () => {
       ref={sheetRef}
       index={-1}
       enablePanDownToClose
-      onClose={() => dispatch(commonActions.setHome({ showPath: false }))}
+      onChange={index => {
+        if (index === -1 && showPath)
+          dispatch(commonActions.setHome({ showPath: false }));
+      }}
       snapPoints={[homeBottomSheetHeight]}>
       {!data ? (
         <Loader>
@@ -164,7 +153,7 @@ const HomeBottomSheet = () => {
       ) : (
         <>
           <DateContainer>
-            {dateIndex !== Object.keys(data).length - 1 ? (
+            {new Date().getDate() - Number(currentDay) < 7 && !isFetching ? (
               <ArrowButton onPress={onLeftPress}>
                 <ArrowLeft />
               </ArrowButton>
@@ -172,9 +161,9 @@ const HomeBottomSheet = () => {
               <ArrowButton />
             )}
             <MyText fontWeight="medium" fontSize={18}>
-              {Object.keys(data)[dateIndex]}
+              {formatYYYYMMDD(date)}
             </MyText>
-            {dateIndex !== 0 ? (
+            {new Date().getDate() !== Number(currentDay) && !isFetching ? (
               <ArrowButton onPress={onRightPress}>
                 <ArrowRight />
               </ArrowButton>
@@ -183,24 +172,40 @@ const HomeBottomSheet = () => {
             )}
           </DateContainer>
           <SliderContainer>
-            <Slider
-              renderThumbComponent={() => (
-                <Thumb source={require("~/assets/image/circle.png")} />
-              )}
-              minimumTrackTintColor="#ededed"
-              maximumTrackTintColor="#ededed"
-              trackStyle={{ height: 7 }}
-              containerStyle={{ height: 22 }}
-              minimumValue={0}
-              maximumValue={currentPath.length - 1}
-              value={pathIndex}
-              step={1}
-              onValueChange={value => {
-                if (pathIndex !== value[0]) {
-                  setPathIndex(value[0]);
-                }
-              }}
-            />
+            {!isFetching ? (
+              data.length ? (
+                <Slider
+                  renderThumbComponent={() => (
+                    <Thumb source={require("~/assets/image/circle.png")} />
+                  )}
+                  minimumTrackTintColor="#ededed"
+                  maximumTrackTintColor="#ededed"
+                  trackStyle={{ height: 7 }}
+                  containerStyle={{ height: 22 }}
+                  minimumValue={0}
+                  maximumValue={data.length - 1}
+                  value={pathIndex}
+                  step={1}
+                  onValueChange={value => {
+                    if (pathIndex !== value[0]) {
+                      setPathIndex(value[0]);
+                    }
+                  }}
+                />
+              ) : (
+                <MyText
+                  fontWeight="light"
+                  style={{ textAlign: "center" }}
+                  color="rgba(0, 0, 0, 0.5)">
+                  표시할 경로가 없습니다.
+                </MyText>
+              )
+            ) : (
+              <MyText style={{ textAlign: "center" }}>
+                {" "}
+                <LoadingIndicator size={textLoadingIndicatorSize} />{" "}
+              </MyText>
+            )}
           </SliderContainer>
         </>
       )}

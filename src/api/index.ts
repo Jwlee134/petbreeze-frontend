@@ -6,6 +6,8 @@ import Toast from "react-native-toast-message";
 import { ToastType } from "~/styles/toast";
 import { store } from "~/store";
 import { commonActions } from "~/store/common";
+import { DeviceCoord } from "./device";
+import { getDistanceBetween2Points } from "~/utils";
 
 export const baseUrl = "https://dev.petbreeze.co/api";
 
@@ -27,6 +29,43 @@ const api = createApi({
   baseQuery,
   tagTypes: ["Device", "Walk", "Notification", "Member"],
   endpoints: () => ({}),
+});
+
+export const testApi = createApi({
+  baseQuery: fetchBaseQuery({ baseUrl: "http://172.30.1.117:4000" }),
+  reducerPath: "testApi",
+  endpoints: builder => ({
+    getPath: builder.query<[number, number, string][], string>({
+      query: date => ({
+        url: `/path?date=${date}`,
+        method: "GET",
+        responseHandler: async res => {
+          const data: DeviceCoord[] = await res.json();
+          return (
+            data
+              ?.map(item => [
+                item.coordinate.coordinates[0],
+                item.coordinate.coordinates[1],
+                item.date_time,
+              ])
+              ?.filter((item, index, arr) => {
+                const prevCoord = arr[index - 1];
+                if (!prevCoord) return true;
+                const distance = getDistanceBetween2Points(
+                  item[1] as number,
+                  item[0] as number,
+                  prevCoord[1] as number,
+                  prevCoord[0] as number,
+                );
+                if (distance < 10) return false;
+                return true;
+              })
+              ?.reverse() || []
+          );
+        },
+      }),
+    }),
+  }),
 });
 
 export const rtkQueryErrorLogger: Middleware = () => next => action => {

@@ -10,8 +10,9 @@ interface HomeState {
   isMapClicked: boolean;
   pressedID: number;
   isLoading: boolean;
+  date: string;
   showPath: boolean;
-  path: number[][];
+  path: [number, number, string][]; // [longitude, latitude, time]
 }
 
 interface DeleteAccountState {
@@ -37,6 +38,7 @@ const initialState: State = {
     isMapClicked: false,
     pressedID: 0,
     isLoading: false,
+    date: "",
     showPath: false,
     path: [],
   },

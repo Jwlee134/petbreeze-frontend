@@ -18,7 +18,7 @@ import storage from "./storage";
 import common from "./common";
 import form from "./form";
 
-import api, { rtkQueryErrorLogger } from "~/api";
+import api, { rtkQueryErrorLogger, testApi } from "~/api";
 
 const rootReducer = combineReducers({
   ble,
@@ -27,6 +27,7 @@ const rootReducer = combineReducers({
   common,
   form,
   [api.reducerPath]: api.reducer,
+  [testApi.reducerPath]: testApi.reducer,
 });
 
 const persistConfig = {
@@ -37,7 +38,7 @@ const persistConfig = {
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-const middleware = [api.middleware, rtkQueryErrorLogger];
+const middleware = [api.middleware, testApi.middleware, rtkQueryErrorLogger];
 
 if (__DEV__) {
   const createDebugger = require("redux-flipper").default;
