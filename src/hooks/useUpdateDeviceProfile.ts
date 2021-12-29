@@ -1,6 +1,6 @@
 import { Keyboard } from "react-native";
 import deviceApi from "~/api/device";
-import { serverImageUri } from "~/constants";
+import { SERVER_IMAGE_URI } from "~/constants";
 import { useAppSelector } from "~/store";
 import imageHandler from "~/utils/imageHandler";
 
@@ -30,7 +30,7 @@ const useUpdateDeviceProfile = (deviceID: number) => {
   const updateProfileReq = async () => {
     if (isLoading) return;
     Keyboard.dismiss();
-    if (photos[0] && !photos[0].includes(serverImageUri)) {
+    if (photos[0] && !photos[0].includes(SERVER_IMAGE_URI)) {
       try {
         await triggerAvatar({
           deviceID,

@@ -6,9 +6,9 @@ import { Shadow } from "react-native-shadow-2";
 import { useDispatch } from "react-redux";
 import styled from "styled-components/native";
 import Button from "~/components/common/Button";
+import { IS_IOS } from "~/constants";
 import { useAppSelector } from "~/store";
 import { deviceSettingActions } from "~/store/deviceSetting";
-import { isIos } from "~/utils";
 import AreaInputs from "./AreaInputs";
 
 const Container = styled(Animated.View)`
@@ -58,7 +58,7 @@ const AreaBottomSheet = ({ height, style }: Props) => {
   return (
     <KeyboardAvoidingView
       pointerEvents={step2 ? undefined : "none"}
-      behavior={isIos ? "padding" : undefined}
+      behavior={IS_IOS ? "padding" : undefined}
       keyboardVerticalOffset={-85 - bottom}>
       <Container style={[{ height }, style]}>
         <Shadow

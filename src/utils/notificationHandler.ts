@@ -5,6 +5,7 @@ import {
   LoggedInNavScreenNavigationProp,
   StartScreenNavigationProp,
 } from "~/types/navigator";
+import { formatYYYYMMDD } from ".";
 
 type Navigation = LoggedInNavScreenNavigationProp | StartScreenNavigationProp;
 
@@ -48,8 +49,8 @@ export default (
     const params = {
       deviceID: parseInt(message.data.deviceID, 10),
       date: message.sentTime
-        ? new Date(message.sentTime).toISOString()
-        : new Date().toISOString(),
+        ? formatYYYYMMDD(new Date(message.sentTime).toISOString())
+        : formatYYYYMMDD(new Date().toISOString()),
       avatarUrl: message.data?.profileImageURL || "",
       name: message.data?.name || "",
     };

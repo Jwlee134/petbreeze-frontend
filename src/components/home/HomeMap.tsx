@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import NaverMapView, { Circle, Marker, Path } from "react-native-nmap";
 import Geolocation from "react-native-geolocation-service";
-import { delta } from "~/constants";
+import { DELTA, IS_ANDROID } from "~/constants";
 import useAppState from "~/hooks/useAppState";
 import { useIsFocused } from "@react-navigation/native";
 import Map from "../common/Map";
@@ -9,13 +9,12 @@ import { store, useAppSelector } from "~/store";
 import { useDispatch } from "react-redux";
 import { commonActions } from "~/store/common";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { isAndroid } from "~/utils";
 import useDevice from "~/hooks/useDevice";
 import { storageActions } from "~/store/storage";
 import HomeInfoHeader from "./HomeInfoHeader";
 import palette from "~/styles/palette";
 import HomeMapButtons from "./HomeMapButtons";
-import { homeBottomSheetHeight } from "~/styles/constants";
+import { HOME_BOTTOM_SHEET_HEIGHT } from "~/styles/constants";
 
 const HomeMap = () => {
   const mapRef = useRef<NaverMapView>(null);
@@ -46,8 +45,8 @@ const HomeMap = () => {
     mapRef.current?.animateToRegion({
       latitude: (type === "myLocation" ? coords : deviceCoord).latitude,
       longitude: (type === "myLocation" ? coords : deviceCoord).longitude,
-      latitudeDelta: delta,
-      longitudeDelta: delta,
+      latitudeDelta: DELTA,
+      longitudeDelta: DELTA,
     });
     if (type === "myLocation") {
       setIsMyLocationMoved(true);
@@ -101,7 +100,7 @@ const HomeMap = () => {
     dispatch(commonActions.setHome({ isMapClicked: true }));
   };
 
-  const defaultPadding = isAndroid ? top : 0;
+  const defaultPadding = IS_ANDROID ? top : 0;
 
   return (
     <>
@@ -109,7 +108,7 @@ const HomeMap = () => {
         ref={mapRef}
         mapPadding={{
           top: showInfoHeader ? defaultPadding + 56 : defaultPadding,
-          bottom: showPath ? homeBottomSheetHeight : 0,
+          bottom: showPath ? HOME_BOTTOM_SHEET_HEIGHT : 0,
         }}
         onMapClick={onMapClick}>
         {coords.latitude ? (

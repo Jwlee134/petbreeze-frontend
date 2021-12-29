@@ -4,14 +4,13 @@ import useDevice from "~/hooks/useDevice";
 import {
   ANIMATION_CONFIGS_ANDROID,
   ANIMATION_CONFIGS_IOS,
-  liveModeButtonStyle,
-  myLocationButtonStyle,
+  LIVE_MODE_BUTTON_STYLE,
+  MY_LOCATION_BUTTON_STYLE,
 } from "~/styles/constants";
 import permissionCheck from "~/utils/permissionCheck";
 import LiveModeButton from "../common/LiveModeButton";
 import MapButton from "../common/MapButton";
 import Toast from "react-native-toast-message";
-import { ToastType } from "~/styles/toast";
 import Geolocation from "react-native-geolocation-service";
 import { useAppSelector } from "~/store";
 import Animated, {
@@ -20,7 +19,7 @@ import Animated, {
   withSpring,
   withTiming,
 } from "react-native-reanimated";
-import { isAndroid } from "~/utils";
+import { IS_ANDROID, TOAST_TYPE } from "~/constants";
 
 interface Props {
   setIsMyLocationMoved: React.Dispatch<React.SetStateAction<boolean>>;
@@ -52,10 +51,10 @@ const HomeMapButtons = ({
   );
   const value = useDerivedValue(() =>
     showInfoHeader
-      ? isAndroid
+      ? IS_ANDROID
         ? withTiming(56, ANIMATION_CONFIGS_ANDROID)
         : withSpring(56, ANIMATION_CONFIGS_IOS)
-      : isAndroid
+      : IS_ANDROID
       ? withTiming(0, ANIMATION_CONFIGS_ANDROID)
       : withSpring(0, ANIMATION_CONFIGS_IOS),
   );
@@ -77,7 +76,7 @@ const HomeMapButtons = ({
           },
           () => {
             Toast.show({
-              type: ToastType.Error,
+              type: TOAST_TYPE.ERROR,
               text1: "위치를 불러올 수 없습니다.",
             });
           },
@@ -92,10 +91,11 @@ const HomeMapButtons = ({
 
   return (
     <>
-      <Animated.View style={[liveModeButtonStyle(top, true), animatedStyle]}>
+      <Animated.View style={[LIVE_MODE_BUTTON_STYLE(top, true), animatedStyle]}>
         <LiveModeButton deviceList={deviceList} />
       </Animated.View>
-      <Animated.View style={[myLocationButtonStyle(top, true), animatedStyle]}>
+      <Animated.View
+        style={[MY_LOCATION_BUTTON_STYLE(top, true), animatedStyle]}>
         <MapButton onPress={handleMyLocation} icon="myLocation" />
       </Animated.View>
     </>

@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components/native";
 import { Device } from "~/api/device";
-import { noName } from "~/constants";
+import { DEFAULT_NAME } from "~/constants";
 import palette from "~/styles/palette";
 import {
   DeviceManagementScreenNavigationProp,
@@ -44,7 +44,7 @@ const MyPageDeviceListItem = ({ device, navigation }: Props) => (
         avatar={device.profile_image}
       />
       <MyText style={{ marginLeft: 24, marginRight: 12 }} fontWeight="medium">
-        {device.name || noName}
+        {device.name || DEFAULT_NAME}
       </MyText>
       <MyText color={palette.blue_7b} fontSize={14}>
         {device.battery || 0}%

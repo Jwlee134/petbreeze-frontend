@@ -7,14 +7,14 @@ import { WalkDetailDayScreenProps } from "~/types/navigator";
 import Timer from "~/assets/svg/walk/timer.svg";
 import Path from "~/assets/svg/walk/path.svg";
 import { formatWalkDistance, formatWalkTime } from "~/utils";
-import { noAvatar, noName } from "~/constants";
+import { DEFAULT_AVATAR, DEFAULT_NAME } from "~/constants";
 import IosBottomModal from "~/components/modal/IosBottomModal";
 import CustomHeader from "~/components/navigator/CustomHeader";
 import deviceApi from "~/api/device";
 import useModal from "~/hooks/useModal";
 import IosBottomModalButton from "~/components/modal/IosBottomModalButton";
 import X from "~/assets/svg/walkDetailDay/x-black.svg";
-import { headerBackButtonWidth, headerHeight } from "~/styles/constants";
+import { HEADER_BACK_BUTTON_WIDTH, HEADER_HEIGHT } from "~/styles/constants";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const Container = styled.View``;
@@ -26,8 +26,8 @@ const RowContainer = styled.View`
 
 const HeaderContainer = styled(RowContainer)`
   position: absolute;
-  left: ${headerBackButtonWidth}px;
-  height: ${headerHeight}px;
+  left: ${HEADER_BACK_BUTTON_WIDTH}px;
+  height: ${HEADER_HEIGHT}px;
 `;
 
 const TopContainer = styled(RowContainer)`
@@ -119,10 +119,10 @@ const WalkDetailDay = ({
     <>
       <CustomHeader navigation={navigation} />
       <HeaderContainer style={{ marginTop: top }}>
-        <Avatar source={avatarUrl ? { uri: avatarUrl } : noAvatar} />
+        <Avatar source={avatarUrl ? { uri: avatarUrl } : DEFAULT_AVATAR} />
         <View>
           <MyText fontSize={14} fontWeight="medium">
-            {name || noName}
+            {name || DEFAULT_NAME}
           </MyText>
           <MyText fontSize={12} color="rgba(0, 0, 0, 0.5)">{`${
             new Date(date).getMonth() + 1
@@ -142,7 +142,7 @@ const WalkDetailDay = ({
                     color={palette.blue_7b}
                     fontWeight="medium"
                     fontSize={14}>
-                    {item.handler_name || noName}
+                    {item.handler_name || DEFAULT_NAME}
                   </MyText>
                 </FloatingItem>
                 <FloatingItem style={{ marginLeft: 14 }}>

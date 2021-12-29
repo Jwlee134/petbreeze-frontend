@@ -7,7 +7,7 @@ import MyText, { FontWeight } from "../common/MyText";
 import Modal, { ModalProps } from "react-native-modal";
 import { ModalPosition } from "~/hooks/useModal";
 import LoadingIndicator from "../lottie/LoadingIndicator";
-import { textLoadingIndicatorSize } from "~/styles/constants";
+import { SMALL_LOADING_INDICATOR_SIZE } from "~/styles/constants";
 
 interface Props {
   title?: string;
@@ -84,7 +84,7 @@ const CommonCenterModal = ({
         <Divider isVertical />
         <Button onPress={onRightButtonPress}>
           {isLoading ? (
-            <LoadingIndicator size={textLoadingIndicatorSize} />
+            <LoadingIndicator size={SMALL_LOADING_INDICATOR_SIZE} />
           ) : (
             <MyText fontWeight="medium" color={palette.blue_7b}>
               {rightButtonText}

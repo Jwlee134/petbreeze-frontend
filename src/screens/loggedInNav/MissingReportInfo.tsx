@@ -8,7 +8,7 @@ import { useWindowDimensions, View } from "react-native";
 import BottomSheet from "~/components/common/BottomSheet";
 import deviceApi from "~/api/device";
 import LoadingIndicator from "~/components/lottie/LoadingIndicator";
-import { headerHeight } from "~/styles/constants";
+import { HEADER_HEIGHT } from "~/styles/constants";
 
 const MissingReportInfo = ({
   navigation,
@@ -26,7 +26,7 @@ const MissingReportInfo = ({
   return (
     <>
       <BackButton
-        style={{ position: "absolute", zIndex: 1, top, height: headerHeight }}
+        style={{ position: "absolute", zIndex: 1, top, height: HEADER_HEIGHT }}
         navigation={navigation}
       />
       <MissingReportInfoMap

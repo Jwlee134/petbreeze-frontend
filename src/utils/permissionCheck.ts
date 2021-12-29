@@ -11,11 +11,11 @@ import {
   RESULTS,
 } from "react-native-permissions";
 import Toast from "react-native-toast-message";
-import { isAndroid, isIos } from ".";
+import { IS_ANDROID, IS_IOS } from "~/constants";
 
 export default {
   location: async () => {
-    const perm = isIos
+    const perm = IS_IOS
       ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE
       : [
           PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION,
@@ -55,14 +55,14 @@ export default {
     });
   },
   locationAlways: async () => {
-    const perm = isIos
+    const perm = IS_IOS
       ? PERMISSIONS.IOS.LOCATION_ALWAYS
       : PERMISSIONS.ANDROID.ACCESS_BACKGROUND_LOCATION;
     const result = await check(perm);
     return new Promise<void>(async (resolve, reject) => {
       switch (result) {
         case RESULTS.DENIED:
-          if (isAndroid) {
+          if (IS_ANDROID) {
             Toast.show({
               type: "error",
               onPress: openSettings,
@@ -103,7 +103,7 @@ export default {
     });
   },
   bluetooth: async () => {
-    const perm = isIos
+    const perm = IS_IOS
       ? PERMISSIONS.IOS.BLUETOOTH_PERIPHERAL
       : [
           PERMISSIONS.ANDROID.BLUETOOTH_CONNECT,
@@ -164,7 +164,7 @@ export default {
     });
   },
   camera: async () => {
-    const perm = isIos ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA;
+    const perm = IS_IOS ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA;
     const result = await check(perm);
     return new Promise<void>(async (resolve, reject) => {
       if (result === "granted") {
@@ -189,7 +189,7 @@ export default {
     });
   },
   library: async () => {
-    const perm = isIos
+    const perm = IS_IOS
       ? [PERMISSIONS.IOS.PHOTO_LIBRARY, PERMISSIONS.IOS.PHOTO_LIBRARY_ADD_ONLY]
       : [
           PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE,

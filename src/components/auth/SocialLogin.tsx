@@ -10,7 +10,7 @@ import LoadingIndicator from "../lottie/LoadingIndicator";
 import userApi from "~/api/user";
 import messaging from "@react-native-firebase/messaging";
 import * as SecureStore from "expo-secure-store";
-import { secureItems } from "~/constants";
+import { SECURE_ITEMS } from "~/constants";
 import { store, useAppSelector } from "~/store";
 import deviceApi from "~/api/device";
 
@@ -41,9 +41,9 @@ const SocialLogin = ({ name }: { name: string }) => {
     userID: number,
   ) => {
     await Promise.all([
-      SecureStore.setItemAsync(secureItems.token, token),
-      SecureStore.setItemAsync(secureItems.firebaseToken, firebaseToken),
-      SecureStore.setItemAsync(secureItems.userID, userID.toString()),
+      SecureStore.setItemAsync(SECURE_ITEMS.TOKEN, token),
+      SecureStore.setItemAsync(SECURE_ITEMS.FIREBASE_TOKEN, firebaseToken),
+      SecureStore.setItemAsync(SECURE_ITEMS.USER_ID, userID.toString()),
     ]);
   };
 

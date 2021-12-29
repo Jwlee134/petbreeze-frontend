@@ -9,7 +9,7 @@ import Divider from "~/components/common/Divider";
 import { Animated } from "react-native";
 import useAnimatedSequence from "~/hooks/useAnimatedSequence";
 import { WelcomeScreenNavigationProp } from "~/types/navigator";
-import { noAvatar, noName } from "~/constants";
+import { DEFAULT_AVATAR, DEFAULT_NAME } from "~/constants";
 import { useDispatch } from "react-redux";
 import { formActions } from "~/store/form";
 
@@ -73,13 +73,13 @@ const Welcome = ({
           </MyText>
         </Animated.View>
         <DeviceContainer style={{ transform: [{ translateY }] }}>
-          <Image source={photos[0] ? { uri: photos[0] } : noAvatar} />
+          <Image source={photos[0] ? { uri: photos[0] } : DEFAULT_AVATAR} />
           <MyText
             style={{ marginTop: 15, marginBottom: 8 }}
             fontWeight="medium"
             fontSize={24}
             color={palette.blue_86}>
-            {name || noName}
+            {name || DEFAULT_NAME}
           </MyText>
           <RowContainer>
             <MyText fontSize={14} color="rgba(0, 0, 0, 0.3)">

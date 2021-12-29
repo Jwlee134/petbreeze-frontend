@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import styled from "styled-components/native";
 import KeyboardAwareScrollContainer from "~/components/common/container/KeyboardAwareScrollContainer";
-import { noAvatar } from "~/constants";
+import { DEFAULT_AVATAR, TOAST_TYPE } from "~/constants";
 import { useAppSelector } from "~/store";
 import Name from "~/components/profileForm/Name";
 import BirthDate from "~/components/profileForm/BirthDate";
@@ -17,9 +17,8 @@ import CustomHeader from "~/components/navigator/CustomHeader";
 import LoadingIndicator from "~/components/lottie/LoadingIndicator";
 import MyText from "~/components/common/MyText";
 import palette from "~/styles/palette";
-import { textLoadingIndicatorSize } from "~/styles/constants";
+import { SMALL_LOADING_INDICATOR_SIZE } from "~/styles/constants";
 import Camera from "~/assets/svg/camera/camera-white.svg";
-import { ToastType } from "~/styles/toast";
 import Toast from "react-native-toast-message";
 
 const AvatarButton = styled.TouchableOpacity`
@@ -88,7 +87,7 @@ const UpdateProfile = ({
   useEffect(() => {
     if (isSuccess)
       Toast.show({
-        type: ToastType.Notification,
+        type: TOAST_TYPE.NOTIFICATION,
         text1: "성공적으로 수정되었습니다.",
       });
   }, [isSuccess]);
@@ -101,7 +100,7 @@ const UpdateProfile = ({
         title="프로필 수정"
         RightButtonText={
           isLoading ? (
-            <LoadingIndicator size={textLoadingIndicatorSize} />
+            <LoadingIndicator size={SMALL_LOADING_INDICATOR_SIZE} />
           ) : (
             <MyText color={palette.blue_7b}>완료</MyText>
           )
@@ -113,7 +112,7 @@ const UpdateProfile = ({
           <Overlay>
             <Camera />
           </Overlay>
-          <Image source={photos[0] ? { uri: photos[0] } : noAvatar} />
+          <Image source={photos[0] ? { uri: photos[0] } : DEFAULT_AVATAR} />
         </AvatarButton>
         <InputContainer>
           <Name />

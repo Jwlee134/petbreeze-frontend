@@ -6,7 +6,7 @@ import People from "~/assets/svg/myPage/people.svg";
 import WiFi from "~/assets/svg/wifi/wifi-black.svg";
 import MyText from "../common/MyText";
 import LoadingIndicator from "../lottie/LoadingIndicator";
-import { textLoadingIndicatorSize } from "~/styles/constants";
+import { SMALL_LOADING_INDICATOR_SIZE } from "~/styles/constants";
 
 interface Props {
   type: "area" | "wifi" | "family";
@@ -68,7 +68,7 @@ const SectionHeader = ({
       {!disablePlusButton && (
         <PlusContainer onPress={onPlusButtonClick}>
           {isLoading ? (
-            <LoadingIndicator size={textLoadingIndicatorSize} />
+            <LoadingIndicator size={SMALL_LOADING_INDICATOR_SIZE} />
           ) : (
             <Plus />
           )}

@@ -4,13 +4,13 @@ import styled from "styled-components/native";
 import Button from "~/components/common/Button";
 import KeyboardAwareScrollContainer from "~/components/common/container/KeyboardAwareScrollContainer";
 import MyText from "~/components/common/MyText";
-import { minSpace } from "~/styles/constants";
 import AvatarCircle from "~/components/ble/AvatarCircle";
 import { useAppSelector } from "~/store";
 import { RegisterProfileFirstScreenNavigationProp } from "~/types/navigator";
 import Name from "~/components/profileForm/Name";
 import BirthDate from "~/components/profileForm/BirthDate";
 import { DimensionsContext } from "~/context/DimensionsContext";
+import { MIN_SPACE } from "~/styles/constants";
 
 const InputContainer = styled.View`
   padding: 0px 42px;
@@ -58,7 +58,7 @@ const RegisterProfileFirst = forwardRef<
         </InputContainer>
       </View>
       <Button
-        style={{ marginTop: rpHeight(minSpace) }}
+        style={{ marginTop: rpHeight(MIN_SPACE) }}
         disabled={!name || !birthYear}
         useCommonMarginBottom
         onPress={onNext}>

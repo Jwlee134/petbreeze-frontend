@@ -3,7 +3,7 @@ import styled, { css } from "styled-components/native";
 import { useAppSelector } from "~/store";
 import PlusCircle from "~/assets/svg/plus/plus-circle-blue.svg";
 import imageHandler from "~/utils/imageHandler";
-import { noAvatar } from "~/constants";
+import { DEFAULT_AVATAR } from "~/constants";
 import { DimensionsContext, RpHeight } from "~/context/DimensionsContext";
 
 const Container = styled.TouchableOpacity<{ rpHeight: RpHeight }>`
@@ -36,7 +36,7 @@ const AvatarCircle = () => {
     <Container rpHeight={rpHeight} onPress={imageHandler.openCircleCropper}>
       <Image
         rpHeight={rpHeight}
-        source={!photos[0] ? noAvatar : { uri: photos[0] }}
+        source={!photos[0] ? DEFAULT_AVATAR : { uri: photos[0] }}
       />
       <Svg style={{ right: rpHeight(10) }}>
         <PlusCircle width={rpHeight(28)} height={rpHeight(28)} />

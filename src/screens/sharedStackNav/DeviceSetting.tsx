@@ -14,12 +14,12 @@ import deviceApi, { AreaResponse, DeviceMembers } from "~/api/device";
 import { deviceSettingActions } from "~/store/deviceSetting";
 import { store } from "~/store";
 import LoadingIndicator from "~/components/lottie/LoadingIndicator";
-import { textLoadingIndicatorSize } from "~/styles/constants";
+import { SMALL_LOADING_INDICATOR_SIZE } from "~/styles/constants";
 import useUpdateDeviceSetting from "~/hooks/useUpdateDeviceSetting";
 import Toast from "react-native-toast-message";
-import { ToastType } from "~/styles/toast";
 import { ScrollView } from "react-native-gesture-handler";
 import allSettled from "promise.allsettled";
+import { TOAST_TYPE } from "~/constants";
 
 const DeviceSetting = ({
   navigation,
@@ -55,7 +55,7 @@ const DeviceSetting = ({
     if (!settings) return;
     if (!settings.setting_confirmation) {
       Toast.show({
-        type: ToastType.Notification,
+        type: TOAST_TYPE.NOTIFICATION,
         text1: "최근에 설정을 변경하셨나요?",
         text2: "변경된 설정이 기기에 적용되고 있어요.",
       });
@@ -125,7 +125,7 @@ const DeviceSetting = ({
   useEffect(() => {
     if (isSuccess || isDeleted)
       Toast.show({
-        type: ToastType.Notification,
+        type: TOAST_TYPE.NOTIFICATION,
         text1: "성공적으로 변경되었습니다.",
       });
   }, [isSuccess, isDeleted]);
@@ -141,7 +141,7 @@ const DeviceSetting = ({
       <CustomHeader
         RightButtonText={
           isUpdating ? (
-            <LoadingIndicator size={textLoadingIndicatorSize} />
+            <LoadingIndicator size={SMALL_LOADING_INDICATOR_SIZE} />
           ) : (
             <MyText color={palette.blue_7b}>완료</MyText>
           )

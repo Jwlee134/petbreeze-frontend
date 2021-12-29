@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from "react";
 import { Path as Polyline, Marker } from "react-native-nmap";
 import { WalkContext } from "~/context/WalkContext";
-import { delta } from "~/constants";
+import { DELTA } from "~/constants";
 import { useAppSelector } from "~/store";
 import palette from "~/styles/palette";
 
@@ -18,8 +18,8 @@ const Path = ({ isStopped }: { isStopped: boolean }) => {
         mapRef.current?.animateToRegion({
           latitude: coords[coords.length - 1][1],
           longitude: coords[coords.length - 1][0],
-          latitudeDelta: delta,
-          longitudeDelta: delta,
+          latitudeDelta: DELTA,
+          longitudeDelta: DELTA,
         });
       }, 500);
     }
@@ -32,8 +32,8 @@ const Path = ({ isStopped }: { isStopped: boolean }) => {
       mapRef.current.animateToRegion({
         latitude: coords[0][1],
         longitude: coords[0][0],
-        latitudeDelta: delta,
-        longitudeDelta: delta,
+        latitudeDelta: DELTA,
+        longitudeDelta: DELTA,
       });
     }
   }, [mapRef, coords]);

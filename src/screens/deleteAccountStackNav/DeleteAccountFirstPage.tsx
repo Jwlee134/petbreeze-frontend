@@ -9,7 +9,7 @@ import Input from "~/components/common/Input";
 import MyText from "~/components/common/MyText";
 import { useAppSelector } from "~/store";
 import { commonActions } from "~/store/common";
-import { minSpace } from "~/styles/constants";
+import { MIN_SPACE } from "~/styles/constants";
 import { DeleteAccountFirstPageScreenNavigationProp } from "~/types/navigator";
 
 const Item = styled.Pressable`
@@ -101,7 +101,7 @@ const DeleteAccountFirstPage = forwardRef<DeleteAccountFirstGoBack, Props>(
           </InputContainer>
         </View>
         <Button
-          style={{ marginTop: minSpace }}
+          style={{ marginTop: MIN_SPACE }}
           useCommonMarginBottom
           disabled={!body.length && !text}
           onPress={onPress}>

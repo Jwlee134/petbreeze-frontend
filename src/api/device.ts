@@ -1,14 +1,6 @@
+import { GEOJSON_TYPE } from "~/constants";
 import { formatMonthlyWalkRecordResponse } from "~/utils";
 import api, { providesList } from ".";
-
-export type DeepPartial<T> = {
-  [P in keyof T]?: DeepPartial<T[P]>;
-};
-
-export enum GeoJsonType {
-  Point = "Point",
-  LineString = "LineString",
-}
 
 export interface Device {
   id: number;
@@ -55,7 +47,7 @@ export interface MissingReport extends MissingReportForm {
 export interface DeviceCoord {
   date_time: string;
   coordinate: {
-    type: GeoJsonType.Point;
+    type: typeof GEOJSON_TYPE["POINT"];
     coordinates: number[];
   };
 }
@@ -94,7 +86,7 @@ export interface AreaResponse {
   address: string;
   thumbnail: string;
   coordinate: {
-    type: GeoJsonType.Point;
+    type: typeof GEOJSON_TYPE["POINT"];
     coordinates: number[];
   };
   radius: number;
@@ -129,7 +121,7 @@ interface WalkBody {
   time: number;
   distance: number;
   path: {
-    type: GeoJsonType.LineString;
+    type: typeof GEOJSON_TYPE["LINE_STRING"];
     coordinates: number[][];
   };
 }

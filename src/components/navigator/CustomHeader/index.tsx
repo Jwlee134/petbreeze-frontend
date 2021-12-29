@@ -8,7 +8,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import BackButton from "./BackButton";
 import PageIndicator from "./PageIndicator";
 import PageCount from "./PageCount";
-import { headerHeight } from "~/styles/constants";
+import { HEADER_HEIGHT } from "~/styles/constants";
 
 interface Props extends Partial<StackHeaderProps> {
   currentPage?: number;
@@ -51,7 +51,7 @@ const Div = styled.View`
 const CustomHeader = ({
   currentPage = 0,
   totalPage = 0,
-  height = headerHeight,
+  height = HEADER_HEIGHT,
   title,
   navigation,
   onBackButtonPress,

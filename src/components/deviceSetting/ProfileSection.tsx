@@ -8,7 +8,7 @@ import { useNavigation } from "@react-navigation/native";
 import { DeviceProfile } from "~/api/device";
 import { DeviceSettingScreenNavigationProp } from "~/types/navigator";
 import { useDispatch } from "react-redux";
-import { noAvatar, noName } from "~/constants";
+import { DEFAULT_AVATAR, DEFAULT_NAME } from "~/constants";
 import { formActions } from "~/store/form";
 import palette from "~/styles/palette";
 
@@ -76,7 +76,7 @@ const ProfileSection = ({ data, deviceID, avatar, name }: Props) => {
               ? { uri: data?.profile_image }
               : avatar
               ? { uri: avatar }
-              : noAvatar
+              : DEFAULT_AVATAR
           }
         />
         <PencilContainer>
@@ -84,7 +84,7 @@ const ProfileSection = ({ data, deviceID, avatar, name }: Props) => {
         </PencilContainer>
       </TouchableOpacity>
       <MyText style={{ marginTop: 7 }} fontWeight="medium">
-        {data?.name || name || noName}
+        {data?.name || name || DEFAULT_NAME}
       </MyText>
       <MyText fontSize={12} color="rgba(0, 0, 0, 0.3)">
         {data?.species || "품종 없음"}

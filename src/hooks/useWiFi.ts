@@ -3,9 +3,8 @@ import WifiManager from "react-native-wifi-reborn";
 import { deviceSettingActions } from "~/store/deviceSetting";
 import { useState } from "react";
 import Toast from "react-native-toast-message";
-import { ToastType } from "~/styles/toast";
 import permissionCheck from "~/utils/permissionCheck";
-import { isAndroid } from "~/utils";
+import { IS_ANDROID, TOAST_TYPE } from "~/constants";
 
 const useWiFi = () => {
   const [isConnecting, setIsConnecting] = useState(false);
@@ -29,7 +28,7 @@ const useWiFi = () => {
     WifiManager.connectToProtectedSSID(ssid, password, false)
       .then(() => {
         Toast.show({
-          type: ToastType.Notification,
+          type: TOAST_TYPE.NOTIFICATION,
           text1: "WiFi 검증이 완료되었습니다.",
         });
         resolve();
@@ -42,11 +41,11 @@ const useWiFi = () => {
 
   const connectToProtectedSSID = (ssid: string, password: string) =>
     new Promise<void>((resolve, reject) => {
-      if (isAndroid) {
+      if (IS_ANDROID) {
         WifiManager.isEnabled().then(enabled => {
           if (!enabled) {
             Toast.show({
-              type: ToastType.Error,
+              type: TOAST_TYPE.ERROR,
               text1: "WiFi 검증을 위해 WiFi를 켜주세요.",
             });
             reject();
@@ -59,7 +58,7 @@ const useWiFi = () => {
           .then(currentSSID => {
             if (currentSSID === ssid) {
               Toast.show({
-                type: ToastType.Error,
+                type: TOAST_TYPE.ERROR,
                 text1: "동일한 WiFi에 이미 연결되어 있습니다.",
                 text2: "WiFi 검증을 위해 잠시 연결을 해제해 주세요.",
               });

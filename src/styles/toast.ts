@@ -1,16 +1,11 @@
 import { BaseToastProps } from "react-native-toast-message";
-import { isAndroid } from "~/utils";
+import { IS_ANDROID, TOAST_TYPE } from "~/constants";
 import palette from "./palette";
 
-export enum ToastType {
-  Notification = "notification",
-  Error = "error",
-}
-
-const toastStyle = (type: ToastType): BaseToastProps => ({
+const toastStyle = (type: TOAST_TYPE): BaseToastProps => ({
   style: {
     borderLeftColor:
-      type === ToastType.Notification ? palette.blue_86 : palette.red_f0,
+      type === TOAST_TYPE.NOTIFICATION ? palette.blue_86 : palette.red_f0,
     borderLeftWidth: 7,
     height: "auto",
   },
@@ -20,7 +15,7 @@ const toastStyle = (type: ToastType): BaseToastProps => ({
     height: "auto",
   },
   text1Style: {
-    ...(isAndroid && { fontWeight: "normal" }),
+    ...(IS_ANDROID && { fontWeight: "normal" }),
     fontSize: 15,
     fontFamily: "NotoSansKR-Bold",
     includeFontPadding: false,

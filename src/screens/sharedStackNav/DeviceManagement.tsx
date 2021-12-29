@@ -9,9 +9,9 @@ import CommonCenterModal from "~/components/modal/CommonCenterModal";
 import Plus from "~/assets/svg/plus/plus-blue.svg";
 import { SwipeListView } from "react-native-swipe-list-view";
 import HiddenButton from "~/components/common/HiddenButton";
-import { hiddenButtonWidth } from "~/styles/constants";
+import { HIDDEN_BUTTON_WIDTH } from "~/styles/constants";
 import Toast from "react-native-toast-message";
-import { ToastType } from "~/styles/toast";
+import { TOAST_TYPE } from "~/constants";
 
 const DeviceManagement = ({
   navigation,
@@ -30,7 +30,7 @@ const DeviceManagement = ({
   useEffect(() => {
     if (isSuccess) {
       Toast.show({
-        type: ToastType.Notification,
+        type: TOAST_TYPE.NOTIFICATION,
         text1: "성공적으로 삭제되었습니다.",
       });
       if (!deviceList.length) {
@@ -50,7 +50,7 @@ const DeviceManagement = ({
       {deviceList.length ? (
         <SwipeListView
           disableRightSwipe
-          rightOpenValue={-hiddenButtonWidth}
+          rightOpenValue={-HIDDEN_BUTTON_WIDTH}
           keyExtractor={({ id }) => String(id)}
           previewRowKey={String(deviceList[0].id)}
           data={deviceList}

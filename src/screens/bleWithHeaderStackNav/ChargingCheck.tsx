@@ -8,10 +8,10 @@ import { ChargingCheckScreenNavigationProp } from "~/types/navigator";
 import { commonActions } from "~/store/common";
 import { bleActions } from "~/store/ble";
 import permissionCheck from "~/utils/permissionCheck";
-import { isAndroid } from "~/utils";
 import BleManager from "react-native-ble-manager";
 import { useDispatch } from "react-redux";
 import { DimensionsContext } from "~/context/DimensionsContext";
+import { IS_ANDROID } from "~/constants";
 
 const TopContainer = styled.View`
   flex: 1;
@@ -47,7 +47,7 @@ const ChargingCheck = ({
   const handlePress = async () => {
     try {
       await permissionCheck.bluetooth();
-      if (isAndroid) {
+      if (IS_ANDROID) {
         await permissionCheck.location();
         await permissionCheck.locationAlways();
       }

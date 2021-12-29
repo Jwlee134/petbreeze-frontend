@@ -10,13 +10,13 @@ import {
 import MyText from "./MyText";
 import styled from "styled-components/native";
 import palette from "~/styles/palette";
-import { isIos } from "~/utils";
 import { ScrollView } from "react-native-gesture-handler";
 import {
   interpolateColor,
   useAnimatedStyle,
   useDerivedValue,
 } from "react-native-reanimated";
+import { IS_IOS } from "~/constants";
 
 interface ScrollPickerProps {
   width: string | number;
@@ -76,7 +76,7 @@ const ScrollPicker = ({
 
       const _y = _selectedIndex * h;
       if (_y !== y) {
-        if (isIos) {
+        if (IS_IOS) {
           setIsScrollTo(true);
         }
         sView?.current?.scrollTo({ y: _y });
@@ -96,7 +96,7 @@ const ScrollPicker = ({
   const onScrollBeginDrag = () => {
     setDragStarted(true);
 
-    if (isIos) {
+    if (IS_IOS) {
       setIsScrollTo(false);
     }
     if (timer) clearTimeout(timer);

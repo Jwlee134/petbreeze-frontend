@@ -4,8 +4,14 @@ import MyText from "~/components/common/MyText";
 import palette from "~/styles/palette";
 import Divider from "~/components/common/Divider";
 import { CalendarList, LocaleConfig } from "react-native-calendars";
-import { days, months, noAvatar, noName } from "~/constants";
-import { formatWalkDistance, formatWalkTime, isAndroid } from "~/utils";
+import {
+  DAYS,
+  MONTHS,
+  DEFAULT_AVATAR,
+  DEFAULT_NAME,
+  IS_ANDROID,
+} from "~/constants";
+import { formatWalkDistance, formatWalkTime } from "~/utils";
 import {
   ScrollView,
   StyleSheet,
@@ -49,10 +55,10 @@ const Loader = styled.View`
 `;
 
 LocaleConfig.locales["ko"] = {
-  monthNames: months,
-  monthNamesShort: months,
-  dayNames: days,
-  dayNamesShort: days,
+  monthNames: MONTHS,
+  monthNamesShort: MONTHS,
+  dayNames: DAYS,
+  dayNamesShort: DAYS,
   today: "오늘",
 };
 LocaleConfig.defaultLocale = "ko";
@@ -114,9 +120,9 @@ const WalkDetailMonth = ({
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <TopContainer>
-        <Image source={avatarUrl ? { uri: avatarUrl } : noAvatar} />
+        <Image source={avatarUrl ? { uri: avatarUrl } : DEFAULT_AVATAR} />
         <MyText style={{ marginBottom: 19 }} fontWeight="medium">
-          {name || noName}
+          {name || DEFAULT_NAME}
         </MyText>
       </TopContainer>
       <Divider isHairline={false} />
@@ -153,7 +159,7 @@ const WalkDetailMonth = ({
             },
             "stylesheet.day.basic": {
               text: {
-                marginTop: isAndroid ? 4 : 6,
+                marginTop: IS_ANDROID ? 4 : 6,
                 fontFamily: "NotoSansKR-Regular",
                 fontSize: 16,
                 color: "rgba(0, 0, 0, 0.8)",

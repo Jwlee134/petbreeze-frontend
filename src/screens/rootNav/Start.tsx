@@ -5,9 +5,8 @@ import Footprint from "~/assets/svg/footprint/footprint-app-icon-blue.svg";
 import { Animated, Linking, useWindowDimensions } from "react-native";
 import * as SecureStore from "expo-secure-store";
 import useAnimatedSequence from "~/hooks/useAnimatedSequence";
-import { isAndroid, isIos } from "~/utils";
 import { isIphoneX } from "react-native-iphone-x-helper";
-import { secureItems } from "~/constants";
+import { IS_ANDROID, IS_IOS, SECURE_ITEMS } from "~/constants";
 import { StartScreenNavigationProp } from "~/types/navigator";
 import notificationHandler from "~/utils/notificationHandler";
 import userApi from "~/api/user";
@@ -53,12 +52,12 @@ const Start = ({ navigation }: { navigation: StartScreenNavigationProp }) => {
   };
 
   const onAnimatedFinish = async () => {
-    const token = await SecureStore.getItemAsync(secureItems.token);
-    const fbToken = await SecureStore.getItemAsync(secureItems.firebaseToken);
+    const token = await SecureStore.getItemAsync(SECURE_ITEMS.TOKEN);
+    const fbToken = await SecureStore.getItemAsync(SECURE_ITEMS.FIREBASE_TOKEN);
     if (token && fbToken) {
       console.log(`🔐 Here's your value 🔐 \n + ${token}`);
       console.log(`🔐 Here's your fb value 🔐 \n + ${fbToken}`);
-      if (isAndroid) {
+      if (IS_ANDROID) {
         const link = await Linking.getInitialURL();
         if (link && link.includes("walk")) {
           navigation.replace("LoggedInNav", {
@@ -84,8 +83,8 @@ const Start = ({ navigation }: { navigation: StartScreenNavigationProp }) => {
   const translateY = footprint.interpolate({
     inputRange: [0, 1],
     outputRange: [
-      isIos ? height * 0.22 - (isIphoneX() ? 0 : 34) : height * 0.25,
-      isIos ? height * 0.32 - (isIphoneX() ? 0 : 34) : height * 0.3,
+      IS_IOS ? height * 0.22 - (isIphoneX() ? 0 : 34) : height * 0.25,
+      IS_IOS ? height * 0.32 - (isIphoneX() ? 0 : 34) : height * 0.3,
     ],
   });
 

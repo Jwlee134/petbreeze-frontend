@@ -4,7 +4,7 @@ import { AnimatedCircularProgress as RNCircularProgress } from "react-native-cir
 import palette from "~/styles/palette";
 import { StyleProp, View, ViewStyle } from "react-native";
 
-import { noAvatar } from "~/constants";
+import { DEFAULT_AVATAR } from "~/constants";
 
 interface Props {
   battery: number;
@@ -64,7 +64,7 @@ const AnimatedCircularProgress = ({
           <Image
             resizeMode="cover"
             circleWidth={circleWidth - lineWidth}
-            source={avatar ? { uri: avatar } : noAvatar}
+            source={avatar ? { uri: avatar } : DEFAULT_AVATAR}
           />
         )}
       </RNCircularProgress>

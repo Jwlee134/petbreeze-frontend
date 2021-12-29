@@ -3,9 +3,9 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { WalkContext } from "~/context/WalkContext";
 import { store, useAppSelector } from "~/store";
 import {
-  centerModalOutTiming,
-  liveModeButtonStyle,
-  myLocationButtonStyle,
+  CENTER_MODAL_OUT_TIMING,
+  LIVE_MODE_BUTTON_STYLE,
+  MY_LOCATION_BUTTON_STYLE,
 } from "~/styles/constants";
 import Dissolve from "../common/Dissolve";
 import LiveModeButton from "../common/LiveModeButton";
@@ -42,7 +42,7 @@ const MapButtons = () => {
     if (isLoading) return;
     await allSettled(selectedID.map(id => stopWalking(id).unwrap()));
     close();
-    await delay(centerModalOutTiming);
+    await delay(CENTER_MODAL_OUT_TIMING);
     navigation.replace("BottomTabNav", {
       initialRouteName: "HomeTab",
     });
@@ -52,7 +52,7 @@ const MapButtons = () => {
 
   return (
     <>
-      <Dissolve style={liveModeButtonStyle(top)} isVisible={!isStopped}>
+      <Dissolve style={LIVE_MODE_BUTTON_STYLE(top)} isVisible={!isStopped}>
         <LiveModeButton
           deviceList={deviceList}
           resume={resume}
@@ -61,7 +61,7 @@ const MapButtons = () => {
           isStoppingWalk={isLoading}
         />
       </Dissolve>
-      <Dissolve isVisible={!isStopped} style={myLocationButtonStyle(top)}>
+      <Dissolve isVisible={!isStopped} style={MY_LOCATION_BUTTON_STYLE(top)}>
         <MapButton icon="myLocation" onPress={animateToMyLocation} />
       </Dissolve>
     </>

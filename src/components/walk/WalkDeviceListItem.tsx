@@ -2,7 +2,7 @@ import React from "react";
 import { View } from "react-native";
 import styled from "styled-components/native";
 import { Device } from "~/api/device";
-import { noName } from "~/constants";
+import { DEFAULT_NAME } from "~/constants";
 import palette from "~/styles/palette";
 import { formatCreatedAt } from "~/utils";
 import AnimatedCircularProgress from "../common/AnimatedCircularProgress";
@@ -29,7 +29,7 @@ const WalkDeviceListItem = ({ isWalking = false, device }: Props) => {
       />
       <View style={{ marginLeft: 26 }}>
         <RowContainer>
-          <MyText fontWeight="medium">{device.name || noName}</MyText>
+          <MyText fontWeight="medium">{device.name || DEFAULT_NAME}</MyText>
           <MyText
             fontSize={12}
             color={palette.blue_7b}

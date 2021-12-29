@@ -19,8 +19,8 @@ import { getDistanceBetween2Points } from "~/utils";
 import { getAddressByCoord } from "~/api/place";
 import styled from "styled-components/native";
 import Toast from "react-native-toast-message";
-import { ToastType } from "~/styles/toast";
 import { store, useAppSelector } from "~/store";
+import { TOAST_TYPE } from "~/constants";
 
 const ScrollView = styled.ScrollView`
   position: absolute;
@@ -146,7 +146,7 @@ const HomeDeviceList = () => {
         clearTimer();
         dispatch(commonActions.setHome({ isLoading: false }));
         Toast.show({
-          type: ToastType.Error,
+          type: TOAST_TYPE.ERROR,
           text1: "최근 위치가 존재하지 않습니다.",
         });
       }

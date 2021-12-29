@@ -7,7 +7,7 @@ import Input from "~/components/common/Input";
 import InputTitle from "~/components/common/InputTitle";
 import MyText from "~/components/common/MyText";
 import SelectableButton from "~/components/common/SelectableButton";
-import { noAvatar } from "~/constants";
+import { DEFAULT_AVATAR } from "~/constants";
 import { useAppSelector } from "~/store";
 import palette from "~/styles/palette";
 import { MissingReportFirstPageScreenNavigationProp } from "~/types/navigator";
@@ -80,7 +80,7 @@ const MissingReportFirstPage = forwardRef<MissingReportFirstGoBack, Props>(
       <>
         <KeyboardAwareScrollContainer isSpaceBetween>
           <PaddingContainer>
-            <Avatar source={avatar ? { uri: avatar } : noAvatar} />
+            <Avatar source={avatar ? { uri: avatar } : DEFAULT_AVATAR} />
             <MyText
               style={{ textAlign: "center", marginBottom: 30 }}
               color={palette.blue_86}

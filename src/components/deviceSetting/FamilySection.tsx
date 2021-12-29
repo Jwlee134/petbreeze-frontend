@@ -5,13 +5,12 @@ import MyText from "~/components/common/MyText";
 import palette from "~/styles/palette";
 import SectionHeader from "./SectionHeader";
 import * as SecureStore from "expo-secure-store";
-import { secureItems } from "~/constants";
+import { SECURE_ITEMS, TOAST_TYPE } from "~/constants";
 import Crown from "~/assets/svg/myPage/crown.svg";
 import CommonCenterModal from "../modal/CommonCenterModal";
 import useModal from "~/hooks/useModal";
 import Toast from "react-native-toast-message";
 import Clipboard from "@react-native-clipboard/clipboard";
-import { ToastType } from "~/styles/toast";
 import SwipeableList from "../common/SwipeableList";
 import { useAppSelector } from "~/store";
 import { useDispatch } from "react-redux";
@@ -42,7 +41,7 @@ const FamilySection = ({ deviceID }: { deviceID: number }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    SecureStore.getItemAsync(secureItems.userID).then(id => {
+    SecureStore.getItemAsync(SECURE_ITEMS.USER_ID).then(id => {
       if (id) setMyID(parseInt(id, 10));
     });
   }, []);
@@ -51,7 +50,7 @@ const FamilySection = ({ deviceID }: { deviceID: number }) => {
     if (!codeData) return;
     Clipboard.setString(codeData.code);
     Toast.show({
-      type: ToastType.Notification,
+      type: TOAST_TYPE.NOTIFICATION,
       text1: "초대 코드가 클립보드에 복사되었습니다.",
       text2: "24시간 후 만료됩니다.",
     });

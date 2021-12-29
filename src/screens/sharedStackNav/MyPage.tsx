@@ -11,9 +11,9 @@ import useModal from "~/hooks/useModal";
 import CommonCenterModal from "~/components/modal/CommonCenterModal";
 import Divider from "~/components/common/Divider";
 import * as SecureStore from "expo-secure-store";
-import { centerModalOutTiming } from "~/styles/constants";
+import { CENTER_MODAL_OUT_TIMING } from "~/styles/constants";
 import { resetAll } from "~/utils";
-import { secureItems } from "~/constants";
+import { SECURE_ITEMS } from "~/constants";
 import useDevice from "~/hooks/useDevice";
 import userApi from "~/api/user";
 
@@ -46,7 +46,9 @@ const MyPage = ({ navigation }: { navigation: MyPageScreenNavigationProp }) => {
   const onLogout = async () => {
     try {
       setIsLoading(true);
-      const fbToken = await SecureStore.getItemAsync(secureItems.firebaseToken);
+      const fbToken = await SecureStore.getItemAsync(
+        SECURE_ITEMS.FIREBASE_TOKEN,
+      );
       await logout(fbToken as string).unwrap();
       resetAll();
       setTimeout(() => {
@@ -54,7 +56,7 @@ const MyPage = ({ navigation }: { navigation: MyPageScreenNavigationProp }) => {
           index: 0,
           routes: [{ name: "Start" }],
         });
-      }, centerModalOutTiming);
+      }, CENTER_MODAL_OUT_TIMING);
       close();
     } catch (error) {
       console.log(error);

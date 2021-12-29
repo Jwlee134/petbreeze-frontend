@@ -12,16 +12,15 @@ import LoadingIndicator from "../lottie/LoadingIndicator";
 import {
   ANIMATION_CONFIGS_ANDROID,
   ANIMATION_CONFIGS_IOS,
-  textLoadingIndicatorSize,
+  SMALL_LOADING_INDICATOR_SIZE,
 } from "~/styles/constants";
-import { noAvatar } from "~/constants";
+import { DEFAULT_AVATAR, IS_ANDROID } from "~/constants";
 import Animated, {
   useAnimatedStyle,
   useDerivedValue,
   withSpring,
   withTiming,
 } from "react-native-reanimated";
-import { isAndroid } from "~/utils";
 
 const Container = styled(Animated.View)`
   background-color: white;
@@ -84,10 +83,10 @@ const HomeInfoHeader = () => {
 
   const value = useDerivedValue(() =>
     showInfoHeader
-      ? isAndroid
+      ? IS_ANDROID
         ? withTiming(0, ANIMATION_CONFIGS_ANDROID)
         : withSpring(0, ANIMATION_CONFIGS_IOS)
-      : isAndroid
+      : IS_ANDROID
       ? withTiming(-height, ANIMATION_CONFIGS_ANDROID)
       : withSpring(-height, ANIMATION_CONFIGS_IOS),
   );
@@ -112,11 +111,11 @@ const HomeInfoHeader = () => {
     <Container style={[{ width, height }, transStyle]}>
       {isLoading ? (
         <LoadingContainer>
-          <LoadingIndicator size={textLoadingIndicatorSize} />
+          <LoadingIndicator size={SMALL_LOADING_INDICATOR_SIZE} />
         </LoadingContainer>
       ) : address && deviceCoord.time ? (
         <Wrapper>
-          <Avatar source={uri ? { uri } : noAvatar} />
+          <Avatar source={uri ? { uri } : DEFAULT_AVATAR} />
           <SpaceBetweenContainer>
             <View style={{ flexShrink: 1 }}>
               <MyText numberOfLines={1} fontSize={14} fontWeight="medium">

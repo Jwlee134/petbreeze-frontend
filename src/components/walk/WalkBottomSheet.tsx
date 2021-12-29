@@ -9,10 +9,10 @@ import { store, useAppSelector } from "~/store";
 import backgroundTracking from "~/utils/backgroundTracking";
 import BottomSheet from "../common/BottomSheet";
 import Result from "./Result";
-import { getDistanceBetween2Points, isIos } from "~/utils";
+import { getDistanceBetween2Points } from "~/utils";
 import Sheet from "@gorhom/bottom-sheet";
 import { WalkContext } from "~/context/WalkContext";
-import { delta } from "~/constants";
+import { DELTA, IS_IOS } from "~/constants";
 
 const RowContainer = styled.View`
   flex-direction: row;
@@ -62,8 +62,8 @@ const WalkBottomSheet = ({ snapPoints }: { snapPoints: number[] }) => {
         mapRef.current?.animateToRegion({
           latitude: coords[0][1],
           longitude: coords[0][0],
-          latitudeDelta: delta,
-          longitudeDelta: delta,
+          latitudeDelta: DELTA,
+          longitudeDelta: DELTA,
         });
       } else {
         mapRef.current?.animateToTwoCoordinates(
@@ -77,7 +77,7 @@ const WalkBottomSheet = ({ snapPoints }: { snapPoints: number[] }) => {
   useEffect(() => {
     (async () => {
       // iOS 산책이 진행중인 상태에서 앱 껐다가 다시 들어오면 계속 진행
-      if (isIos && startTime && isWalking && !backgroundTracking.isRunning()) {
+      if (IS_IOS && startTime && isWalking && !backgroundTracking.isRunning()) {
         await backgroundTracking.start();
         return;
       }

@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { Dimensions, Keyboard, useWindowDimensions } from "react-native";
 import { ModalProps } from "react-native-modal";
-import { bottomModalOutTiming, centerModalOutTiming } from "~/styles/constants";
+import {
+  BOTTOM_MODAL_OUT_TIMING,
+  CENTER_MODAL_OUT_TIMING,
+} from "~/styles/constants";
 
 export enum ModalPosition {
   Bottom,
@@ -36,12 +39,12 @@ const useModal = () => {
     backdropOpacity: 0.5,
     animationInTiming:
       type === ModalPosition.Bottom
-        ? bottomModalOutTiming
-        : centerModalOutTiming,
+        ? BOTTOM_MODAL_OUT_TIMING
+        : CENTER_MODAL_OUT_TIMING,
     animationOutTiming:
       type === ModalPosition.Bottom
-        ? bottomModalOutTiming
-        : centerModalOutTiming,
+        ? BOTTOM_MODAL_OUT_TIMING
+        : CENTER_MODAL_OUT_TIMING,
     animationIn: type === ModalPosition.Bottom ? "slideInUp" : "fadeIn",
     animationOut: type === ModalPosition.Bottom ? "slideOutDown" : "fadeOut",
     deviceWidth: width,

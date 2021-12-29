@@ -5,12 +5,13 @@ import { WalkContext } from "~/context/WalkContext";
 import { useNavigation } from "@react-navigation/native";
 import { WalkMapScreenNavigationProp } from "~/types/navigator";
 import { consonantResponder } from "~/utils";
-import deviceApi, { GeoJsonType } from "~/api/device";
+import deviceApi from "~/api/device";
 import imageHandler from "~/utils/imageHandler";
 import allSettled from "promise.allsettled";
 import { storageActions } from "~/store/storage";
 import { useDispatch } from "react-redux";
 import Toast from "react-native-toast-message";
+import { GEOJSON_TYPE } from "~/constants";
 
 const Result = () => {
   const { viewShotRef, deviceList } = useContext(WalkContext);
@@ -66,7 +67,7 @@ const Result = () => {
             start_date_time: startTime,
             time: Math.floor(duration / 60),
             path: {
-              type: GeoJsonType.LineString,
+              type: GEOJSON_TYPE.LINE_STRING,
               coordinates: coords,
             },
           },

@@ -13,7 +13,7 @@ import Animated, {
 import { WalkContext } from "~/context/WalkContext";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { isIphoneX } from "react-native-iphone-x-helper";
-import { bottomSheetHandleHeight } from "~/styles/constants";
+import { BOTTOM_SHEET_HANDLE_HEIGHT } from "~/styles/constants";
 
 const WalkMap = () => {
   const isStopped = useAppSelector(state => state.storage.walk.isStopped);
@@ -26,14 +26,14 @@ const WalkMap = () => {
     : [91, isIphoneX() ? 216 + bottom : 250];
 
   const mapPadding = {
-    top: isStopped ? bottomSheetHandleHeight : 0,
+    top: isStopped ? BOTTOM_SHEET_HANDLE_HEIGHT : 0,
     bottom: isStopped
-      ? bottomSheetHandleHeight
+      ? BOTTOM_SHEET_HANDLE_HEIGHT
       : snapPoints[sheetIndex] - bottom,
   };
 
   const marginBottom = useDerivedValue(() =>
-    isStopped ? snapPoints[0] - bottomSheetHandleHeight : 0,
+    isStopped ? snapPoints[0] - BOTTOM_SHEET_HANDLE_HEIGHT : 0,
   );
   const mapStyle = useAnimatedStyle(
     () => ({

@@ -2,7 +2,7 @@ import React, { memo, useEffect, useState } from "react";
 import { ScrollView, StyleProp, View, ViewStyle } from "react-native";
 import deviceApi, { Device } from "~/api/device";
 import useModal from "~/hooks/useModal";
-import { centerModalOutTiming } from "~/styles/constants";
+import { CENTER_MODAL_OUT_TIMING } from "~/styles/constants";
 import palette from "~/styles/palette";
 import AnimatedCircularProgress from "./AnimatedCircularProgress";
 import ListItem from "./ListItem";
@@ -12,9 +12,9 @@ import CommonCenterModal from "../modal/CommonCenterModal";
 import allSettled from "promise.allsettled";
 import { consonantResponder, delay } from "~/utils";
 import Toast from "react-native-toast-message";
-import { ToastType } from "~/styles/toast";
 import styled from "styled-components/native";
 import Switch from "./Switch";
+import { TOAST_TYPE } from "~/constants";
 
 const RowContainer = styled.View`
   flex-direction: row;
@@ -52,7 +52,7 @@ const LiveModeButton = ({
 
   const resetAndClose = async () => {
     close();
-    await delay(centerModalOutTiming);
+    await delay(CENTER_MODAL_OUT_TIMING);
     if (resume) resume();
     setIsSelected(false);
   };
@@ -75,7 +75,7 @@ const LiveModeButton = ({
         )
         .join(", ");
       Toast.show({
-        type: ToastType.Error,
+        type: TOAST_TYPE.ERROR,
         text1: "최근에 다른 멤버가 설정을 변경했나요?",
         text2: `${rejectedNames}${consonantResponder(
           rejectedNames,
@@ -83,7 +83,7 @@ const LiveModeButton = ({
       });
     } else {
       Toast.show({
-        type: ToastType.Notification,
+        type: TOAST_TYPE.NOTIFICATION,
         text1: "성공적으로 변경되었습니다.",
       });
       if (list.some(item => item.value === 1) && quitWalk) {

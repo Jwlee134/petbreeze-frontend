@@ -1,11 +1,11 @@
 import React from "react";
 import styled from "styled-components/native";
-import { hiddenButtonWidth } from "~/styles/constants";
+import { HIDDEN_BUTTON_WIDTH } from "~/styles/constants";
 import Minus from "~/assets/svg/minus/minus-white.svg";
 import palette from "~/styles/palette";
 
 const Button = styled.TouchableOpacity`
-  width: ${hiddenButtonWidth}px;
+  width: ${HIDDEN_BUTTON_WIDTH}px;
   height: 100%;
   justify-content: center;
   align-items: center;

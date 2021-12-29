@@ -2,11 +2,11 @@ import React, { memo, useCallback } from "react";
 import { TouchableWithoutFeedback, View } from "react-native";
 import styled from "styled-components/native";
 import palette from "~/styles/palette";
-import { formatCreatedAt, consonantResponder } from "~/utils";
+import { formatCreatedAt, consonantResponder, formatYYYYMMDD } from "~/utils";
 import MyText from "../common/MyText";
 import Arrow from "~/assets/svg/arrow/arrow-right-b2.svg";
-import { Notification, NotificationCode } from "~/api/user";
-import { noAvatar, noName } from "~/constants";
+import { Notification } from "~/api/user";
+import { DEFAULT_AVATAR, DEFAULT_NAME, NOTIFICATION_TYPE } from "~/constants";
 import { Device } from "~/api/device";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { NotificationScreenNavigationProp } from "~/types/navigator";
@@ -39,7 +39,8 @@ interface Props {
 
 const NotificationItem = ({ data, device, isLast }: Props) => {
   const navigation = useNavigation<NotificationScreenNavigationProp>();
-  const showArrow = data.notification_type_code === NotificationCode.FinishWalk;
+  const showArrow =
+    data.notification_type_code === NOTIFICATION_TYPE.FINISH_WALK;
   const isFocused = useIsFocused();
 
   const createdAt = useCallback(
@@ -51,7 +52,7 @@ const NotificationItem = ({ data, device, isLast }: Props) => {
     if (!showArrow) return;
     navigation.navigate("WalkDetailDay", {
       deviceID: device.id,
-      date: data.created_at,
+      date: formatYYYYMMDD(data.created_at),
       avatarUrl: device.profile_image || "",
       name: device.name,
     });
@@ -59,7 +60,7 @@ const NotificationItem = ({ data, device, isLast }: Props) => {
 
   const renderText = () => {
     switch (data.notification_type_code) {
-      case NotificationCode.LowBattery:
+      case NOTIFICATION_TYPE.LOW_BATTERY:
         return (
           <>
             <MyText fontSize={14} fontWeight="bold">
@@ -71,7 +72,7 @@ const NotificationItem = ({ data, device, isLast }: Props) => {
             </MyText>
           </>
         );
-      case NotificationCode.ExitArea:
+      case NOTIFICATION_TYPE.EXIT_AREA:
         return (
           <>
             <MyText color={palette.red_f0} fontSize={14} fontWeight="bold">
@@ -82,7 +83,7 @@ const NotificationItem = ({ data, device, isLast }: Props) => {
             </MyText>
           </>
         );
-      case NotificationCode.ComeBackArea:
+      case NOTIFICATION_TYPE.COME_BACK_AREA:
         return (
           <>
             <MyText fontSize={14} fontWeight="bold">
@@ -93,7 +94,7 @@ const NotificationItem = ({ data, device, isLast }: Props) => {
             </MyText>
           </>
         );
-      case NotificationCode.StartWalk:
+      case NOTIFICATION_TYPE.START_WALK:
         return (
           <>
             <MyText fontSize={14} fontWeight="bold">
@@ -104,12 +105,12 @@ const NotificationItem = ({ data, device, isLast }: Props) => {
               {data.walk_handler_nickname}
             </MyText>
             <MyText fontSize={14}>
-              {consonantResponder(data.walk_handler_nickname || noName)}랑
+              {consonantResponder(data.walk_handler_nickname || DEFAULT_NAME)}랑
               산책을 시작했어요!
             </MyText>
           </>
         );
-      case NotificationCode.FinishWalk:
+      case NOTIFICATION_TYPE.FINISH_WALK:
         return (
           <>
             <MyText fontSize={14} fontWeight="bold">
@@ -120,7 +121,7 @@ const NotificationItem = ({ data, device, isLast }: Props) => {
               {data.walk_handler_nickname}
             </MyText>
             <MyText fontSize={14}>
-              {consonantResponder(data.walk_handler_nickname || noName)}
+              {consonantResponder(data.walk_handler_nickname || DEFAULT_NAME)}
               와의 산책을 끝냈어요!
             </MyText>
           </>
@@ -135,7 +136,9 @@ const NotificationItem = ({ data, device, isLast }: Props) => {
       <Container isLast={isLast}>
         <Image
           source={
-            device.profile_image ? { uri: device.profile_image } : noAvatar
+            device.profile_image
+              ? { uri: device.profile_image }
+              : DEFAULT_AVATAR
           }
         />
         <TextContainer>

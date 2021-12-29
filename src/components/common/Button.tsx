@@ -9,7 +9,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import styled, { css } from "styled-components/native";
-import { textLoadingIndicatorSize } from "~/styles/constants";
+import { SMALL_LOADING_INDICATOR_SIZE } from "~/styles/constants";
 import palette from "~/styles/palette";
 import LoadingIndicator from "../lottie/LoadingIndicator";
 import MyText, { FontWeight } from "./MyText";
@@ -105,7 +105,7 @@ const Button = ({
       {...props}>
       <Container style={[bgColor]}>
         {isLoading ? (
-          <LoadingIndicator white size={textLoadingIndicatorSize} />
+          <LoadingIndicator white size={SMALL_LOADING_INDICATOR_SIZE} />
         ) : (
           <>
             {RightIcon && <RightIcon />}

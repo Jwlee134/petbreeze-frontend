@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import styled from "styled-components/native";
 import { Device } from "~/api/device";
 import { commonActions } from "~/store/common";
-import { bottomModalOutTiming } from "~/styles/constants";
+import { BOTTOM_MODAL_OUT_TIMING } from "~/styles/constants";
 import { HomeScreenNavigationProp } from "~/types/navigator";
 import { delay } from "~/utils";
 import AnimatedCircularProgress from "../common/AnimatedCircularProgress";
@@ -29,7 +29,7 @@ const HomeBottomModal = ({ device, close }: Props) => {
 
   const onPathPress = async () => {
     close();
-    await delay(bottomModalOutTiming);
+    await delay(BOTTOM_MODAL_OUT_TIMING);
     dispatch(
       commonActions.setHome({
         showPath: true,
@@ -44,7 +44,7 @@ const HomeBottomModal = ({ device, close }: Props) => {
 
   const onDeviceSettingPress = async () => {
     close();
-    await delay(bottomModalOutTiming);
+    await delay(BOTTOM_MODAL_OUT_TIMING);
     navigation.navigate("DeviceSetting", {
       deviceID: device.id,
       avatar: device.profile_image,
@@ -54,7 +54,7 @@ const HomeBottomModal = ({ device, close }: Props) => {
 
   const onMissigReportPress = async () => {
     close();
-    await delay(bottomModalOutTiming);
+    await delay(BOTTOM_MODAL_OUT_TIMING);
     if (!device.is_missed) {
       navigation.navigate("MissingReportStackNav", {
         avatar: device.profile_image,

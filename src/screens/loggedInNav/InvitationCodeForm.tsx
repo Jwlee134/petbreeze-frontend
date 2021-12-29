@@ -17,11 +17,11 @@ import {
 import Input from "~/components/common/Input";
 import deviceApi from "~/api/device";
 import { DimensionsContext } from "~/context/DimensionsContext";
-import { isAndroid, isIos } from "~/utils";
 import Dissolve from "~/components/common/Dissolve";
 import Loading from "~/components/common/Loading";
 import { useDispatch } from "react-redux";
 import { formActions } from "~/store/form";
+import { IS_ANDROID, IS_IOS } from "~/constants";
 
 const TopContainer = styled.View``;
 
@@ -174,13 +174,13 @@ const InvitationCodeForm = ({
           <FlexContainer>
             <TopContainer
               style={{
-                ...(isIos && {
+                ...(IS_IOS && {
                   height: "50%",
                   justifyContent: "space-between",
                 }),
               }}>
               <CustomHeader navigation={navigation} />
-              <View style={{ marginTop: isAndroid ? rpHeight(150, true) : 0 }}>
+              <View style={{ marginTop: IS_ANDROID ? rpHeight(150, true) : 0 }}>
                 <InputContainer>
                   <Input
                     value={form.one}

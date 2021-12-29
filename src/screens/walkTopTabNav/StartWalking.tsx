@@ -18,9 +18,9 @@ import permissionCheck from "~/utils/permissionCheck";
 import { consonantResponder } from "~/utils";
 import { storageActions } from "~/store/storage";
 import { DimensionsContext } from "~/context/DimensionsContext";
-import { ToastType } from "~/styles/toast";
 import styled from "styled-components/native";
 import useDevice from "~/hooks/useDevice";
+import { TOAST_TYPE } from "~/constants";
 
 const Overlay = styled.View`
   ${StyleSheet.absoluteFill};
@@ -71,7 +71,7 @@ const StartWalking = ({
             )
             .join(", ");
           Toast.show({
-            type: ToastType.Error,
+            type: TOAST_TYPE.ERROR,
             text1: `${rejectedNames}${consonantResponder(
               rejectedNames,
             )}는 이미 산책중입니다.`,

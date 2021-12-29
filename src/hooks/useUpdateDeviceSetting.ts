@@ -1,6 +1,6 @@
 import { PatchCollection } from "@reduxjs/toolkit/dist/query/core/buildThunks";
-import deviceApi, { AreaResponse, GeoJsonType } from "~/api/device";
-import { serverImageUri } from "~/constants";
+import deviceApi, { AreaResponse } from "~/api/device";
+import { GEOJSON_TYPE, SERVER_IMAGE_URI } from "~/constants";
 import { store } from "~/store";
 import imageHandler from "~/utils/imageHandler";
 
@@ -18,7 +18,7 @@ const useUpdateDeviceSetting = (deviceID: number) => {
   const formatCoord = (area: Omit<AreaResponse, "thumbnail">) => ({
     ...area,
     coordinate: {
-      type: GeoJsonType.Point as GeoJsonType.Point,
+      type: GEOJSON_TYPE.POINT,
       coordinates: [
         parseFloat(area.coordinate.coordinates[0].toFixed(4)),
         parseFloat(area.coordinate.coordinates[1].toFixed(4)),
@@ -32,7 +32,7 @@ const useUpdateDeviceSetting = (deviceID: number) => {
   const thumbnails = (safety_areas: AreaResponse[]) =>
     safety_areas
       .filter(
-        area => !!area.thumbnail && !area.thumbnail.includes(serverImageUri),
+        area => !!area.thumbnail && !area.thumbnail.includes(SERVER_IMAGE_URI),
       )
       .map(area => ({ id: area.safety_area_number, data: area.thumbnail }));
 

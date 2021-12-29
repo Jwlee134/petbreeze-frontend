@@ -1,9 +1,8 @@
 import ImagePicker from "react-native-image-crop-picker";
-import { serverImageUri } from "~/constants";
+import { IS_IOS, SERVER_IMAGE_URI } from "~/constants";
 import { store } from "~/store";
 import { formActions } from "~/store/form";
 import palette from "~/styles/palette";
-import { isIos } from ".";
 import permissionCheck from "./permissionCheck";
 
 interface WithID {
@@ -71,11 +70,11 @@ export default {
     if (Array.isArray(uri) && typeof key === "function") {
       uri.forEach((uri, i) => {
         const imageUri = hasID(uri) ? uri.data : uri;
-        if (imageUri.includes(serverImageUri)) return;
+        if (imageUri.includes(SERVER_IMAGE_URI)) return;
         formData.append(key(hasID(uri) ? uri.id : i + 1), {
           name: imageUri.substring(imageUri.lastIndexOf("/") + 1),
           type: "image/jpeg",
-          uri: isIos ? `file://${imageUri}` : imageUri,
+          uri: IS_IOS ? `file://${imageUri}` : imageUri,
         });
       });
     }
@@ -83,7 +82,7 @@ export default {
       formData.append(key, {
         name: uri.substring(uri.lastIndexOf("/") + 1),
         type: "image/jpeg",
-        uri: isIos ? `file://${uri}` : uri,
+        uri: IS_IOS ? `file://${uri}` : uri,
       });
     }
     return formData;

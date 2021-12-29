@@ -2,7 +2,7 @@ import React, { ForwardedRef, forwardRef, ReactNode } from "react";
 import Sheet, { BottomSheetProps } from "@gorhom/bottom-sheet";
 import styled from "styled-components/native";
 import { Shadow } from "react-native-shadow-2";
-import { bottomSheetHandleHeight } from "~/styles/constants";
+import { BOTTOM_SHEET_HANDLE_HEIGHT } from "~/styles/constants";
 
 const HandleContainer = styled.View<{ handleHeight: number }>`
   height: ${({ handleHeight }) => handleHeight}px;
@@ -24,7 +24,7 @@ interface Props extends BottomSheetProps {
 
 const BottomSheet = forwardRef(
   (
-    { children, handleHeight = bottomSheetHandleHeight, ...props }: Props,
+    { children, handleHeight = BOTTOM_SHEET_HANDLE_HEIGHT, ...props }: Props,
     ref: ForwardedRef<Sheet>,
   ) => (
     <Sheet

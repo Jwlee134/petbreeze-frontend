@@ -5,11 +5,11 @@ import { Image, Share, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import styled from "styled-components/native";
 import deviceApi, { MissingReport } from "~/api/device";
-import { serverImageUri } from "~/constants";
+import { IS_IOS, SERVER_IMAGE_URI } from "~/constants";
 import useModal from "~/hooks/useModal";
 import palette from "~/styles/palette";
 import { MissingReportInfoScreenProps } from "~/types/navigator";
-import { delay, isIos } from "~/utils";
+import { delay } from "~/utils";
 import Button from "../common/Button";
 import MyText from "../common/MyText";
 import IosBottomModal from "../modal/IosBottomModal";
@@ -19,7 +19,10 @@ import ShareIcon from "~/assets/svg/missingReportInfo/share.svg";
 import Divider from "../common/Divider";
 import { useDispatch } from "react-redux";
 import { formActions } from "~/store/form";
-import { bottomModalOutTiming, centerModalOutTiming } from "~/styles/constants";
+import {
+  BOTTOM_MODAL_OUT_TIMING,
+  CENTER_MODAL_OUT_TIMING,
+} from "~/styles/constants";
 import CommonCenterModal from "../modal/CommonCenterModal";
 
 const RowContainer = styled.View`
@@ -48,7 +51,7 @@ const MissingReportInfoBottomSheet = ({ data }: { data: MissingReport }) => {
     deviceApi.useDeleteMissingReportMutation();
   const dispatch = useDispatch();
   const photos: string[] = Object.values(data || []).filter(
-    item => typeof item === "string" && item.includes(serverImageUri),
+    item => typeof item === "string" && item.includes(SERVER_IMAGE_URI),
   );
   const {
     open: bottomModalOpen,
@@ -73,7 +76,7 @@ const MissingReportInfoBottomSheet = ({ data }: { data: MissingReport }) => {
 
   const shareLink = () => {
     Share.share({
-      ...(isIos
+      ...(IS_IOS
         ? {
             url: `https://petbreeze.co/lost?key=${data?.emergency_key}`,
           }
@@ -99,7 +102,7 @@ const MissingReportInfoBottomSheet = ({ data }: { data: MissingReport }) => {
       }),
     );
     bottomModalClose();
-    await delay(bottomModalOutTiming);
+    await delay(BOTTOM_MODAL_OUT_TIMING);
     navigation.navigate("MissingReportStackNav", {
       deviceID,
       name,
@@ -112,7 +115,7 @@ const MissingReportInfoBottomSheet = ({ data }: { data: MissingReport }) => {
     try {
       await deleteReport(deviceID).unwrap();
       centerModalClose();
-      await delay(centerModalOutTiming);
+      await delay(CENTER_MODAL_OUT_TIMING);
       navigation.goBack();
     } catch (error) {
       console.log(error);
@@ -121,7 +124,7 @@ const MissingReportInfoBottomSheet = ({ data }: { data: MissingReport }) => {
 
   const handleDelete = async () => {
     bottomModalClose();
-    await delay(bottomModalOutTiming + 200);
+    await delay(BOTTOM_MODAL_OUT_TIMING + 200);
     centerModalOpen();
   };
 

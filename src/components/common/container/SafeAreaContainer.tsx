@@ -5,7 +5,7 @@ import {
   ViewStyle,
 } from "react-native";
 import { SafeAreaView as AndroidSafeAreaView } from "react-native-safe-area-context";
-import { isAndroid } from "~/utils";
+import { IS_ANDROID } from "~/constants";
 
 const SafeAreaContainer = ({
   children,
@@ -14,7 +14,7 @@ const SafeAreaContainer = ({
   children: ReactNode;
   style?: StyleProp<ViewStyle>;
 }) => {
-  if (isAndroid) {
+  if (IS_ANDROID) {
     return (
       <AndroidSafeAreaView style={{ flex: 1, ...(style as object) }}>
         {children}

@@ -2,7 +2,7 @@ import { useIsFocused } from "@react-navigation/native";
 import React, { useEffect, useRef, useState } from "react";
 import NaverMapView, { Marker } from "react-native-nmap";
 import emergencyApi from "~/api/emergency";
-import { delta } from "~/constants";
+import { DELTA } from "~/constants";
 import Map from "../common/Map";
 
 interface Props {
@@ -26,8 +26,8 @@ const MissingReportInfoMap = ({ emergencyKey, bottom }: Props) => {
     mapRef.current.animateToRegion({
       latitude: coordinates[1],
       longitude: coordinates[0],
-      latitudeDelta: delta,
-      longitudeDelta: delta,
+      latitudeDelta: DELTA,
+      longitudeDelta: DELTA,
     });
     setIsMoved(true);
   }, [mapRef, coordinates]);

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import LottieView from "lottie-react-native";
-import { isAndroid } from "~/utils";
+import { IS_ANDROID } from "~/constants";
 
 const Confetti = () => {
   const ref = useRef<LottieView>(null);
@@ -17,7 +17,7 @@ const Confetti = () => {
         width: "100%",
         height: "100%",
         position: "absolute",
-        top: isAndroid ? "-15%" : "-10%",
+        top: IS_ANDROID ? "-15%" : "-10%",
       }}
       ref={ref}
       source={require("~/assets/lottie/confetti.json")}

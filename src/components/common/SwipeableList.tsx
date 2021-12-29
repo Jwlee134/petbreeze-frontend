@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import { View } from "react-native";
 import { SwipeRow } from "react-native-swipe-list-view";
-import { hiddenButtonWidth } from "~/styles/constants";
+import { HIDDEN_BUTTON_WIDTH } from "~/styles/constants";
 import HiddenButton from "./HiddenButton";
 
 interface Props<T> {
@@ -29,7 +29,7 @@ const SwipeableList = <T extends object>({
           preview={disableLeftSwipe ? false : index === 0}
           disableRightSwipe
           disableLeftSwipe={disableLeftSwipe}
-          rightOpenValue={-hiddenButtonWidth}
+          rightOpenValue={-HIDDEN_BUTTON_WIDTH}
           ref={ref => {
             swipeableRef.current[keyExtractor(currentItem)] = ref;
           }}

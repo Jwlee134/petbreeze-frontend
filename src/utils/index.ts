@@ -1,6 +1,4 @@
 /* eslint-disable default-case */
-import { Platform } from "react-native";
-import { secureItems } from "~/constants";
 import { store } from "~/store";
 import { bleActions } from "~/store/ble";
 import { commonActions } from "~/store/common";
@@ -10,6 +8,7 @@ import { storageActions } from "~/store/storage";
 import * as SecureStore from "expo-secure-store";
 import { DateObj, MonthlyWalkRecord } from "~/api/device";
 import palette from "~/styles/palette";
+import { IS_IOS, SECURE_ITEMS } from "~/constants";
 
 const isEndWithConsonant = (str: string) => {
   const finalChrCode = str.charCodeAt(str.length - 1);
@@ -27,7 +26,7 @@ export const resetAll = async () => {
   store.dispatch(formActions.reset());
   store.dispatch(commonActions.reset());
   await Promise.all(
-    Object.values(secureItems).map(item => SecureStore.deleteItemAsync(item)),
+    Object.values(SECURE_ITEMS).map(item => SecureStore.deleteItemAsync(item)),
   );
 };
 
@@ -95,10 +94,6 @@ export const formatYYYYMMDD = (date: string) =>
 export const delay = (milliSec: number) =>
   new Promise<void>(resolve => setTimeout(resolve, milliSec));
 
-export const isAndroid = Platform.OS === "android";
-
-export const isIos = Platform.OS === "ios";
-
 export const bytesToString = (bytes: number[]) =>
   bytes.map(x => String.fromCharCode(x)).join("");
 
@@ -123,11 +118,11 @@ export const getLeftRightPointsOfCircle = (
   return [
     {
       latitude,
-      longitude: lng0 - radius / (isIos ? 100000 : 200000),
+      longitude: lng0 - radius / (IS_IOS ? 100000 : 200000),
     }, // left
     {
       latitude,
-      longitude: lng1 + radius / (isIos ? 100000 : 200000),
+      longitude: lng1 + radius / (IS_IOS ? 100000 : 200000),
     }, // right
   ];
 };

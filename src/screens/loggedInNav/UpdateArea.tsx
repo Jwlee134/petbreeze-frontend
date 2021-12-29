@@ -14,10 +14,9 @@ import { useDispatch } from "react-redux";
 import { deviceSettingActions } from "~/store/deviceSetting";
 import { store, useAppSelector } from "~/store";
 import LoadingIndicator from "~/components/lottie/LoadingIndicator";
-import { textLoadingIndicatorSize } from "~/styles/constants";
-import { isAndroid } from "~/utils";
 import Toast from "react-native-toast-message";
-import { ToastType } from "~/styles/toast";
+import { IS_ANDROID, TOAST_TYPE } from "~/constants";
+import { SMALL_LOADING_INDICATOR_SIZE } from "~/styles/constants";
 
 const UpdateArea = ({
   navigation,
@@ -36,7 +35,7 @@ const UpdateArea = ({
     const { name } = store.getState().deviceSetting.draft.area;
     if (!name) {
       Toast.show({
-        type: ToastType.Error,
+        type: TOAST_TYPE.ERROR,
         text1: "안심존 이름은 필수 항목입니다.",
       });
       return;
@@ -58,7 +57,7 @@ const UpdateArea = ({
         navigation={navigation}
         RightButtonText={
           isSubmitting ? (
-            <LoadingIndicator size={textLoadingIndicatorSize} />
+            <LoadingIndicator size={SMALL_LOADING_INDICATOR_SIZE} />
           ) : (
             <MyText color={palette.blue_7b}>완료</MyText>
           )
@@ -66,7 +65,7 @@ const UpdateArea = ({
         onRightButtonPress={onRightButtonPress}
       />
       <KeyboardAwareScrollContainer
-        scrollEnabled={isAndroid || !isSearchMode}
+        scrollEnabled={IS_ANDROID || !isSearchMode}
         contentContainerStyle={{ paddingBottom: 10 }}>
         <AreaSearchBar isUpdateArea />
         <UpdateAreaMap />

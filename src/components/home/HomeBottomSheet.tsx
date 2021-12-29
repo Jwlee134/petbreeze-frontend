@@ -5,8 +5,8 @@ import BottomSheetComponent from "@gorhom/bottom-sheet";
 import BottomSheet from "~/components/common/BottomSheet";
 import { useDispatch } from "react-redux";
 import {
-  homeBottomSheetHeight,
-  textLoadingIndicatorSize,
+  HOME_BOTTOM_SHEET_HEIGHT,
+  SMALL_LOADING_INDICATOR_SIZE,
 } from "~/styles/constants";
 import ArrowLeft from "~/assets/svg/arrow/arrow-left.svg";
 import ArrowRight from "~/assets/svg/arrow/arrow-right.svg";
@@ -145,7 +145,7 @@ const HomeBottomSheet = () => {
         if (index === -1 && showPath)
           dispatch(commonActions.setHome({ showPath: false }));
       }}
-      snapPoints={[homeBottomSheetHeight]}>
+      snapPoints={[HOME_BOTTOM_SHEET_HEIGHT]}>
       {!data ? (
         <Loader>
           <LoadingIndicator size={60} />
@@ -203,7 +203,7 @@ const HomeBottomSheet = () => {
             ) : (
               <MyText style={{ textAlign: "center" }}>
                 {" "}
-                <LoadingIndicator size={textLoadingIndicatorSize} />{" "}
+                <LoadingIndicator size={SMALL_LOADING_INDICATOR_SIZE} />{" "}
               </MyText>
             )}
           </SliderContainer>

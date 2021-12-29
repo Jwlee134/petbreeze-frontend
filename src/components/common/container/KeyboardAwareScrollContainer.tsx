@@ -4,7 +4,7 @@ import {
   KeyboardAwareScrollViewProps,
 } from "react-native-keyboard-aware-scroll-view";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { isIos } from "~/utils";
+import { IS_IOS } from "~/constants";
 import SafeAreaContainer from "./SafeAreaContainer";
 
 interface Props extends KeyboardAwareScrollViewProps {
@@ -21,7 +21,7 @@ const KeyboardAwareScrollContainer = ({
 }: Props) => {
   const { bottom } = useSafeAreaInsets();
 
-  if (isIos) {
+  if (IS_IOS) {
     // SafeAreaView 사용하지 않을 시 키보드가 올라왔을 때 스크롤 내릴 시
     // 하단에 safe area bottom inset 만큼의 빈 공간이 생기고 이것을 없애려
     // extraScrollHeight에 -bottom만큼 설정할 시 인풋으로 정확하게 스크롤이 안 감

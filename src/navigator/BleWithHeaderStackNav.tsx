@@ -18,7 +18,7 @@ import PreWiFiForm from "~/screens/bleWithHeaderStackNav/PreWiFiForm";
 import WiFiForm, {
   WiFiFormGoBack,
 } from "~/screens/bleWithHeaderStackNav/WiFiForm";
-import { headerHeight } from "~/styles/constants";
+import { HEADER_HEIGHT } from "~/styles/constants";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { createStackNavigator } from "@react-navigation/stack";
 
@@ -45,7 +45,7 @@ const BleWithHeaderStackNav = ({
         pageIndicatorStyle={{
           position: "absolute",
           zIndex: 1,
-          top: headerHeight + top,
+          top: HEADER_HEIGHT + top,
         }}
         currentPage={
           routeName === "PreArea"

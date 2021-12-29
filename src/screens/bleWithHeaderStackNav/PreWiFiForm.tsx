@@ -8,10 +8,11 @@ import ParagraphWithCheckCircle from "~/components/common/ParagraphWithCheckCirc
 import useModal from "~/hooks/useModal";
 import { PreWiFiFormScreenNavigationProp } from "~/types/navigator";
 import CommonCenterModal from "~/components/modal/CommonCenterModal";
-import { centerModalOutTiming } from "~/styles/constants";
 import { DimensionsContext } from "~/context/DimensionsContext";
 import useUpdateDeviceSetting from "~/hooks/useUpdateDeviceSetting";
 import { useAppSelector } from "~/store";
+import { delay } from "~/utils";
+import { CENTER_MODAL_OUT_TIMING } from "~/styles/constants";
 
 const TopContainer = styled.View`
   flex: 1;
@@ -42,9 +43,8 @@ const PreWiFiForm = ({
   const onSkip = async () => {
     await sendRequest(safety_areas);
     close();
-    setTimeout(() => {
-      navigation.navigate("RegisterProfileFirst");
-    }, centerModalOutTiming);
+    await delay(CENTER_MODAL_OUT_TIMING);
+    navigation.navigate("RegisterProfileFirst");
   };
 
   return (

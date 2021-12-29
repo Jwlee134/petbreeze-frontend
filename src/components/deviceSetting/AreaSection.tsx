@@ -8,7 +8,7 @@ import { useDispatch } from "react-redux";
 import { DeviceSettingScreenNavigationProp } from "~/types/navigator";
 import { useAppSelector } from "~/store";
 import { deviceSettingActions } from "~/store/deviceSetting";
-import { noAvatar } from "~/constants";
+import { DEFAULT_AVATAR } from "~/constants";
 import CommonCenterModal from "~/components/modal/CommonCenterModal";
 import useModal from "~/hooks/useModal";
 import { AreaResponse } from "~/api/device";
@@ -120,7 +120,9 @@ const AreaSection = () => {
               onPress={() => onAreaPress(item)}>
               <RowContainer>
                 <Image
-                  source={item.thumbnail ? { uri: item.thumbnail } : noAvatar}
+                  source={
+                    item.thumbnail ? { uri: item.thumbnail } : DEFAULT_AVATAR
+                  }
                 />
                 <TextContainer>
                   <MyText

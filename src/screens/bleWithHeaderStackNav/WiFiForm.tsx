@@ -15,17 +15,18 @@ import { deviceSettingActions } from "~/store/deviceSetting";
 import { WiFiFormScreenNavigationProp } from "~/types/navigator";
 import { useAppSelector } from "~/store";
 import useModal from "~/hooks/useModal";
-import {
-  centerModalOutTiming,
-  headerHeight,
-  minSpace,
-} from "~/styles/constants";
 import styled from "styled-components/native";
 import palette from "~/styles/palette";
 import MyText from "~/components/common/MyText";
 import { DimensionsContext } from "~/context/DimensionsContext";
 import useUpdateDeviceSetting from "~/hooks/useUpdateDeviceSetting";
 import useWiFi from "~/hooks/useWiFi";
+import { delay } from "~/utils";
+import {
+  CENTER_MODAL_OUT_TIMING,
+  HEADER_HEIGHT,
+  MIN_SPACE,
+} from "~/styles/constants";
 
 const TopContainer = styled.View`
   padding: 0 43px;
@@ -87,16 +88,15 @@ const WiFiForm = forwardRef<
   const onSkip = async () => {
     await sendRequest(safety_areas);
     close();
-    setTimeout(() => {
-      navigation.navigate("RegisterProfileFirst");
-    }, centerModalOutTiming);
+    await delay(CENTER_MODAL_OUT_TIMING);
+    navigation.navigate("RegisterProfileFirst");
   };
 
   return (
     <>
       <KeyboardAwareScrollContainer isSpaceBetween>
         <TopContainer style={{ marginTop: rpHeight(109) }}>
-          <InputTitle style={{ marginTop: headerHeight + minSpace }}>
+          <InputTitle style={{ marginTop: HEADER_HEIGHT + MIN_SPACE }}>
             WiFi 이름
           </InputTitle>
           <Input
@@ -121,7 +121,7 @@ const WiFiForm = forwardRef<
             </MyText>
           </RowContainer>
         </TopContainer>
-        <View style={{ marginTop: minSpace }}>
+        <View style={{ marginTop: MIN_SPACE }}>
           <Button
             isLoading={isConnecting || isLoading}
             disabled={!ssid || (!!password && password.length < 8)}

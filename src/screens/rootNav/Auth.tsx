@@ -12,12 +12,12 @@ import GradientContainer from "~/components/common/container/GradientContainer";
 import Footprint from "~/assets/svg/footprint/footprint-app-icon-blue.svg";
 import MyText from "~/components/common/MyText";
 import Input from "~/components/common/Input";
-import { isIos } from "~/utils";
 import SocialLogin from "~/components/auth/SocialLogin";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { isIphoneX } from "react-native-iphone-x-helper";
 import useAnimatedSequence from "~/hooks/useAnimatedSequence";
 import LogoText from "~/assets/svg/start/logo-text.svg";
+import { IS_IOS } from "~/constants";
 
 const TopContainer = styled.View`
   flex: 1;
@@ -56,8 +56,8 @@ const Auth = () => {
   const translateYLogo = slideTop.interpolate({
     inputRange: [0, 1],
     outputRange: [
-      isIos ? height * 0.32 - (isIphoneX() ? 0 : 34) : height * 0.3,
-      isIos ? height * 0.155 - (isIphoneX() ? 0 : 34) : height * 0.126,
+      IS_IOS ? height * 0.32 - (isIphoneX() ? 0 : 34) : height * 0.3,
+      IS_IOS ? height * 0.155 - (isIphoneX() ? 0 : 34) : height * 0.126,
     ],
   });
 
@@ -120,7 +120,7 @@ const Auth = () => {
       <TouchableWithoutFeedback onPress={onOutsideClick}>
         <KeyboardAvoidingView
           style={{ flex: 1 }}
-          behavior={isIos ? "padding" : undefined}>
+          behavior={IS_IOS ? "padding" : undefined}>
           <TopContainer>
             <LogoContainer
               style={{

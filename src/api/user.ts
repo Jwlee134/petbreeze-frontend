@@ -1,12 +1,5 @@
+import { NOTIFICATION_TYPE } from "~/constants";
 import api, { providesList } from ".";
-
-export enum NotificationCode {
-  LowBattery,
-  ExitArea,
-  ComeBackArea,
-  StartWalk,
-  FinishWalk,
-}
 
 interface LoginRes {
   status: number;
@@ -20,7 +13,7 @@ interface LoginArgs {
 
 export interface Notification {
   id: number;
-  notification_type_code: NotificationCode;
+  notification_type_code: NOTIFICATION_TYPE;
   related_device_id: number;
   is_new: boolean;
   created_at: string;

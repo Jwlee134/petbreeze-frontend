@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { useAppSelector } from "~/store";
 import LoggedInNav from "./LoggedInNav";
 import { StatusBar } from "react-native";
@@ -15,8 +15,18 @@ import {
 import theme from "~/styles/theme";
 import { useFlipper } from "@react-navigation/devtools";
 import Toast, { BaseToast, BaseToastProps } from "react-native-toast-message";
-import toastStyle, { ToastType } from "~/styles/toast";
+import toastStyle from "~/styles/toast";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { TOAST_TYPE } from "~/constants";
+
+const toastConfig = {
+  [TOAST_TYPE.NOTIFICATION]: ({ ...rest }: BaseToastProps) => (
+    <BaseToast {...rest} {...toastStyle(TOAST_TYPE.NOTIFICATION)} />
+  ),
+  [TOAST_TYPE.ERROR]: ({ ...rest }: BaseToastProps) => (
+    <BaseToast {...rest} {...toastStyle(TOAST_TYPE.ERROR)} />
+  ),
+};
 
 const Stack = createStackNavigator<RootNavParamList>();
 
@@ -28,18 +38,6 @@ const RootNav = () => {
   const { top } = useSafeAreaInsets();
 
   useFlipper(navigationRef);
-
-  const toastConfig = useMemo(
-    () => ({
-      notification: ({ ...rest }: BaseToastProps) => (
-        <BaseToast {...rest} {...toastStyle(ToastType.Notification)} />
-      ),
-      error: ({ ...rest }: BaseToastProps) => (
-        <BaseToast {...rest} {...toastStyle(ToastType.Error)} />
-      ),
-    }),
-    [],
-  );
 
   return (
     <>

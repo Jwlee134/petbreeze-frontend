@@ -4,13 +4,14 @@ import { NativeEventEmitter, NativeModules } from "react-native";
 import BleManager, { Peripheral } from "react-native-ble-manager";
 
 import deviceApi from "~/api/device";
-import { bytesToString, isAndroid, isIos } from "~/utils";
+import { bytesToString } from "~/utils";
 
 import * as FileSystem from "expo-file-system";
 import { decode } from "base64-arraybuffer";
 import { useAppSelector } from "~/store";
 import { useDispatch } from "react-redux";
 import { bleActions } from "~/store/ble";
+import { IS_ANDROID, IS_IOS } from "~/constants";
 
 const BleManagerModule = NativeModules.BleManager;
 const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
@@ -177,7 +178,7 @@ const useBleMaganer = () => {
         (peripheral as Peripheral).id,
       );
       console.log("Succeeded to retrieve data: ", data);
-      if (isAndroid) {
+      if (IS_ANDROID) {
         await BleManager.requestMTU((peripheral as Peripheral).id, 515);
       }
       dispatch(bleActions.setStatus("retrieveSuccess"));
@@ -211,7 +212,7 @@ const useBleMaganer = () => {
     if (
       !peripheral ||
       !peripheral.name ||
-      !peripheral.name.includes(isIos ? "ESP" : "EODIGAE")
+      !peripheral.name.includes(IS_IOS ? "ESP" : "EODIGAE")
     ) {
       return;
     }

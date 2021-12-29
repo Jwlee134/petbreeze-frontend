@@ -11,7 +11,7 @@ import CustomHeader from "~/components/navigator/CustomHeader";
 import useWiFi from "~/hooks/useWiFi";
 import { useAppSelector } from "~/store";
 import { deviceSettingActions } from "~/store/deviceSetting";
-import { minSpace } from "~/styles/constants";
+import { MIN_SPACE } from "~/styles/constants";
 import palette from "~/styles/palette";
 import { UpdateWiFiScreenProps } from "~/types/navigator";
 
@@ -58,7 +58,7 @@ const UpdateWiFi = ({
           style={{
             paddingTop: 29,
             paddingHorizontal: 43,
-            marginBottom: minSpace,
+            marginBottom: MIN_SPACE,
           }}>
           <InputTitle>WiFi 이름</InputTitle>
           <Input

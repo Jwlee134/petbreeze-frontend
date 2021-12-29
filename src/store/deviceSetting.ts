@@ -1,10 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import {
-  AreaResponse,
-  DeviceMembers,
-  GeoJsonType,
-  WiFiResponse,
-} from "~/api/device";
+import { AreaResponse, DeviceMembers, WiFiResponse } from "~/api/device";
+import { GEOJSON_TYPE } from "~/constants";
 
 interface AreaDraft {
   name: string;
@@ -55,7 +51,7 @@ const initialState: State = {
       address: "",
       thumbnail: "",
       coordinate: {
-        type: GeoJsonType.Point,
+        type: GEOJSON_TYPE.POINT,
         coordinates: [0, 0],
       },
       radius: 0,

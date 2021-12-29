@@ -26,7 +26,7 @@ import Permission from "~/screens/loggedInNav/Permission";
 import AddDevice from "~/screens/loggedInNav/AddDevice";
 import InvitationCodeForm from "~/screens/loggedInNav/InvitationCodeForm";
 import Welcome from "~/screens/loggedInNav/Welcome";
-import { secureItems } from "~/constants";
+import { SECURE_ITEMS } from "~/constants";
 import * as SecureStore from "expo-secure-store";
 import { useDispatch } from "react-redux";
 import { commonActions } from "~/store/common";
@@ -61,7 +61,7 @@ const LoggedInNav = ({
     if (isTokenInvalid) {
       (async () => {
         await Promise.all(
-          Object.values(secureItems).map(item =>
+          Object.values(SECURE_ITEMS).map(item =>
             SecureStore.deleteItemAsync(item),
           ),
         );

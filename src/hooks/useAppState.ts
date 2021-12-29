@@ -9,9 +9,9 @@ const useAppState = () => {
   };
 
   useEffect(() => {
-    AppState.addEventListener("change", handleAppStateChange);
+    const listener = AppState.addEventListener("change", handleAppStateChange);
     return () => {
-      AppState.removeEventListener("change", handleAppStateChange);
+      listener.remove();
     };
   }, []);
 
