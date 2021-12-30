@@ -13,6 +13,7 @@ import * as SecureStore from "expo-secure-store";
 import { SECURE_ITEMS } from "~/constants";
 import { store, useAppSelector } from "~/store";
 import deviceApi from "~/api/device";
+import crashlytics from "~/utils/crashlytics";
 
 const AuthButton = styled.TouchableOpacity`
   justify-content: center;
@@ -44,6 +45,7 @@ const SocialLogin = ({ name }: { name: string }) => {
       SecureStore.setItemAsync(SECURE_ITEMS.TOKEN, token),
       SecureStore.setItemAsync(SECURE_ITEMS.FIREBASE_TOKEN, firebaseToken),
       SecureStore.setItemAsync(SECURE_ITEMS.USER_ID, userID.toString()),
+      crashlytics.setUserId(userID.toString()),
     ]);
   };
 

@@ -13,6 +13,7 @@ import userApi from "~/api/user";
 import { store } from "~/store";
 import messaging from "@react-native-firebase/messaging";
 import LogoText from "~/assets/svg/start/logo-text.svg";
+import crashlytics from "~/utils/crashlytics";
 
 const Container = styled.View`
   flex: 1;
@@ -52,9 +53,13 @@ const Start = ({ navigation }: { navigation: StartScreenNavigationProp }) => {
   };
 
   const onAnimatedFinish = async () => {
+    const userID = await SecureStore.getItemAsync(SECURE_ITEMS.USER_ID);
     const token = await SecureStore.getItemAsync(SECURE_ITEMS.TOKEN);
     const fbToken = await SecureStore.getItemAsync(SECURE_ITEMS.FIREBASE_TOKEN);
-    if (token && fbToken) {
+
+    if (userID && token && fbToken) {
+      await crashlytics.setUserId(userID);
+      console.log(`🔐 Here's your id 🔐 \n + ${userID}`);
       console.log(`🔐 Here's your value 🔐 \n + ${token}`);
       console.log(`🔐 Here's your fb value 🔐 \n + ${fbToken}`);
       if (IS_ANDROID) {
