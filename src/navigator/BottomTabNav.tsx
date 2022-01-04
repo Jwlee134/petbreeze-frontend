@@ -6,6 +6,8 @@ import { BottomTabNavRouteProp, BottomTabParamList } from "~/types/navigator";
 import CustomBottomTabBar from "~/components/navigator/CustomBottomTabBar";
 import userApi from "~/api/user";
 import useAppState from "~/hooks/useAppState";
+import { useDispatch } from "react-redux";
+import deviceApi from "~/api/device";
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
 
@@ -16,9 +18,13 @@ const BottomTabNav = ({
 }) => {
   const appState = useAppState();
   const { data, refetch } = userApi.useGetNumOfNewNotificationsQuery();
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    if (appState === "active") refetch();
+    if (appState === "active") {
+      refetch();
+      dispatch(deviceApi.util.invalidateTags([{ type: "Device", id: "LIST" }]));
+    }
   }, [appState]);
 
   return (
