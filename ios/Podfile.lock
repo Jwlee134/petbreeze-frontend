@@ -593,6 +593,8 @@ PODS:
     - React-jsi (= 0.66.4)
     - React-logger (= 0.66.4)
     - React-perflogger (= 0.66.4)
+  - ReactNativeExceptionHandler (2.10.10):
+    - React-Core
   - RNCAsyncStorage (1.15.14):
     - React-Core
   - RNCClipboard (1.9.0):
@@ -748,6 +750,7 @@ DEPENDENCIES:
   - React-RCTVibration (from `../node_modules/react-native/Libraries/Vibration`)
   - React-runtimeexecutor (from `../node_modules/react-native/ReactCommon/runtimeexecutor`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
+  - ReactNativeExceptionHandler (from `../node_modules/react-native-exception-handler`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
   - "RNCClipboard (from `../node_modules/@react-native-clipboard/clipboard`)"
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
@@ -930,6 +933,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/runtimeexecutor"
   ReactCommon:
     :path: "../node_modules/react-native/ReactCommon"
+  ReactNativeExceptionHandler:
+    :path: "../node_modules/react-native-exception-handler"
   RNCAsyncStorage:
     :path: "../node_modules/@react-native-async-storage/async-storage"
   RNCClipboard:
@@ -1060,6 +1065,7 @@ SPEC CHECKSUMS:
   React-RCTVibration: e3ffca672dd3772536cb844274094b0e2c31b187
   React-runtimeexecutor: dec32ee6f2e2a26e13e58152271535fadff5455a
   ReactCommon: 57b69f6383eafcbd7da625bfa6003810332313c4
+  ReactNativeExceptionHandler: b11ff67c78802b2f62eed0e10e75cb1ef7947c60
   RNCAsyncStorage: ea6b5c280997b2b32a587793163b1f10e580c4f7
   RNCClipboard: 99fc8ad669a376b756fbc8098ae2fd05c0ed0668
   RNFBApp: e884e9a2dcc5edfa73e2651ef6638df5e0672f89
