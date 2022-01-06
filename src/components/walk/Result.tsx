@@ -79,15 +79,14 @@ const Result = () => {
       const formData = imageHandler.handleFormData(uri, "path_image");
       await allSettled(
         fulfilledIds
-          .map((id, i) => {
-            if (fulfilledResults[i].status === "rejected") return null;
-            return postWalkThumbnail({
+          .filter((id, i) => fulfilledResults[i].status !== "rejected")
+          .map((id, i) =>
+            postWalkThumbnail({
               body: formData,
               deviceID: id,
               walkID: fulfilledResults[i].value.id,
-            });
-          })
-          .filter(item => item !== null),
+            }).unwrap(),
+          ),
       );
     }
 

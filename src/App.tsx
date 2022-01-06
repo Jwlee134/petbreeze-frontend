@@ -7,8 +7,26 @@ import { persister, store } from "./store";
 import RootNav from "./navigator/RootNav";
 import DimensionsContextProvider from "./context/DimensionsContext";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import {
+  setJSExceptionHandler,
+  setNativeExceptionHandler,
+} from "react-native-exception-handler";
+import crashlytics from "./utils/crashlytics";
 
 Settings.initializeSDK();
+
+setJSExceptionHandler(error => {
+  crashlytics.recordError(error);
+});
+
+setNativeExceptionHandler(
+  message => {
+    const error = new Error(message);
+    crashlytics.recordError(error);
+  },
+  true,
+  true,
+);
 
 const App = () => {
   return (
