@@ -701,6 +701,12 @@ const deviceApi = api.injectEndpoints({
         method: "POST",
         body: {},
       }),
+      invalidatesTags: (result, error, deviceID) => {
+        if (!error || shouldInvalidateDeviceList(error)) {
+          return [{ type: "Device", id: deviceID }];
+        }
+        return [];
+      },
     }),
 
     sendWalkNotification: builder.mutation<void, number>({
