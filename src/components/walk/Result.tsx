@@ -11,7 +11,7 @@ import allSettled from "promise.allsettled";
 import { storageActions } from "~/store/storage";
 import { useDispatch } from "react-redux";
 import Toast from "react-native-toast-message";
-import { GEOJSON_TYPE } from "~/constants";
+import { GEOJSON_TYPE, TOAST_TYPE } from "~/constants";
 
 const Result = () => {
   const { viewShotRef, deviceList } = useContext(WalkContext);
@@ -52,42 +52,46 @@ const Result = () => {
         )
         .join(", ");
       Toast.show({
-        type: "error",
+        type: TOAST_TYPE.ERROR,
         text1: `${rejectedNames}${consonantResponder(
           rejectedNames,
         )}는 산책중이 아닙니다.`,
       });
     }
-    const fulfilledResults = await allSettled(
-      fulfilledIds.map(id =>
-        postWalk({
-          deviceID: id,
-          body: {
-            distance: meter,
-            start_date_time: startTime,
-            time: Math.floor(duration / 60),
-            path: {
-              type: GEOJSON_TYPE.LINE_STRING,
-              coordinates: coords,
-            },
-          },
-        }).unwrap(),
-      ),
-    );
 
-    if (uri && fulfilledResults.length) {
-      const formData = imageHandler.handleFormData(uri, "path_image");
-      await allSettled(
-        fulfilledIds
-          .filter((id, i) => fulfilledResults[i].status !== "rejected")
-          .map((id, i) =>
-            postWalkThumbnail({
-              body: formData,
-              deviceID: id,
-              walkID: fulfilledResults[i].value.id,
-            }).unwrap(),
-          ),
+    if (coords.length > 1) {
+      const fulfilledResults = await allSettled(
+        fulfilledIds.map(id =>
+          postWalk({
+            deviceID: id,
+            body: {
+              distance: meter,
+              start_date_time: startTime,
+              time: Math.floor(duration / 60),
+              path: {
+                type: GEOJSON_TYPE.LINE_STRING,
+                coordinates: coords,
+              },
+            },
+          }).unwrap(),
+        ),
       );
+      if (uri && fulfilledResults.length) {
+        const formData = imageHandler.handleFormData(uri, "path_image");
+        await allSettled(
+          fulfilledIds
+            .filter((id, i) => fulfilledResults[i].status !== "rejected")
+            .map((id, i) =>
+              postWalkThumbnail({
+                body: formData,
+                deviceID: id,
+                walkID: fulfilledResults[i].value.id,
+              }).unwrap(),
+            ),
+        );
+      }
+    } else {
+      Toast.show({ type: TOAST_TYPE.ERROR, text1: "기록할 경로가 없습니다." });
     }
 
     setTimeout(() => {
