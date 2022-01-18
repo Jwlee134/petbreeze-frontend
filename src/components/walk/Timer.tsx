@@ -79,14 +79,17 @@ const Timer = () => {
       clearTimer();
       dispatch(storageActions.setWalk({ duration }));
     }
-  }, [isWalking, duration]);
-
-  useEffect(() => {
     if (duration === 60) {
       dispatch(storageActions.setWalk({ duration }));
       allSettled(selectedIDs.map(id => sendNotification(id)));
     }
-  }, [duration]);
+  }, [isWalking, duration]);
+
+  useEffect(() => {
+    if (startTime && duration !== 0) {
+      dispatch(storageActions.setWalk({ duration: getDuration() }));
+    }
+  }, []);
 
   return (
     <RowContainer>
