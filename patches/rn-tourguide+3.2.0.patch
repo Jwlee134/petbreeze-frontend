@@ -1,0 +1,102 @@
+diff --git a/node_modules/rn-tourguide/lib/components/ConnectedStep.js b/node_modules/rn-tourguide/lib/components/ConnectedStep.js
+index ec37b73..bc75de4 100644
+--- a/node_modules/rn-tourguide/lib/components/ConnectedStep.js
++++ b/node_modules/rn-tourguide/lib/components/ConnectedStep.js
+@@ -54,10 +54,11 @@ let ConnectedStep = (() => {
+             return new Promise((resolve, reject) => {
+                 const measure = () => {
+                     if (this.wrapper && this.wrapper.measure) {
++                        const {borderRadius} = this.props;
+                         this.wrapper.measure((_ox, _oy, width, height, x, y) => resolve({
+-                            x,
++                            x: borderRadius ? x + borderRadius : x,
+                             y,
+-                            width,
++                            width: borderRadius ? width - borderRadius * 2 : width,
+                             height,
+                         }), reject);
+                     }
+diff --git a/node_modules/rn-tourguide/lib/components/Modal.d.ts b/node_modules/rn-tourguide/lib/components/Modal.d.ts
+index f0dfe90..bd90964 100644
+--- a/node_modules/rn-tourguide/lib/components/Modal.d.ts
++++ b/node_modules/rn-tourguide/lib/components/Modal.d.ts
+@@ -18,6 +18,7 @@ export interface ModalProps {
+     backdropColor: string;
+     labels: Labels;
+     dismissOnPress?: boolean;
++    persistTooltip?: boolean
+     easing(value: number): number;
+     stop(): void;
+     next(): void;
+diff --git a/node_modules/rn-tourguide/lib/components/Modal.js b/node_modules/rn-tourguide/lib/components/Modal.js
+index f848302..4423379 100644
+--- a/node_modules/rn-tourguide/lib/components/Modal.js
++++ b/node_modules/rn-tourguide/lib/components/Modal.js
+@@ -120,7 +120,7 @@ let Modal = (() => {
+                 toValue,
+                 duration,
+                 easing: this.props.easing,
+-                delay: duration,
++                delay: this.props.persistTooltip ? 0 : duration,
+                 useNativeDriver: true,
+             });
+             const opacityAnim = Animated.timing(this.state.opacity, {
+@@ -130,14 +130,21 @@ let Modal = (() => {
+                 delay: duration,
+                 useNativeDriver: true,
+             });
+-            this.state.opacity.setValue(0);
++            const animations = []
+             if (toValue !== this.state.tooltipTranslateY._value &&
+                 !((_a = this.props.currentStep) === null || _a === void 0 ? void 0 : _a.keepTooltipPosition)) {
+-                Animated.parallel([translateAnim, opacityAnim]).start();
+-            }
+-            else {
+-                opacityAnim.start();
++                animations.push(translateAnim)
+             }
++            if (!this.props.persistTooltip) {
++                this.state.opacity.setValue(0)
++                animations.push(opacityAnim)
++              } else if (
++                // @ts-ignore
++                this.state.opacity._value !== 1
++              ) {
++                animations.push(opacityAnim)
++              }
++            Animated.parallel(animations).start()
+             this.setState({
+                 tooltip,
+                 layout,
+diff --git a/node_modules/rn-tourguide/lib/components/TourGuideProvider.d.ts b/node_modules/rn-tourguide/lib/components/TourGuideProvider.d.ts
+index babd4ea..d96b86d 100644
+--- a/node_modules/rn-tourguide/lib/components/TourGuideProvider.d.ts
++++ b/node_modules/rn-tourguide/lib/components/TourGuideProvider.d.ts
+@@ -16,5 +16,6 @@ export interface TourGuideProviderProps {
+     animationDuration?: number;
+     children: React.ReactNode;
+     dismissOnPress?: boolean;
++    persistTooltip?: boolean
+ }
+ export declare const TourGuideProvider: ({ children, wrapperStyle, labels, tooltipComponent, tooltipStyle, androidStatusBarVisible, backdropColor, animationDuration, maskOffset, borderRadius, verticalOffset, startAtMount, dismissOnPress, }: TourGuideProviderProps) => JSX.Element;
+diff --git a/node_modules/rn-tourguide/lib/components/TourGuideProvider.js b/node_modules/rn-tourguide/lib/components/TourGuideProvider.js
+index 1c85add..70997a2 100644
+--- a/node_modules/rn-tourguide/lib/components/TourGuideProvider.js
++++ b/node_modules/rn-tourguide/lib/components/TourGuideProvider.js
+@@ -8,7 +8,7 @@ import { Modal } from './Modal';
+ import { OFFSET_WIDTH } from './style';
+ const { useMemo, useEffect, useState, useRef } = React;
+ const MAX_START_TRIES = 120;
+-export const TourGuideProvider = ({ children, wrapperStyle, labels, tooltipComponent, tooltipStyle, androidStatusBarVisible, backdropColor, animationDuration, maskOffset, borderRadius, verticalOffset, startAtMount = false, dismissOnPress = false, }) => {
++export const TourGuideProvider = ({ children, wrapperStyle, labels, tooltipComponent, tooltipStyle, androidStatusBarVisible, backdropColor, animationDuration, maskOffset, borderRadius, verticalOffset, startAtMount = false, dismissOnPress = false, persistTooltip = false }) => {
+     const [visible, setVisible] = useState(undefined);
+     const [currentStep, updateCurrentStep] = useState();
+     const [steps, setSteps] = useState({});
+@@ -141,6 +141,7 @@ export const TourGuideProvider = ({ children, wrapperStyle, labels, tooltipCompo
+                 maskOffset,
+                 borderRadius,
+                 dismissOnPress,
++                persistTooltip
+             })))));
+ };
+ const styles = StyleSheet.create({
